@@ -1,0 +1,38 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-nexusbe-dev-173723-authRole",
+      "UnauthRoleArn": "arn:aws:iam::557572855580:role/amplify-nexusbe-dev-173723-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::557572855580:role/amplify-nexusbe-dev-173723-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-nexusbe-dev-173723-deployment",
+      "UnauthRoleName": "amplify-nexusbe-dev-173723-unauthRole",
+      "StackName": "amplify-nexusbe-dev-173723",
+      "StackId": "arn:aws:cloudformation:ap-south-1:557572855580:stack/amplify-nexusbe-dev-173723/84f6c100-0d07-11ee-99ed-06190ddb2de0",
+      "AmplifyAppId": "d39u2gr8fyb39t"
+    },
+    "categories": {
+      "auth": {
+        "nexusbe84e1c926": {
+          "userPoolId": "ap-south-1_VBSD4mk4o",
+          "userPoolName": "nexus-AD-pool",
+          "webClientId": "6fpao7sa8kk6cgeht9k23a5jam",
+          "nativeClientId": "6fpao7sa8kk6cgeht9k23a5jam",
+          "identityPoolId": "ap-south-1:13da9269-b56f-4f90-9f21-5fbbce70b8ff",
+          "identityPoolName": "evokeADIdentity",
+          "allowUnauthenticatedIdentities": false,
+          "authRoleArn": "arn:aws:iam::557572855580:role/Cognito_evokeADIdentityAuth_Role",
+          "authRoleName": "Cognito_evokeADIdentityAuth_Role",
+          "unauthRoleArn": "arn:aws:iam::557572855580:role/Cognito_evokeADIdentityUnauth_Role",
+          "unauthRoleName": "Cognito_evokeADIdentityUnauth_Role"
+        }
+      },
+      "storage": {
+        "nexusbe68106fee": {
+          "bucketName": "evoke-nexus-media",
+          "region": "ap-south-1"
+        }
+      }
+    }
+  }
+}

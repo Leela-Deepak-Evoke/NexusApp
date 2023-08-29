@@ -1,0 +1,126 @@
+{
+  "auth": {
+    "nexusbe84e1c926": {
+      "customAuth": false,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito",
+      "serviceType": "imported"
+    }
+  },
+  "function": {},
+  "parameters": {
+    "AMPLIFY_auth_nexusbe84e1c926_allowUnauthenticatedIdentities": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "nexusbe84e1c926"
+        }
+      ]
+    },
+    "AMPLIFY_auth_nexusbe84e1c926_authRoleArn": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "nexusbe84e1c926"
+        }
+      ]
+    },
+    "AMPLIFY_auth_nexusbe84e1c926_authRoleName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "nexusbe84e1c926"
+        }
+      ]
+    },
+    "AMPLIFY_auth_nexusbe84e1c926_identityPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "nexusbe84e1c926"
+        }
+      ]
+    },
+    "AMPLIFY_auth_nexusbe84e1c926_identityPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "nexusbe84e1c926"
+        }
+      ]
+    },
+    "AMPLIFY_auth_nexusbe84e1c926_nativeClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "nexusbe84e1c926"
+        }
+      ]
+    },
+    "AMPLIFY_auth_nexusbe84e1c926_unauthRoleArn": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "nexusbe84e1c926"
+        }
+      ]
+    },
+    "AMPLIFY_auth_nexusbe84e1c926_unauthRoleName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "nexusbe84e1c926"
+        }
+      ]
+    },
+    "AMPLIFY_auth_nexusbe84e1c926_userPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "nexusbe84e1c926"
+        }
+      ]
+    },
+    "AMPLIFY_auth_nexusbe84e1c926_userPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "nexusbe84e1c926"
+        }
+      ]
+    },
+    "AMPLIFY_auth_nexusbe84e1c926_webClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "nexusbe84e1c926"
+        }
+      ]
+    },
+    "AMPLIFY_storage_nexusbe68106fee_bucketName": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "nexusbe68106fee"
+        }
+      ]
+    },
+    "AMPLIFY_storage_nexusbe68106fee_region": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "nexusbe68106fee"
+        }
+      ]
+    }
+  },
+  "storage": {
+    "nexusbe68106fee": {
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "S3",
+      "serviceType": "imported"
+    }
+  }
+}

@@ -15,30 +15,35 @@ class ProfilePic extends ConsumerWidget {
     final profileThumbnailAsyncValue =
         ref.watch(profileThumbnailProvider(user.profilePicture!));
 
-    return profileThumbnailAsyncValue.when(
-      data: (data) {
-        if (data != null) {
-          return CircleAvatar(
-            backgroundImage: NetworkImage(data),
-            radius: size == "LARGE" ? 50.0 : 30.0,
-          );
-        } else {
-          // Render a placeholder or an error image
-          return CircleAvatar(
-              radius: size == "LARGE" ? 50.0 : 30.0, child: Text(avatarText));
-        }
-      },
-      loading: () => Center(
-        child: SizedBox(
-          height: size == "LARGE" ? 50.0 : 30.0,
-          width: size == "LARGE" ? 50.0 : 30.0,
-          child: const CircularProgressIndicator(),
+    if (user.profilePicture == null || user.profilePicture!.isEmpty) {
+      return CircleAvatar(
+          radius: size == "LARGE" ? 50.0 : 30.0, child: Text(avatarText));
+    } else {
+      return profileThumbnailAsyncValue.when(
+        data: (data) {
+          if (data != null) {
+            return CircleAvatar(
+              backgroundImage: NetworkImage(data),
+              radius: size == "LARGE" ? 50.0 : 30.0,
+            );
+          } else {
+            // Render a placeholder or an error image
+            return CircleAvatar(
+                radius: size == "LARGE" ? 50.0 : 30.0, child: Text(avatarText));
+          }
+        },
+        loading: () => Center(
+          child: SizedBox(
+            height: size == "LARGE" ? 50.0 : 30.0,
+            width: size == "LARGE" ? 50.0 : 30.0,
+            child: const CircularProgressIndicator(),
+          ),
         ),
-      ),
-      error: (error, stack) {
-        return Text('An error occurred: $error');
-      },
-    );
+        error: (error, stack) {
+          return Text('An error occurred: $error');
+        },
+      );
+    }
   }
 
   String getAvatarText(String name) {

@@ -1,6 +1,6 @@
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/screens/forum/widgets/forum_filter_card.dart';
-import 'package:evoke_nexus_app/app/screens/forum/widgets/forum_list.dart';
+import 'package:evoke_nexus_app/app/screens/forum/widgets/questions_list.dart';
 import 'package:evoke_nexus_app/app/screens/forum/widgets/post_forum_fab.dart';
 import 'package:evoke_nexus_app/app/widgets/common/common_search_bar.dart';
 import 'package:flutter/material.dart';
@@ -18,30 +18,24 @@ class _ForumWebViewCardState extends State<ForumWebView> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Container(
+        SizedBox(
           width: MediaQuery.of(context).size.width - 600,
-          child: ForumList(user: widget.user),
+          child: QuestionsList(user: widget.user),
         ),
-        Container(
+        SizedBox(
           width: 275,
-          child: const Column(
+          child: Column(
             children: [
-              Align(alignment: Alignment.topRight, child: SearchCard()),
-              SizedBox(
-                height: 20,
-              ),
-              Align(
+              const Align(alignment: Alignment.topRight, child: SearchCard()),
+              const Align(
                 alignment: Alignment.centerRight,
                 child: ForumFilterCard(),
               ),
               SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                height: 130,
+                height: 100,
                 child: Align(
                   alignment: Alignment.bottomRight,
-                  child: PostForumFAB(),
+                  child: PostForumFAB(user: widget.user),
                 ),
               ),
             ],

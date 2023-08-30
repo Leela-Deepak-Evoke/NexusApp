@@ -102,11 +102,11 @@ class WebLayout extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               verticalDirection: VerticalDirection.down,
               children: [
-                Container(
+                SizedBox(
                     width: 275,
                     child: WebAppDrawer(goRouter: router, user: user)),
                 //const SizedBox(width: 10),
-                Container(
+                SizedBox(
                     width: MediaQuery.of(context).size.width - 300,
                     child: child)
               ]),

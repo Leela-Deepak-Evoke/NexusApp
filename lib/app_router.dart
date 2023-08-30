@@ -1,3 +1,4 @@
+import 'package:evoke_nexus_app/app/screens/forum/forum_screen.dart';
 import 'package:evoke_nexus_app/app/screens/test/test_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +39,7 @@ final router = GoRouter(
           ),
         ),
         GoRoute(
-          name: AppRoute.home.name,
+          name: AppRoute.profile.name,
           path: "profile",
           pageBuilder: (context, state) => MaterialPage<void>(
             key: state.pageKey,
@@ -46,11 +47,19 @@ final router = GoRouter(
           ),
         ),
         GoRoute(
+          name: AppRoute.forum.name,
+          path: "forum",
+          pageBuilder: (context, state) => MaterialPage<void>(
+            key: state.pageKey,
+            child: const ForumScreen(),
+          ),
+        ),
+        GoRoute(
           name: AppRoute.rootScreen.name,
           path: 'home',
           pageBuilder: (context, state) => MaterialPage<void>(
             key: state.pageKey,
-            child: RootScreen(),
+            child: const RootScreen(),
           ),
         ),
         GoRoute(

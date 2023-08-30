@@ -3,7 +3,6 @@ import 'package:evoke_nexus_app/app/widgets/common/scrollable_list.dart';
 import 'package:flutter/material.dart';
 import 'package:evoke_nexus_app/app/screens/profile/widgets/profile_card.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_filter_card.dart';
-import 'package:evoke_nexus_app/app/screens/feeds/widgets/post_feed_fab.dart';
 
 class ContentCard extends StatefulWidget {
   final String contentKey;
@@ -88,7 +87,7 @@ class _ContentCardState extends State<ContentCard> {
                 child: Column(children: [
                   FeedFilterCard(),
                   SizedBox(height: 200),
-                  Align(alignment: Alignment.bottomRight, child: PostFeedFAB())
+                  Align(alignment: Alignment.bottomRight, child: Center())
                 ] // Replace with your desired widget
                     ),
               )

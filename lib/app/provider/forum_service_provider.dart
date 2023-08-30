@@ -1,15 +1,25 @@
-import 'package:evoke_nexus_app/app/models/post_forum_params.dart';
+import 'package:evoke_nexus_app/app/models/answer.dart';
+import 'package:evoke_nexus_app/app/models/post_answer_params.dart';
+import 'package:evoke_nexus_app/app/models/post_question_params.dart';
+import 'package:evoke_nexus_app/app/models/question.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:evoke_nexus_app/app/services/forum_service.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
-import 'package:evoke_nexus_app/app/models/forum.dart';
 
 final forumServiceProvider = Provider<ForumService>((ref) => ForumService());
 
-final forumsProvider =
-    FutureProvider.autoDispose.family<List<Forum>, User>((ref, user) async {
+final questionsProvider =
+    FutureProvider.autoDispose.family<List<Question>, User>((ref, user) async {
   final forumService = ref.read(forumServiceProvider);
-  final forums = await forumService.fetchForums(user);
+  final forums = await forumService.fetchQuestions(user);
+
+  return forums;
+});
+
+final answersProvider = FutureProvider.autoDispose
+    .family<List<Answer>, PostAnswerParams>((ref, params) async {
+  final forumService = ref.read(forumServiceProvider);
+  final forums = await forumService.fetchAnswers(params);
 
   return forums;
 });
@@ -26,8 +36,14 @@ final authorThumbnailProvider =
   return await forumService.getAuthorThumbnail(key);
 });
 
-final postForumProvider = FutureProvider.autoDispose
-    .family<void, PostForumParams>((ref, params) async {
+final postQuestionProvider = FutureProvider.autoDispose
+    .family<void, PostQuestionParams>((ref, params) async {
   final forumService = ref.watch(forumServiceProvider);
-  await forumService.postForum(params);
+  await forumService.postQuestion(params);
+});
+
+final postAnswerProvider = FutureProvider.autoDispose
+    .family<void, PostAnswerParams>((ref, params) async {
+  final forumService = ref.watch(forumServiceProvider);
+  await forumService.postAnswer(params);
 });

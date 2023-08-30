@@ -53,14 +53,6 @@ class WebAppDrawer extends StatelessWidget {
                     Column(
                       children: [
                         ListTile(
-                          leading: const Icon(Icons.home,
-                              size: 20, color: Colors.lightBlue),
-                          title: const Text('Home'),
-                          onTap: () {
-                            goRouter.go('/home');
-                          },
-                        ),
-                        ListTile(
                           leading: const Icon(Icons.rss_feed,
                               size: 20, color: Colors.lightBlue),
                           title: const Text('Feeds'),

@@ -18,11 +18,11 @@ class _OrgUpdatesWebViewCardState extends State<OrgUpdatesWebView> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Container(
+        SizedBox(
           width: MediaQuery.of(context).size.width - 600,
           child: OrgUpdateList(user: widget.user),
         ),
-        Container(
+        SizedBox(
           width: 275,
           child: Column(
             children: [
@@ -42,7 +42,7 @@ class _OrgUpdatesWebViewCardState extends State<OrgUpdatesWebView> {
                 child: Align(
                   alignment: Alignment.bottomRight,
                   child: ['Group', 'Leader'].contains(widget.user.role)
-                      ? const PostOrgUpdateFAB()
+                      ? PostOrgUpdateFAB(user: widget.user)
                       : const SizedBox(height: 5, width: 5),
                 ),
               ),

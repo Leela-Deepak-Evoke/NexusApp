@@ -1,13 +1,15 @@
 import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:evoke_nexus_app/app/models/forum.dart';
-import 'package:evoke_nexus_app/app/models/post_forum_params.dart';
+import 'package:evoke_nexus_app/app/models/answer.dart';
+import 'package:evoke_nexus_app/app/models/post_answer_params.dart';
+import 'package:evoke_nexus_app/app/models/post_question_params.dart';
+import 'package:evoke_nexus_app/app/models/question.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:file_picker/file_picker.dart';
 
 class ForumService {
-  Future<List<Forum>> fetchForums(User user) async {
+  Future<List<Question>> fetchQuestions(User user) async {
     try {
       final userPayload = {
         "user": {"userId": user.userId}
@@ -16,7 +18,7 @@ class ForumService {
       final authToken = prefs.getString('authToken');
       if (authToken != null) {
         final restOperation = Amplify.API.post(
-          'fetchforums',
+          'fetchquestions',
           body: HttpPayload.json(userPayload),
           headers: {'Authorization': authToken},
         );
@@ -25,7 +27,46 @@ class ForumService {
           final jsonResponse = json.decode(response.decodeBody());
           if (jsonResponse is List) {
             return jsonResponse
-                .map((forumJson) => Forum.fromJson(forumJson, user.userId))
+                .map((forumJson) => Question.fromJson(forumJson, user.userId))
+                .toList();
+          } else {
+            throw Exception('Unexpected data format');
+          }
+        } else {
+          throw Exception('Failed to load data');
+        }
+      } else {
+        throw Exception('Failed to load token');
+      }
+    } on AuthException catch (e) {
+      safePrint('Error retrieving auth session: ${e.message}');
+      rethrow;
+    } on ApiException catch (e) {
+      safePrint('POST call failed: $e');
+      rethrow;
+    }
+  }
+
+  Future<List<Answer>> fetchAnswers(PostAnswerParams params) async {
+    try {
+      final userPayload = {
+        "user": {"userId": params.userId},
+        "question": {"questionId": params.questionId}
+      };
+      final prefs = await SharedPreferences.getInstance();
+      final authToken = prefs.getString('authToken');
+      if (authToken != null) {
+        final restOperation = Amplify.API.post(
+          'fetchanswers',
+          body: HttpPayload.json(userPayload),
+          headers: {'Authorization': authToken},
+        );
+        final response = await restOperation.response;
+        if (response.statusCode == 200) {
+          final jsonResponse = json.decode(response.decodeBody());
+          if (jsonResponse is List) {
+            return jsonResponse
+                .map((forumJson) => Answer.fromJson(forumJson, params.userId))
                 .toList();
           } else {
             throw Exception('Unexpected data format');
@@ -122,22 +163,18 @@ class ForumService {
     }
   }
 
-  Future<void> postForum(PostForumParams params) async {
+  Future<void> postQuestion(PostQuestionParams params) async {
     try {
       safePrint('Inside post forum');
       final payload = {
         "user": {"userId": params.userId},
-        "forum": {
-          "forumId": params.forumId,
+        "question": {
+          "questionId": params.questionId,
           "content": params.content,
-          "category": params.category,
-          "media": params.media,
           "hasImage": params.hasImage,
           "imagePath": params.imagePath,
-          "hasVideo": params.hasVideo,
-          "videoPath": params.videoPath,
-          "mediaCaption": params.mediaCaption,
-          "hashTag": params.hashTag
+          "category": params.category,
+          "subCategory": params.subCategory
         }
       };
       safePrint('Payload: $payload');
@@ -146,7 +183,48 @@ class ForumService {
       if (authToken != null) {
         safePrint('authToken: $authToken');
         final restOperation = Amplify.API.post(
-          'postforum',
+          'postquestion',
+          body: HttpPayload.json(payload),
+          headers: {'Authorization': authToken},
+        );
+        final response = await restOperation.response;
+        if (response.statusCode == 200) {
+          return;
+        } else {
+          throw Exception('Failed to load data');
+        }
+      } else {
+        throw Exception('Failed to load token');
+      }
+    } on AuthException catch (e) {
+      safePrint('Error retrieving auth session: ${e.message}');
+      rethrow;
+    } on ApiException catch (e) {
+      safePrint('POST call failed: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> postAnswer(PostAnswerParams params) async {
+    try {
+      safePrint('Inside post forum');
+      final payload = {
+        "user": {"userId": params.userId},
+        "answer": {
+          "questionId": params.questionId,
+          "answerId": params.answerId,
+          "content": params.content,
+          "hasImage": params.hasImage,
+          "imagePath": params.imagePath
+        }
+      };
+      safePrint('Payload: $payload');
+      final prefs = await SharedPreferences.getInstance();
+      final authToken = prefs.getString('authToken');
+      if (authToken != null) {
+        safePrint('authToken: $authToken');
+        final restOperation = Amplify.API.post(
+          'postanswer',
           body: HttpPayload.json(payload),
           headers: {'Authorization': authToken},
         );

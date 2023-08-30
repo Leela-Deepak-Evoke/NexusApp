@@ -21,8 +21,7 @@ class _ForumFilterCardState extends State<ForumFilterCard> {
     'Pega',
     'UI',
     'Cloud',
-    'RPA',
-    'Medical Insurance'
+    'RPA'
   ];
 
   @override

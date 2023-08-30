@@ -7,7 +7,7 @@ import 'package:evoke_nexus_app/app/models/feed.dart';
 final feedServiceProvider = Provider<FeedService>((ref) => FeedService());
 
 final feedsProvider =
-    FutureProvider.autoDispose.family<List<Feed>, User>((ref, user) async {
+    FutureProvider.family<List<Feed>, User>((ref, user) async {
   final feedService = ref.read(feedServiceProvider);
   final feeds = await feedService.fetchFeeds(user);
 
@@ -26,8 +26,9 @@ final authorThumbnailProvider =
   return await feedService.getAuthorThumbnail(key);
 });
 
-final postFeedProvider = FutureProvider.autoDispose
-    .family<void, PostFeedParams>((ref, params) async {
+final postFeedProvider =
+    FutureProvider.family<void, PostFeedParams>((ref, params) async {
   final feedService = ref.watch(feedServiceProvider);
   await feedService.postFeed(params);
+  ref.invalidate(feedsProvider);
 });

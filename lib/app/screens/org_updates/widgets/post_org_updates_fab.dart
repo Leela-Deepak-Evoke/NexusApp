@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:evoke_nexus_app/app/screens/org_updates/widgets/image_uploader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 
 class PostOrgUpdateFAB extends ConsumerStatefulWidget {
-  const PostOrgUpdateFAB({super.key});
+  final User user;
+  const PostOrgUpdateFAB({super.key, required this.user});
 
   @override
   ConsumerState<PostOrgUpdateFAB> createState() => _PostOrgUpdateFABState();
@@ -23,14 +23,10 @@ class _PostOrgUpdateFABState extends ConsumerState<PostOrgUpdateFAB> {
   final TextEditingController mediaCaptionController = TextEditingController();
   final TextEditingController orgUpdateController = TextEditingController();
   String dropdownValue = 'General';
-  late User user;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      user = ref.watch(currentUserProvider.notifier).state!;
-    });
   }
 
   @override
@@ -125,7 +121,7 @@ class _PostOrgUpdateFABState extends ConsumerState<PostOrgUpdateFAB> {
               child: const Text('Submit'),
               onPressed: () {
                 final params = PostOrgUpdateParams(
-                    userId: user.userId,
+                    userId: widget.user.userId,
                     orgUpdateId: orgUpdateId,
                     content: orgUpdateController.text,
                     category: dropdownValue,
@@ -245,7 +241,7 @@ class _PostOrgUpdateFABState extends ConsumerState<PostOrgUpdateFAB> {
               child: const Text('Submit'),
               onPressed: () {
                 final params = PostOrgUpdateParams(
-                  userId: user.userId,
+                  userId: widget.user.userId,
                   orgUpdateId: orgUpdateId,
                   content: orgUpdateController.text,
                   media: true,
@@ -369,7 +365,7 @@ class _PostOrgUpdateFABState extends ConsumerState<PostOrgUpdateFAB> {
               child: const Text('Submit'),
               onPressed: () {
                 final params = PostOrgUpdateParams(
-                  userId: user.userId,
+                  userId: widget.user.userId,
                   orgUpdateId: orgUpdateId,
                   content: orgUpdateController.text,
                   media: true,

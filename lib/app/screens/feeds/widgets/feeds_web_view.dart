@@ -18,30 +18,32 @@ class _FeedsWebViewCardState extends State<FeedsWebView> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Container(
+        SizedBox(
           width: MediaQuery.of(context).size.width - 600,
           child: FeedList(user: widget.user),
         ),
-        Container(
+        SizedBox(
           width: 275,
-          child: const Column(
+          child: Column(
             children: [
-              Align(alignment: Alignment.topRight, child: SearchCard()),
-              SizedBox(
+              const Align(alignment: Alignment.topRight, child: SearchCard()),
+              const SizedBox(
                 height: 20,
               ),
-              Align(
+              const Align(
                 alignment: Alignment.centerRight,
                 child: FeedFilterCard(),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               SizedBox(
                 height: 130,
                 child: Align(
                   alignment: Alignment.bottomRight,
-                  child: PostFeedFAB(),
+                  child: PostFeedFAB(
+                    user: widget.user,
+                  ),
                 ),
               ),
             ],

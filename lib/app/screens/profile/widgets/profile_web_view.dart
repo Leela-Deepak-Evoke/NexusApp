@@ -16,13 +16,13 @@ class _ProfileWebView extends State<ProfileWebView> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Container(
+        SizedBox(
           width: MediaQuery.of(context).size.width - 600,
           child: UserForm(user: widget.user),
         ),
-        Container(
+        const SizedBox(
           width: 275,
-          child: const Align(
+          child: Align(
             alignment: Alignment.centerRight,
             child: ProfileFilterCard(),
           ),

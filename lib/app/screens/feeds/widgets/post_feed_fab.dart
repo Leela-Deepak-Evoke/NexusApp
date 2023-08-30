@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/image_uploader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 
 class PostFeedFAB extends ConsumerStatefulWidget {
-  const PostFeedFAB({super.key});
+  final User user;
+  const PostFeedFAB({super.key, required this.user});
 
   @override
   ConsumerState<PostFeedFAB> createState() => _PostFeedFABState();
@@ -23,14 +23,10 @@ class _PostFeedFABState extends ConsumerState<PostFeedFAB> {
   final TextEditingController mediaCaptionController = TextEditingController();
   final TextEditingController feedController = TextEditingController();
   String dropdownValue = 'General Feed';
-  late User user;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      user = ref.watch(currentUserProvider.notifier).state!;
-    });
   }
 
   @override
@@ -39,7 +35,7 @@ class _PostFeedFABState extends ConsumerState<PostFeedFAB> {
       distance: 100,
       children: [
         ActionButton(
-          onPressed: () => _showFeedDialog(context),
+          onPressed: () => _showFeedDialog(context, ref),
           icon: const Icon(Icons.format_size),
         ),
         ActionButton(
@@ -64,7 +60,7 @@ class _PostFeedFABState extends ConsumerState<PostFeedFAB> {
     });
   }
 
-  void _showFeedDialog(BuildContext context) {
+  void _showFeedDialog(BuildContext context, WidgetRef ref) {
     final feedId = const Uuid().v4();
 
     showDialog(
@@ -150,9 +146,9 @@ class _PostFeedFABState extends ConsumerState<PostFeedFAB> {
             ),
             TextButton(
               child: const Text('Submit'),
-              onPressed: () {
+              onPressed: () async {
                 final params = PostFeedParams(
-                    userId: user.userId,
+                    userId: widget.user.userId,
                     feedId: feedId,
                     content: feedController.text,
                     category: dropdownValue,
@@ -161,6 +157,7 @@ class _PostFeedFABState extends ConsumerState<PostFeedFAB> {
                     hasVideo: false);
 
                 _handleSubmit(params);
+                //await ref.refresh(feedsProvider as Refreshable);
                 Navigator.of(context).pop();
                 //context.go('feeds');
               },
@@ -271,7 +268,7 @@ class _PostFeedFABState extends ConsumerState<PostFeedFAB> {
               child: const Text('Submit'),
               onPressed: () {
                 final params = PostFeedParams(
-                  userId: user.userId,
+                  userId: widget.user.userId,
                   feedId: feedId,
                   content: feedController.text,
                   media: true,
@@ -394,7 +391,7 @@ class _PostFeedFABState extends ConsumerState<PostFeedFAB> {
               child: const Text('Submit'),
               onPressed: () {
                 final params = PostFeedParams(
-                  userId: user.userId,
+                  userId: widget.user.userId,
                   feedId: feedId,
                   content: feedController.text,
                   media: true,
@@ -511,7 +508,7 @@ class _PostFeedFABState extends ConsumerState<PostFeedFAB> {
               child: const Text('Submit'),
               onPressed: () {
                 final params = PostFeedParams(
-                  userId: user.userId,
+                  userId: widget.user.userId,
                   feedId: feedId,
                   content: feedController.text,
                   media: true,

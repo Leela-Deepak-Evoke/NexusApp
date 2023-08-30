@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../feeds/widgets/image_uploader.dart';
+
 class PostForumFAB extends ConsumerStatefulWidget {
   final User user;
   const PostForumFAB({super.key, required this.user});
@@ -107,19 +109,19 @@ class _PostForumFABState extends ConsumerState<PostForumFAB> {
                     maxLength: 3000,
                   ),
                   const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      const Text('Image:',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 12)),
-                      const SizedBox(width: 15),
-                      Expanded(
-                        child: ImageUploader(
-                            feedId: questionId, onFileUploaded: _updateFilePath),
-                      ),
-                       const SizedBox(width: 10),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     const Text('Image:',
+                  //         style: TextStyle(
+                  //             fontWeight: FontWeight.bold, fontSize: 12)),
+                  //     const SizedBox(width: 15),
+                  //     Expanded(
+                  //       child: ImageUploader(
+                  //           feedId: questionId, onFileUploaded: _updateFilePath),
+                  //     ),
+                  //      const SizedBox(width: 10),
+                  //   ],
+                 // ),
                   Row(
                     children: [
                       const Text('Category:',

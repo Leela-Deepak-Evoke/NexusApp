@@ -114,8 +114,11 @@ class _PostForumFABState extends ConsumerState<PostForumFAB> {
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 12)),
                       const SizedBox(width: 15),
-                      ImageUploader(
-                          feedId: questionId, onFileUploaded: _updateFilePath),
+                      Expanded(
+                        child: ImageUploader(
+                            feedId: questionId, onFileUploaded: _updateFilePath),
+                      ),
+                       const SizedBox(width: 10),
                     ],
                   ),
                   Row(
@@ -124,21 +127,23 @@ class _PostForumFABState extends ConsumerState<PostForumFAB> {
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 12)),
                       const SizedBox(width: 15),
-                      Wrap(
-                        spacing: 1.0,
-                        runSpacing: 1.0,
-                        children: categories.map((String category) {
-                          return FilterChip(
-                            label: Text(category),
-                            selected: selectedCategory == category,
-                            onSelected: (bool selected) {
-                              selectedCategory =
-                                  selected ? category : 'General';
-                            },
-                            selectedColor:
-                                Colors.lightBlue, // Customize the button color
-                          );
-                        }).toList(),
+                      Expanded(
+                        child: Wrap(
+                          spacing: 1.0,
+                          runSpacing: 1.0,
+                          children: categories.map((String category) {
+                            return FilterChip(
+                              label: Text(category),
+                              selected: selectedCategory == category,
+                              onSelected: (bool selected) {
+                                selectedCategory =
+                                    selected ? category : 'General';
+                              },
+                              selectedColor:
+                                  Colors.lightBlue, // Customize the button color
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ],
                   ),

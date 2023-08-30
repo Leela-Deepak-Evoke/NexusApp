@@ -11,5 +11,6 @@ enum AppRoute {
   orgUpdates,
   feeds,
   forum,
-  test
+  test,
+  timeline
 }

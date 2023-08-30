@@ -19,20 +19,23 @@ class _ImageUploaderState extends State<ImageUploader> {
   @override
   Widget build(BuildContext context) {
     return uploadedFileName == null
-        ? IconButton(
-            icon: const Icon(Icons.image),
-            onPressed: () async {
-              // Call the uploadMedia function
-              String? resultFileName =
-                  await forumService.uploadMedia(widget.feedId, 'Image');
-              if (resultFileName != null) {
-                widget.onFileUploaded(resultFileName);
-                setState(() {
-                  uploadedFileName = resultFileName;
-                });
-              }
-            },
-          )
+        ? Align(
+          alignment: Alignment.centerLeft,
+          child: IconButton(
+              icon: const Icon(Icons.image),
+              onPressed: () async {
+                // Call the uploadMedia function
+                String? resultFileName =
+                    await forumService.uploadMedia(widget.feedId, 'Image');
+                if (resultFileName != null) {
+                  widget.onFileUploaded(resultFileName);
+                  setState(() {
+                    uploadedFileName = resultFileName;
+                  });
+                }
+              },
+            ),
+        )
         : Text(uploadedFileName!);
   }
 }

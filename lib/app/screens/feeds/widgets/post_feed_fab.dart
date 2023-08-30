@@ -205,13 +205,16 @@ class _PostFeedFABState extends ConsumerState<PostFeedFAB> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+
                     children: [
                       const Text('Image:',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 12)),
                       const SizedBox(width: 15),
-                      ImageUploader(
-                          feedId: feedId, onFileUploaded: _updateFilePath),
+                      Expanded(
+                        child: ImageUploader(
+                            feedId: feedId, onFileUploaded: _updateFilePath),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -456,8 +459,10 @@ class _PostFeedFABState extends ConsumerState<PostFeedFAB> {
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 12)),
                       const SizedBox(width: 15),
-                      ImageUploader(
-                          feedId: feedId, onFileUploaded: _updateFilePath),
+                      Expanded(
+                        child: ImageUploader(
+                            feedId: feedId, onFileUploaded: _updateFilePath),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 10),

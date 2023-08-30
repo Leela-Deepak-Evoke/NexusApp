@@ -96,8 +96,10 @@ class _PostAnswerFABState extends ConsumerState<PostAnswerFAB> {
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 12)),
                       const SizedBox(width: 15),
-                      ImageUploader(
-                          feedId: answerId, onFileUploaded: _updateFilePath),
+                      Expanded(
+                        child: ImageUploader(
+                            feedId: answerId, onFileUploaded: _updateFilePath),
+                      ),
                     ],
                   ),
                 ],

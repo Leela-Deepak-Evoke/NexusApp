@@ -32,7 +32,7 @@ class _ForumWebViewCardState extends State<ForumWebView> {
                 child: ForumFilterCard(),
               ),
               SizedBox(
-                height: 100,
+                height: 40,
                 child: Align(
                   alignment: Alignment.bottomRight,
                   child: PostForumFAB(user: widget.user),

@@ -1,4 +1,5 @@
 import 'package:evoke_nexus_app/app/models/answer.dart';
+import 'package:evoke_nexus_app/app/models/fetch_answer_params.dart';
 import 'package:evoke_nexus_app/app/models/post_answer_params.dart';
 import 'package:evoke_nexus_app/app/models/post_question_params.dart';
 import 'package:evoke_nexus_app/app/models/question.dart';
@@ -17,7 +18,7 @@ final questionsProvider =
 });
 
 final answersProvider = FutureProvider.autoDispose
-    .family<List<Answer>, PostAnswerParams>((ref, params) async {
+    .family<List<Answer>, FetchAnswerParams>((ref, params) async {
   final forumService = ref.read(forumServiceProvider);
   final forums = await forumService.fetchAnswers(params);
 
@@ -40,10 +41,12 @@ final postQuestionProvider = FutureProvider.autoDispose
     .family<void, PostQuestionParams>((ref, params) async {
   final forumService = ref.watch(forumServiceProvider);
   await forumService.postQuestion(params);
+  ref.invalidate(questionsProvider);
 });
 
 final postAnswerProvider = FutureProvider.autoDispose
     .family<void, PostAnswerParams>((ref, params) async {
   final forumService = ref.watch(forumServiceProvider);
   await forumService.postAnswer(params);
+  ref.invalidate(questionsProvider);
 });

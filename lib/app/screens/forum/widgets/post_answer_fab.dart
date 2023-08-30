@@ -4,7 +4,6 @@ import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:uuid/uuid.dart';
-import 'package:evoke_nexus_app/app/screens/forum/widgets/image_uploader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PostAnswerFAB extends ConsumerStatefulWidget {
@@ -89,17 +88,6 @@ class _PostAnswerFABState extends ConsumerState<PostAnswerFAB> {
                     ),
                     maxLength: 3000,
                   ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      const Text('Image:',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 12)),
-                      const SizedBox(width: 15),
-                      ImageUploader(
-                          feedId: answerId, onFileUploaded: _updateFilePath),
-                    ],
-                  ),
                 ],
               ),
             ),
@@ -121,8 +109,7 @@ class _PostAnswerFABState extends ConsumerState<PostAnswerFAB> {
                     questionId: widget.questionId,
                     answerId: answerId,
                     content: feedController.text,
-                    hasImage: true,
-                    imagePath: uploadedFilePath!);
+                    hasImage: false);
 
                 _handleSubmit(params);
                 Navigator.of(context).pop();

@@ -13,7 +13,7 @@ class PostQuestionParams {
       required this.questionId,
       required this.name,
       required this.hasImage,
-      required this.imagePath,
+      this.imagePath,
       required this.content,
       required this.category,
       required this.subCategory});

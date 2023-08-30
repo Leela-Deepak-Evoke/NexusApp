@@ -13,6 +13,6 @@ class PostAnswerParams {
       required this.answerId,
       required this.name,
       required this.hasImage,
-      required this.imagePath,
+      this.imagePath,
       required this.content});
 }

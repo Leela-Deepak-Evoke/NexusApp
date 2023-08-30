@@ -5,7 +5,6 @@ import 'package:evoke_nexus_app/app/widgets/common/expandable_fab.dart';
 import 'package:flutter/material.dart';
 
 import 'package:uuid/uuid.dart';
-import 'package:evoke_nexus_app/app/screens/forum/widgets/image_uploader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PostForumFAB extends ConsumerStatefulWidget {
@@ -33,7 +32,7 @@ class _PostForumFABState extends ConsumerState<PostForumFAB> {
       children: [
         ActionButton(
           onPressed: () => _showQuestionDialog(context),
-          icon: const Icon(Icons.sell),
+          icon: const Icon(Icons.text_format),
         ),
       ],
     );
@@ -89,7 +88,7 @@ class _PostForumFABState extends ConsumerState<PostForumFAB> {
           ),
           content: SizedBox(
             height: 275,
-            width: 600,
+            width: 700,
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -185,9 +184,8 @@ class _PostForumFABState extends ConsumerState<PostForumFAB> {
                   userId: widget.user.userId,
                   questionId: questionId,
                   content: feedController.text,
-                  hasImage: true,
+                  hasImage: false,
                   subCategory: subCategoryController.text,
-                  imagePath: uploadedFilePath!,
                   category: selectedCategory,
                 );
 

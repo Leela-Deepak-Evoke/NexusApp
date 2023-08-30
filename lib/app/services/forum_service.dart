@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:evoke_nexus_app/app/models/answer.dart';
+import 'package:evoke_nexus_app/app/models/fetch_answer_params.dart';
 import 'package:evoke_nexus_app/app/models/post_answer_params.dart';
 import 'package:evoke_nexus_app/app/models/post_question_params.dart';
 import 'package:evoke_nexus_app/app/models/question.dart';
@@ -47,7 +48,7 @@ class ForumService {
     }
   }
 
-  Future<List<Answer>> fetchAnswers(PostAnswerParams params) async {
+  Future<List<Answer>> fetchAnswers(FetchAnswerParams params) async {
     try {
       final userPayload = {
         "user": {"userId": params.userId},
@@ -210,8 +211,8 @@ class ForumService {
       safePrint('Inside post forum');
       final payload = {
         "user": {"userId": params.userId},
+        "question": {"questionId": params.questionId},
         "answer": {
-          "questionId": params.questionId,
           "answerId": params.answerId,
           "content": params.content,
           "hasImage": params.hasImage,

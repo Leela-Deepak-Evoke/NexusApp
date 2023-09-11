@@ -6,7 +6,15 @@ class LoginScreenSmall extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container();
+    return 
+    Center(
+    
+   child:
+    Container(
+      color: Colors.white,
+      child: Text("This is nonddd dbad"),
+    )
+     );
   }
 }
 

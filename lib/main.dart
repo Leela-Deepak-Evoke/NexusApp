@@ -23,7 +23,7 @@ Future<void> main() async {
     ProviderScope(
       child: NexusApp(
         isAmplifySuccessfullyConfigured: isAmplifySuccessfullyConfigured,
-        router: router,
+        router: mobileappRouter,
       ),
     ),
   );

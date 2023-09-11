@@ -1,6 +1,7 @@
 import 'package:evoke_nexus_app/app/models/question.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
+import 'package:evoke_nexus_app/app/screens/forum/widgets/answers_list.dart';
 import 'package:evoke_nexus_app/app/screens/forum/widgets/post_answer_fab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -78,6 +79,7 @@ class QuestionsList extends ConsumerWidget {
                                 'View ${item.answers.toString()} Answers',
                                 style: const TextStyle(fontSize: 12)),
                             onPressed: () {
+                              _showAnswers(context, item.questionId, user);
                               print('Pressed');
                             },
                           ),
@@ -180,5 +182,36 @@ class QuestionsList extends ConsumerWidget {
       return nameParts[0][0].toUpperCase();
     }
     return '';
+  }
+
+  void _showAnswers(BuildContext context, String questionId, User user) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              titlePadding: const EdgeInsets.all(0),
+              title: Container(
+                color: Colors.indigoAccent,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text('View Answers',
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              content: SingleChildScrollView(
+                child: AnswerList(user: user, questionId: questionId),
+              ));
+        });
   }
 }

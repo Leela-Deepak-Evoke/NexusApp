@@ -78,7 +78,7 @@ class WebAppDrawer extends StatelessWidget {
                         ),
                         ListTile(
                           onTap: () {
-                            // Handle button tap
+                            goRouter.go('/timeline');
                           },
                           leading: const Icon(Icons.timeline,
                               size: 20, color: Colors.lightBlue),

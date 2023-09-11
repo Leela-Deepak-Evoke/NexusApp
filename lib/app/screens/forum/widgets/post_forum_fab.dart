@@ -5,8 +5,9 @@ import 'package:evoke_nexus_app/app/widgets/common/expandable_fab.dart';
 import 'package:flutter/material.dart';
 
 import 'package:uuid/uuid.dart';
-import 'package:evoke_nexus_app/app/screens/forum/widgets/image_uploader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../feeds/widgets/image_uploader.dart';
 
 class PostForumFAB extends ConsumerStatefulWidget {
   final User user;
@@ -33,7 +34,7 @@ class _PostForumFABState extends ConsumerState<PostForumFAB> {
       children: [
         ActionButton(
           onPressed: () => _showQuestionDialog(context),
-          icon: const Icon(Icons.sell),
+          icon: const Icon(Icons.text_format),
         ),
       ],
     );
@@ -89,7 +90,7 @@ class _PostForumFABState extends ConsumerState<PostForumFAB> {
           ),
           content: SizedBox(
             height: 275,
-            width: 600,
+            width: 700,
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -108,37 +109,42 @@ class _PostForumFABState extends ConsumerState<PostForumFAB> {
                     maxLength: 3000,
                   ),
                   const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      const Text('Image:',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 12)),
-                      const SizedBox(width: 15),
-                      ImageUploader(
-                          feedId: questionId, onFileUploaded: _updateFilePath),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     const Text('Image:',
+                  //         style: TextStyle(
+                  //             fontWeight: FontWeight.bold, fontSize: 12)),
+                  //     const SizedBox(width: 15),
+                  //     Expanded(
+                  //       child: ImageUploader(
+                  //           feedId: questionId, onFileUploaded: _updateFilePath),
+                  //     ),
+                  //      const SizedBox(width: 10),
+                  //   ],
+                 // ),
                   Row(
                     children: [
                       const Text('Category:',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 12)),
                       const SizedBox(width: 15),
-                      Wrap(
-                        spacing: 1.0,
-                        runSpacing: 1.0,
-                        children: categories.map((String category) {
-                          return FilterChip(
-                            label: Text(category),
-                            selected: selectedCategory == category,
-                            onSelected: (bool selected) {
-                              selectedCategory =
-                                  selected ? category : 'General';
-                            },
-                            selectedColor:
-                                Colors.lightBlue, // Customize the button color
-                          );
-                        }).toList(),
+                      Expanded(
+                        child: Wrap(
+                          spacing: 1.0,
+                          runSpacing: 1.0,
+                          children: categories.map((String category) {
+                            return FilterChip(
+                              label: Text(category),
+                              selected: selectedCategory == category,
+                              onSelected: (bool selected) {
+                                selectedCategory =
+                                    selected ? category : 'General';
+                              },
+                              selectedColor:
+                                  Colors.lightBlue, // Customize the button color
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ],
                   ),
@@ -180,9 +186,8 @@ class _PostForumFABState extends ConsumerState<PostForumFAB> {
                   userId: widget.user.userId,
                   questionId: questionId,
                   content: feedController.text,
-                  hasImage: true,
+                  hasImage: false,
                   subCategory: subCategoryController.text,
-                  imagePath: uploadedFilePath!,
                   category: selectedCategory,
                 );
 

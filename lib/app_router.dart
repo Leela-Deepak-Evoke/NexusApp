@@ -1,5 +1,6 @@
 import 'package:evoke_nexus_app/app/screens/forum/forum_screen.dart';
 import 'package:evoke_nexus_app/app/screens/test/test_screen.dart';
+import 'package:evoke_nexus_app/app/screens/timeline/timeline_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:evoke_nexus_app/app/utils/app_routes.dart';
@@ -68,6 +69,14 @@ final router = GoRouter(
           pageBuilder: (context, state) => MaterialPage<void>(
             key: state.pageKey,
             child: const TestScreen(),
+          ),
+        ),
+         GoRoute(
+          name: AppRoute.timeline.name,
+          path: 'timeline',
+          pageBuilder: (context, state) => MaterialPage<void>(
+            key: state.pageKey,
+            child: const TimelineScreen(),
           ),
         ),
       ],

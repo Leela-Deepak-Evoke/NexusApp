@@ -29,6 +29,8 @@ abstract class ImagePathConstants {
 }
 abstract class ColorConstants {
   static const commentBGColor  =  0xFFF2F1FA;
+
+  static const tabbg = 0xFF4776E6;
 }
 
 enum VideoCategory{

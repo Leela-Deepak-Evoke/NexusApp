@@ -1,20 +1,48 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthenticationService {
   Future<void> login() async {
-    try {
+  
       // Sign in with SAML identity provider
       safePrint('Before Login');
-      final result = await Amplify.Auth.signInWithWebUI(
-        provider: const AuthProvider.saml("EvokeAzureAD"),
-      );
-      safePrint('Result: $result');
-    } catch (e) {
-      safePrint('Error at Evoke AD login: $e');
-    }
+      if(kIsWeb)
+      {  try {
+           final result = await Amplify.Auth.signInWithWebUI(
+              provider: const AuthProvider.saml("EvokeAzureAD"),
+            );
+            safePrint('Result: $result');
+          } catch (e) {
+            safePrint('Error at Evoke AD login: $e');
+
+          }
+      }
+      else
+      {
+
+        try {
+           final result = await Amplify.Auth.signInWithWebUI(
+              provider: const AuthProvider.saml("EvokeAzureAD"),
+              options: const SignInWithWebUIOptions(     
+              pluginOptions: CognitoSignInWithWebUIPluginOptions(   
+                   isPreferPrivateSession: true,  
+                       ),    
+                )
+            );
+            safePrint('Result: $result');
+          } catch (e) {
+            safePrint('Error at Evoke AD login: $e');
+
+          }
+          
+      }
+      }
+      
   }
+
+  
 
   Future<void> signOutCurrentUser() async {
     final result = await Amplify.Auth.signOut();
@@ -26,4 +54,4 @@ class AuthenticationService {
       safePrint('Error signing user out: ${result.exception.message}');
     }
   }
-}
+

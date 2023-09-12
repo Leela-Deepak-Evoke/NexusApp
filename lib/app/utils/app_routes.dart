@@ -12,5 +12,20 @@ enum AppRoute {
   feeds,
   forum,
   test,
-  timeline
+  timeline,
+  rootNavigation,
+}
+
+
+enum HomeMenuRoute
+{
+  home
+
+}
+enum FeedMenuRoute
+{
+  feed,
+  feeddetails,
+  postfeed,
+
 }

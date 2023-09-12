@@ -2,7 +2,7 @@ import 'package:evoke_nexus_app/app/screens/forum/forum_screen.dart';
 import 'package:evoke_nexus_app/app/screens/home/home_screen.dart';
 import 'package:evoke_nexus_app/app/screens/test/test_screen.dart';
 import 'package:evoke_nexus_app/app/screens/timeline/timeline_screen.dart';
-import 'package:evoke_nexus_app/root_navigation_mobile.dart';
+import 'package:evoke_nexus_app/root_screen_mobile.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:evoke_nexus_app/app/utils/app_routes.dart';
@@ -94,6 +94,14 @@ final mobileappRouter = GoRouter(
   debugLogDiagnostics: false,
   routes: [
     GoRoute(
+          name: AppRoute.rootNavigation.name,
+          path: '/${AppRoute.rootNavigation.name}',
+          pageBuilder: (context, state) => MaterialPage<void>(
+            key: state.pageKey,
+            child: const RootScreenMobile(),
+          ),
+        ),
+    GoRoute(
       name: AppRoute.login.name,
       path:'/${AppRoute.login.name}',
       pageBuilder: (context, state) => NoTransitionPage<void>(
@@ -101,14 +109,7 @@ final mobileappRouter = GoRouter(
         child: const LoginScreen(),
       ),
       routes: [
-          GoRoute(
-          name: AppRoute.rootNavigation.name,
-          path: AppRoute.rootNavigation.name,
-          pageBuilder: (context, state) => MaterialPage<void>(
-            key: state.pageKey,
-            child: const RootNavigation(),
-          ),
-        ),
+        
         GoRoute(
           name: AppRoute.feeds.name,
           path: "feeds",

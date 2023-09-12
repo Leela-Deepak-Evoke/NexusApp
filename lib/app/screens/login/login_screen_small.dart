@@ -1,7 +1,9 @@
 import 'package:evoke_nexus_app/app/screens/home/home_screen.dart';
+import 'package:evoke_nexus_app/app/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:evoke_nexus_app/app/provider/authentication_provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 
@@ -225,11 +227,17 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
                   height: 24,
                 ),
                 onPressed: () => {
-                  authService.login()
-                  //  Navigator.push(
-                  //         context,
-                  //         MaterialPageRoute(
-                  //             builder: (context) => HomeScreen()))
+                  authService.login((isSucess) 
+                  {
+
+                    if(isSucess)
+                    {
+                        GoRouter.of(context).go('/${AppRoute.rootNavigation.name}');
+                    }
+
+
+                  })
+              
                   },
                 label: Text('Login with Evoke ID',
                     style: TextStyle(

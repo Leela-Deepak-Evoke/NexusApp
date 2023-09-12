@@ -1,5 +1,6 @@
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/widgets/common/mobile_app_drawer.dart';
+import 'package:evoke_nexus_app/app/widgets/common/mobile_nav_topbar.dart';
 import 'package:flutter/material.dart';
 import 'package:evoke_nexus_app/app_router.dart';
 import 'package:go_router/go_router.dart';
@@ -93,6 +94,7 @@ class MobileLayout extends StatelessWidget {
     final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
+      appBar:  MobileAppNavTopBar(canPost: true),
       drawer: const Drawer(),
       body: Stack(
         children: <Widget>[

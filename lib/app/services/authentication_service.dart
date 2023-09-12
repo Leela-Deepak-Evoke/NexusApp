@@ -1,11 +1,12 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io' show Platform;
 
 class AuthenticationService {
-  Future<void> login() async {
-    try {
+  Future<void> login( Function(bool isSucess) onloginComplition) async {
+  
       // Sign in with SAML identity provider
       safePrint('Before Login');
       if (Platform.isIOS) {
@@ -18,16 +19,17 @@ class AuthenticationService {
           ),
         );
         safePrint('Result: $result');
+        onloginComplition(true);
       } else {
         final result = await Amplify.Auth.signInWithWebUI(
           provider: const AuthProvider.saml("EvokeAzureAD"),
         );
         safePrint('Result: $result');
       }
-    } catch (e) {
-      safePrint('Error at Evoke AD login: $e');
-    }
+    } 
   }
+
+  
 
   Future<void> signOutCurrentUser() async {
     final result = await Amplify.Auth.signOut();
@@ -40,5 +42,3 @@ class AuthenticationService {
     }
   }
 
-  //Mobile
-}

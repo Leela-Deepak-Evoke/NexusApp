@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 abstract class AppConstants {
   static const loginTitle = 'Welcome to\nEvoke Professional\nNetwork';
   static const loginSubTitle =
@@ -31,6 +33,7 @@ abstract class ColorConstants {
   static const commentBGColor  =  0xFFF2F1FA;
 }
 
+
 enum VideoCategory{
     mp4,
     mov,
@@ -42,5 +45,11 @@ enum ImageCategory{
   jpeg,
   jpg,
   png,
+
+}
+
+class AppColors {
+//Dark blue text colour 
+static const Color blueTextColour = Color(0xff1B154C);
 
 }

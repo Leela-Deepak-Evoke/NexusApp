@@ -1,3 +1,4 @@
+import 'package:evoke_nexus_app/app/screens/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:evoke_nexus_app/nexus_app.dart';
@@ -41,3 +42,4 @@ Future<void> _configureAmplify() async {
     safePrint('An error occurred while configuring Amplify: $e');
   }
 }
+

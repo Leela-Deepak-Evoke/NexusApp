@@ -30,8 +30,8 @@ const amplifyconfig = ''' {
                         "OAuth": {
                           "WebDomain": "https://evoke-nexus.auth.ap-south-1.amazoncognito.com",
                           "AppClientId": "6fpao7sa8kk6cgeht9k23a5jam",
-                          "SignInRedirectURI": "http://localhost:5858/home",
-                          "SignOutRedirectURI": "http://localhost:5858",
+                          "SignInRedirectURI": "nexusapp://home",
+                          "SignOutRedirectURI": "nexusapp://",
                           "Scopes": [
                             "phone",
                             "email",

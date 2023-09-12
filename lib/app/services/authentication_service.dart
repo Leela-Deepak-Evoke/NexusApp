@@ -2,44 +2,31 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io' show Platform;
 
 class AuthenticationService {
-  Future<void> login() async {
+  Future<void> login( Function(bool isSucess) onloginComplition) async {
   
       // Sign in with SAML identity provider
       safePrint('Before Login');
-      if(kIsWeb)
-      {  try {
-           final result = await Amplify.Auth.signInWithWebUI(
-              provider: const AuthProvider.saml("EvokeAzureAD"),
-            );
-            safePrint('Result: $result');
-          } catch (e) {
-            safePrint('Error at Evoke AD login: $e');
-
-          }
+      if (Platform.isIOS) {
+        final result = await Amplify.Auth.signInWithWebUI(
+          provider: const AuthProvider.saml("EvokeAzureAD"),
+          options: const SignInWithWebUIOptions(
+            pluginOptions: CognitoSignInWithWebUIPluginOptions(
+              isPreferPrivateSession: true,
+            ),
+          ),
+        );
+        safePrint('Result: $result');
+        onloginComplition(true);
+      } else {
+        final result = await Amplify.Auth.signInWithWebUI(
+          provider: const AuthProvider.saml("EvokeAzureAD"),
+        );
+        safePrint('Result: $result');
       }
-      else
-      {
-
-        try {
-           final result = await Amplify.Auth.signInWithWebUI(
-              provider: const AuthProvider.saml("EvokeAzureAD"),
-              options: const SignInWithWebUIOptions(     
-              pluginOptions: CognitoSignInWithWebUIPluginOptions(   
-                   isPreferPrivateSession: true,  
-                       ),    
-                )
-            );
-            safePrint('Result: $result');
-          } catch (e) {
-            safePrint('Error at Evoke AD login: $e');
-
-          }
-          
-      }
-      }
-      
+    } 
   }
 
   
@@ -54,4 +41,5 @@ class AuthenticationService {
       safePrint('Error signing user out: ${result.exception.message}');
     }
   }
+
 

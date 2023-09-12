@@ -52,6 +52,7 @@ dependencies:
   carousel_slider: ^4.2.1
   video_player: ^2.6.1
   floating_action_bubble: ^1.1.4
+  dropdown_button2: ^2.3.9
   uuid: ^3.0.7
   path: ^1.8.3
   intl: ^0.18.0

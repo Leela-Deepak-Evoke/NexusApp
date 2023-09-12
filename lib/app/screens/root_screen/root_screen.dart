@@ -11,7 +11,7 @@ class RootScreen extends ConsumerWidget {
     final checkUserAsyncValue = ref.watch(checkUserProvider);
 
     if (checkUserAsyncValue is AsyncData) {
-      GoRouter.of(context).go('/feeds');
+      GoRouter.of(context).go('/home');
       return const SizedBox.shrink();
     }
 

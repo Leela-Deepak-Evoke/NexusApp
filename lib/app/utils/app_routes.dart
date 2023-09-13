@@ -14,6 +14,8 @@ enum AppRoute {
   test,
   timeline,
   rootNavigation,
+  postforum,
+  answersforum,
 }
 
 

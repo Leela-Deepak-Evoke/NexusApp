@@ -29,12 +29,13 @@ class _FeedsMobileViewCardState extends State<FeedsMobileView> {
       
       Padding(
         padding: const EdgeInsets.only(left: 0, right: 0, top: 20),
-        child: Row(
+        child: 
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SearchBarSmall(
                 searchController: _searchController,
-                text: "Feed",
+                text: "SOCIAL FEED",
                 width: size.width - 90,
                 onPostSucess: onSearchClicked),
             const Spacer(),

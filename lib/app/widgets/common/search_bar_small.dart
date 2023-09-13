@@ -1,7 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
-import 'package:evoke_nexus_app/app/widgets/common/drop_down_menu.dart';
 
 class SearchBarSmall extends StatefulWidget {
 

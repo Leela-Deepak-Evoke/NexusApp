@@ -16,6 +16,7 @@ class QuestionsList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final questionsAsyncValue = ref.watch(questionsProvider(user));
     if (questionsAsyncValue is AsyncData) {
+
       final items = questionsAsyncValue.value!;
       return ListView.builder(
         itemCount: items.length,
@@ -26,7 +27,8 @@ class QuestionsList extends ConsumerWidget {
           final formattedDate = DateFormat('MMM d HH:mm')
               .format(DateTime.parse(item.postedAt.toString()).toLocal());
 
-          return Card(
+          return 
+          Card(
             margin: const EdgeInsets.all(8),
             clipBehavior: Clip.antiAlias,
             shape: RoundedRectangleBorder(
@@ -84,7 +86,7 @@ class QuestionsList extends ConsumerWidget {
                             },
                           ),
                           const SizedBox(width: 8.0),
-                          PostAnswerFAB(user: user, questionId: item.questionId)
+                        //  PostAnswerFAB(user: user, questionId: item.questionId)
                         ],
                       ),
                     ],
@@ -97,11 +99,15 @@ class QuestionsList extends ConsumerWidget {
       );
     }
     if (questionsAsyncValue is AsyncLoading) {
-      return const Center(
-        child: SizedBox(
-          height: 50.0,
-          width: 50.0,
-          child: CircularProgressIndicator(),
+      return  Container(
+        color: Colors.white,
+        child: 
+       const Center(
+          child: SizedBox(
+            height: 50.0,
+            width: 50.0,
+            child: CircularProgressIndicator(),
+          ),
         ),
       );
     }

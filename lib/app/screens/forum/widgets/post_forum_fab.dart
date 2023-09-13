@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../feeds/widgets/image_uploader.dart';
 
 class PostForumFAB extends ConsumerStatefulWidget {
   final User user;

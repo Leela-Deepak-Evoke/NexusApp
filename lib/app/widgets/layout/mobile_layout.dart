@@ -7,17 +7,22 @@ import 'package:go_router/go_router.dart';
 
 import 'package:evoke_nexus_app/app/widgets/common/mobile_custom_appbar.dart';
 
-class MobileLayout extends StatelessWidget {
+class MobileLayout extends StatefulWidget {
   final Widget child;
   final String title;
   final User user;
 
-  const MobileLayout({
+   MobileLayout({
     super.key,
+    
     required this.child,
     required this.title,
       required this.user});
+  @override
+  State<MobileLayout> createState() => _MobileLayoutState();
+}
 
+class _MobileLayoutState extends State<MobileLayout> {
   @override
   Widget build(BuildContext context) {
     final currentUri = Uri.parse(GoRouter.of(context).location);
@@ -33,8 +38,8 @@ class MobileLayout extends StatelessWidget {
           _buildHeader(size, headerNegativeOffset),
           Container(
               padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 120),
-              child: child),
-           CustomAppbar(title: title),
+              child: widget.child),
+           CustomAppbar(title: widget.title),
         ],
       ),
     );

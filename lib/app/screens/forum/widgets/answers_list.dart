@@ -21,6 +21,7 @@ class AnswerList extends ConsumerWidget {
 
     if (answersAsyncValue is AsyncData) {
       final items = answersAsyncValue.value!;
+      print(items);
       return ListView.builder(
         itemCount: items.length,
         itemBuilder: (context, index) {

@@ -57,7 +57,7 @@ class Answer {
     }
 
     return Answer(
-        answerId: json['answer']['forumId'],
+        answerId: json['answer']['answerId'],
         hasImage: json['answer']['hasImage'],
         imagePath: json['answer']['imagePath'],
         name: json['answer']['name'],

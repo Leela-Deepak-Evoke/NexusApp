@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 abstract class AppConstants {
   static const loginTitle = 'Welcome to\nEvoke Professional\nNetwork';
@@ -54,4 +55,29 @@ class AppColors {
 //Dark blue text colour 
 static const Color blueTextColour = Color(0xff1B154C);
 
+}
+
+abstract class Global {
+
+  static String calculateTimeDifferenceBetween(
+       DateTime startDate) {
+    int seconds = DateTime.now().difference(startDate).inSeconds;
+    if (seconds < 60) {
+      return '$seconds seconds ago';
+    } else if (seconds >= 60 && seconds < 3600) {
+      return '${DateTime.now().difference(startDate).inMinutes.abs()} minutes ago';
+    } else {
+      if (seconds >= 3600 && seconds < 86400) {
+        return '${DateTime.now().difference(startDate).inHours} hours ago';
+      } else {
+        return '${DateTime.now().difference(startDate).inDays} days ago';
+      }
+    }
+  }
+
+  static DateTime getDateTimeFromStringForPosts(String date) {
+    DateTime tempDate = DateFormat("yyyy-MM-dd HH:mm:ssZ").parse(date, true);
+    return tempDate;
+
+  }
 }

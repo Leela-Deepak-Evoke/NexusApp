@@ -22,79 +22,11 @@ class MobileLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentUri = Uri.parse(GoRouter.of(context).location);
     final currentPath = currentUri.path;
-
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     toolbarOpacity: 1.0,
-    //     elevation: 2.0,
-    //     backgroundColor: Colors.white,
-    //     automaticallyImplyLeading: true,
-    //     title: Text(
-    //       title,
-    //       style: const TextStyle(
-    //         fontSize: 18,
-    //         fontWeight: FontWeight.bold,
-    //       ),
-    //     ),
-    //     actions: <Widget>[
-    //       IconButton(
-    //         icon: const Icon(Icons.person),
-    //         tooltip: "Profile",
-    //         color: currentPath == '/profile'
-    //             ? Colors.blue
-    //             : null, // Highlight selected action
-    //         onPressed: () {
-    //           GoRouter.of(context).go('/profile');
-    //         },
-    //       ),
-    //       const SizedBox(width: 4),
-    //       IconButton(
-    //         icon: const Icon(Icons.settings),
-    //         tooltip: "Settings",
-    //         color: currentPath == '/settings'
-    //             ? Colors.blue
-    //             : null, // Highlight selected action
-    //         onPressed: () {
-    //           GoRouter.of(context).go('/settings');
-    //         },
-    //       ),
-    //       const SizedBox(width: 4),
-    //       IconButton(
-    //         tooltip: "Notifications",
-    //         icon: const Icon(Icons.notifications),
-    //         color: currentPath == '/notifications'
-    //             ? Colors.blue
-    //             : null, // Highlight selected action
-    //         onPressed: () {
-    //           GoRouter.of(context).go('/notifications');
-    //         },
-    //       ),
-    //       const SizedBox(width: 4),
-    //       IconButton(
-    //         tooltip: "Logout",
-    //         icon: const Icon(Icons.logout),
-    //         color: currentPath == '/logout'
-    //             ? Colors.blue
-    //             : null, // Highlight selected action
-    //         onPressed: () {
-    //           GoRouter.of(context).go('/logout');
-    //         },
-    //       ),
-    //     ],
-    //   ),
-    //   drawer: MobileAppDrawer(goRouter: router, user: user),
-    //   body: SizedBox(
-    //     height: MediaQuery.of(context).size.height,
-    //     width: MediaQuery.of(context).size.width,
-    //     child: Container(padding: const EdgeInsets.all(4), child: child),
-    //   ),
-    // );
-
     final ValueNotifier<double> headerNegativeOffset = ValueNotifier<double>(0);
     final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar:  MobileAppNavTopBar(canPost: true),
+      // appBar:  MobileAppNavTopBar(canPost: true),
       drawer: const Drawer(),
       body: Stack(
         children: <Widget>[

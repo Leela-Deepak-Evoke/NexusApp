@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 
-
 class SearchBarSmall extends StatefulWidget {
 
  final TextEditingController searchController;

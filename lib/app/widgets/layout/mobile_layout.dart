@@ -27,12 +27,11 @@ class _MobileLayoutState extends State<MobileLayout> {
   Widget build(BuildContext context) {
     final currentUri = Uri.parse(GoRouter.of(context).location);
     final currentPath = currentUri.path;
-
     final ValueNotifier<double> headerNegativeOffset = ValueNotifier<double>(0);
     final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-     // appBar:  //MobileAppNavTopBar(canPost: true,onPostClicked: widget.onPostClicked),
+      // appBar:  MobileAppNavTopBar(canPost: true),
       drawer: const Drawer(),
       body: Stack(
         children: <Widget>[

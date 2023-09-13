@@ -7,55 +7,65 @@ import 'package:intl/intl.dart';
 import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:evoke_nexus_app/app/utils/constants.dart';
 
-class FeedList extends ConsumerWidget {
+class FeedListMobile extends ConsumerWidget {
   final User user;
-  const FeedList({super.key, required this.user});
+  const FeedListMobile({super.key, required this.user});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final Size size = MediaQuery.of(context).size;
     final feedsAsyncValue = ref.watch(feedsProvider(user));
-           
-
     if (feedsAsyncValue is AsyncData) {
       final items = feedsAsyncValue.value!;
-      return ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          final item = items[index];
-          final author = item.author;
 
+      return Container(
+        alignment: AlignmentDirectional.center,
+        padding: const EdgeInsets.only(left: 0, right: 0, top: 10, bottom: 0),
+        child: SizedBox(
+          height: size.height - 330, // Constrain height.
+          child: ListView.separated(
+            padding:
+                const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
+            shrinkWrap: true,
+            itemCount: items.length,
+            itemBuilder: (BuildContext context, int index) {
+              final item = items[index];
+          final author = item.author;
           final formattedDate = DateFormat('MMM d HH:mm')
               .format(DateTime.parse(item.postedAt.toString()).toLocal());
 
-          return Card(
-            margin: const EdgeInsets.all(8),
-            clipBehavior: Clip.antiAlias,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            elevation: 5,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                                    //Title
-                  ListTile(
-                    leading: _profilePicWidget(item, ref),
-                    title: Text(author!, style: const TextStyle(fontSize: 16)),
-                    subtitle: Text(item.authorTitle!,
-                        style: const TextStyle(fontSize: 14)),
-                    trailing: Text(
-                      formattedDate,
-                      style: const TextStyle(
-                          fontStyle: FontStyle.italic, fontSize: 14),
+              return Card(
+                child: Column(
+                  children: [
+                    ListTile(
+                      title: Text(
+                        author!, //posts[index].postedBy ?? "",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14.0,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      subtitle: Text(
+                        "${items[index].authorTitle}",
+                        style: TextStyle(
+                          color: Color(0xff676A79),
+                          fontSize: 12.0,
+                          fontFamily: GoogleFonts.notoSans().fontFamily,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                       leading: _profilePicWidget(item, ref),
                     ),
-                  ),
 
-                  //hasTagViewWidget FeedMediaView
-
-                  Column(
+                 Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
                     children: [
                       const SizedBox(height: 4.0),
                       contentViewWidget(item),
@@ -152,13 +162,18 @@ class FeedList extends ConsumerWidget {
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-          );
-        },
+                
+                  ],
+                ),
+              );
+            },
+            separatorBuilder: (BuildContext context, int index) =>
+                const Divider(),
+          ),
+        ),
       );
     }
+
     if (feedsAsyncValue is AsyncLoading) {
       return const Center(
         child: SizedBox(
@@ -198,7 +213,7 @@ class FeedList extends ConsumerWidget {
   Widget _profilePicWidget(Feed item, WidgetRef ref) {
     final avatarText = getAvatarText(item.author!);
     if (item.authorThumbnail == null) {
-      return CircleAvatar(radius: 30.0, child: Text(avatarText));
+      return CircleAvatar(radius: 26.0, child: Text(avatarText));
     } else {
       // Note: We're using `watch` directly on the provider.
       final profilePicAsyncValue =
@@ -209,22 +224,22 @@ class FeedList extends ConsumerWidget {
           if (imageUrl != null && imageUrl.isNotEmpty) {
             return CircleAvatar(
               backgroundImage: NetworkImage(imageUrl),
-              radius: 30.0,
+              radius: 26.0,
             );
           } else {
             // Render a placeholder or an error image
-            return CircleAvatar(radius: 30.0, child: Text(avatarText));
+            return CircleAvatar(radius: 26.0, child: Text(avatarText));
           }
         },
         loading: () => const Center(
           child: SizedBox(
-            height: 30.0,
-            width: 30.0,
+            height: 26.0,
+            width: 26.0,
             child: CircularProgressIndicator(),
           ),
         ),
         error: (error, stackTrace) => CircleAvatar(
-            radius: 30.0,
+            radius: 26.0,
             child: Text(avatarText)), // Handle error state appropriately
       );
     }

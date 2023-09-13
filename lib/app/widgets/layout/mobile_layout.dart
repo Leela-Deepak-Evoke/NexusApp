@@ -11,13 +11,19 @@ class MobileLayout extends StatefulWidget {
   final Widget child;
   final String title;
   final User user;
-
+  final bool hasBackAction;
+  final bool hasRightAction;
+  Function() topBarButtonAction;
    MobileLayout({
     super.key,
-    
     required this.child,
     required this.title,
-      required this.user});
+     required this.user,
+     required this.hasBackAction,
+     required this.hasRightAction,
+     required this.topBarButtonAction,
+
+      });
   @override
   State<MobileLayout> createState() => _MobileLayoutState();
 }
@@ -31,7 +37,6 @@ class _MobileLayoutState extends State<MobileLayout> {
     final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      // appBar:  MobileAppNavTopBar(canPost: true),
       drawer: const Drawer(),
       body: Stack(
         children: <Widget>[
@@ -39,7 +44,7 @@ class _MobileLayoutState extends State<MobileLayout> {
           Container(
               padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 120),
               child: widget.child),
-          const CustomAppbar(title: "SOCIAL FEED"),
+           CustomAppbar(title: widget.title,hasBackAction: widget.hasBackAction, hasRightAction: widget.hasRightAction, topBarButtonAction:() => widget.topBarButtonAction(), ),
         ],
       ),
     );

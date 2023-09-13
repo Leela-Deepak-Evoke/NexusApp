@@ -1,4 +1,5 @@
 import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:evoke_nexus_app/app/provider/timeline_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_media_view.dart';
 import 'package:evoke_nexus_app/app/widgets/common/view_comments.dart';
 import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
@@ -10,16 +11,16 @@ import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 
-class FeedListMobile extends ConsumerWidget {
+class TimelineListMobile extends ConsumerWidget {
   final User user;
-  const FeedListMobile({super.key, required this.user});
+  const TimelineListMobile({super.key, required this.user});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final Size size = MediaQuery.of(context).size;
-    final feedsAsyncValue = ref.watch(feedsProvider(user));
-    if (feedsAsyncValue is AsyncData) {
-      final items = feedsAsyncValue.value!;
+    final timelineAsyncValue = ref.watch(timelineProvider(user));
+    if (timelineAsyncValue is AsyncData) {
+      final items = timelineAsyncValue.value!;
 
       return    Container(
         alignment: AlignmentDirectional.topStart,
@@ -178,11 +179,12 @@ class FeedListMobile extends ConsumerWidget {
             separatorBuilder: (BuildContext context, int index) =>
                 const Divider(),
           ),
-        ),]
+        ),
+        SizedBox(height: 100,)]
       ));
     }
 
-    if (feedsAsyncValue is AsyncLoading) {
+    if (timelineAsyncValue is AsyncLoading) {
       return const Center(
         child: SizedBox(
           height: 50.0,
@@ -192,8 +194,8 @@ class FeedListMobile extends ConsumerWidget {
       );
     }
 
-    if (feedsAsyncValue is AsyncError) {
-      return Text('An error occurred: ${feedsAsyncValue.error}');
+    if (timelineAsyncValue is AsyncError) {
+      return Text('An error occurred: ${timelineAsyncValue.error}');
     }
 
     // This should ideally never be reached, but it's here as a fallback.

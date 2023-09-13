@@ -18,8 +18,14 @@ class _TestScreenSmallState extends ConsumerState<TestScreenSmall> {
         return MobileLayout(
           title: 'Test',
           user: data,
+            hasBackAction: false,
+          hasRightAction: true,
+          topBarButtonAction: () {
+            
+          },
           child: const Center(
             child: Text('Test Screen'),
+            
           ),
         );
       },

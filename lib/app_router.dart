@@ -1,3 +1,4 @@
+import 'package:evoke_nexus_app/app/models/question.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/screens/answers/answers_screen.dart';
 import 'package:evoke_nexus_app/app/screens/forum/forum_screen.dart';
@@ -101,7 +102,7 @@ final router = GoRouter(
 );
 
 final mobileappRouter = GoRouter(
-  initialLocation: '/${AppRoute.login.name}',
+  initialLocation: '/${AppRoute.rootNavigation.name}',
   debugLogDiagnostics: false,
   routes: [
     GoRoute(
@@ -232,9 +233,10 @@ final forumsRouter = GoRouter(
                 path: AppRoute.answersforum.name,
                 pageBuilder: (context, state) {
                   var questionid = state.queryParameters['questionid'];
+                  Question? question = state.extra as Question ;
                   return MaterialPage<void>(
                     key: state.pageKey,
-                    child: AnswersScreen(questionid: questionid ?? ""),
+                    child: AnswersScreen(questionid: questionid ?? "",question: question),
                   );
                 }),
           ])
@@ -263,7 +265,17 @@ final profileRouter = GoRouter(
         path: '/${AppRoute.profile.name}',
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
-          child: const OrgUpdatesScreen(),
+          child:  ProfileScreen(),
         ),
+        routes: [
+          GoRoute(
+        name: AppRoute.timeline.name,
+        path: AppRoute.timeline.name,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child:  TimelineScreen(),
+        ),
+          )
+        ]
       )
     ]);

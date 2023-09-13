@@ -1,4 +1,7 @@
+import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
+import 'package:evoke_nexus_app/app/screens/profile/widgets/profile_mobile_view.dart';
 import 'package:evoke_nexus_app/app/widgets/common/mobile_nav_topbar.dart';
+import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../forum/widgets/forum_mobile_view.dart';
@@ -14,36 +17,35 @@ class ProfileScreenSmall extends ConsumerStatefulWidget {
 class _ProfileScreenSmallState extends ConsumerState<ProfileScreenSmall> {
 
   @override
-  Widget build(BuildContext context) {
-
-   void postcliked()
-  {
-
-  }
-
-
-    return Scaffold(
-      appBar: MobileAppNavTopBar(canPost: true, onPostClicked: postcliked),
-      
-      body: 
-       Container(
-      color: Colors.amber,
-      child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text("Profile" , style:  TextStyle(color: Colors.black),),
-            TextButton(onPressed:() {
-                navigate(context, '/profile/profileDetails',
-                      isRootNavigator: false,
-                      arguments: {'id': '3'});
-              
-            },
-            child: Text("next" , style:  TextStyle(color: Colors.black)))
-          ],
+   Widget build(BuildContext context) {
+    final userAsyncValue = ref.watch(fetchUserProvider);
+    return userAsyncValue.when(
+      data: (data) {
+        return MobileLayout(
+          title: 'Profile',
+          user: data,
+          child:ProfileMobileView(user: data,onPostClicked: () {
+            
+          },),
+          hasBackAction: false,
+          hasRightAction: true,
+          topBarButtonAction: () {
+            
+          },
+        
+        );
+      },
+      loading: () => const Center(
+        child: SizedBox(
+          height: 50.0,
+          width: 50.0,
+          child: CircularProgressIndicator(),
         ),
       ),
-    ),
+      error: (error, stack) {
+        // Handle the error case if needed
+        return Text('An error occurred: $error');
+      },
     );
   }
 }

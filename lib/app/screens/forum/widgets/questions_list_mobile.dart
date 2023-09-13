@@ -24,58 +24,64 @@ class QuestionsListMobile extends ConsumerWidget {
     if (questionsAsyncValue is AsyncData) {
       final items = questionsAsyncValue.value!;
 
-      return Column(
-        children: [
-          SearchHeaderView(
-              name: 'Q&A', searchController: _searchController, size: size),
+      return  
+           Container(
+        alignment: AlignmentDirectional.topStart,
+        padding: const EdgeInsets.only(left: 0, right: 0, top: 10, bottom: 0),
+        child: 
+        
+        Column(
+          children:[
           Expanded(
-            child: ListView.builder(
+            child: ListView.separated(
+              padding:
+                  const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
+              shrinkWrap: true,
               itemCount: items.length,
-    
-              itemBuilder: (context, index) {
-                final item = items[index];
-                final formattedDate = DateFormat('MMM d HH:mm')
-                    .format(DateTime.parse(item.postedAt.toString()).toLocal());
-
-                return InkWell(
-                  onTap: () 
-                  {
-                    context.goNamed(AppRoute.answersforum.name,queryParameters: {'questionid' : item.questionId});
-                  },
-                child:
-                  Card(
-                  margin: const EdgeInsets.all(10),
-                  clipBehavior: Clip.antiAlias,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(0),
-                  ),
-                  elevation: 2,
-                  child: Padding(
-                      padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 0.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          categoryHearViewWidget(item),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          contentViewWidget(item),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          askedbyViewHeader(item, ref),
-                          footerVIewWidget(formattedDate, item)
-                        ],
-                      )),
-                )
-             ); },
-            ),
+                    itemBuilder: (context, index) {
+                      final item = items[index];
+                      final formattedDate = DateFormat('MMM d HH:mm')
+                          .format(DateTime.parse(item.postedAt.toString()).toLocal());
+                            
+                      return InkWell(
+                        onTap: () 
+                        {
+                          context.goNamed(AppRoute.answersforum.name,extra: item,queryParameters: {'questionid' : item.questionId});
+                        },
+                      child:
+                     
+                        Card(
+                        margin: const EdgeInsets.all(0),
+                        clipBehavior: Clip.antiAlias,
+                       shape: RoundedRectangleBorder(
+                               borderRadius: BorderRadius.circular(0)),
+                        child: Padding(
+                           
+                            padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 0.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                categoryHearViewWidget(item),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                contentViewWidget(item),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                askedbyViewHeader(item, ref),
+                                footerVIewWidget(formattedDate, item)
+                              ],
+                            )),
+                      )
+                   ); }, separatorBuilder: (BuildContext context, int index) { return const Divider(); },
+                               ),
           ),
-          const SizedBox(
-            height: 50,
-          )
-        ],
-      );
+               SizedBox(height: 100,)]),
+              );
+          
+         
+        
     }
     if (questionsAsyncValue is AsyncLoading) {
       return Container(

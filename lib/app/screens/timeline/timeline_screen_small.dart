@@ -1,3 +1,4 @@
+import 'package:evoke_nexus_app/app/screens/timeline/widgets/timeline_mobile_view.dart';
 import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,13 +17,16 @@ class _TimelineScreenSmallState extends ConsumerState<TimelineScreenSmall> {
     return userAsyncValue.when(
       data: (data) {
         return MobileLayout(
-          title: 'Feeds',
+          title: 'Timeline',
           user: data,
-          child: const Center(
-            child: Text('Feeds Screen'),
-           
-            
-          ),
+          hasBackAction: true,
+          hasRightAction: false,
+          topBarButtonAction: () {
+
+          },
+          child: TimelineMobileView(user: data),
+          
+        
         );
       },
       loading: () => const Center(

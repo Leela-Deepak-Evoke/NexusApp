@@ -3,6 +3,7 @@ import 'package:evoke_nexus_app/app/screens/forum/widgets/forum_mobile_view.dart
 import 'package:evoke_nexus_app/app/screens/forum/widgets/forum_web_view.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_utils.dart';
 import 'package:evoke_nexus_app/app/utils/app_routes.dart';
+import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 import 'package:evoke_nexus_app/app/widgets/layout/web_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,10 +21,21 @@ class _ForumScreenSmallState extends ConsumerState<ForumScreenSmall> {
     final userAsyncValue = ref.watch(fetchUserProvider);
     return userAsyncValue.when(
       data: (data) {
-        return  ForumMobileView(user: data,onPostClicked: () {
+        return   MobileLayout(
+          title: 'Forums',
+          user: data,
+          child:  ForumMobileView(user: data,onPostClicked: () {
             context.goNamed(AppRoute.postforum.name,extra: data);
         },
+        ), 
+         hasBackAction: false,
+          hasRightAction: true,
+          topBarButtonAction: () {
+            
+          },
+        
         );
+       
       },
       loading: () => const Center(
         child: SizedBox(

@@ -21,7 +21,8 @@ class FeedListMobile extends ConsumerWidget {
     if (feedsAsyncValue is AsyncData) {
       final items = feedsAsyncValue.value!;
 
-      return    Container(
+      return  
+        Container(
         alignment: AlignmentDirectional.topStart,
         padding: const EdgeInsets.only(left: 0, right: 0, top: 10, bottom: 0),
         child: Column(
@@ -38,9 +39,9 @@ class FeedListMobile extends ConsumerWidget {
              (BuildContext context, int index) 
              {
               final item = items[index];
-          final author = item.author;
-          final formattedDate = DateFormat('MMM d HH:mm')
-              .format(DateTime.parse(item.postedAt.toString()).toLocal());
+              final author = item.author;
+              final formattedDate = DateFormat('MMM d HH:mm')
+                  .format(DateTime.parse(item.postedAt.toString()).toLocal());
 
               return Card(
                  shape: RoundedRectangleBorder(
@@ -67,9 +68,9 @@ class FeedListMobile extends ConsumerWidget {
                           fontWeight: FontWeight.normal,
                         ),
                       ),
-                       leading: _profilePicWidget(item, ref),
+                      leading: _profilePicWidget(item, ref),
                     ),
-
+                  
                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -172,13 +173,15 @@ class FeedListMobile extends ConsumerWidget {
                   ),
                 
                   ],
-                ),
-              );
+                )
+           );
+              
             },
             separatorBuilder: (BuildContext context, int index) =>
                 const Divider(),
           ),
-        ),]
+        ),
+        SizedBox(height: 100,)]
       ));
     }
 
@@ -198,6 +201,138 @@ class FeedListMobile extends ConsumerWidget {
 
     // This should ideally never be reached, but it's here as a fallback.
     return const SizedBox.shrink();
+  }
+
+// NUMBER OF VIEWS AND COMMENTS
+  Widget getInfoOFViewsComments(int index, Feed item) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          TextButton.icon(
+            // <-- TextButton
+            onPressed: () {},
+            icon: Image.asset(
+              'assets/images/reactions.png',
+            ),
+            label: Text(
+              '${item.likes}',
+              style: TextStyle(
+                color: Color(0xff676A79),
+                fontSize: 12.0,
+                fontFamily: GoogleFonts.notoSans().fontFamily,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                '0 comments',
+                style: TextStyle(
+                  color: Color(0xff676A79),
+                  fontSize: 12.0,
+                  fontFamily: GoogleFonts.notoSans().fontFamily,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // BUTTONS: REACT, COMMENT, SHARE
+  Widget btnSharingInfoLayout(int index) {
+    return Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          TextButton.icon(
+            onPressed: () {},
+            icon: Image.asset(
+              'assets/images/thumb_up.png',
+              width: 20,
+              height: 20,
+            ),
+            label: Text(
+              'Like',
+              style: TextStyle(
+                color: Color(0xff393E41),
+                fontFamily: GoogleFonts.inter().fontFamily,
+                fontWeight: FontWeight.normal,
+                fontSize: 14,
+              ),
+            ),
+          ),
+          TextButton.icon(
+            onPressed: () {},
+            icon: Image.asset(
+              'assets/images/chat_bubble_outline.png',
+              width: 20,
+              height: 20,
+            ),
+            label: Text(
+              'Comment',
+              style: TextStyle(
+                color: Color(0xff393E41),
+                fontFamily: GoogleFonts.inter().fontFamily,
+                fontWeight: FontWeight.normal,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ]);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
+      child: Wrap(
+        spacing: 5,
+        direction: Axis.horizontal,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          //Like
+          TextButton.icon(
+            onPressed: () {},
+            icon: Image.asset(
+              'assets/images/thumb_up.png',
+              width: 20,
+              height: 20,
+            ),
+            label: Text(
+              'Like',
+              style: TextStyle(
+                color: Color(0xff393E41),
+                fontFamily: GoogleFonts.inter().fontFamily,
+                fontWeight: FontWeight.normal,
+                fontSize: 14,
+              ),
+            ),
+          ),
+
+          //Comment
+          TextButton.icon(
+            onPressed: () {},
+            icon: Image.asset(
+              'assets/images/chat_bubble_outline.png',
+              width: 20,
+              height: 20,
+            ),
+            label: Text(
+              'Comment',
+              style: TextStyle(
+                color: Color(0xff393E41),
+                fontFamily: GoogleFonts.inter().fontFamily,
+                fontWeight: FontWeight.normal,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget hasTagViewWidget(Feed item) {

@@ -1,10 +1,6 @@
 import 'package:evoke_nexus_app/app/models/user.dart';
-import 'package:evoke_nexus_app/app/widgets/common/mobile_app_drawer.dart';
-import 'package:evoke_nexus_app/app/widgets/common/mobile_nav_topbar.dart';
 import 'package:flutter/material.dart';
-import 'package:evoke_nexus_app/app_router.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:evoke_nexus_app/app/widgets/common/mobile_custom_appbar.dart';
 
 class MobileLayout extends StatefulWidget {
@@ -13,8 +9,8 @@ class MobileLayout extends StatefulWidget {
   final User user;
   final bool hasBackAction;
   final bool hasRightAction;
-  Function() topBarButtonAction;
-   MobileLayout({
+  final Function() topBarButtonAction;
+   const MobileLayout({
     super.key,
     required this.child,
     required this.title,
@@ -63,7 +59,7 @@ class _MobileLayoutState extends State<MobileLayout> {
                 child: SizedBox(
                   height: maxHeaderHeight,
                   width: size.width,
-                  child: Image(
+                  child: const Image(
                     image: AssetImage('assets/images/navBarRect.png'),
                     fit: BoxFit.cover,
                   ),

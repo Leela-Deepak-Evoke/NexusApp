@@ -1,14 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
-import 'package:go_router/go_router.dart';
-
-import '../../utils/app_routes.dart';
-
-import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
-import 'package:evoke_nexus_app/app/screens/feeds/widgets/feeds_mobile_view.dart';
-
-
 import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feeds_mobile_view.dart';
 

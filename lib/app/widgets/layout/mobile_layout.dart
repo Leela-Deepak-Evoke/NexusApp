@@ -34,7 +34,7 @@ class MobileLayout extends StatelessWidget {
           Container(
               padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 120),
               child: child),
-          const CustomAppbar(title: "SOCIAL FEED"),
+           CustomAppbar(title: title),
         ],
       ),
     );

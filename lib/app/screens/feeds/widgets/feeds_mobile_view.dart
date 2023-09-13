@@ -2,6 +2,7 @@ import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:evoke_nexus_app/app/widgets/common/search_bar_small.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feeds_list_mobile.dart';
+import 'package:evoke_nexus_app/app/screens/feeds/widgets/post_feed_fab.dart';
 
 class FeedsMobileView extends StatefulWidget {
   final User user;
@@ -25,6 +26,7 @@ class _FeedsMobileViewCardState extends State<FeedsMobileView> {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Column(children: [
+      
       Padding(
         padding: const EdgeInsets.only(left: 0, right: 0, top: 20),
         child: Row(

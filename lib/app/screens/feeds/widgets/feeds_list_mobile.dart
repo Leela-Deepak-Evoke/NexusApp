@@ -33,9 +33,9 @@ class FeedListMobile extends ConsumerWidget {
             itemCount: items.length,
             itemBuilder: (BuildContext context, int index) {
               final item = items[index];
-          final author = item.author;
-          final formattedDate = DateFormat('MMM d HH:mm')
-              .format(DateTime.parse(item.postedAt.toString()).toLocal());
+              final author = item.author;
+              final formattedDate = DateFormat('MMM d HH:mm')
+                  .format(DateTime.parse(item.postedAt.toString()).toLocal());
 
               return Card(
                 child: Column(
@@ -59,110 +59,40 @@ class FeedListMobile extends ConsumerWidget {
                           fontWeight: FontWeight.normal,
                         ),
                       ),
-                       leading: _profilePicWidget(item, ref),
+                      leading: _profilePicWidget(item, ref),
                     ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 4.0),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10.0, vertical: 0),
+                        child: Column(
+                          children: [
+                           contentViewWidget(item),
+                        hasTagViewWidget(item),
+                          ]
+                        )
+                        ),
+                        //const SizedBox(height: 4.0),
+                        item.media
+                            ? AspectRatio(
+                                aspectRatio: 16 / 9,
+                                child: FeedMediaView(item: item),
+                              )
+                            : const SizedBox(height: 2.0),
+                        const SizedBox(height: 4.0),
 
-                 Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
-                    children: [
-                      const SizedBox(height: 4.0),
-                      contentViewWidget(item),
-                      hasTagViewWidget(item),
-                      //const SizedBox(height: 4.0),
-                      item.media
-                          ? AspectRatio(
-                              aspectRatio: 16 / 9,
-                              child: FeedMediaView(item: item),
-                            )
-                          : const SizedBox(height: 2.0),
-                      const SizedBox(height: 4.0),
-                      const Divider(
-                        thickness: 1.0,
-                        height: 1.0,
-                      ),
-
-                      //LikesWidget comment
-
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Row(
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.thumb_up),
-                                iconSize: 15,
-                                color: Colors.blue,
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return LikesWidget(
-                                        spaceId: item.feedId,
-                                        spaceName: 'Feed',
-                                        userId: user.userId,
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                              const SizedBox(width: 2.0),
-                              Text(item.likes.toString(),
-                                  style: const TextStyle(fontSize: 12)),
-                              const Text(' Likes',
-                                  style: TextStyle(fontSize: 12)),
-                              const SizedBox(width: 8.0),
-                              IconButton(
-                                icon: const Icon(Icons.comment),
-                                iconSize: 15,
-                                color: Colors.blue,
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return CommentsWidget(
-                                        spaceId: item.feedId,
-                                        spaceName: 'Feed',
-                                        userId: user.userId,
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                              const SizedBox(width: 2.0),
-                              Text(item.comments.toString(),
-                                  style: const TextStyle(fontSize: 12)),
-                              const Text(' Comments',
-                                  style: TextStyle(fontSize: 12)),
-                            ],
-                          ),
-                          const SizedBox(width: 8.0),
-                          Row(
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.thumb_up_outlined),
-                                iconSize: 20,
-                                color: Colors.blue,
-                                onPressed: () {},
-                                tooltip: "Like",
-                              ),
-                              const SizedBox(width: 4.0),
-                              IconButton(
-                                icon: const Icon(Icons.comment_outlined),
-                                iconSize: 20,
-                                color: Colors.blue,
-                                onPressed: () {},
-                                tooltip: "Comment",
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                
+                        //LikesWidget comment
+                        getInfoOFViewsComments(index, item),
+                        const Divider(
+                          thickness: 1.0,
+                          height: 1.0,
+                        ),
+                        btnSharingInfoLayout(index),
+                      ],
+                    ),
                   ],
                 ),
               );
@@ -190,6 +120,138 @@ class FeedListMobile extends ConsumerWidget {
 
     // This should ideally never be reached, but it's here as a fallback.
     return const SizedBox.shrink();
+  }
+
+// NUMBER OF VIEWS AND COMMENTS
+  Widget getInfoOFViewsComments(int index, Feed item) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          TextButton.icon(
+            // <-- TextButton
+            onPressed: () {},
+            icon: Image.asset(
+              'assets/images/reactions.png',
+            ),
+            label: Text(
+              '${item.likes}',
+              style: TextStyle(
+                color: Color(0xff676A79),
+                fontSize: 12.0,
+                fontFamily: GoogleFonts.notoSans().fontFamily,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                '0 comments',
+                style: TextStyle(
+                  color: Color(0xff676A79),
+                  fontSize: 12.0,
+                  fontFamily: GoogleFonts.notoSans().fontFamily,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // BUTTONS: REACT, COMMENT, SHARE
+  Widget btnSharingInfoLayout(int index) {
+    return Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          TextButton.icon(
+            onPressed: () {},
+            icon: Image.asset(
+              'assets/images/thumb_up.png',
+              width: 20,
+              height: 20,
+            ),
+            label: Text(
+              'Like',
+              style: TextStyle(
+                color: Color(0xff393E41),
+                fontFamily: GoogleFonts.inter().fontFamily,
+                fontWeight: FontWeight.normal,
+                fontSize: 14,
+              ),
+            ),
+          ),
+          TextButton.icon(
+            onPressed: () {},
+            icon: Image.asset(
+              'assets/images/chat_bubble_outline.png',
+              width: 20,
+              height: 20,
+            ),
+            label: Text(
+              'Comment',
+              style: TextStyle(
+                color: Color(0xff393E41),
+                fontFamily: GoogleFonts.inter().fontFamily,
+                fontWeight: FontWeight.normal,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ]);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
+      child: Wrap(
+        spacing: 5,
+        direction: Axis.horizontal,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          //Like
+          TextButton.icon(
+            onPressed: () {},
+            icon: Image.asset(
+              'assets/images/thumb_up.png',
+              width: 20,
+              height: 20,
+            ),
+            label: Text(
+              'Like',
+              style: TextStyle(
+                color: Color(0xff393E41),
+                fontFamily: GoogleFonts.inter().fontFamily,
+                fontWeight: FontWeight.normal,
+                fontSize: 14,
+              ),
+            ),
+          ),
+
+          //Comment
+          TextButton.icon(
+            onPressed: () {},
+            icon: Image.asset(
+              'assets/images/chat_bubble_outline.png',
+              width: 20,
+              height: 20,
+            ),
+            label: Text(
+              'Comment',
+              style: TextStyle(
+                color: Color(0xff393E41),
+                fontFamily: GoogleFonts.inter().fontFamily,
+                fontWeight: FontWeight.normal,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget hasTagViewWidget(Feed item) {

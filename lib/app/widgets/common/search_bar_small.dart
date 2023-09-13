@@ -1,19 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
-import 'package:evoke_nexus_app/app/widgets/common/drop_down_menu.dart';
-
-// import 'package:flutter_layout_grid/flutter_layout_grid.dart';
-// import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:google_fonts/google_fonts.dart';
-// import 'package:social_network/app/screens/feeds/feeds_screen.dart';
-// import 'package:social_network/app/screens/forum/forum_screen.dart';
-// import 'package:social_network/app/screens/notifications/notifications_screen.dart';
-// import 'package:social_network/app/screens/settings/settings_screen.dart';
-// import 'package:social_network/app/widgets/layout/app_bottom_navigation_bar.dart';
-// import 'package:social_network/app/screens/post_question/post_question_screen.dart';
-// import 'package:social_network/app/providers/drop_down_menu.dart';
 
 
 class SearchBarSmall extends StatefulWidget {

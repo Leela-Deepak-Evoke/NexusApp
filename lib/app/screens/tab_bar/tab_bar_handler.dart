@@ -1,20 +1,13 @@
 import 'dart:async';
 import 'package:evoke_nexus_app/app/screens/tab_bar/feeds_tab_menu.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/forums_tab_menu.dart';
-import 'package:evoke_nexus_app/app/screens/tab_bar/home_tab_menu.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/orgupdates_tab_menu.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/profile_tab_menu.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_menu.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_utils.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_menu_item.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:path/path.dart';
 import '../../../app_router.dart';
-import '../../utils/app_routes.dart';
-import '../feeds/feeds_screen.dart';
-import '../login/login_screen.dart';
-import '../org_updates/org_updates_screen.dart';
 
 final TabBarNotifier _tabBarNotifier = TabBarNotifier();
 
@@ -34,8 +27,10 @@ class _TabBarHandlerState extends State<TabBarHandler>
 
   final menuItemlist =  <TabMenuItem>[
     //  TabMenuItem(Icons.home , 'Home', HomeTabMenu( router: h )),
-    TabMenuItem(Icons.rss_feed , 'Feeds', FeedsTabMenu(router: feedsRouter,)),
-    TabMenuItem(Icons.forum, 'Fourms',ForumsTabMenu(router : forumsRouter)),
+   
+    
+   TabMenuItem(Icons.rss_feed , 'Feeds', FeedsTabMenu(router: feedsRouter,)),
+   TabMenuItem(Icons.forum, 'Fourms',ForumsTabMenu(router : forumsRouter)),
     TabMenuItem(Icons.update, 'OrgUpdates',OrgUpdatesTabMenu(router: orgupdatesRouter,)),
     TabMenuItem(Icons.person, 'Profile',ProfileTabMenu(router: profileRouter,)),
   ];

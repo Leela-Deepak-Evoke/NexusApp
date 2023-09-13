@@ -1,17 +1,30 @@
+import 'package:evoke_nexus_app/app/widgets/common/mobile_nav_topbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import '../forum/widgets/forum_mobile_view.dart';
 import '../tab_bar/tab_bar_utils.dart';
 
-class ProfileScreenSmall extends ConsumerWidget {
-  const ProfileScreenSmall({super.key});
+class ProfileScreenSmall extends ConsumerStatefulWidget {
+   const ProfileScreenSmall({super.key});
+
+ @override
+  ConsumerState<ProfileScreenSmall> createState() => _ProfileScreenSmallState();
+}
+
+class _ProfileScreenSmallState extends ConsumerState<ProfileScreenSmall> {
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+
+   void postcliked()
+  {
+
+  }
+
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('profile'),
-      ),
+      appBar: MobileAppNavTopBar(canPost: true, onPostClicked: postcliked),
+      
       body: 
        Container(
       color: Colors.amber,

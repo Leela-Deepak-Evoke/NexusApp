@@ -1,4 +1,7 @@
+import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:evoke_nexus_app/app/screens/answers/answers_screen.dart';
 import 'package:evoke_nexus_app/app/screens/forum/forum_screen.dart';
+import 'package:evoke_nexus_app/app/screens/forum/widgets/post_forum_fab.dart';
 import 'package:evoke_nexus_app/app/screens/home/home_screen.dart';
 import 'package:evoke_nexus_app/app/screens/test/test_screen.dart';
 import 'package:evoke_nexus_app/app/screens/timeline/timeline_screen.dart';
@@ -46,7 +49,7 @@ final router = GoRouter(
           path: "profile",
           pageBuilder: (context, state) => MaterialPage<void>(
             key: state.pageKey,
-            child: const ProfileScreen(),
+            child: ProfileScreen(),
           ),
         ),
         GoRoute(
@@ -66,6 +69,16 @@ final router = GoRouter(
           ),
         ),
         GoRoute(
+            name: AppRoute.postforum.name,
+            path: AppRoute.postforum.name,
+            pageBuilder: (context, state) {
+              var user = state.extra as User;
+              return MaterialPage<void>(
+                key: state.pageKey,
+                child: PostForumFAB(user: user),
+              );
+            }),
+        GoRoute(
           name: AppRoute.test.name,
           path: 'test',
           pageBuilder: (context, state) => MaterialPage<void>(
@@ -73,7 +86,7 @@ final router = GoRouter(
             child: const TestScreen(),
           ),
         ),
-         GoRoute(
+        GoRoute(
           name: AppRoute.timeline.name,
           path: 'timeline',
           pageBuilder: (context, state) => MaterialPage<void>(
@@ -87,29 +100,26 @@ final router = GoRouter(
   errorBuilder: (context, state) => const NotFoundScreen(),
 );
 
-
-
 final mobileappRouter = GoRouter(
   initialLocation: '/${AppRoute.login.name}',
   debugLogDiagnostics: false,
   routes: [
     GoRoute(
-          name: AppRoute.rootNavigation.name,
-          path: '/${AppRoute.rootNavigation.name}',
-          pageBuilder: (context, state) => MaterialPage<void>(
-            key: state.pageKey,
-            child: const RootScreenMobile(),
-          ),
-        ),
+      name: AppRoute.rootNavigation.name,
+      path: '/${AppRoute.rootNavigation.name}',
+      pageBuilder: (context, state) => MaterialPage<void>(
+        key: state.pageKey,
+        child: const RootScreenMobile(),
+      ),
+    ),
     GoRoute(
       name: AppRoute.login.name,
-      path:'/${AppRoute.login.name}',
+      path: '/${AppRoute.login.name}',
       pageBuilder: (context, state) => NoTransitionPage<void>(
         key: state.pageKey,
         child: const LoginScreen(),
       ),
       routes: [
-        
         GoRoute(
           name: AppRoute.feeds.name,
           path: "feeds",
@@ -131,7 +141,7 @@ final mobileappRouter = GoRouter(
           path: "profile",
           pageBuilder: (context, state) => MaterialPage<void>(
             key: state.pageKey,
-            child: const ProfileScreen(),
+            child: ProfileScreen(),
           ),
         ),
         GoRoute(
@@ -150,7 +160,7 @@ final mobileappRouter = GoRouter(
             child: const TestScreen(),
           ),
         ),
-         GoRoute(
+        GoRoute(
           name: AppRoute.timeline.name,
           path: 'timeline',
           pageBuilder: (context, state) => MaterialPage<void>(
@@ -164,79 +174,96 @@ final mobileappRouter = GoRouter(
   errorBuilder: (context, state) => const NotFoundScreen(),
 );
 
-
-
 final feedsRouter = GoRouter(
-                      initialLocation: '/${AppRoute.feeds.name}',
-                      debugLogDiagnostics: false,
-                      routes: [
-                        GoRoute(
-                                name: AppRoute.feeds.name,
-                                path:'/${AppRoute.feeds.name}',
-                                pageBuilder: (context, state) => NoTransitionPage<void>(
-                                  key: state.pageKey,
-                                  child: const FeedsScreen(),
-                                ),
-                                routes: [
-                                  GoRoute(
-                                name: AppRoute.forum.name,
-                                path: AppRoute.forum.name,
-                                pageBuilder: (context, state) => NoTransitionPage<void>(
-                                  key: state.pageKey,
-                                  child: const ProfileScreen(),
-                                ),
-                      
-                        )
-                                ]
-                      
-                        )
-                      ]
-                 );
+    initialLocation: '/${AppRoute.feeds.name}',
+    debugLogDiagnostics: false,
+    routes: [
+      GoRoute(
+          name: AppRoute.feeds.name,
+          path: '/${AppRoute.feeds.name}',
+          pageBuilder: (context, state) => NoTransitionPage<void>(
+                key: state.pageKey,
+                child: const FeedsScreen(),
+              ),
+          routes: [
+            GoRoute(
+              name: AppRoute.forum.name,
+              path: AppRoute.forum.name,
+              pageBuilder: (context, state) => NoTransitionPage<void>(
+                key: state.pageKey,
+                child: ProfileScreen(),
+              ),
+            )
+          ])
+    ]);
 
- final forumsRouter = GoRouter(
-                      initialLocation: '/${AppRoute.forum.name}',
-                      debugLogDiagnostics: false,
-                      routes: [
-                        GoRoute(
-                                name: AppRoute.forum.name,
-                                path:'/${AppRoute.forum.name}',
-                                pageBuilder: (context, state) => NoTransitionPage<void>(
-                                  key: state.pageKey,
-                                  child: const ForumScreen(),
-                                ),
-                      
-                        )
-                      ]
-                 );
+final forumsRouter = GoRouter(
+    initialLocation: '/${AppRoute.forum.name}',
+    debugLogDiagnostics: false,
+    routes: [
+      GoRoute(
+          name: AppRoute.forum.name,
+          path: '/${AppRoute.forum.name}',
+          pageBuilder: (context, state) => MaterialPage<void>(
+                key: state.pageKey,
+                child: const ForumScreen(),
+              ),
+          routes: [
+            GoRoute(
+              name: AppRoute.profile.name,
+              path: AppRoute.profile.name,
+              pageBuilder: (context, state) => MaterialPage<void>(
+                key: state.pageKey,
+                child: ProfileScreen(),
+              ),
+            ),
+            GoRoute(
+                name: AppRoute.postforum.name,
+                path: AppRoute.postforum.name,
+                pageBuilder: (context, state) {
+                  var user = state.extra as User;
+                  return MaterialPage<void>(
+                    key: state.pageKey,
+                    child: PostForumFAB(user: user),
+                  );
+                }),
+                GoRoute(
+                name: AppRoute.answersforum.name,
+                path: AppRoute.answersforum.name,
+                pageBuilder: (context, state) {
+                  var questionid = state.queryParameters['questionid'];
+                  return MaterialPage<void>(
+                    key: state.pageKey,
+                    child: AnswersScreen(questionid: questionid ?? ""),
+                  );
+                }),
+          ])
+    ]);
 
 final orgupdatesRouter = GoRouter(
-                      initialLocation: '/${AppRoute.orgUpdates.name}',
-                      debugLogDiagnostics: false,
-                      routes: [
-                        GoRoute(
-                                name: AppRoute.orgUpdates.name,
-                                path:'/${AppRoute.orgUpdates.name}',
-                                pageBuilder: (context, state) => NoTransitionPage<void>(
-                                  key: state.pageKey,
-                                  child: const OrgUpdatesScreen(),
-                                ),
-                      
-                        )
-                      ]
-                 );
+    initialLocation: '/${AppRoute.orgUpdates.name}',
+    debugLogDiagnostics: false,
+    routes: [
+      GoRoute(
+        name: AppRoute.orgUpdates.name,
+        path: '/${AppRoute.orgUpdates.name}',
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const OrgUpdatesScreen(),
+        ),
+      )
+    ]);
 
 final profileRouter = GoRouter(
-                      initialLocation: '/${AppRoute.profile.name}',
-                      debugLogDiagnostics: false,
-                      routes: [
-                        GoRoute(
-                                name: AppRoute.profile.name,
-                                path:'/${AppRoute.profile.name}',
-                                pageBuilder: (context, state) => NoTransitionPage<void>(
-                                  key: state.pageKey,
-                                  child: const OrgUpdatesScreen(),
-                                ),
-                      
-                        )
-                      ]
-                 );
+    initialLocation: '/${AppRoute.profile.name}',
+    debugLogDiagnostics: false,
+    routes: [
+      GoRoute(
+        name: AppRoute.profile.name,
+        path: '/${AppRoute.profile.name}',
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const OrgUpdatesScreen(),
+        ),
+      )
+    ]);

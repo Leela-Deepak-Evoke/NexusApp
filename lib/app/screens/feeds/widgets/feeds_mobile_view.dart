@@ -27,7 +27,8 @@ class _FeedsMobileViewCardState extends State<FeedsMobileView> {
     return Column(children: [
       Padding(
         padding: const EdgeInsets.only(left: 0, right: 0, top: 20),
-        child: Row(
+        child: 
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SearchBarSmall(

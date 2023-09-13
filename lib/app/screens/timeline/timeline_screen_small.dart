@@ -20,6 +20,8 @@ class _TimelineScreenSmallState extends ConsumerState<TimelineScreenSmall> {
           user: data,
           child: const Center(
             child: Text('Feeds Screen'),
+           
+            
           ),
         );
       },

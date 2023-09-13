@@ -232,7 +232,7 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
 
                     if(isSucess)
                     {
-                        GoRouter.of(context).go('/${AppRoute.rootNavigation.name}');
+                        GoRouter.of(context).go('${AppRoute.tabbarscreen.name}');
                     }
 
 

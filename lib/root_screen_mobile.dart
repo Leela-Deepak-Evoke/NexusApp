@@ -1,6 +1,8 @@
 
+import 'package:evoke_nexus_app/app/screens/login/login_screen.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_handler.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_screen.dart';
+import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
@@ -23,21 +25,34 @@ class RootScreenMobile extends ConsumerWidget {
     }
 
     if (checkUserAsyncValue is AsyncLoading) {
-      return const Center(
-        child: SizedBox(
+      return 
+      Container(
+       decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: [
+               const  Color(ColorConstants.topbarbg),
+               const Color(ColorConstants.tabbg),
+              ],
+            )
+          ),
+          child: Center(
+            child: SizedBox(
           height: 50.0,
           width: 50.0,
           child: CircularProgressIndicator(),
         ),
+          ),
       );
     }
 
     if (checkUserAsyncValue is AsyncError) {
-      return Text('An error occurred: ${checkUserAsyncValue.error}');
+        context.goNamed(AppRoute.login.name);
     }
 
     // This should ideally never be reached, but it's here as a fallback.
-    return const SizedBox.shrink();
+    return LoginScreen();
   }
 }
 

@@ -25,7 +25,11 @@ class FeedService {
           final jsonResponse = json.decode(response.decodeBody());
           if (jsonResponse is List) {
             return jsonResponse
-                .map((feedJson) => Feed.fromJson(feedJson, user.userId))
+                .map(
+                  (feedJson) 
+                  => 
+                 
+                  Feed.fromJson(feedJson, user.userId))
                 .toList();
           } else {
             throw Exception('Unexpected data format');

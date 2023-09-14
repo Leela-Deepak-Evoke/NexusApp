@@ -107,30 +107,24 @@ final mobileappRouter = GoRouter(
   initialLocation: '/${AppRoute.rootNavigation.name}',
   debugLogDiagnostics: false,
   routes: [
-      //   GoRoute(
-      // name: AppRoute.login.name,
-      // path: '/${AppRoute.login.name}',
-      // pageBuilder: (context, state) => NoTransitionPage<void>(
-      //   key: state.pageKey,
-      //   child: const LoginScreen(),
-      // )),
 
     // GoRoute(
-    //   name: AppRoute.rootNavigation.name,
-    //   path: '/${AppRoute.rootNavigation.name}',
-    //   pageBuilder: (context, state) => MaterialPage<void>(
-    //     key: state.pageKey,
-    //     child: const RootScreenMobile(),
-    //   ),
-    // ),
-    //  GoRoute(
-    //   name: AppRoute.tabbarscreen.name,
-    //   path: AppRoute.tabbarscreen.name,
-    //   pageBuilder: (context, state) => MaterialPage<void>(
-    //     key: state.pageKey,
-    //     child: const TabbarScreen(),
-    //   ),
-    // ),
+    //       name: AppRoute.login.name,
+    //       path: '/${AppRoute.login.name}',
+    //       pageBuilder: (context, state) => MaterialPage<void>(
+    //         key: state.pageKey,
+    //         child: const LoginScreen(),
+    //       ),
+    //     ),
+    //      GoRoute(
+    //       name: AppRoute.tabbarscreen.name,
+    //       path: AppRoute.tabbarscreen.name,
+    //       pageBuilder: (context, state) => MaterialPage<void>(
+    //         key: state.pageKey,
+    //         child: const TabbarScreen(),
+    //       ),
+    //     ),
+
     GoRoute(
       name: AppRoute.rootNavigation.name,
       path: '/${AppRoute.rootNavigation.name}',
@@ -139,39 +133,21 @@ final mobileappRouter = GoRouter(
         child: const RootScreenMobile(),
       ),
       routes: [
-        // GoRoute(
-        //   name: AppRoute.rootNavigation.name,
-        //   path: AppRoute.rootNavigation.name,
-        //   pageBuilder: (context, state) => MaterialPage<void>(
-        //     key: state.pageKey,
-        //     child: const RootScreenMobile(),
-        //   ),
-        //   routes: [
-        //      GoRoute(
-        //   name: AppRoute.tabbarscreen.name,
-        //   path: AppRoute.tabbarscreen.name,
-        //   pageBuilder: (context, state) => MaterialPage<void>(
-        //     key: state.pageKey,
-        //     child: const TabbarScreen(),
-        //   ),
-        // ),
-        //   ]
-        // ),
-        
-        // GoRoute(
-        //   name: AppRoute.login.name,
-        //   path: AppRoute.login.name,
-        //   pageBuilder: (context, state) => MaterialPage<void>(
-        //     key: state.pageKey,
-        //     child: const LoginScreen(),
-        //   ),
-        // ),
+      
          GoRoute(
           name: AppRoute.tabbarscreen.name,
           path: AppRoute.tabbarscreen.name,
           pageBuilder: (context, state) => MaterialPage<void>(
             key: state.pageKey,
             child: const TabbarScreen(),
+          ),
+        ),
+         GoRoute(
+          name: AppRoute.login.name,
+          path: AppRoute.login.name,
+          pageBuilder: (context, state) => MaterialPage<void>(
+            key: state.pageKey,
+            child: const LoginScreen(),
           ),
         ),
         GoRoute(

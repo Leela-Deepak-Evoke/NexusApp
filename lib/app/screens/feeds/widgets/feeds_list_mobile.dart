@@ -36,6 +36,7 @@ class FeedListMobile extends ConsumerWidget {
               itemCount: items.length,
               itemBuilder: (BuildContext context, int index) {
                 final item = items[index];
+                print(item.feedId);
                 final author = item.author;
                 final formattedDate = DateFormat('MMM d HH:mm')
                     .format(DateTime.parse(item.postedAt.toString()).toLocal());

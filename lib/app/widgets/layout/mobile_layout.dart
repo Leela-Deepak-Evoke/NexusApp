@@ -6,18 +6,20 @@ import 'package:evoke_nexus_app/app_router.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:evoke_nexus_app/app/widgets/common/mobile_custom_appbar.dart';
+import 'package:evoke_nexus_app/app/widgets/common/mobile_nav_topbar.dart';
 
 class MobileLayout extends StatefulWidget {
   final Widget child;
   final String title;
   final User user;
+  final bool canPost;
+   Function()? onPostClicked;
 
-   MobileLayout({
-    super.key,
-    
-    required this.child,
-    required this.title,
-      required this.user});
+  MobileLayout(
+      {super.key,
+      required this.child,
+      required this.title,
+      required this.user, required this.canPost, required this.onPostClicked});
   @override
   State<MobileLayout> createState() => _MobileLayoutState();
 }
@@ -39,7 +41,8 @@ class _MobileLayoutState extends State<MobileLayout> {
           Container(
               padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 120),
               child: widget.child),
-           CustomAppbar(title: widget.title),
+          CustomAppbar(title: widget.title, canPost: widget.canPost, onPostClicked: widget.onPostClicked)
+       
         ],
       ),
     );

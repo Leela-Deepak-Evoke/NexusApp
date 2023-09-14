@@ -115,7 +115,7 @@ class FeedService {
         },
       ).result;
       safePrint('Successfully uploaded file: ${result.uploadedItem.key}');
-      return mediaPath;
+      return platformFile.path;
     } catch (e) {
       safePrint('UploadFile Err: $e');
       return null;

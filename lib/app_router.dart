@@ -15,6 +15,7 @@ import 'package:evoke_nexus_app/app/screens/not_found/not_found_screen.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/feeds_screen.dart';
 import 'package:evoke_nexus_app/app/screens/org_updates/org_updates_screen.dart';
 import 'package:evoke_nexus_app/app/screens/profile/profile_screen.dart';
+import 'package:evoke_nexus_app/app/screens/create_post_feed/create_post_feed_screen.dart';
 
 final router = GoRouter(
   initialLocation: '/${AppRoute.login.name}',
@@ -126,6 +127,14 @@ final mobileappRouter = GoRouter(
           pageBuilder: (context, state) => MaterialPage<void>(
             key: state.pageKey,
             child: const FeedsScreen(),
+          ),
+        ),
+         GoRoute(
+          name: AppRoute. createPost.name,
+          path: "createPost",
+          pageBuilder: (context, state) => MaterialPage<void>(
+            key: state.pageKey,
+            child: const CreatePostFeedScreen(),
           ),
         ),
         GoRoute(

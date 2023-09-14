@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:evoke_nexus_app/app/widgets/common/mobile_nav_topbar.dart';
 
 class MobileCustomAppbar extends StatelessWidget {
   const MobileCustomAppbar({super.key});
@@ -79,7 +80,10 @@ class MobileCustomAppbar extends StatelessWidget {
 
 class CustomAppbar extends StatelessWidget {
   final String title;
-  const CustomAppbar(   {super.key,  required this.title});
+  final bool canPost;
+   Function()? onPostClicked;
+
+ CustomAppbar({super.key,  required this.title, required this.canPost, required this.onPostClicked});
 
   @override
   Widget build(BuildContext context) {
@@ -130,6 +134,18 @@ class CustomAppbar extends StatelessWidget {
                   //                 NotificationsScreen()));
                   //   },
                   // ),
+                   canPost ? SizedBox(
+              width: 40,
+              height: 40,
+              child: IconButton(
+                onPressed: () {
+                  onPostClicked!();
+                },
+                icon: Image.asset('assets/images/create-post.png'),
+                  ),
+            ):SizedBox(),
+            const SizedBox(width: 20,),
+            
                   InkWell(
                     onTap: () {
                     },
@@ -151,11 +167,14 @@ class CustomAppbar extends StatelessWidget {
                             )),
                       ),
                     ),
-                  )
+                    
+                  ),
+                  
                 ],
                 elevation: value ? 2.0 : 0.0,
               );
           }),
+          
     );
   }
 }

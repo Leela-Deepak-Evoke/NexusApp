@@ -36,12 +36,12 @@ class PostFeedsMobileView extends ConsumerStatefulWidget {
 }
 
 class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
-  // TextEditingController txtShareThoughts = TextEditingController();
   String? uploadedFilePath;
+    String? uploadedFileName;
+
   final TextEditingController hashTagController = TextEditingController();
   final TextEditingController mediaCaptionController = TextEditingController();
   final TextEditingController feedController = TextEditingController();
-  Uri? uploadedFileName;
   final feedService = FeedService();
   bool isMediaSelect = false;
   bool isImageSelect = false;
@@ -338,7 +338,7 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
 
   // IMAGE Content
   Widget imagePickerContent(Size size) {
-     return SizedBox(
+    return SizedBox(
       height: size.height - 600,
       //color: Colors.green,
       child: Expanded(
@@ -359,7 +359,6 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                           //   width: 100,
                           //   child: Image.file(File(imageFileList![index].path), fit: BoxFit.cover),
                           // ),
-
 
                           returnFileContainer(index),
                           Positioned(
@@ -437,34 +436,36 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   imageAttachment() async {
     final feedId = const Uuid().v4();
 
-    String? resultFileName = await feedService.uploadMedia(feedId, 'Image');
+    Map<String, dynamic>? resultFileName = await feedService.uploadMedia(feedId, 'Image');
     if (resultFileName != null) {
       setState(() {
         isMediaSelect = true;
         isImageSelect = true;
         isVideoSelect = false;
-        uploadedFilePath = resultFileName;
-      });
-       fileList.add(uploadedFilePath.toString());
+        uploadedFilePath = resultFileName["platformFilePath"];
+        uploadedFileName =  resultFileName["mediaPath"];
 
-    };
+      });
+      fileList.add(uploadedFilePath.toString());
+    } ;
   }
 
-  videoAttachment() async {
+  videoAttachment() async {                          
     final feedId = const Uuid().v4();
-    String? resultFileName = await feedService.uploadMedia(feedId, 'Video');
+      Map<String, dynamic>? resultFileName = await feedService.uploadMedia(feedId, 'Video');
     if (resultFileName != null) {
       setState(() {
         isMediaSelect = true;
         isImageSelect = false;
         isVideoSelect = true;
-        uploadedFilePath = resultFileName;
+         uploadedFilePath = resultFileName["platformFilePath"];
+        uploadedFileName =  resultFileName["mediaPath"];
       });
-        initializeVideo(uploadedFilePath.toString());
+      initializeVideo(uploadedFilePath.toString());
     }
   }
 
-void initializeVideo(String url) {
+  void initializeVideo(String url) {
     _videoPlayerController = VideoPlayerController.file(File(url))
       ..initialize().then((_) {
         _videoPlayerController!.setVolume(0);
@@ -473,19 +474,16 @@ void initializeVideo(String url) {
       });
   }
 
-
- Widget returnFileContainer(int index) {
+  Widget returnFileContainer(int index) {
     if (!fileList[index].contains('mp4')) {
       return Padding(
           padding: const EdgeInsets.only(top: 10, right: 10),
-             child: Image.file(File(uploadedFilePath ?? ""),
-                  fit: BoxFit.cover)
-          );
+          child: Image.file(File(uploadedFilePath ?? ""), fit: BoxFit.cover));
     } else {
       return FittedBox(
           fit: BoxFit.cover,
           child: Padding(
-             padding: const EdgeInsets.only(top: 10, right: 10),
+            padding: const EdgeInsets.only(top: 10, right: 10),
             // width: 100,
             // height: 100,
             child: VideoPlayer(_videoPlayerController!),
@@ -495,24 +493,24 @@ void initializeVideo(String url) {
 
   void _removeVideo() {
     _resetValues();
-     
-        _videoPlayerController = null;
 
+    _videoPlayerController = null;
   }
 
   void _updateFilePath(String path) {
     setState(() {
-      uploadedFilePath = path;
+      uploadedFileName = path;
     });
   }
 
   void _resetValues() {
     setState(() {
       uploadedFilePath = null;
+            uploadedFileName = null;
       feedController.clear();
       hashTagController.clear();
       mediaCaptionController.clear();
-       _videoPlayerController!.dispose();
+      _videoPlayerController!.dispose();
       // dropdownValue = 'General Feed';
     });
   }
@@ -520,7 +518,7 @@ void initializeVideo(String url) {
   void _handleSubmit(PostFeedParams params, WidgetRef ref) async {
     await ref.read(postFeedProvider(params).future);
     //  showMessage('Feed posted successfully');
-      Navigator.pop(context);
+    Navigator.pop(context);
   }
 
 // POST BUTTON
@@ -546,7 +544,11 @@ void initializeVideo(String url) {
               hashTagController.value.text.isEmpty) {
             showMessage('Please add hashtag');
           } else {
-            createPost();
+            if (isMediaSelect == false) {
+              createPostWithoutAttachment();
+            } else {
+              createPostAttachments();
+            }
           }
         },
         //POSt Feed
@@ -561,7 +563,21 @@ void initializeVideo(String url) {
     );
   }
 
-  createPost() async {
+  createPostWithoutAttachment() async {
+    final feedId = const Uuid().v4();
+    final params = PostFeedParams(
+        userId: widget.user.userId,
+        feedId: feedId,
+        content: feedController.text,
+        category: 'General Feed',
+        media: false,
+        hasImage: false,
+        hasVideo: false);
+    _handleSubmit(params, ref);
+    _resetValues();
+  }
+
+  createPostAttachments() async {
     final feedId = const Uuid().v4();
     final params = PostFeedParams(
       userId: widget.user.userId,
@@ -569,18 +585,17 @@ void initializeVideo(String url) {
       content: feedController.text,
       media: isMediaSelect,
       hasImage: isImageSelect,
-      imagePath: uploadedFilePath!,
+      imagePath: uploadedFileName ?? "",
       mediaCaption: mediaCaptionController.text,
       hashTag: hashTagController.text,
       hasVideo: isVideoSelect,
       category: 'General Feed',
     );
     _handleSubmit(params, ref);
-    
     _resetValues();
   }
 
-void dltImages(data) {
+  void dltImages(data) {
     showDialog(
         context: context,
         builder: (context) {
@@ -592,9 +607,9 @@ void dltImages(data) {
                 onPressed: () {
                   Navigator.pop(context);
                   _resetValues();
-                   setState(() {
-                  fileList.remove(data);
-                });
+                  setState(() {
+                    fileList.remove(data);
+                  });
                 },
                 child: const Text('OK'),
               ),
@@ -608,7 +623,6 @@ void dltImages(data) {
           );
         });
   }
-  
 
 //Validation
   void showMessage(String text) {
@@ -616,7 +630,7 @@ void dltImages(data) {
         context: context,
         builder: (context) {
           return AlertDialog(
-             content: Text(text),
+            content: Text(text),
             actions: <Widget>[
               TextButton(
                 onPressed: () {

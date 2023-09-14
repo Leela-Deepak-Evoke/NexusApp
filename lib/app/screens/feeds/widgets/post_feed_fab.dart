@@ -211,10 +211,10 @@ class _PostFeedFABState extends ConsumerState<PostFeedFAB> {
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 12)),
                       const SizedBox(width: 15),
-                      Expanded(
-                        child: ImageUploader(
-                            feedId: feedId, onFileUploaded: _updateFilePath),
-                      ),
+                      // Expanded(
+                      //   child: ImageUploader(
+                      //       feedId: feedId, onFileUploaded: _updateFilePath),
+                      // ),
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -336,8 +336,8 @@ class _PostFeedFABState extends ConsumerState<PostFeedFAB> {
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 12)),
                       const SizedBox(width: 15),
-                      VideoUploader(
-                          feedId: feedId, onFileUploaded: _updateFilePath),
+                      // VideoUploader(
+                      //     feedId: feedId, onFileUploaded: _updateFilePath),
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -459,10 +459,10 @@ class _PostFeedFABState extends ConsumerState<PostFeedFAB> {
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 12)),
                       const SizedBox(width: 15),
-                      Expanded(
-                        child: ImageUploader(
-                            feedId: feedId, onFileUploaded: _updateFilePath),
-                      ),
+                      // Expanded(
+                      //   child: ImageUploader(
+                      //       feedId: feedId, onFileUploaded: _updateFilePath),
+                      // ),
                     ],
                   ),
                   const SizedBox(height: 10),

@@ -83,7 +83,8 @@ class FeedListMobile extends ConsumerWidget {
                           item.media
                               ? AspectRatio(
                                   aspectRatio: 16 / 9,
-                                  child: Container(color: Colors.amber,)
+                                   child: FeedMediaView(item: item),
+                                  // child: Container(color: Colors.amber,)
                                   // FeedMediaView(item: item),
                                 )
                               : const SizedBox(height: 2.0),

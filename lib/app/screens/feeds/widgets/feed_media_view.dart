@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,17 +22,30 @@ class _FeedMediaViewState extends ConsumerState<FeedMediaView> {
   void initState() {
     super.initState();
     if (widget.item.hasImage) {
-      mediaURL = widget.item.imagePath;
+      if (mediaURL != null) {
+              mediaURL = widget.item.imagePath;
+      }
+      // mediaURL = widget.item.imagePath;
     } else if (widget.item.hasVideo) {
       mediaURL = widget.item.videoPath;
-      _controller = VideoPlayerController.network(mediaURL!)
-        ..initialize().then((_) {
-          setState(() {});
-        }).catchError((error) {
-          print("video error");
-          print(error);
-        });
+
+      if (mediaURL != null) {
+        initializeVideo(mediaURL.toString());
+      }
     }
+  }
+
+  void initializeVideo(String url) {
+    _controller = VideoPlayerController.file(File(url))
+      ..initialize().then((_) {
+        // _controller!.setVolume(0);
+        // _controller!.play();
+        setState(() {});
+      }).catchError((error) {
+        print("video error");
+        print(error);
+      });
+    ;
   }
 
   @override

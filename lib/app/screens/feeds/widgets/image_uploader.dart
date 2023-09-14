@@ -3,7 +3,7 @@ import 'package:evoke_nexus_app/app/services/feed_service.dart';
 
 class ImageUploader extends StatefulWidget {
   final String feedId;
-  final Function(String) onFileUploaded;
+  final Function(String, String) onFileUploaded;
   const ImageUploader(
       {Key? key, required this.feedId, required this.onFileUploaded})
       : super(key: key);
@@ -15,6 +15,7 @@ class ImageUploader extends StatefulWidget {
 class _ImageUploaderState extends State<ImageUploader> {
   final feedService = FeedService();
   String? uploadedFileName;
+  String? mediaPath;
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +26,16 @@ class _ImageUploaderState extends State<ImageUploader> {
               icon: const Icon(Icons.image),
               onPressed: () async {
                 // Call the uploadMedia function
-                String? resultFileName =
+                Map<String, dynamic>? resultFileName =
                     await feedService.uploadMedia(widget.feedId, 'Image');
-                if (resultFileName != null) {
-                  widget.onFileUploaded(resultFileName);
+     
+
+         if (resultFileName != null) {
+                  widget.onFileUploaded(resultFileName["platformFilePath"], resultFileName["mediaPath"]);
                   setState(() {
-                    uploadedFileName = resultFileName;
+                    uploadedFileName = resultFileName["platformFilePath"];
+                    mediaPath = resultFileName["mediaPath"];
+
                   });
                 }
               },

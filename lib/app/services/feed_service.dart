@@ -83,7 +83,44 @@ class FeedService {
     }
   }
 
-  Future<String?> uploadMedia(String rootId, String mediaType) async {
+// Future<Map<String, dynamic>?> uploadMedia(String rootId, String mediaType) async {
+//   try {
+//     safePrint('In upload');
+//     // ... Rest of your code ...
+
+//     final platformFile = fileResult.files.single;
+//     const options = StorageUploadFileOptions(
+//       accessLevel: StorageAccessLevel.guest,
+//     );
+
+//     final String mediaPath = 'feed/$rootId/${platformFile.name}';
+
+//     final result = await Amplify.Storage.uploadFile(
+//       localFile: AWSFile.fromStream(
+//         platformFile.readStream!,
+//         size: platformFile.size,
+//       ),
+//       key: mediaPath,
+//       options: options,
+//       onProgress: (progress) {
+//         safePrint('Fraction completed: ${progress.fractionCompleted}');
+//       },
+//     ).result;
+//     safePrint('Successfully uploaded file: ${result.uploadedItem.key}');
+    
+//     return {
+//       'platformFilePath': platformFile.path,
+//       'uploadedKey': result.uploadedItem.key,
+//     };
+//   } catch (e) {
+//     safePrint('UploadFile Err: $e');
+//     return null;
+//   }
+// }
+
+  ///
+
+  Future<Map<String, dynamic>?> uploadMedia(String rootId, String mediaType) async {
     try {
       safePrint('In upload');
       // Select a file from the device
@@ -119,7 +156,11 @@ class FeedService {
         },
       ).result;
       safePrint('Successfully uploaded file: ${result.uploadedItem.key}');
-      return platformFile.path;
+      // return platformFile.path;
+       return {
+      'platformFilePath': platformFile.path,
+      'mediaPath': mediaPath,
+    };
     } catch (e) {
       safePrint('UploadFile Err: $e');
       return null;

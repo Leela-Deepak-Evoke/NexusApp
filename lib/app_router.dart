@@ -134,14 +134,14 @@ final mobileappRouter = GoRouter(
       ),
       routes: [
       
-         GoRoute(
-          name: AppRoute.tabbarscreen.name,
-          path: AppRoute.tabbarscreen.name,
-          pageBuilder: (context, state) => MaterialPage<void>(
-            key: state.pageKey,
-            child: const TabbarScreen(),
-          ),
-        ),
+        //  GoRoute(
+        //   name: AppRoute.tabbarscreen.name,
+        //   path: AppRoute.tabbarscreen.name,
+        //   pageBuilder: (context, state) => MaterialPage<void>(
+        //     key: state.pageKey,
+        //     child: const TabbarScreen(),
+        //   ),
+        // ),
          GoRoute(
           name: AppRoute.login.name,
           path: AppRoute.login.name,

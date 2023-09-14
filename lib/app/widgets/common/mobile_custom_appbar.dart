@@ -75,14 +75,16 @@ class CustomAppbar extends StatelessWidget {
   final String title;
   final bool hasBackAction;
   final bool hasRightAction;
-  Function() topBarButtonAction;
+  final Function() topBarButtonAction;
+  final Function() backButtonAction;
    CustomAppbar(
     {
     super.key, 
     required this.title,
     required this.hasBackAction,
     required this.hasRightAction,
-    required this.topBarButtonAction
+    required this.topBarButtonAction,
+     required this.backButtonAction
     });
 
   @override
@@ -106,7 +108,7 @@ class CustomAppbar extends StatelessWidget {
                   height: 24,
                 ),
                 onPressed: () {
-                  Navigator.pop(context);
+                   backButtonAction();
                 },
               ) : 
               IconButton(

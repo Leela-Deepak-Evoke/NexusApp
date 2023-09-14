@@ -43,6 +43,9 @@ class _AnswersScreenState extends ConsumerState<AnswersScreen> {
           topBarButtonAction: () {
             
           },
+          backButtonAction: () {
+            Navigator.pop(context);
+          },
         );
          
       },

@@ -1,6 +1,8 @@
 
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/screens/org_updates/widgets/org_updates_list_mobile.dart';
+import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_utils.dart';
+import 'package:evoke_nexus_app/app/screens/timeline/timeline_screen.dart';
 import 'package:evoke_nexus_app/app/utils/app_routes.dart';
 import 'package:evoke_nexus_app/app/widgets/common/search_header_view.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +25,11 @@ class _ProfileMobileViewCardState extends State<ProfileMobileView> {
     return Column(children: 
     [
           Center(child: TextButton(child: Text("Timeline"),onPressed: () {
-            context.goNamed(AppRoute.timeline.name);
+             Navigator.push(
+              context,
+              MaterialPageRoute(fullscreenDialog: false,
+                  builder: (context) =>const TimelineScreen()));
+  
           },),)
       
     ]);

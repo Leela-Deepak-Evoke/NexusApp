@@ -21,6 +21,7 @@ class _ProfileScreenSmallState extends ConsumerState<ProfileScreenSmall> {
     final userAsyncValue = ref.watch(fetchUserProvider);
     return userAsyncValue.when(
       data: (data) {
+        
         return MobileLayout(
           title: 'Profile',
           user: data,
@@ -31,6 +32,9 @@ class _ProfileScreenSmallState extends ConsumerState<ProfileScreenSmall> {
           hasRightAction: true,
           topBarButtonAction: () {
             
+          },
+          backButtonAction: () {
+            Navigator.pop(context);
           },
         
         );

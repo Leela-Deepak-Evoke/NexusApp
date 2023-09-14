@@ -27,6 +27,9 @@ class _TestScreenSmallState extends ConsumerState<TestScreenSmall> {
             child: Text('Test Screen'),
             
           ),
+          backButtonAction: () {
+            
+          },
         );
       },
       loading: () => const Center(

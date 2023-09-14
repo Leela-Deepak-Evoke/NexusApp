@@ -33,6 +33,9 @@ class _FeedsScreenSmallState extends ConsumerState<FeedsScreenSmall> {
                   builder: (context) =>const CreatePostFeedScreen()));
             
           },
+          backButtonAction: () {
+            Navigator.pop(context);
+          },
         );
   }, 
     loading: () => const Center(

@@ -23,84 +23,89 @@ class FeedListMobile extends ConsumerWidget {
 
       return Container(
         alignment: AlignmentDirectional.center,
-        padding: const EdgeInsets.only(left: 0, right: 0, top: 10, bottom: 0),
-        child: SizedBox(
-          height: size.height - 330, // Constrain height.
-          child: ListView.separated(
-            padding:
-                const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
-            shrinkWrap: true,
-            itemCount: items.length,
-            itemBuilder: (BuildContext context, int index) {
-              final item = items[index];
-              final author = item.author;
-              final formattedDate = DateFormat('MMM d HH:mm')
-                  .format(DateTime.parse(item.postedAt.toString()).toLocal());
-
-              return Card(
-                child: Column(
-                  children: [
-                    ListTile(
-                      title: Text(
-                        author!, //posts[index].postedBy ?? "",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 14.0,
-                          fontFamily: GoogleFonts.poppins().fontFamily,
-                          fontWeight: FontWeight.w500,
+        padding: const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
+        child: Column(
+          children: 
+          [ 
+            Expanded(
+              child:
+               ListView.separated(
+              padding:
+                  const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
+              shrinkWrap: true,
+              itemCount: items.length,
+              itemBuilder: (BuildContext context, int index) {
+                final item = items[index];
+                final author = item.author;
+                final formattedDate = DateFormat('MMM d HH:mm')
+                    .format(DateTime.parse(item.postedAt.toString()).toLocal());
+            
+                return Card(
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: Text(
+                          author!, //posts[index].postedBy ?? "",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
+                        subtitle: Text(
+                          "${items[index].authorTitle}",
+                          style: TextStyle(
+                            color: Color(0xff676A79),
+                            fontSize: 12.0,
+                            fontFamily: GoogleFonts.notoSans().fontFamily,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                        leading: _profilePicWidget(item, ref),
                       ),
-                      subtitle: Text(
-                        "${items[index].authorTitle}",
-                        style: TextStyle(
-                          color: Color(0xff676A79),
-                          fontSize: 12.0,
-                          fontFamily: GoogleFonts.notoSans().fontFamily,
-                          fontWeight: FontWeight.normal,
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 4.0),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10.0, vertical: 0),
+                          child: Column(
+                            children: [
+                             contentViewWidget(item),
+                             hasTagViewWidget(item),
+                            ]
+                          )
+                          ),
+                          //const SizedBox(height: 4.0),
+                          item.media
+                              ? AspectRatio(
+                                  aspectRatio: 16 / 9,
+                                  child: Container(color: Colors.amber,)
+                                  // FeedMediaView(item: item),
+                                )
+                              : const SizedBox(height: 2.0),
+                          const SizedBox(height: 4.0),
+            
+                          //LikesWidget comment
+                          getInfoOFViewsComments(index, item),
+                          const Divider(
+                            thickness: 1.0,
+                            height: 1.0,
+                          ),
+                          btnSharingInfoLayout(index),
+                        ],
                       ),
-                      leading: _profilePicWidget(item, ref),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 4.0),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 0),
-                        child: Column(
-                          children: [
-                           contentViewWidget(item),
-                        hasTagViewWidget(item),
-                          ]
-                        )
-                        ),
-                        //const SizedBox(height: 4.0),
-                        item.media
-                            ? AspectRatio(
-                                aspectRatio: 16 / 9,
-                                child: FeedMediaView(item: item),
-                              )
-                            : const SizedBox(height: 2.0),
-                        const SizedBox(height: 4.0),
-
-                        //LikesWidget comment
-                        getInfoOFViewsComments(index, item),
-                        const Divider(
-                          thickness: 1.0,
-                          height: 1.0,
-                        ),
-                        btnSharingInfoLayout(index),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            },
-            separatorBuilder: (BuildContext context, int index) =>
-                const Divider(),
-          ),
-        ),
+                    ],
+                  ),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) =>
+                  const Divider(),
+                      ),
+            ),
+        ]),
       );
     }
 
@@ -205,53 +210,6 @@ class FeedListMobile extends ConsumerWidget {
             ),
           ),
         ]);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
-      child: Wrap(
-        spacing: 5,
-        direction: Axis.horizontal,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          //Like
-          TextButton.icon(
-            onPressed: () {},
-            icon: Image.asset(
-              'assets/images/thumb_up.png',
-              width: 20,
-              height: 20,
-            ),
-            label: Text(
-              'Like',
-              style: TextStyle(
-                color: Color(0xff393E41),
-                fontFamily: GoogleFonts.inter().fontFamily,
-                fontWeight: FontWeight.normal,
-                fontSize: 14,
-              ),
-            ),
-          ),
-
-          //Comment
-          TextButton.icon(
-            onPressed: () {},
-            icon: Image.asset(
-              'assets/images/chat_bubble_outline.png',
-              width: 20,
-              height: 20,
-            ),
-            label: Text(
-              'Comment',
-              style: TextStyle(
-                color: Color(0xff393E41),
-                fontFamily: GoogleFonts.inter().fontFamily,
-                fontWeight: FontWeight.normal,
-                fontSize: 14,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   Widget hasTagViewWidget(Feed item) {

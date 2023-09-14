@@ -25,7 +25,9 @@ class _TimelineScreenSmallState extends ConsumerState<TimelineScreenSmall> {
 
           },
           child: TimelineMobileView(user: data),
-          
+          backButtonAction: () {
+            Navigator.pop(context);
+          },
         
         );
       },

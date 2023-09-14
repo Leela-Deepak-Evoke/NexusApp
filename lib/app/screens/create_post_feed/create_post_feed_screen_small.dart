@@ -26,6 +26,9 @@ class _CreatePostFeedScreenSmallState extends ConsumerState<CreatePostFeedScreen
           hasRightAction: false,
           topBarButtonAction: () {           
           },
+          backButtonAction: () {
+            Navigator.pop(context);
+          },
           child: PostFeedsMobileView(user: data),
         );
   }, 

@@ -10,6 +10,7 @@ class MobileLayout extends StatefulWidget {
   final bool hasBackAction;
   final bool hasRightAction;
   final Function() topBarButtonAction;
+  final Function() backButtonAction;
    const MobileLayout({
     super.key,
     required this.child,
@@ -18,6 +19,8 @@ class MobileLayout extends StatefulWidget {
      required this.hasBackAction,
      required this.hasRightAction,
      required this.topBarButtonAction,
+     required this.backButtonAction,
+
 
       });
   @override
@@ -40,7 +43,7 @@ class _MobileLayoutState extends State<MobileLayout> {
           Container(
               padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 120),
               child: widget.child),
-           CustomAppbar(title: widget.title,hasBackAction: widget.hasBackAction, hasRightAction: widget.hasRightAction, topBarButtonAction:() => widget.topBarButtonAction(), ),
+           CustomAppbar(title: widget.title,hasBackAction: widget.hasBackAction, hasRightAction: widget.hasRightAction, topBarButtonAction:() => widget.topBarButtonAction(),backButtonAction: () => widget.backButtonAction(), ),
         ],
       ),
     );

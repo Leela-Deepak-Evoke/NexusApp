@@ -33,6 +33,9 @@ class _ForumScreenSmallState extends ConsumerState<ForumScreenSmall> {
           topBarButtonAction: () {
             
           },
+          backButtonAction: () {
+            Navigator.pop(context);
+          },
         
         );
        

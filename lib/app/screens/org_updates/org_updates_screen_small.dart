@@ -28,6 +28,9 @@ class _OrgUpdatesScreenSmall extends ConsumerState<OrgUpdatesScreenSmall> {
           topBarButtonAction: () {
             
           },
+          backButtonAction: () {
+            Navigator.pop(context);
+          },
         
         );
       },

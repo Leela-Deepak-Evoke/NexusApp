@@ -104,52 +104,34 @@ final router = GoRouter(
 );
 
 final mobileappRouter = GoRouter(
-  initialLocation: '/${AppRoute.rootNavigation.name}',
+  initialLocation: '/${AppRoute.login.name}',
   debugLogDiagnostics: false,
   routes: [
-
-    // GoRoute(
-    //       name: AppRoute.login.name,
-    //       path: '/${AppRoute.login.name}',
-    //       pageBuilder: (context, state) => MaterialPage<void>(
-    //         key: state.pageKey,
-    //         child: const LoginScreen(),
-    //       ),
-    //     ),
-    //      GoRoute(
-    //       name: AppRoute.tabbarscreen.name,
-    //       path: AppRoute.tabbarscreen.name,
-    //       pageBuilder: (context, state) => MaterialPage<void>(
-    //         key: state.pageKey,
-    //         child: const TabbarScreen(),
-    //       ),
-    //     ),
-
     GoRoute(
-      name: AppRoute.rootNavigation.name,
-      path: '/${AppRoute.rootNavigation.name}',
+      name: AppRoute.login.name,
+      path: '/${AppRoute.login.name}',
       pageBuilder: (context, state) => NoTransitionPage<void>(
         key: state.pageKey,
-        child: const RootScreenMobile(),
+        child: const LoginScreen(),
       ),
       routes: [
       
          GoRoute(
-          name: AppRoute.tabbarscreen.name,
-          path: AppRoute.tabbarscreen.name,
+          name: AppRoute.rootNavigation.name,
+          path: AppRoute.rootNavigation.name,
           pageBuilder: (context, state) => MaterialPage<void>(
             key: state.pageKey,
-            child: const TabbarScreen(),
+            child: const RootScreenMobile(),
           ),
         ),
-         GoRoute(
-          name: AppRoute.login.name,
-          path: AppRoute.login.name,
-          pageBuilder: (context, state) => MaterialPage<void>(
-            key: state.pageKey,
-            child: const LoginScreen(),
-          ),
-        ),
+        //  GoRoute(
+        //   name: AppRoute.login.name,
+        //   path: AppRoute.login.name,
+        //   pageBuilder: (context, state) => MaterialPage<void>(
+        //     key: state.pageKey,
+        //     child: const LoginScreen(),
+        //   ),
+        // ),
         GoRoute(
           name: AppRoute.feeds.name,
           path: "feeds",

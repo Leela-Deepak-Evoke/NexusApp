@@ -1,4 +1,6 @@
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
+import 'package:evoke_nexus_app/app/screens/create_post_forum/create_post_forum_screen.dart';
+import 'package:evoke_nexus_app/app/screens/create_post_forum/create_post_forum_screen_medium.dart';
 import 'package:evoke_nexus_app/app/screens/forum/widgets/forum_mobile_view.dart';
 import 'package:evoke_nexus_app/app/screens/forum/widgets/forum_web_view.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_utils.dart';
@@ -32,6 +34,12 @@ class _ForumScreenSmallState extends ConsumerState<ForumScreenSmall> {
           hasRightAction: true,
           topBarButtonAction: () {
             
+             Navigator.push(
+              context,
+              MaterialPageRoute(fullscreenDialog: true,
+                  builder: (context) =>const CreatePostForumScreen()));
+  
+
           },
           backButtonAction: () {
             Navigator.pop(context);

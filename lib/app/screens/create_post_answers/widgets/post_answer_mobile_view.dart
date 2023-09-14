@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'package:evoke_nexus_app/app/models/post_question_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,16 +20,16 @@ enum ContentType {
   document,
 }
 
-class PostFeedsMobileView extends ConsumerStatefulWidget {
+class PostAnswerMobileView extends ConsumerStatefulWidget {
   final User user;
-  const PostFeedsMobileView({super.key, required this.user});
+  const PostAnswerMobileView({super.key, required this.user});
 
   @override
-  ConsumerState<PostFeedsMobileView> createState() =>
-      _PostFeedsMobileViewState();
+  ConsumerState<PostAnswerMobileView> createState() =>
+      _PostAnswerMobileViewState();
 }
 
-class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
+class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
   // TextEditingController txtShareThoughts = TextEditingController();
   String? uploadedFilePath;
   final TextEditingController hashTagController = TextEditingController();
@@ -44,6 +46,8 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   int? selectedIndex;
   List<XFile>? imageFileList = [];
   List<File>? _selectedPostImages;
+  
+  String selectedCategory = "General";
   List<File>? get selectedPostImages => _selectedPostImages;
   String contentTypeSelected = "";
 
@@ -157,7 +161,38 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   Widget feedsDescriptionUI() {
     return Column(
       children: [
+       
+       
         Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                  child: TextFormField(
+                validator: (value) => value!.isEmpty ? 'Title' : null,
+                controller: hashTagController,
+                textInputAction: TextInputAction.done,
+                maxLines: null,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 14.0,
+                  fontFamily: GoogleFonts.notoSans().fontFamily,
+                  fontWeight: FontWeight.normal,
+                ),
+                decoration:
+                    const InputDecoration.collapsed(hintText: "Title"),
+              )),
+            ],
+          ),
+        ),
+         const Divider(
+          thickness: 1,
+          color: Color(0xffEAEAEA),
+          height: 1,
+        ),
+
+         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -178,34 +213,6 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                 ),
                 decoration: const InputDecoration.collapsed(
                     hintText: "Share your thoughts with colleagues.."),
-              )),
-            ],
-          ),
-        ),
-        const Divider(
-          thickness: 1,
-          color: Color(0xffEAEAEA),
-          height: 1,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                  child: TextFormField(
-                validator: (value) => value!.isEmpty ? 'HashTag #' : null,
-                controller: hashTagController,
-                textInputAction: TextInputAction.done,
-                maxLines: null,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 14.0,
-                  fontFamily: GoogleFonts.notoSans().fontFamily,
-                  fontWeight: FontWeight.normal,
-                ),
-                decoration:
-                    const InputDecoration.collapsed(hintText: "HashTag #"),
               )),
             ],
           ),
@@ -509,8 +516,8 @@ void initializeVideo(String url) {
     });
   }
 
-  void _handleSubmit(PostFeedParams params, WidgetRef ref) async {
-    await ref.read(postFeedProvider(params).future);
+  void _handleSubmit(PostQuestionParams params, WidgetRef ref) async {
+    await ref.read(postQuestionProvider(params).future);
     //  showMessage('Feed posted successfully');
       Navigator.pop(context);
   }
@@ -554,19 +561,28 @@ void initializeVideo(String url) {
   }
 
   createPost() async {
-    final feedId = const Uuid().v4();
-    final params = PostFeedParams(
-      userId: widget.user.userId,
-      feedId: feedId,
-      content: feedController.text,
-      media: isMediaSelect,
-      hasImage: isImageSelect,
-      imagePath: uploadedFilePath!,
-      mediaCaption: mediaCaptionController.text,
-      hashTag: hashTagController.text,
-      hasVideo: isVideoSelect,
-      category: 'General Feed',
-    );
+    final questionId = const Uuid().v4();
+   final params = PostQuestionParams(
+         name: 'Question',
+         userId: widget.user.userId,
+         questionId: questionId,
+         content: feedController.text,
+         hasImage: false,
+         subCategory: "",
+         category: selectedCategory,
+   );
+    // final params = PostQuestionParams(
+    //   userId: widget.user.userId,
+    //   feedId: feedId,
+    //   content: feedController.text,
+    //   media: isMediaSelect,
+    //   hasImage: isImageSelect,
+    //   imagePath: uploadedFilePath!,
+    //   mediaCaption: mediaCaptionController.text,
+    //   hashTag: hashTagController.text,
+    //   hasVideo: isVideoSelect,
+    //   category: 'General Feed',
+    // );
     _handleSubmit(params, ref);
     
     _resetValues();

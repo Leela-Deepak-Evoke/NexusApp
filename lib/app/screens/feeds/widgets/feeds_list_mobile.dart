@@ -1,5 +1,6 @@
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_media_view.dart';
+import 'package:evoke_nexus_app/app/screens/org_updates/widgets/org_updates_media_view.dart';
 import 'package:evoke_nexus_app/app/widgets/common/view_comments.dart';
 import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
+
 
 class FeedListMobile extends ConsumerWidget {
   final User user;
@@ -83,6 +85,7 @@ class FeedListMobile extends ConsumerWidget {
                           item.media
                               ? AspectRatio(
                                   aspectRatio: 16 / 9,
+                                  //  child: OrgUpdateMediaView(item: item),
                                    child: FeedMediaView(item: item),
                                   // child: Container(color: Colors.amber,)
                                   // FeedMediaView(item: item),

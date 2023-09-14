@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'package:evoke_nexus_app/app/models/post_question_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,22 +20,22 @@ enum ContentType {
   document,
 }
 
-class PostFeedsMobileView extends ConsumerStatefulWidget {
+class PostAnswerMobileView extends ConsumerStatefulWidget {
   final User user;
-  const PostFeedsMobileView({super.key, required this.user});
+  const PostAnswerMobileView({super.key, required this.user});
 
   @override
-  ConsumerState<PostFeedsMobileView> createState() =>
-      _PostFeedsMobileViewState();
+  ConsumerState<PostAnswerMobileView> createState() =>
+      _PostAnswerMobileViewState();
 }
 
-class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
+class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
+  // TextEditingController txtShareThoughts = TextEditingController();
   String? uploadedFilePath;
-    String? uploadedFileName;
-
   final TextEditingController hashTagController = TextEditingController();
   final TextEditingController mediaCaptionController = TextEditingController();
   final TextEditingController feedController = TextEditingController();
+  Uri? uploadedFileName;
   final feedService = FeedService();
   bool isMediaSelect = false;
   bool isImageSelect = false;
@@ -44,6 +46,8 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   int? selectedIndex;
   List<XFile>? imageFileList = [];
   List<File>? _selectedPostImages;
+  
+  String selectedCategory = "General";
   List<File>? get selectedPostImages => _selectedPostImages;
   String contentTypeSelected = "";
 
@@ -157,7 +161,38 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   Widget feedsDescriptionUI() {
     return Column(
       children: [
+       
+       
         Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                  child: TextFormField(
+                validator: (value) => value!.isEmpty ? 'Title' : null,
+                controller: hashTagController,
+                textInputAction: TextInputAction.done,
+                maxLines: null,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 14.0,
+                  fontFamily: GoogleFonts.notoSans().fontFamily,
+                  fontWeight: FontWeight.normal,
+                ),
+                decoration:
+                    const InputDecoration.collapsed(hintText: "Title"),
+              )),
+            ],
+          ),
+        ),
+         const Divider(
+          thickness: 1,
+          color: Color(0xffEAEAEA),
+          height: 1,
+        ),
+
+         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -178,34 +213,6 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                 ),
                 decoration: const InputDecoration.collapsed(
                     hintText: "Share your thoughts with colleagues.."),
-              )),
-            ],
-          ),
-        ),
-        const Divider(
-          thickness: 1,
-          color: Color(0xffEAEAEA),
-          height: 1,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                  child: TextFormField(
-                validator: (value) => value!.isEmpty ? 'HashTag #' : null,
-                controller: hashTagController,
-                textInputAction: TextInputAction.done,
-                maxLines: null,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 14.0,
-                  fontFamily: GoogleFonts.notoSans().fontFamily,
-                  fontWeight: FontWeight.normal,
-                ),
-                decoration:
-                    const InputDecoration.collapsed(hintText: "HashTag #"),
               )),
             ],
           ),
@@ -330,7 +337,7 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
 
   // IMAGE Content
   Widget imagePickerContent(Size size) {
-    return SizedBox(
+     return SizedBox(
       height: size.height - 600,
       //color: Colors.green,
       child: Expanded(
@@ -351,6 +358,7 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                           //   width: 100,
                           //   child: Image.file(File(imageFileList![index].path), fit: BoxFit.cover),
                           // ),
+
 
                           returnFileContainer(index),
                           Positioned(
@@ -434,17 +442,17 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
         isMediaSelect = true;
         isImageSelect = true;
         isVideoSelect = false;
-        uploadedFilePath = resultFileName["platformFilePath"];
+       uploadedFilePath = resultFileName["platformFilePath"];
         uploadedFileName =  resultFileName["mediaPath"];
-
       });
-      fileList.add(uploadedFilePath.toString());
-    } ;
+       fileList.add(uploadedFilePath.toString());
+
+    };
   }
 
-  videoAttachment() async {                          
+  videoAttachment() async {
     final feedId = const Uuid().v4();
-      Map<String, dynamic>? resultFileName = await feedService.uploadMedia(feedId, 'Video');
+    Map<String, dynamic>? resultFileName = await feedService.uploadMedia(feedId, 'Video');
     if (resultFileName != null) {
       setState(() {
         isMediaSelect = true;
@@ -453,11 +461,11 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
          uploadedFilePath = resultFileName["platformFilePath"];
         uploadedFileName =  resultFileName["mediaPath"];
       });
-      initializeVideo(uploadedFilePath.toString());
+        initializeVideo(uploadedFilePath.toString());
     }
   }
 
-  void initializeVideo(String url) {
+void initializeVideo(String url) {
     _videoPlayerController = VideoPlayerController.file(File(url))
       ..initialize().then((_) {
         _videoPlayerController!.setVolume(0);
@@ -466,16 +474,19 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
       });
   }
 
-  Widget returnFileContainer(int index) {
+
+ Widget returnFileContainer(int index) {
     if (!fileList[index].contains('mp4')) {
       return Padding(
           padding: const EdgeInsets.only(top: 10, right: 10),
-          child: Image.file(File(uploadedFilePath ?? ""), fit: BoxFit.cover));
+             child: Image.file(File(uploadedFilePath ?? ""),
+                  fit: BoxFit.cover)
+          );
     } else {
       return FittedBox(
           fit: BoxFit.cover,
           child: Padding(
-            padding: const EdgeInsets.only(top: 10, right: 10),
+             padding: const EdgeInsets.only(top: 10, right: 10),
             // width: 100,
             // height: 100,
             child: VideoPlayer(_videoPlayerController!),
@@ -485,32 +496,32 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
 
   void _removeVideo() {
     _resetValues();
+     
+        _videoPlayerController = null;
 
-    _videoPlayerController = null;
   }
 
   void _updateFilePath(String path) {
     setState(() {
-      uploadedFileName = path;
+      uploadedFilePath = path;
     });
   }
 
   void _resetValues() {
     setState(() {
       uploadedFilePath = null;
-            uploadedFileName = null;
       feedController.clear();
       hashTagController.clear();
       mediaCaptionController.clear();
-      _videoPlayerController!.dispose();
+       _videoPlayerController!.dispose();
       // dropdownValue = 'General Feed';
     });
   }
 
-  void _handleSubmit(PostFeedParams params, WidgetRef ref) async {
-    await ref.read(postFeedProvider(params).future);
+  void _handleSubmit(PostQuestionParams params, WidgetRef ref) async {
+    await ref.read(postQuestionProvider(params).future);
     //  showMessage('Feed posted successfully');
-    Navigator.pop(context);
+      Navigator.pop(context);
   }
 
 // POST BUTTON
@@ -536,11 +547,7 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
               hashTagController.value.text.isEmpty) {
             showMessage('Please add hashtag');
           } else {
-            if (isMediaSelect == false) {
-              createPostWithoutAttachment();
-            } else {
-              createPostAttachments();
-            }
+            createPost();
           }
         },
         //POSt Feed
@@ -555,39 +562,35 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     );
   }
 
-  createPostWithoutAttachment() async {
-    final feedId = const Uuid().v4();
-    final params = PostFeedParams(
-        userId: widget.user.userId,
-        feedId: feedId,
-        content: feedController.text,
-        category: 'General Feed',
-        media: false,
-        hasImage: false,
-        hasVideo: false);
+  createPost() async {
+    final questionId = const Uuid().v4();
+   final params = PostQuestionParams(
+         name: 'Question',
+         userId: widget.user.userId,
+         questionId: questionId,
+         content: feedController.text,
+         hasImage: false,
+         subCategory: "",
+         category: selectedCategory,
+   );
+    // final params = PostQuestionParams(
+    //   userId: widget.user.userId,
+    //   feedId: feedId,
+    //   content: feedController.text,
+    //   media: isMediaSelect,
+    //   hasImage: isImageSelect,
+    //   imagePath: uploadedFilePath!,
+    //   mediaCaption: mediaCaptionController.text,
+    //   hashTag: hashTagController.text,
+    //   hasVideo: isVideoSelect,
+    //   category: 'General Feed',
+    // );
     _handleSubmit(params, ref);
+    
     _resetValues();
   }
 
-  createPostAttachments() async {
-    final feedId = const Uuid().v4();
-    final params = PostFeedParams(
-      userId: widget.user.userId,
-      feedId: feedId,
-      content: feedController.text,
-      media: isMediaSelect,
-      hasImage: isImageSelect,
-      imagePath: uploadedFileName ?? "",
-      mediaCaption: mediaCaptionController.text,
-      hashTag: hashTagController.text,
-      hasVideo: isVideoSelect,
-      category: 'General Feed',
-    );
-    _handleSubmit(params, ref);
-    _resetValues();
-  }
-
-  void dltImages(data) {
+void dltImages(data) {
     showDialog(
         context: context,
         builder: (context) {
@@ -599,9 +602,9 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                 onPressed: () {
                   Navigator.pop(context);
                   _resetValues();
-                  setState(() {
-                    fileList.remove(data);
-                  });
+                   setState(() {
+                  fileList.remove(data);
+                });
                 },
                 child: const Text('OK'),
               ),
@@ -615,6 +618,7 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
           );
         });
   }
+  
 
 //Validation
   void showMessage(String text) {
@@ -622,7 +626,7 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            content: Text(text),
+             content: Text(text),
             actions: <Widget>[
               TextButton(
                 onPressed: () {

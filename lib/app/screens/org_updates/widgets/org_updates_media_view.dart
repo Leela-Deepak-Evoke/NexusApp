@@ -31,6 +31,11 @@ class _OrgUpdateMediaViewState extends ConsumerState<OrgUpdateMediaView> {
           print(error);
         });
     }
+   else
+    {
+      mediaURL = null;
+    }
+   
   }
 
   @override
@@ -41,6 +46,12 @@ class _OrgUpdateMediaViewState extends ConsumerState<OrgUpdateMediaView> {
 
   @override
   Widget build(BuildContext context) {
+
+    if(mediaURL == null)
+    {
+        return Image.asset('assets/images/placeholder.png',);
+    }
+
     final mediaURLAsyncValue = ref.watch(mediaUrlProvider(mediaURL!));
 
     return mediaURLAsyncValue.when(

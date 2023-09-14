@@ -137,7 +137,7 @@ class _PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
                         ),
 
                         //SELECT PHOTOS/VIDEOS/
-                        attchmentFileButtons(context, ref),
+                      //  attchmentFileButtons(context, ref),
                         const SizedBox(
                           height: 10,
                         )

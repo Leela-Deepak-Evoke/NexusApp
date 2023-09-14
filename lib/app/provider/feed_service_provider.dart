@@ -7,12 +7,14 @@ import 'package:evoke_nexus_app/app/models/feed.dart';
 final feedServiceProvider = Provider<FeedService>((ref) => FeedService());
 
 final feedsProvider =
-    FutureProvider.family<List<Feed>, User>((ref, user) async {
+    FutureProvider.autoDispose.family<List<Feed>, User>((ref, user) async {
   final feedService = ref.read(feedServiceProvider);
   final feeds = await feedService.fetchFeeds(user);
 
   return feeds;
 });
+
+
 
 final mediaUrlProvider =
     FutureProvider.autoDispose.family<String?, String>((ref, key) async {

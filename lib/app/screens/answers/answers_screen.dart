@@ -1,6 +1,7 @@
 import 'package:evoke_nexus_app/app/models/question.dart';
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/answers/answers_mobile_view.dart';
+import 'package:evoke_nexus_app/app/screens/create_post_answers/create_post_answer_screen.dart';
 import 'package:evoke_nexus_app/app/screens/forum/widgets/answers_list.dart';
 import 'package:evoke_nexus_app/app/screens/answers/answers_list_mobile.dart';
 import 'package:evoke_nexus_app/app/screens/forum/widgets/forum_mobile_view.dart';
@@ -14,11 +15,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+
+// class CreatePostAnswerScreenSmall extends ConsumerStatefulWidget {
+//     final Question question;
+
+//   const CreatePostAnswerScreenSmall({super.key,required this.question});
+  
+//   @override
+//   ConsumerState<CreatePostAnswerScreenSmall> createState() => _CreatePostAnswerScreenSmallState();
+// }
+
+// class _CreatePostAnswerScreenSmallState extends ConsumerState<CreatePostAnswerScreenSmall> {
+
+
 class AnswersScreen extends ConsumerStatefulWidget {
   const AnswersScreen({super.key,required this.questionid,required this.question});
   final String questionid;
   final Question question;
-
+  
   @override
   ConsumerState<AnswersScreen> createState() => _AnswersScreenState();
 }
@@ -42,6 +56,12 @@ class _AnswersScreenState extends ConsumerState<AnswersScreen> {
           hasRightAction: true,
           topBarButtonAction: () {
             
+             Navigator.push(
+              context,
+              MaterialPageRoute(fullscreenDialog: false,
+                  builder: (context) => CreatePostAnswerScreen(question: widget.question)));
+  
+
           },
           backButtonAction: () {
             Navigator.pop(context);

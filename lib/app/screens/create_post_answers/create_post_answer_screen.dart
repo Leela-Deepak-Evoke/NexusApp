@@ -1,18 +1,20 @@
-import 'package:evoke_nexus_app/app/screens/create_post_forum/create_post_forum_screen_large.dart';
-import 'package:evoke_nexus_app/app/screens/create_post_forum/create_post_forum_screen_medium.dart';
-import 'package:evoke_nexus_app/app/screens/create_post_forum/create_post_forum_screen_small.dart';
+import 'package:evoke_nexus_app/app/models/question.dart';
+import 'package:evoke_nexus_app/app/screens/create_post_answers/create_post_answer_screen_large.dart';
+import 'package:evoke_nexus_app/app/screens/create_post_answers/create_post_answer_screen_medium.dart';
+import 'package:evoke_nexus_app/app/screens/create_post_answers/create_post_answer_screen_small.dart';
 import 'package:flutter/material.dart';
 import 'package:evoke_nexus_app/app/screens/responsive/responsive_layout.dart';
 
-class CreatePostForumScreen extends StatelessWidget {
-  const CreatePostForumScreen({Key? key}) : super(key: key);
+class CreatePostAnswerScreen extends StatelessWidget {
+   final Question question;
+   CreatePostAnswerScreen({Key? key, required this.question}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const ResponsiveLayout(
-      smallScreenLayout: CreatePostForumScreenSmall(),
-      mediumScreenLayout: CreatePostForumScreenMedium(),
-      largeScreenLayout: CreatePostForumScreenLarge(),
+    return  ResponsiveLayout(
+      smallScreenLayout: CreatePostAnswerScreenSmall(question: question),
+      mediumScreenLayout: CreatePostAnswerScreenMedium(question: question),
+      largeScreenLayout: CreatePostAnswerScreenLarge(question: question),
     );
   }
 }

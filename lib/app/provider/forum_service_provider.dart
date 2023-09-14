@@ -18,7 +18,8 @@ final questionsProvider =
 });
 
 
-final answerListProvider = FutureProvider.autoDispose.family<List<Answer>,FetchAnswerParams>((ref, params)  async
+final answerListProvider = FutureProvider.autoDispose.
+ family<List<Answer>,FetchAnswerParams>((ref, params)  async
 {
    final forumService = ref.read(forumServiceProvider);
   final forums = await forumService.fetchAnswers(params);

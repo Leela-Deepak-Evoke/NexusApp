@@ -104,21 +104,22 @@ final router = GoRouter(
 );
 
 final mobileappRouter = GoRouter(
-  initialLocation: '/${AppRoute.login.name}',
+  initialLocation: '/${AppRoute.rootNavigation.name}',
   debugLogDiagnostics: false,
   routes: [
     GoRoute(
-      name: AppRoute.login.name,
-      path: '/${AppRoute.login.name}',
+      name: AppRoute.rootNavigation.name,
+      path: '/${AppRoute.rootNavigation.name}',
+      
       pageBuilder: (context, state) => NoTransitionPage<void>(
         key: state.pageKey,
-        child: const LoginScreen(),
+        child: const RootScreenMobile(),
       ),
       routes: [
       
          GoRoute(
-          name: AppRoute.rootNavigation.name,
-          path: AppRoute.rootNavigation.name,
+          name: AppRoute.login.name,
+          path: AppRoute.login.name,
           pageBuilder: (context, state) => MaterialPage<void>(
             key: state.pageKey,
             child: const RootScreenMobile(),

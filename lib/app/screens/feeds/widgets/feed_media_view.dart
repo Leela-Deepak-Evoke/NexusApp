@@ -156,11 +156,11 @@ class _FeedMediaViewState extends ConsumerState<FeedMediaView> {
   @override
   void initState() {
     super.initState();
-    if (widget.item.hasImage) {
+    if (widget.item.hasImage && widget.item.imagePath != null ) {
       mediaURL = widget.item.imagePath;
-    } else if (widget.item.hasVideo) {
+    } else if (widget.item.hasVideo && widget.item.videoPath != null) {
       mediaURL = widget.item.videoPath;
-      _controller = VideoPlayerController.network(mediaURL!)
+      _controller = VideoPlayerController.networkUrl(Uri.parse(mediaURL!))
         ..initialize().then((_) {
           setState(() {});
         }).catchError((error) {
@@ -168,6 +168,11 @@ class _FeedMediaViewState extends ConsumerState<FeedMediaView> {
           print(error);
         });
     }
+    else
+    {
+      mediaURL = null;
+    }
+   
   }
 
   @override
@@ -178,6 +183,12 @@ class _FeedMediaViewState extends ConsumerState<FeedMediaView> {
 
   @override
   Widget build(BuildContext context) {
+
+    if(mediaURL == null)
+    {
+        return Image.asset('assets/images/placeholder.png',);
+    }
+
     final mediaURLAsyncValue = ref.watch(mediaUrlProvider(mediaURL!));
 
     return mediaURLAsyncValue.when(

@@ -1,3 +1,5 @@
+import 'package:evoke_nexus_app/app/models/question.dart';
+import 'package:evoke_nexus_app/app/screens/create_post_answers/widgets/post_answer_mobile_view.dart';
 import 'package:evoke_nexus_app/app/screens/create_post_feed/widgets/postfeed_mobile_view.dart';
 import 'package:evoke_nexus_app/app/screens/create_post_forum/widgets/post_forum_mobile_view.dart';
 import 'package:flutter/material.dart';
@@ -7,21 +9,23 @@ import '../../utils/app_routes.dart';
 import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feeds_mobile_view.dart';
 
-class CreatePostForumScreenSmall extends ConsumerStatefulWidget {
-  const CreatePostForumScreenSmall({super.key});
+class CreatePostAnswerScreenSmall extends ConsumerStatefulWidget {
+    final Question question;
+
+  const CreatePostAnswerScreenSmall({super.key,required this.question});
   
   @override
-  ConsumerState<CreatePostForumScreenSmall> createState() => _CreatePostForumScreenSmallState();
+  ConsumerState<CreatePostAnswerScreenSmall> createState() => _CreatePostAnswerScreenSmallState();
 }
 
-class _CreatePostForumScreenSmallState extends ConsumerState<CreatePostForumScreenSmall> {
+class _CreatePostAnswerScreenSmallState extends ConsumerState<CreatePostAnswerScreenSmall> {
   @override
   Widget build(BuildContext context) {
     final userAsyncValue = ref.watch(fetchUserProvider);
     return userAsyncValue.when(
       data: (data) {
          return    MobileLayout(
-          title: "Post Question",
+          title: "Post Answer",
           user: data,
           hasBackAction: true,
           hasRightAction: false,
@@ -30,7 +34,7 @@ class _CreatePostForumScreenSmallState extends ConsumerState<CreatePostForumScre
           backButtonAction: () {
             Navigator.pop(context);
           },
-          child: PostForumMobileView(user: data),
+          child: PostAnswerMobileView(user: data ,question: widget.question),
         );
   }, 
     loading: () => const Center(

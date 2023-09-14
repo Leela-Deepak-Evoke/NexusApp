@@ -18,13 +18,14 @@ class _OrgUpdatesScreenSmall extends ConsumerState<OrgUpdatesScreenSmall> {
   Widget build(BuildContext context) {
     final userAsyncValue = ref.watch(fetchUserProvider);
     return userAsyncValue.when(
-      data: (data) {
+      data: (data)
+       {
         return MobileLayout(
           title: 'Organization Updates',
           user: data,
           child: OrgUpdateMobileView(user: data, onPostClicked: () {  },),
           hasBackAction: false,
-          hasRightAction: true,
+          hasRightAction: (data.role == 'Member') ? false : true,
           topBarButtonAction: () {
             
           },

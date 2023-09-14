@@ -1,12 +1,12 @@
 import 'dart:io';
+import 'package:evoke_nexus_app/app/models/post_answer_params.dart';
 import 'package:evoke_nexus_app/app/models/post_question_params.dart';
+import 'package:evoke_nexus_app/app/models/question.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:evoke_nexus_app/app/models/post_feed_params.dart';
-import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:evoke_nexus_app/app/services/feed_service.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
@@ -22,7 +22,9 @@ enum ContentType {
 
 class PostAnswerMobileView extends ConsumerStatefulWidget {
   final User user;
-  const PostAnswerMobileView({super.key, required this.user});
+  final Question question;
+  
+  const PostAnswerMobileView({super.key, required this.user,required this.question});
 
   @override
   ConsumerState<PostAnswerMobileView> createState() =>
@@ -32,6 +34,7 @@ class PostAnswerMobileView extends ConsumerStatefulWidget {
 class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
   // TextEditingController txtShareThoughts = TextEditingController();
   String? uploadedFilePath;
+
   final TextEditingController hashTagController = TextEditingController();
   final TextEditingController mediaCaptionController = TextEditingController();
   final TextEditingController feedController = TextEditingController();
@@ -50,6 +53,7 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
   String selectedCategory = "General";
   List<File>? get selectedPostImages => _selectedPostImages;
   String contentTypeSelected = "";
+ 
 
   void _selectDocuments() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -73,6 +77,7 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
   @override
   void initState() {
     super.initState();
+     hashTagController.text = widget.question.content ?? "";
   }
 
   _selectFile(ContentType type) {
@@ -133,11 +138,11 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
                         imagePickerContent(size),
 
                         const SizedBox(
-                          height: 20,
+                          height: 80,
                         ),
 
                         //SELECT PHOTOS/VIDEOS/
-                        attchmentFileButtons(context, ref),
+                       // attchmentFileButtons(context, ref),
                         const SizedBox(
                           height: 10,
                         )
@@ -170,15 +175,16 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
             children: [
               Expanded(
                   child: TextFormField(
+                enabled: false,
                 validator: (value) => value!.isEmpty ? 'Title' : null,
                 controller: hashTagController,
                 textInputAction: TextInputAction.done,
                 maxLines: null,
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 14.0,
+                  fontSize: 16.0,
                   fontFamily: GoogleFonts.notoSans().fontFamily,
-                  fontWeight: FontWeight.normal,
+                  fontWeight: FontWeight.w600,
                 ),
                 decoration:
                     const InputDecoration.collapsed(hintText: "Title"),
@@ -518,8 +524,8 @@ void initializeVideo(String url) {
     });
   }
 
-  void _handleSubmit(PostQuestionParams params, WidgetRef ref) async {
-    await ref.read(postQuestionProvider(params).future);
+  void _handleSubmit(PostAnswerParams params, WidgetRef ref) async {
+    await ref.read(postAnswerProvider(params).future);
     //  showMessage('Feed posted successfully');
       Navigator.pop(context);
   }
@@ -563,16 +569,24 @@ void initializeVideo(String url) {
   }
 
   createPost() async {
-    final questionId = const Uuid().v4();
-   final params = PostQuestionParams(
-         name: 'Question',
-         userId: widget.user.userId,
-         questionId: questionId,
-         content: feedController.text,
-         hasImage: false,
-         subCategory: "",
-         category: selectedCategory,
-   );
+
+    final answerId = const Uuid().v4();
+    final params = PostAnswerParams(
+                    name: 'Answer',
+                    userId: widget.user.userId,
+                    questionId: widget.question.questionId,
+                    answerId: answerId,
+                    content: feedController.text,
+                    hasImage: false);
+  //  final params = PostQuestionParams(
+  //        name: 'Question',
+  //        userId: widget.user.userId,
+  //        questionId: questionId,
+  //        content: feedController.text,
+  //        hasImage: false,
+  //        subCategory: "",
+  //        category: selectedCategory,
+  //  );
     // final params = PostQuestionParams(
     //   userId: widget.user.userId,
     //   feedId: feedId,

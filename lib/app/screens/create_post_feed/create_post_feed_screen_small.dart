@@ -19,8 +19,15 @@ class _CreatePostFeedScreenSmallState extends ConsumerState<CreatePostFeedScreen
     final userAsyncValue = ref.watch(fetchUserProvider);
     return userAsyncValue.when(
       data: (data) {
-      return MobileLayout(title: "Post Feed", user: data, canPost: false, onPostClicked: () {
-        },child: PostFeedsMobileView(user: data));
+         return    MobileLayout(
+          title: "Post Feed",
+          user: data,
+          hasBackAction: true,
+          hasRightAction: false,
+          topBarButtonAction: () {           
+          },
+          child: PostFeedsMobileView(user: data),
+        );
   }, 
     loading: () => const Center(
         child: SizedBox(

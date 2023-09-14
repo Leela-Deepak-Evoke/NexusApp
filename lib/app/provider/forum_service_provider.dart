@@ -17,12 +17,21 @@ final questionsProvider =
   return forums;
 });
 
+
+final answerListProvider = FutureProvider.autoDispose.family<List<Answer>,FetchAnswerParams>((ref, params)  async
+{
+   final forumService = ref.read(forumServiceProvider);
+  final forums = await forumService.fetchAnswers(params);
+  return forums;
+  
+},);
+
 final answersProvider = FutureProvider.autoDispose
     .family<List<Answer>, FetchAnswerParams>((ref, params) async {
-  final forumService = ref.read(forumServiceProvider);
-  final forums = await forumService.fetchAnswers(params);
+  // final forumService = ref.read(forumServiceProvider);
+  // final forums = await forumService.fetchAnswers(params);
 
-  return forums;
+  return List<Answer>.empty();
 });
 
 final mediaUrlProvider =

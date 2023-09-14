@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:evoke_nexus_app/app/widgets/common/mobile_nav_topbar.dart';
 
 class MobileCustomAppbar extends StatelessWidget {
   const MobileCustomAppbar({super.key});
 
-  
   @override
   Widget build(BuildContext context) {
     final ValueNotifier<bool> appbarShadow = ValueNotifier<bool>(false);
@@ -44,10 +42,7 @@ class MobileCustomAppbar extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: () {
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => SettingsScreen()));
+          
                   },
                   child: Container(
                     width: 24,
@@ -76,14 +71,19 @@ class MobileCustomAppbar extends StatelessWidget {
   }
 }
 
-
-
 class CustomAppbar extends StatelessWidget {
   final String title;
-  final bool canPost;
-   Function()? onPostClicked;
-
- CustomAppbar({super.key,  required this.title, required this.canPost, required this.onPostClicked});
+  final bool hasBackAction;
+  final bool hasRightAction;
+  Function() topBarButtonAction;
+   CustomAppbar(
+    {
+    super.key, 
+    required this.title,
+    required this.hasBackAction,
+    required this.hasRightAction,
+    required this.topBarButtonAction
+    });
 
   @override
   Widget build(BuildContext context) {
@@ -96,85 +96,58 @@ class CustomAppbar extends StatelessWidget {
           valueListenable: appbarShadow,
           builder: (context, value, child) {
             return AppBar(
-                backgroundColor: Colors.transparent,
-                leading: IconButton(
-                  icon: Image.asset(
-                    'assets/images/menu-icon.png',
-                    width: 24,
-                    height: 24,
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+              backgroundColor: Colors.transparent,
+              leading:
+               hasBackAction ? 
+               IconButton(
+                icon: Image.asset(
+                  'assets/images/back.png',
+                  width: 24,
+                  height: 24,
                 ),
-                titleSpacing: 0,
-                centerTitle: false,
-                title: Text(
-                 title,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16.0,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-                actions: [
-                  // IconButton(
-                  //   icon: Image.asset(
-                  //     'assets/images/notifications.png',
-                  //     width: 24,
-                  //     height: 24,
-                  //   ),
-                  //   onPressed: () {
-                  //     Navigator.push(
-                  //         context,
-                  //         MaterialPageRoute(
-                  //             builder: (context) =>
-                  //                 NotificationsScreen()));
-                  //   },
-                  // ),
-                   canPost ? SizedBox(
-              width: 40,
-              height: 40,
-              child: IconButton(
                 onPressed: () {
-                  onPostClicked!();
+                  Navigator.pop(context);
                 },
-                icon: Image.asset('assets/images/create-post.png'),
-                  ),
-            ):SizedBox(),
-            const SizedBox(width: 20,),
-            
-                  InkWell(
-                    onTap: () {
-                    },
-                    child: Container(
-                      width: 24,
-                      height: 24,
-                      padding: EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                          color: Colors.white, shape: BoxShape.circle),
-                      child: CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Color(0xffF2722B),
-                        child: Text('SM',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 10.0,
-                              fontFamily: GoogleFonts.poppins().fontFamily,
-                              fontWeight: FontWeight.w500,
-                            )),
-                      ),
-                    ),
-                    
-                  ),
+              ) : 
+              IconButton(
+                icon: Image.asset(
+                  'assets/images/Nexus.png',
+                  width: 35,
+                  height: 35,
+                ),
+                onPressed: () {
                   
-                ],
-                elevation: value ? 2.0 : 0.0,
-              );
+                },
+              ),
+
+              titleSpacing: 0,
+              centerTitle: false,
+              title: Text(
+                title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18.0,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.left,
+              ),
+              actions: [
+
+                hasRightAction ? IconButton(
+                icon: Image.asset(
+                  'assets/images/create-post.png',
+                  width: 24,
+                  height: 24,
+                ),
+                onPressed: () {
+                  topBarButtonAction();
+                },
+              ) : SizedBox()
+              ],
+              elevation: value ? 2.0 : 0.0,
+            );
           }),
-          
     );
   }
 }

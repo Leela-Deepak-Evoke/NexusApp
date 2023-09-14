@@ -11,7 +11,6 @@ class QuestionsList extends ConsumerWidget {
   final User user;
   const QuestionsList({super.key, required this.user});
 
-  //final feedService = FeedService();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final questionsAsyncValue = ref.watch(questionsProvider(user));

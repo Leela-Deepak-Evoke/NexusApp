@@ -26,11 +26,8 @@ class _TabBarHandlerState extends State<TabBarHandler>
 
 
   final menuItemlist =  <TabMenuItem>[
-    //  TabMenuItem(Icons.home , 'Home', HomeTabMenu( router: h )),
-   
-    
-   TabMenuItem(Icons.rss_feed , 'Feeds', FeedsTabMenu(router: feedsRouter,)),
-   TabMenuItem(Icons.forum, 'Fourms',ForumsTabMenu(router : forumsRouter)),
+    TabMenuItem(Icons.rss_feed , 'Feeds', FeedsTabMenu(router: feedsRouter,)),
+    TabMenuItem(Icons.forum, 'Fourms',ForumsTabMenu(router : forumsRouter)),
     TabMenuItem(Icons.update, 'OrgUpdates',OrgUpdatesTabMenu(router: orgupdatesRouter,)),
     TabMenuItem(Icons.person, 'Profile',ProfileTabMenu(router: profileRouter,)),
   ];
@@ -80,7 +77,6 @@ class _TabBarHandlerState extends State<TabBarHandler>
                             _tabBarNotifier.index = x;
                           }
                         
-                         
                         },
                         menuItems: menuItemlist),
                   ),
@@ -163,7 +159,8 @@ class TabBarNotifier extends ChangeNotifier {
 
   void popAllRoutes(int index) {
 
-    switch (index) {
+    switch (index) 
+    {
       case -1:
         if (homeKey.currentState!.canPop()) {
           homeKey.currentState!.popUntil((route) => route.isFirst);

@@ -1,19 +1,20 @@
 import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:evoke_nexus_app/app/screens/timeline/widgets/timeline_list.dart';
+import 'package:evoke_nexus_app/app/screens/timeline/widgets/timeline_list_mobile.dart';
 import 'package:evoke_nexus_app/app/widgets/common/search_header_view.dart';
 import 'package:flutter/material.dart';
 import 'package:evoke_nexus_app/app/widgets/common/search_bar_small.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feeds_list_mobile.dart';
-import 'package:evoke_nexus_app/app/screens/feeds/widgets/post_feed_fab.dart';
 
-class FeedsMobileView extends StatefulWidget {
+class TimelineMobileView extends StatefulWidget {
   final User user;
-  const FeedsMobileView({super.key, required this.user});
+  const TimelineMobileView({super.key, required this.user});
 
   @override
-  State<FeedsMobileView> createState() => _FeedsMobileViewCardState();
+  State<TimelineMobileView> createState() => _TimelineMobileViewCardState();
 }
 
-class _FeedsMobileViewCardState extends State<FeedsMobileView> {
+class _TimelineMobileViewCardState extends State<TimelineMobileView> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -27,12 +28,11 @@ class _FeedsMobileViewCardState extends State<FeedsMobileView> {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Column(children: [
-   
-        SearchHeaderView(name: "Feeds", searchController: _searchController, size: size, onSearchClicked: onSearchClicked),
+          // SearchHeaderView(name: "Feeds", searchController: _searchController, size: size, onSearchClicked: onSearchClicked),
         Expanded(
           child: Padding(
           padding: const EdgeInsets.only(left: 0, right: 0, top: 10), 
-            child: FeedListMobile(user: widget.user),
+            child: TimelineListMobile(user: widget.user),
           ),
         ),
     ]);

@@ -1,6 +1,7 @@
+
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/screens/forum/widgets/questions_list_mobile.dart';
-import 'package:evoke_nexus_app/app/widgets/common/mobile_nav_topbar.dart';
+import 'package:evoke_nexus_app/app/widgets/common/search_header_view.dart';
 import 'package:flutter/material.dart';
 
 class ForumMobileView extends StatefulWidget {
@@ -13,40 +14,25 @@ class ForumMobileView extends StatefulWidget {
 }
 
 class _ForumMobileViewCardState extends State<ForumMobileView> {
+   TextEditingController _searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar:  MobileAppNavTopBar(canPost: true,onPostClicked : widget.onPostClicked),
-      body: QuestionsListMobile(user: widget.user),
-    );
+     final Size size = MediaQuery.of(context).size;
+    return Column(children: [
+
+      SearchHeaderView(name: "Forums", searchController: _searchController, size: size ,onSearchClicked: () {
+      },),
+        Expanded(
+          child: Padding(
+          padding: const EdgeInsets.only(left: 5, right: 5, top: 10), 
+            child: QuestionsListMobile(user: widget.user),
+          ),
+        ),
+    ]);
+    
+  }
 
 
-    // Row(
-    //   children: [
-    //     SizedBox(s
-    //       width: MediaQuery.of(context).size.width - 600,
-    //       child: QuestionsList(user: widget.user),
-    //     ),
-    //     SizedBox(
-    //       width: 275,
-    //       child: Column(
-    //         children: [
-    //           const Align(alignment: Alignment.topRight, child: SearchCard()),
-    //           const Align(
-    //             alignment: Alignment.centerRight,
-    //             child: ForumFilterCard(),
-    //           ),
-    //           SizedBox(
-    //             height: 40,
-    //             child: Align(
-    //               alignment: Alignment.bottomRight,
-    //               child: PostForumFAB(user: widget.user),
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   ],
-    // );
+  void onSearchClicked() {
   }
 }

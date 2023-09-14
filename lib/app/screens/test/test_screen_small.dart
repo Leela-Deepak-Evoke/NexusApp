@@ -15,16 +15,19 @@ class _TestScreenSmallState extends ConsumerState<TestScreenSmall> {
     final userAsyncValue = ref.watch(fetchUserProvider);
     return userAsyncValue.when(
       data: (data) {
-        // return MobileLayout(
-        //   title: 'Test',
-        //   user: data,
-        //   child: const Center(
-        //     child: Text('Test Screen'),
-        //   ),
-        // );
-
-         return MobileLayout(title: "FEED", user: data, canPost: true, onPostClicked: () {
-        },child: Text('Test Screen'));
+        return MobileLayout(
+          title: 'Test',
+          user: data,
+            hasBackAction: false,
+          hasRightAction: true,
+          topBarButtonAction: () {
+            
+          },
+          child: const Center(
+            child: Text('Test Screen'),
+            
+          ),
+        );
       },
       loading: () => const Center(
         child: SizedBox(

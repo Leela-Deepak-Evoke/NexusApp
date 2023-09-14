@@ -27,6 +27,7 @@ class ForumService {
         if (response.statusCode == 200) {
           final jsonResponse = json.decode(response.decodeBody());
           if (jsonResponse is List) {
+            print(jsonResponse);
             return jsonResponse
                 .map((forumJson) => Question.fromJson(forumJson, user.userId))
                 .toList();

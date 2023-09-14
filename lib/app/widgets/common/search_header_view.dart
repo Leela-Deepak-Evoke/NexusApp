@@ -6,13 +6,14 @@ class SearchHeaderView extends StatefulWidget {
   final String name;
   final TextEditingController searchController;
   final Size size;
+  Function() onSearchClicked;
 
-  const SearchHeaderView({
+   SearchHeaderView({
     super.key,
     required this.name,
     required this.searchController,
     required this.size,
-
+    required this.onSearchClicked,
   });
 
   @override
@@ -24,22 +25,18 @@ class _SearchHeaderViewState extends State<SearchHeaderView> {
   Widget build(BuildContext context) {
     
 
-    return Container(
-          height: 70,
-          color: const Color(ColorConstants.topbarbg),
-          child:      Padding(
-      padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+    return 
+     Padding(
+      padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
       child: 
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-            SearchBarSmall(
+          SearchBarSmall(
               searchController: widget.searchController,
-              text: "Q&A",
-              width: widget.size.width - 80,
-              onPostSucess:() {
-                
-              },),
+              text: widget.name,
+              width: widget.size.width - 90,
+              onPostSucess: widget.onSearchClicked),
           const Spacer(),
           Container(
             width: 44,
@@ -55,15 +52,57 @@ class _SearchHeaderViewState extends State<SearchHeaderView> {
                 height: 44,
               ),
               onPressed: () {
-               
+               // openBottomSheetForCategories();
               },
             ),
           ),
         ],
       ),
-    ),
+    );
+//     Container(
+//           height: 70,
+//           color: const Color(ColorConstants.topbarbg),
+//           child:      Padding(
+//       padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+//       child: 
+//       Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//             SearchBarSmall(
+//               searchController: widget.searchController,
+//               text: "Q&A",
+//               width: widget.size.width - 80,
+//               onPostSucess:() {
+                
+//               },),
+//           const Spacer(),
+//           Container(
+//             width: 44,
+//             height: 44,
+//             decoration: BoxDecoration(
+//               borderRadius: BorderRadius.circular(5.0),
+//               color: const Color.fromRGBO(255, 255, 255, 0.2),
+//             ),
+//             child: IconButton(
+//               icon: Image.asset(
+//                 'assets/images/verticalLines.png',
+//                 width: 44,
+//                 height: 44,
+//               ),
+//               onPressed: () {
+               
+//               },
+//             ),
+//           ),
+//         ],
+//       ),
+//     ),
 
- );
+//  );
 }
 
+
+  void onSearchClicked() 
+  {
+  }
 }

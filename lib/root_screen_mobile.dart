@@ -1,5 +1,6 @@
 
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_handler.dart';
+import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
@@ -16,7 +17,9 @@ class RootScreenMobile extends ConsumerWidget {
 
     if (checkUserAsyncValue is AsyncData) {
       
-      return TabBarHandler();
+      return TabbarScreen();
+        // GoRouter.of(context).goNamed('${AppRoute.tabbarscreen.name}}');
+      // return const SizedBox.shrink();
     }
 
     if (checkUserAsyncValue is AsyncLoading) {

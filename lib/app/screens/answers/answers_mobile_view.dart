@@ -1,0 +1,47 @@
+import 'package:evoke_nexus_app/app/models/fetch_answer_params.dart';
+import 'package:evoke_nexus_app/app/models/question.dart';
+import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:evoke_nexus_app/app/screens/answers/answers_list_mobile.dart';
+import 'package:evoke_nexus_app/app/screens/answers/question_card_view.dart';
+import 'package:evoke_nexus_app/app/screens/forum/widgets/questions_list_mobile.dart';
+import 'package:evoke_nexus_app/app/widgets/common/mobile_nav_topbar.dart';
+import 'package:evoke_nexus_app/app/widgets/common/search_header_view.dart';
+import 'package:flutter/material.dart';
+
+class AnswersMobileView extends StatefulWidget {
+  final User user;
+  final String questionid;
+  final Question question;
+  Function() onPostClicked;
+   AnswersMobileView({super.key, required this.user,required this.questionid,required this.question,required this.onPostClicked});
+
+  @override
+  State<AnswersMobileView> createState() => _AnswersMobileViewCardState();
+}
+
+class _AnswersMobileViewCardState extends State<AnswersMobileView> {
+  @override
+  Widget build(BuildContext context) {
+ final Size size = MediaQuery.of(context).size;
+
+    return 
+       Column(children: [
+
+        SizedBox(
+         width: size.width,
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(0,0,0,0),
+            child:  QuestionCardView(user: widget.user, item: widget.question)
+          ),
+        ),
+        Expanded(
+          child: Padding(
+          padding: const EdgeInsets.only(left: 0, right: 0, top: 0), 
+            child:   AnswerListMobile(params: FetchAnswerParams(userId: widget.user.userId, questionId: widget.questionid), user: widget.user, questionId: widget.questionid)  )
+,
+          ),
+        
+    ]);
+     }
+}
+

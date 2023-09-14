@@ -580,8 +580,7 @@ void initializeVideo(String url) {
     _resetValues();
   }
 
-//Image Delete
-  void dltImages(data) {
+void dltImages(data) {
     showDialog(
         context: context,
         builder: (context) {
@@ -609,6 +608,7 @@ void initializeVideo(String url) {
           );
         });
   }
+  
 
 //Validation
   void showMessage(String text) {

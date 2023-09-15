@@ -1,6 +1,7 @@
 import 'package:evoke_nexus_app/app/models/fetch_answer_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
+import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/view_comments.dart';
 import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +49,7 @@ class AnswerList extends ConsumerWidget {
                     subtitle: Text(item.authorTitle!,
                         style: const TextStyle(fontSize: 14)),
                     trailing: Text(
-                      formattedDate,
+                      Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString())),
                       style: const TextStyle(
                           fontStyle: FontStyle.italic, fontSize: 14),
                     ),

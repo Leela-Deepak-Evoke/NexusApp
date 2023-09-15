@@ -59,6 +59,7 @@ static const Color blueTextColour = Color(0xff1B154C);
 
 abstract class Global {
 
+
   static String calculateTimeDifferenceBetween(
        DateTime startDate) {
     int seconds = DateTime.now().difference(startDate).inSeconds;
@@ -73,6 +74,12 @@ abstract class Global {
         return '${DateTime.now().difference(startDate).inDays} days ago';
       }
     }
+  }
+
+  static DateTime getDateTimeFromString(String date) {
+    DateTime tempDate = DateFormat("yyyy-MM-dd'T'HH:mm:ssZ").parse(date, true);
+    return tempDate;
+
   }
 
   static DateTime getDateTimeFromStringForPosts(String date) {

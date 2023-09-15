@@ -1,5 +1,7 @@
 import 'package:evoke_nexus_app/app/models/question.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:evoke_nexus_app/app/screens/create_post_answers/create_post_answer_screen.dart';
+import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -9,13 +11,13 @@ import '../../provider/comment_service_provider.dart';
 class QuestionCardView extends ConsumerWidget {
   final User user;
   final Question item;
-  const QuestionCardView({super.key, required this.user ,required this.item});
+  const QuestionCardView({super.key, required this.user, required this.item});
 
   //final feedService = FeedService();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-     final formattedDate = DateFormat('MMM d HH:mm')
-                          .format(DateTime.parse(item.postedAt.toString()).toLocal());
+    final formattedDate = DateFormat('MMM d HH:mm')
+        .format(DateTime.parse(item.postedAt.toString()).toLocal());
     return Card(
       margin: const EdgeInsets.all(0),
       clipBehavior: Clip.antiAlias,
@@ -34,18 +36,19 @@ class QuestionCardView extends ConsumerWidget {
                 height: 10,
               ),
               askedbyViewHeader(item, ref),
-              footerVIewWidget(formattedDate, item)
+              footerVIewWidget(formattedDate, item, context)
             ],
           )),
     );
   }
-  
-    Widget footerVIewWidget(String formattedDate, Question item) {
+
+  Widget footerVIewWidget(
+      String formattedDate, Question item, BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          formattedDate,
+            Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString())),
           style: TextStyle(
             color: Color(0xff676A79),
             fontSize: 12.0,
@@ -53,22 +56,54 @@ class QuestionCardView extends ConsumerWidget {
             fontWeight: FontWeight.normal,
           ),
         ),
-        TextButton.icon(
-            onPressed: () {},
-            icon: Image.asset('assets/images/response.png'),
-            label: Text(
-              '${item.answers}',
-              style: TextStyle(
-                color: Color(0xff676A79),
-                fontSize: 12.0,
-                fontFamily: GoogleFonts.inter().fontFamily,
-                fontWeight: FontWeight.normal,
+        Row(
+          children: [
+            TextButton.icon(
+                onPressed: () {},
+                icon: Image.asset('assets/images/response.png'),
+                label: Text(
+                  '${item.answers}',
+                  style: TextStyle(
+                    color: Color(0xff676A79),
+                    fontSize: 12.0,
+                    fontFamily: GoogleFonts.inter().fontFamily,
+                    fontWeight: FontWeight.normal,
+                  ),
+                )),
+            Container(
+              height: 26,
+              padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0.0),
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  backgroundColor: Color(0xffF2722B),
+                  side: BorderSide(width: 1, color: Color(0xffF2722B)),
+                ),
+                // <-- OutlinedButton
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          fullscreenDialog: true,
+                          builder: (context) =>
+                              CreatePostAnswerScreen(question: item)));
+                },
+                child: Text('Reply',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12.0,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      fontWeight: FontWeight.normal,
+                    )),
               ),
-            ))
+            ),
+          ],
+        )
       ],
     );
   }
-
 
   Wrap askedbyViewHeader(Question item, WidgetRef ref) {
     return Wrap(
@@ -97,8 +132,7 @@ class QuestionCardView extends ConsumerWidget {
     );
   }
 
-
-    Widget categoryHearViewWidget(Question item) {
+  Widget categoryHearViewWidget(Question item) {
     return Container(
       child: Wrap(
           spacing: 5,
@@ -111,7 +145,7 @@ class QuestionCardView extends ConsumerWidget {
             ),
             Text(
               item.category ?? "General",
-                style: TextStyle(
+              style: TextStyle(
                 color: Color(0xffB54242),
                 fontSize: 12.0,
                 fontFamily: GoogleFonts.poppins().fontFamily,
@@ -149,7 +183,7 @@ class QuestionCardView extends ConsumerWidget {
         content = item.content!;
       }
       return Text(content,
-            style: TextStyle(
+          style: TextStyle(
             color: Colors.black,
             fontSize: 16.0,
             fontFamily: GoogleFonts.poppins().fontFamily,
@@ -173,17 +207,13 @@ class QuestionCardView extends ConsumerWidget {
         data: (imageUrl) {
           if (imageUrl != null && imageUrl.isNotEmpty) {
             return CircleAvatar(
-              radius: 12,
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Text(
-                    avatarText,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                  );
-                },
+              backgroundImage: NetworkImage(imageUrl),
+              radius: 12.0,
+              child: Text(
+                avatarText,
+                textAlign: TextAlign.center,
+                style:
+                    const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
               ),
             );
           } else {
@@ -214,5 +244,4 @@ class QuestionCardView extends ConsumerWidget {
     }
     return '';
   }
- 
 }

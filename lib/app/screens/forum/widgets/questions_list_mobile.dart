@@ -3,6 +3,7 @@ import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/forum/widgets/answers_list.dart';
 import 'package:evoke_nexus_app/app/utils/app_routes.dart';
+import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/search_header_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -106,7 +107,7 @@ class QuestionsListMobile extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          formattedDate,
+             Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString())),
           style: TextStyle(
             color: Color(0xff676A79),
             fontSize: 12.0,
@@ -114,6 +115,7 @@ class QuestionsListMobile extends ConsumerWidget {
             fontWeight: FontWeight.normal,
           ),
         ),
+
         TextButton.icon(
             onPressed: () {},
             icon: Image.asset('assets/images/response.png'),
@@ -229,20 +231,16 @@ class QuestionsListMobile extends ConsumerWidget {
           ref.watch(authorThumbnailProvider(item.authorThumbnail!));
       //print(profilePicAsyncValue);
       return profilePicAsyncValue.when(
-        data: (imageUrl) {
+             data: (imageUrl) {
           if (imageUrl != null && imageUrl.isNotEmpty) {
             return CircleAvatar(
-              radius: 12,
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Text(
-                    avatarText,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
-                  );
-                },
+              backgroundImage: NetworkImage(imageUrl),
+              radius: 12.0,
+              child: Text(
+                avatarText,
+                textAlign: TextAlign.center,
+                style:
+                    const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
               ),
             );
           } else {

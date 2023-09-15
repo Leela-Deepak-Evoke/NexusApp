@@ -46,6 +46,7 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   List<File>? _selectedPostImages;
   List<File>? get selectedPostImages => _selectedPostImages;
   String contentTypeSelected = "";
+bool isVisible = true; // Set this boolean based on your condition
 
   void _selectDocuments() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -123,10 +124,13 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                         feedsDescriptionUI(),
 
                         //VIDEOS,IMAGES PICKERS
+                      
+
                         videoPickerContent(size),
 
                         // Image Picker
-                        imagePickerContent(size),
+                           if (isVisible) imagePickerContent(size),
+                        // imagePickerContent(size),
 
                         const SizedBox(
                           height: 20,
@@ -233,6 +237,7 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                   child: TextButton.icon(
                     onPressed: () {
                       _selectFile(ContentType.image);
+                      isVisible = true;
                     },
                     icon: Image.asset(
                       'assets/images/image.png',
@@ -267,6 +272,7 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                       : false,
                   child: TextButton.icon(
                     onPressed: () {
+                      isVisible = false;
                       _selectFile(ContentType.video);
                     },
                     icon: Image.asset(
@@ -301,6 +307,7 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                   child: TextButton.icon(
                     // <-- TextButton
                     onPressed: () {
+                        isVisible = true;
                       _selectFile(ContentType.document);
                     },
                     icon: Image.asset(
@@ -372,12 +379,14 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     );
   }
 
+
   // VIDEO Content
   Widget videoPickerContent(Size size) {
     return Container(
       padding: const EdgeInsets.all(10.0),
-      height: 100,
-      width: 100,
+      // color: Colors.red,
+      // height: 200,
+      // width: 200,
       //color: Colors.blue,
       child: Row(
         children: <Widget>[
@@ -386,9 +395,10 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                 ? Expanded(
                     child: Stack(
                       children: <Widget>[
-                        SizedBox(
-                          height: 200,
-                          width: 200,
+                       SizedBox(
+                          //  height: size.height - 600,
+                          // height: 200,
+                          // width: 200,
                           child: AspectRatio(
                             aspectRatio:
                                 _videoPlayerController!.value.aspectRatio,
@@ -421,6 +431,8 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
           //   ),
         ],
       ),
+   
+   
     );
   }
 
@@ -504,6 +516,26 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
       mediaCaptionController.clear();
       _videoPlayerController!.dispose();
       // dropdownValue = 'General Feed';
+
+      // if (fileList.isNotEmpty){
+      //  fileList.remove(data);
+      // }
+    });
+  }
+
+    void _resetImageDeleteValues(data) {
+    setState(() {
+       if (fileList.isNotEmpty){
+       fileList.remove(data);
+      }
+      // uploadedFilePath = null;
+      //       uploadedFileName = null;
+      feedController.clear();
+      hashTagController.clear();
+      mediaCaptionController.clear();
+      _videoPlayerController!.dispose();
+
+     
     });
   }
 
@@ -588,7 +620,7 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   }
 
   void dltImages(data) {
-    showDialog(
+   showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
@@ -598,10 +630,11 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  _resetValues();
-                  setState(() {
-                    fileList.remove(data);
-                  });
+                  // _resetValues();
+                  _resetImageDeleteValues(data);
+                  // setState(() {
+                  //   fileList.remove(data);
+                  // });
                 },
                 child: const Text('OK'),
               ),

@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:evoke_nexus_app/app/models/org_updates.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:evoke_nexus_app/app/provider/org_update_service_provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class OrgUpdateListMobile extends ConsumerWidget {
   final User user;
@@ -70,74 +71,88 @@ class OrgUpdateListMobile extends ConsumerWidget {
                                 )
                               : const SizedBox(height: 2.0),
                           const SizedBox(height: 4.0),
-                          const Divider(
-                            thickness: 1.0,
-                            height: 1.0,
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Row(
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(Icons.thumb_up),
-                                    iconSize: 15,
-                                    color: Colors.blue,
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return LikesWidget(
-                                            spaceId: item.orgUpdateId,
-                                            spaceName: 'OrgUpdate',
-                                            userId: user.userId,
-                                          );
-                                        },
-                                      );
-                                    },
-                                  ),
-                                  const SizedBox(width: 2.0),
-                                  Text(item.likes.toString(),
-                                      style: const TextStyle(fontSize: 12)),
-                                  const Text(' Likes',
-                                      style: TextStyle(fontSize: 12)),
-                                  const SizedBox(width: 8.0),
-                                  IconButton(
-                                    icon: const Icon(Icons.comment),
-                                    iconSize: 15,
-                                    color: Colors.blue,
-                                    onPressed: () {},
-                                  ),
-                                  const SizedBox(width: 2.0),
-                                  Text(item.comments.toString(),
-                                      style: const TextStyle(fontSize: 12)),
-                                  const Text(' Comments',
-                                      style: TextStyle(fontSize: 12)),
-                                ],
-                              ),
-                              const SizedBox(width: 8.0),
-                              Row(
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(Icons.thumb_up_outlined),
-                                    iconSize: 20,
-                                    color: Colors.blue,
-                                    onPressed: () {},
-                                    tooltip: "Like",
-                                  ),
-                                  const SizedBox(width: 4.0),
-                                  IconButton(
-                                    icon: const Icon(Icons.comment_outlined),
-                                    iconSize: 20,
-                                    color: Colors.blue,
-                                    onPressed: () {},
-                                    tooltip: "Comment",
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                          // const Divider(
+                          //   thickness: 1.0,
+                          //   height: 1.0,
+                          // ),
+
+      //LikesWidget comment
+                        getInfoOFViewsComments(index, item),
+                        const Divider(
+                          thickness: 1.0,
+                          height: 1.0,
+                        ),
+                        btnSharingInfoLayout(index),
+
+
+
+                          // Row(
+                          //   crossAxisAlignment: CrossAxisAlignment.center,
+                          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          //   children: [
+                          //     Row(
+                          //       children: [
+                          //         IconButton(
+                          //           icon: const Icon(Icons.thumb_up),
+                          //           iconSize: 15,
+                          //           color: Colors.blue,
+                          //           onPressed: () {
+                          //             showDialog(
+                          //               context: context,
+                          //               builder: (BuildContext context) {
+                          //                 return LikesWidget(
+                          //                   spaceId: item.orgUpdateId,
+                          //                   spaceName: 'OrgUpdate',
+                          //                   userId: user.userId,
+                          //                 );
+                          //               },
+                          //             );
+                          //           },
+                          //         ),
+                          //         const SizedBox(width: 2.0),
+                          //         Text(item.likes.toString(),
+                          //             style: const TextStyle(fontSize: 12)),
+                          //         const Text(' Likes',
+                          //             style: TextStyle(fontSize: 12)),
+                          //         const SizedBox(width: 8.0),
+                          //         IconButton(
+                          //           icon: const Icon(Icons.comment),
+                          //           iconSize: 15,
+                          //           color: Colors.blue,
+                          //           onPressed: () {},
+                          //         ),
+                          //         const SizedBox(width: 2.0),
+                          //         Text(item.comments.toString(),
+                          //             style: const TextStyle(fontSize: 12)),
+                          //         const Text(' Comments',
+                          //             style: TextStyle(fontSize: 12)),
+                          //       ],
+                          //     ),
+                          //     const SizedBox(width: 8.0),
+                          //     Row(
+                          //       children: [
+                          //         IconButton(
+                          //           icon: const Icon(Icons.thumb_up_outlined),
+                          //           iconSize: 20,
+                          //           color: Colors.blue,
+                          //           onPressed: () {},
+                          //           tooltip: "Like",
+                          //         ),
+                          //         const SizedBox(width: 4.0),
+                          //         IconButton(
+                          //           icon: const Icon(Icons.comment_outlined),
+                          //           iconSize: 20,
+                          //           color: Colors.blue,
+                          //           onPressed: () {},
+                          //           tooltip: "Comment",
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   ],
+                          // ),
+                       
+                       
+                       
                         ],
                       ),
                     ],
@@ -232,4 +247,92 @@ class OrgUpdateListMobile extends ConsumerWidget {
     }
     return '';
   }
+
+
+
+// BUTTONS: REACT, COMMENT, SHARE
+  Widget btnSharingInfoLayout(int index) {
+    return Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          TextButton.icon(
+            onPressed: () {},
+            icon: Image.asset(
+              'assets/images/thumb_up.png',
+              width: 20,
+              height: 20,
+            ),
+            label: Text(
+              'Like',
+              style: TextStyle(
+                color: Color(0xff393E41),
+                fontFamily: GoogleFonts.inter().fontFamily,
+                fontWeight: FontWeight.normal,
+                fontSize: 14,
+              ),
+            ),
+          ),
+          TextButton.icon(
+            onPressed: () {},
+            icon: Image.asset(
+              'assets/images/chat_bubble_outline.png',
+              width: 20,
+              height: 20,
+            ),
+            label: Text(
+              'Comment',
+              style: TextStyle(
+                color: Color(0xff393E41),
+                fontFamily: GoogleFonts.inter().fontFamily,
+                fontWeight: FontWeight.normal,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ]);
+  }
+
+// NUMBER OF VIEWS AND COMMENTS
+  Widget getInfoOFViewsComments(int index, OrgUpdate item) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          TextButton.icon(
+            // <-- TextButton
+            onPressed: () {},
+            icon: Image.asset(
+              'assets/images/reactions.png',
+            ),
+            label: Text(
+              '${item.likes}',
+              style: TextStyle(
+                color: Color(0xff676A79),
+                fontSize: 12.0,
+                fontFamily: GoogleFonts.notoSans().fontFamily,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                '0 comments',
+                style: TextStyle(
+                  color: Color(0xff676A79),
+                  fontSize: 12.0,
+                  fontFamily: GoogleFonts.notoSans().fontFamily,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
 }

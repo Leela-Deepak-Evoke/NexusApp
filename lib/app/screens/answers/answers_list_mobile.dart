@@ -8,174 +8,210 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:evoke_nexus_app/app/models/answer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AnswerListMobile extends ConsumerWidget {
   final User user;
   final String questionId;
   final FetchAnswerParams params;
-  const AnswerListMobile({super.key, required this.params,required this.user, required this.questionId,});
+  const AnswerListMobile({
+    super.key,
+    required this.params,
+    required this.user,
+    required this.questionId,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-       
     final answersAsyncValue = ref.watch(answerListProvider(params));
 
     if (answersAsyncValue is AsyncData) {
       final items = answersAsyncValue.value!;
       print(items);
-      return  Container(
-        alignment: AlignmentDirectional.topStart,
-        padding: const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
-        child: Column(
-          children:[
-          Expanded(
-            child: ListView.separated(
+      return Container(
+          alignment: AlignmentDirectional.topStart,
+          padding: const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
+          child: Column(children: [
+            Expanded(
+                child: ListView.builder(
               padding:
                   const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
               shrinkWrap: true,
               itemCount: items.length,
-        itemBuilder: (context, index) {
-          final item = items[index];
-          final author = item.author;
+              itemBuilder: (context, index) {
+                final item = items[index];
+                final author = item.author;
 
-          final formattedDate = DateFormat('MMM d HH:mm')
-              .format(DateTime.parse(item.postedAt.toString()).toLocal());
+                final formattedDate = DateFormat('MMM d HH:mm')
+                    .format(DateTime.parse(item.postedAt.toString()).toLocal());
 
-          
-         return  Card(
-            margin: const EdgeInsets.all(8),
-            clipBehavior: Clip.antiAlias,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(0),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(0.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                   
-                   askedbyViewHeader(item,ref),
-                   Divider(height: 1,color: Colors.grey,),
-                   Padding(padding: EdgeInsets.fromLTRB(20,10,20,10),child: contentViewWidget(item)),
-                   Padding(padding: EdgeInsets.fromLTRB(20,0,20,10), child :
-                   Wrap(
-                  
-                    direction: Axis.horizontal,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      
-                       TextButton.icon(onPressed: () => likeed(),
-                       style: ButtonStyle(backgroundColor:MaterialStatePropertyAll<Color>(Colors.orange) ),
-                       icon: Image.asset('assets/images/thumb_up.png',width: 25,height: 25,) , 
-                       label: Text('${item.likes}'))
-                
-                    ],
-                   ))
+                return Card(
+                  margin: const EdgeInsets.all(8),
+                  clipBehavior: Clip.antiAlias,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(0.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        askedbyViewHeader(item, ref),
+                        Divider(),
+                        //  Divider(height: 1,color: Colors.grey,),
+                        Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10.0, vertical: 0),
+                            child: contentViewWidget(item)),
 
-                  // ListTile(
-                  //   leading: _profilePicWidget(item, ref),
-                  //   title: Text(author!, style: const TextStyle(fontSize: 16)),
-                  //   subtitle: Text(item.authorTitle!,
-                  //       style: const TextStyle(fontSize: 14)),
-                  //   trailing: Text(
-                  //     formattedDate,
-                  //     style: const TextStyle(
-                  //         fontStyle: FontStyle.italic, fontSize: 14),
-                  //   ),
-                  // ),
-                  // Column(
-                  //   crossAxisAlignment: CrossAxisAlignment.start,
-                  //   children: [
-                  //     const SizedBox(height: 4.0),
-                  //     contentViewWidget(item),
-                  //     const SizedBox(height: 4.0),
-                  //     const Divider(
-                  //       thickness: 1.0,
-                  //       height: 1.0,
-                  //     ),
-                  //     Row(
-                  //       crossAxisAlignment: CrossAxisAlignment.center,
-                  //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //       children: [
-                  //         Row(
-                  //           children: [
-                  //             IconButton(
-                  //               icon: const Icon(Icons.thumb_up),
-                  //               iconSize: 15,
-                  //               color: Colors.blue,
-                  //               onPressed: () {
-                  //                 showDialog(
-                  //                   context: context,
-                  //                   builder: (BuildContext context) {
-                  //                     return LikesWidget(
-                  //                       spaceId: item.answerId,
-                  //                       spaceName: 'Answer',
-                  //                       userId: user.userId,
-                  //                     );
-                  //                   },
-                  //                 );
-                  //               },
-                  //             ),
-                  //             const SizedBox(width: 2.0),
-                  //             Text(item.likes.toString(),
-                  //                 style: const TextStyle(fontSize: 12)),
-                  //             const Text(' Likes',
-                  //                 style: TextStyle(fontSize: 12)),
-                  //             const SizedBox(width: 8.0),
-                  //             IconButton(
-                  //               icon: const Icon(Icons.comment),
-                  //               iconSize: 15,
-                  //               color: Colors.blue,
-                  //               onPressed: () {
-                  //                 showDialog(
-                  //                   context: context,
-                  //                   builder: (BuildContext context) {
-                  //                     return CommentsWidget(
-                  //                       spaceId: item.answerId,
-                  //                       spaceName: 'Answer',
-                  //                       userId: user.userId,
-                  //                     );
-                  //                   },
-                  //                 );
-                  //               },
-                  //             ),
-                  //             const SizedBox(width: 2.0),
-                  //             Text(item.comments.toString(),
-                  //                 style: const TextStyle(fontSize: 12)),
-                  //             const Text(' Comments',
-                  //                 style: TextStyle(fontSize: 12)),
-                  //           ],
-                  //         ),
-                  //         const SizedBox(width: 8.0),
-                  //         Row(
-                  //           children: [
-                  //             IconButton(
-                  //               icon: const Icon(Icons.thumb_up_outlined),
-                  //               iconSize: 20,
-                  //               color: Colors.blue,
-                  //               onPressed: () {},
-                  //               tooltip: "Like",
-                  //             ),
-                  //             const SizedBox(width: 4.0),
-                  //             IconButton(
-                  //               icon: const Icon(Icons.comment_outlined),
-                  //               iconSize: 20,
-                  //               color: Colors.blue,
-                  //               onPressed: () {},
-                  //               tooltip: "Comment",
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ],
-                  // ),
-                ],
-              ),
-            ),
-          );
-        }, separatorBuilder: (BuildContext context, int index) { return const Divider(); },
-          ))]));
+                        // const SizedBox(
+                        //   height: 10,
+                        // ),
+
+                        Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10.0, vertical: 8.0),
+                            child: Wrap(
+                              direction: Axis.horizontal,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                SizedBox(
+                                  // width: double.infinity, // <-- match_parent
+                                  // height: double.infinity,
+                                  child: TextButton.icon(
+                                    // <-- TextButton
+                                    onPressed: () => likeed(),
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Color.fromARGB(
+                                                    255, 246, 230, 222))),
+                                    icon: Icon(
+                                      Icons.thumb_up_alt_outlined,
+                                      color: Color(0xffF16C24),
+                                      size: 13,
+                                    ),
+                                    label: Text(
+                                      '${item.likes}',
+                                      style: TextStyle(
+                                        color: Color(0xffF16C24),
+                                        fontSize: 11.0,
+                                        fontFamily:
+                                            GoogleFonts.inter().fontFamily,
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ))
+
+                        // ListTile(
+                        //   leading: _profilePicWidget(item, ref),
+                        //   title: Text(author!, style: const TextStyle(fontSize: 16)),
+                        //   subtitle: Text(item.authorTitle!,
+                        //       style: const TextStyle(fontSize: 14)),
+                        //   trailing: Text(
+                        //     formattedDate,
+                        //     style: const TextStyle(
+                        //         fontStyle: FontStyle.italic, fontSize: 14),
+                        //   ),
+                        // ),
+                        // Column(
+                        //   crossAxisAlignment: CrossAxisAlignment.start,
+                        //   children: [
+                        //     const SizedBox(height: 4.0),
+                        //     contentViewWidget(item),
+                        //     const SizedBox(height: 4.0),
+                        //     const Divider(
+                        //       thickness: 1.0,
+                        //       height: 1.0,
+                        //     ),
+                        //     Row(
+                        //       crossAxisAlignment: CrossAxisAlignment.center,
+                        //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //       children: [
+                        //         Row(
+                        //           children: [
+                        //             IconButton(
+                        //               icon: const Icon(Icons.thumb_up),
+                        //               iconSize: 15,
+                        //               color: Colors.blue,
+                        //               onPressed: () {
+                        //                 showDialog(
+                        //                   context: context,
+                        //                   builder: (BuildContext context) {
+                        //                     return LikesWidget(
+                        //                       spaceId: item.answerId,
+                        //                       spaceName: 'Answer',
+                        //                       userId: user.userId,
+                        //                     );
+                        //                   },
+                        //                 );
+                        //               },
+                        //             ),
+                        //             const SizedBox(width: 2.0),
+                        //             Text(item.likes.toString(),
+                        //                 style: const TextStyle(fontSize: 12)),
+                        //             const Text(' Likes',
+                        //                 style: TextStyle(fontSize: 12)),
+                        //             const SizedBox(width: 8.0),
+                        //             IconButton(
+                        //               icon: const Icon(Icons.comment),
+                        //               iconSize: 15,
+                        //               color: Colors.blue,
+                        //               onPressed: () {
+                        //                 showDialog(
+                        //                   context: context,
+                        //                   builder: (BuildContext context) {
+                        //                     return CommentsWidget(
+                        //                       spaceId: item.answerId,
+                        //                       spaceName: 'Answer',
+                        //                       userId: user.userId,
+                        //                     );
+                        //                   },
+                        //                 );
+                        //               },
+                        //             ),
+                        //             const SizedBox(width: 2.0),
+                        //             Text(item.comments.toString(),
+                        //                 style: const TextStyle(fontSize: 12)),
+                        //             const Text(' Comments',
+                        //                 style: TextStyle(fontSize: 12)),
+                        //           ],
+                        //         ),
+                        //         const SizedBox(width: 8.0),
+                        //         Row(
+                        //           children: [
+                        //             IconButton(
+                        //               icon: const Icon(Icons.thumb_up_outlined),
+                        //               iconSize: 20,
+                        //               color: Colors.blue,
+                        //               onPressed: () {},
+                        //               tooltip: "Like",
+                        //             ),
+                        //             const SizedBox(width: 4.0),
+                        //             IconButton(
+                        //               icon: const Icon(Icons.comment_outlined),
+                        //               iconSize: 20,
+                        //               color: Colors.blue,
+                        //               onPressed: () {},
+                        //               tooltip: "Comment",
+                        //             ),
+                        //           ],
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ],
+                        // ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+              
+            ))
+          ]));
     }
     if (answersAsyncValue is AsyncLoading) {
       return const Center(
@@ -195,15 +231,11 @@ class AnswerListMobile extends ConsumerWidget {
     return const SizedBox.shrink();
   }
 
-  void likeed()
-  {
-
-  }
+  void likeed() {}
 
   Widget askedbyViewHeader(Answer item, WidgetRef ref) {
-    return 
-    Padding(
-      padding: EdgeInsets.all(20),
+    return Padding(
+      padding: EdgeInsets.all(10),
       child: Wrap(
         direction: Axis.horizontal,
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -213,15 +245,34 @@ class AnswerListMobile extends ConsumerWidget {
           const SizedBox(
             width: 5,
           ),
-          const Text("asked by"),
-          Text(item.author ?? "")
+          Text("Asked by",
+              style: TextStyle(
+                color: Color(0xff676A79),
+                fontSize: 12.0,
+                fontFamily: GoogleFonts.notoSans().fontFamily,
+                fontWeight: FontWeight.normal,
+              )),
+          Text(item.author ?? "",
+              style: TextStyle(
+                color: Color(0xff676A79),
+                fontSize: 12.0,
+                fontFamily: GoogleFonts.notoSans().fontFamily,
+                fontWeight: FontWeight.normal,
+              ))
         ],
       ),
     );
   }
+
   Widget contentViewWidget(Answer item) {
     if (item.content != null) {
-      return Text(item.content!, style: const TextStyle(fontSize: 14));
+      return Text(item.content!,
+          style: TextStyle(
+            color: Color(0xff676A79),
+            fontSize: 14.0,
+            fontFamily: GoogleFonts.notoSans().fontFamily,
+            fontWeight: FontWeight.normal,
+          ));
     } else {
       return const SizedBox(height: 5.0);
     }
@@ -230,7 +281,7 @@ class AnswerListMobile extends ConsumerWidget {
   Widget _profilePicWidget(Answer item, WidgetRef ref) {
     final avatarText = getAvatarText(item.author!);
     if (item.authorThumbnail == null) {
-      return CircleAvatar(radius: 15.0, child: Text(avatarText));
+      return CircleAvatar(radius: 10.0, child: Text(avatarText));
     } else {
       // Note: We're using `watch` directly on the provider.
       final profilePicAsyncValue =
@@ -241,7 +292,7 @@ class AnswerListMobile extends ConsumerWidget {
           if (imageUrl != null && imageUrl.isNotEmpty) {
             return CircleAvatar(
               backgroundImage: NetworkImage(imageUrl),
-              radius: 15.0,
+              radius: 10.0,
             );
           } else {
             // Render a placeholder or an error image

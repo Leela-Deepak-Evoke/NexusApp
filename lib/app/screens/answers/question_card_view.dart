@@ -3,7 +3,7 @@ import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import '../../provider/comment_service_provider.dart';
 
 class QuestionCardView extends ConsumerWidget {
@@ -39,25 +39,36 @@ class QuestionCardView extends ConsumerWidget {
           )),
     );
   }
-
-  Widget footerVIewWidget(String formattedDate, Question item) {
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            formattedDate,
-            style: TextStyle(fontSize: 12),
+  
+    Widget footerVIewWidget(String formattedDate, Question item) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          formattedDate,
+          style: TextStyle(
+            color: Color(0xff676A79),
+            fontSize: 12.0,
+            fontFamily: GoogleFonts.notoSans().fontFamily,
+            fontWeight: FontWeight.normal,
           ),
-          TextButton.icon(
-              onPressed: () {},
-              icon: Image.asset('assets/images/response.png'),
-              label: Text('${item.answers}',
-                  style: TextStyle(fontSize: 12, color: Colors.black)))
-        ],
-      ),
+        ),
+        TextButton.icon(
+            onPressed: () {},
+            icon: Image.asset('assets/images/response.png'),
+            label: Text(
+              '${item.answers}',
+              style: TextStyle(
+                color: Color(0xff676A79),
+                fontSize: 12.0,
+                fontFamily: GoogleFonts.inter().fontFamily,
+                fontWeight: FontWeight.normal,
+              ),
+            ))
+      ],
     );
   }
+
 
   Wrap askedbyViewHeader(Question item, WidgetRef ref) {
     return Wrap(
@@ -68,8 +79,20 @@ class QuestionCardView extends ConsumerWidget {
         const SizedBox(
           width: 5,
         ),
-        const Text("asked by"),
-        Text(item.author ?? "")
+        Text("Asked by",
+            style: TextStyle(
+              color: Color(0xff676A79),
+              fontSize: 12.0,
+              fontFamily: GoogleFonts.notoSans().fontFamily,
+              fontWeight: FontWeight.normal,
+            )),
+        Text(item.author ?? "",
+            style: TextStyle(
+              color: Color(0xff676A79),
+              fontSize: 12.0,
+              fontFamily: GoogleFonts.notoSans().fontFamily,
+              fontWeight: FontWeight.normal,
+            ))
       ],
     );
   }
@@ -84,12 +107,16 @@ class QuestionCardView extends ConsumerWidget {
           children: [
             const CircleAvatar(
               radius: 3,
-              backgroundColor: Colors.red,
+              backgroundColor: Color(0xffB54242),
             ),
             Text(
               item.category ?? "General",
-              style: const TextStyle(
-                  color: Colors.red, fontSize: 14, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                color: Color(0xffB54242),
+                fontSize: 12.0,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ]),
     );
@@ -122,7 +149,12 @@ class QuestionCardView extends ConsumerWidget {
         content = item.content!;
       }
       return Text(content,
-          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600));
+            style: TextStyle(
+            color: Colors.black,
+            fontSize: 16.0,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+            fontWeight: FontWeight.w500,
+          ));
     } else {
       return const SizedBox(height: 5.0);
     }
@@ -131,7 +163,7 @@ class QuestionCardView extends ConsumerWidget {
   Widget _profilePicWidget(Question item, WidgetRef ref) {
     final avatarText = getAvatarText(item.author!);
     if (item.authorThumbnail == null) {
-      return CircleAvatar(radius: 10.0, child: Text(avatarText));
+      return CircleAvatar(radius: 12.0, child: Text(avatarText));
     } else {
       // Note: We're using `watch` directly on the provider.
       final profilePicAsyncValue =
@@ -141,7 +173,7 @@ class QuestionCardView extends ConsumerWidget {
         data: (imageUrl) {
           if (imageUrl != null && imageUrl.isNotEmpty) {
             return CircleAvatar(
-              radius: 10,
+              radius: 12,
               child: Image.network(
                 imageUrl,
                 fit: BoxFit.cover,
@@ -149,14 +181,14 @@ class QuestionCardView extends ConsumerWidget {
                   return Text(
                     avatarText,
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                   );
                 },
               ),
             );
           } else {
             // Render a placeholder or an error image
-            return CircleAvatar(radius: 10.0, child: Text(avatarText));
+            return CircleAvatar(radius: 12.0, child: Text(avatarText));
           }
         },
         loading: () => const Center(

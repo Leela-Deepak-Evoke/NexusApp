@@ -511,6 +511,7 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     await ref.read(postFeedProvider(params).future);
     //  showMessage('Feed posted successfully');
     Navigator.pop(context);
+      _resetValues();
   }
 
 // POST BUTTON
@@ -566,7 +567,7 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
         hasImage: false,
         hasVideo: false);
     _handleSubmit(params, ref);
-    _resetValues();
+  
   }
 
   createPostAttachments() async {
@@ -584,7 +585,7 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
       category: 'General Feed',
     );
     _handleSubmit(params, ref);
-    _resetValues();
+    //_resetValues();
   }
 
   void dltImages(data) {

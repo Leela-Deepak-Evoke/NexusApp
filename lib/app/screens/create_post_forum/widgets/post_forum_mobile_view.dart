@@ -30,6 +30,13 @@ class PostForumMobileView extends ConsumerStatefulWidget {
 }
 
 class _PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
+
+  @override
+  void setState(VoidCallback fn) {
+    // TODO: implement setState
+    super.setState(fn);
+    
+  }
   // TextEditingController txtShareThoughts = TextEditingController();
   String? uploadedFilePath;
   final TextEditingController hashTagController = TextEditingController();
@@ -522,7 +529,9 @@ void initializeVideo(String url) {
     await ref.read(postQuestionProvider(params).future);
     //  showMessage('Feed posted successfully');
       Navigator.pop(context);
+       _resetValues();
   }
+
 
 // POST BUTTON
   Widget btnPost(Size size) {
@@ -587,7 +596,7 @@ void initializeVideo(String url) {
     // );
     _handleSubmit(params, ref);
     
-    _resetValues();
+   
   }
 
 void dltImages(data) {

@@ -235,7 +235,6 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
                         GoRouter.of(context).goNamed('${AppRoute.rootNavigation.name}');
                     }
 
-
                   })
               
                   },

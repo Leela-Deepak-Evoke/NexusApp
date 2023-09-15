@@ -155,6 +155,8 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
                 ),
                 //POST BUTTON
                 btnPost(size),
+                
+              
               ],
             ),
           ),
@@ -526,8 +528,8 @@ void initializeVideo(String url) {
 
   void _handleSubmit(PostAnswerParams params, WidgetRef ref) async {
     await ref.read(postAnswerProvider(params).future);
-    //  showMessage('Feed posted successfully');
       Navigator.pop(context);
+       _resetValues();
   }
 
 // POST BUTTON
@@ -601,7 +603,7 @@ void initializeVideo(String url) {
     // );
     _handleSubmit(params, ref);
     
-    _resetValues();
+   
   }
 
 void dltImages(data) {

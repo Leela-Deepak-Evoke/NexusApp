@@ -63,7 +63,6 @@ PODS:
     - FlutterMacOS
   - SwiftyGif (5.4.4)
   - Toast (4.0.0)
-  - uri_to_file (0.0.1):
     - Flutter
   - video_player_avfoundation (0.0.1):
     - Flutter

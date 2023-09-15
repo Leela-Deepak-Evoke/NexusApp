@@ -10,10 +10,9 @@ import 'package:flutter/material.dart';
 
 class AnswersMobileView extends StatefulWidget {
   final User user;
-  final String questionid;
   final Question question;
   Function() onPostClicked;
-   AnswersMobileView({super.key, required this.user,required this.questionid,required this.question,required this.onPostClicked});
+   AnswersMobileView({super.key, required this.user,required this.question,required this.onPostClicked});
 
   @override
   State<AnswersMobileView> createState() => _AnswersMobileViewCardState();
@@ -30,14 +29,14 @@ class _AnswersMobileViewCardState extends State<AnswersMobileView> {
         SizedBox(
          width: size.width,
           child: Padding(
-            padding: EdgeInsets.fromLTRB(0,0,0,0),
+            padding: const EdgeInsets.fromLTRB(0,0,0,0),
             child:  QuestionCardView(user: widget.user, item: widget.question)
           ),
         ),
         Expanded(
           child: Padding(
           padding: const EdgeInsets.only(left: 0, right: 0, top: 0), 
-            child:   AnswerListMobile(params: FetchAnswerParams(userId: widget.user.userId, questionId: widget.questionid), user: widget.user, questionId: widget.questionid)  )
+            child:   AnswerListMobile(params: FetchAnswerParams(userId: widget.user.userId, questionId: widget.question.questionId), user: widget.user, questionId: widget.question.questionId)  )
 ,
           ),
         

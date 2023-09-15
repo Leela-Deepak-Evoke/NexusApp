@@ -21,9 +21,14 @@ class AnswerListMobile extends ConsumerWidget {
     required this.questionId,
   });
 
+  
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final answersAsyncValue = ref.watch(answerListProvider(params));
+
+  
+  
+  final answersAsyncValue = ref.watch(answerListProvider(params));
+
 
     if (answersAsyncValue is AsyncData) {
       final items = answersAsyncValue.value!;
@@ -33,7 +38,7 @@ class AnswerListMobile extends ConsumerWidget {
           padding: const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
           child: Column(children: [
             Expanded(
-                child: ListView.builder(
+                child: ListView.separated(
               padding:
                   const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
               shrinkWrap: true,
@@ -63,11 +68,6 @@ class AnswerListMobile extends ConsumerWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10.0, vertical: 0),
                             child: contentViewWidget(item)),
-
-                        // const SizedBox(
-                        //   height: 10,
-                        // ),
-
                         Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10.0, vertical: 8.0),
@@ -76,8 +76,7 @@ class AnswerListMobile extends ConsumerWidget {
                               crossAxisAlignment: WrapCrossAlignment.center,
                               children: [
                                 SizedBox(
-                                  // width: double.infinity, // <-- match_parent
-                                  // height: double.infinity,
+                          
                                   child: TextButton.icon(
                                     // <-- TextButton
                                     onPressed: () => likeed(),
@@ -105,113 +104,15 @@ class AnswerListMobile extends ConsumerWidget {
                                 ),
                               ],
                             ))
-
-                        // ListTile(
-                        //   leading: _profilePicWidget(item, ref),
-                        //   title: Text(author!, style: const TextStyle(fontSize: 16)),
-                        //   subtitle: Text(item.authorTitle!,
-                        //       style: const TextStyle(fontSize: 14)),
-                        //   trailing: Text(
-                        //     formattedDate,
-                        //     style: const TextStyle(
-                        //         fontStyle: FontStyle.italic, fontSize: 14),
-                        //   ),
-                        // ),
-                        // Column(
-                        //   crossAxisAlignment: CrossAxisAlignment.start,
-                        //   children: [
-                        //     const SizedBox(height: 4.0),
-                        //     contentViewWidget(item),
-                        //     const SizedBox(height: 4.0),
-                        //     const Divider(
-                        //       thickness: 1.0,
-                        //       height: 1.0,
-                        //     ),
-                        //     Row(
-                        //       crossAxisAlignment: CrossAxisAlignment.center,
-                        //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        //       children: [
-                        //         Row(
-                        //           children: [
-                        //             IconButton(
-                        //               icon: const Icon(Icons.thumb_up),
-                        //               iconSize: 15,
-                        //               color: Colors.blue,
-                        //               onPressed: () {
-                        //                 showDialog(
-                        //                   context: context,
-                        //                   builder: (BuildContext context) {
-                        //                     return LikesWidget(
-                        //                       spaceId: item.answerId,
-                        //                       spaceName: 'Answer',
-                        //                       userId: user.userId,
-                        //                     );
-                        //                   },
-                        //                 );
-                        //               },
-                        //             ),
-                        //             const SizedBox(width: 2.0),
-                        //             Text(item.likes.toString(),
-                        //                 style: const TextStyle(fontSize: 12)),
-                        //             const Text(' Likes',
-                        //                 style: TextStyle(fontSize: 12)),
-                        //             const SizedBox(width: 8.0),
-                        //             IconButton(
-                        //               icon: const Icon(Icons.comment),
-                        //               iconSize: 15,
-                        //               color: Colors.blue,
-                        //               onPressed: () {
-                        //                 showDialog(
-                        //                   context: context,
-                        //                   builder: (BuildContext context) {
-                        //                     return CommentsWidget(
-                        //                       spaceId: item.answerId,
-                        //                       spaceName: 'Answer',
-                        //                       userId: user.userId,
-                        //                     );
-                        //                   },
-                        //                 );
-                        //               },
-                        //             ),
-                        //             const SizedBox(width: 2.0),
-                        //             Text(item.comments.toString(),
-                        //                 style: const TextStyle(fontSize: 12)),
-                        //             const Text(' Comments',
-                        //                 style: TextStyle(fontSize: 12)),
-                        //           ],
-                        //         ),
-                        //         const SizedBox(width: 8.0),
-                        //         Row(
-                        //           children: [
-                        //             IconButton(
-                        //               icon: const Icon(Icons.thumb_up_outlined),
-                        //               iconSize: 20,
-                        //               color: Colors.blue,
-                        //               onPressed: () {},
-                        //               tooltip: "Like",
-                        //             ),
-                        //             const SizedBox(width: 4.0),
-                        //             IconButton(
-                        //               icon: const Icon(Icons.comment_outlined),
-                        //               iconSize: 20,
-                        //               color: Colors.blue,
-                        //               onPressed: () {},
-                        //               tooltip: "Comment",
-                        //             ),
-                        //           ],
-                        //         ),
-                        //       ],
-                        //     ),
-                        //   ],
-                        // ),
                       ],
                     ),
                   ),
                 );
-              },
+              }, separatorBuilder: (BuildContext context, int index) {  return const Divider(); },
               
             ))
-          ]));
+              
+            ,SizedBox(height: 100,) ]));
     }
     if (answersAsyncValue is AsyncLoading) {
       return const Center(

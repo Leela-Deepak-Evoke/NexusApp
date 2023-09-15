@@ -27,12 +27,12 @@ final answerListProvider = FutureProvider.autoDispose.
   
 },);
 
+
 final answersProvider = FutureProvider.autoDispose
     .family<List<Answer>, FetchAnswerParams>((ref, params) async {
-  // final forumService = ref.read(forumServiceProvider);
-  // final forums = await forumService.fetchAnswers(params);
-
-  return List<Answer>.empty();
+  final forumService = ref.read(forumServiceProvider);
+  final forums = await forumService.fetchAnswers(params);
+  return forums;
 });
 
 final mediaUrlProvider =

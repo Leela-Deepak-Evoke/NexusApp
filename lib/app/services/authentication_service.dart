@@ -1,8 +1,8 @@
+import 'dart:io' show Platform;
+
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:io' show Platform;
 
 class AuthenticationService {
   Future<void> login( Function(bool isSucess) onloginComplition) async {

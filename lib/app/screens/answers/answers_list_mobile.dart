@@ -278,6 +278,8 @@ class AnswerListMobile extends ConsumerWidget {
     }
   }
 
+
+
   Widget _profilePicWidget(Answer item, WidgetRef ref) {
     final avatarText = getAvatarText(item.author!);
     if (item.authorThumbnail == null) {
@@ -288,15 +290,21 @@ class AnswerListMobile extends ConsumerWidget {
           ref.watch(authorThumbnailProvider(item.authorThumbnail!));
       //print(profilePicAsyncValue);
       return profilePicAsyncValue.when(
-        data: (imageUrl) {
+           data: (imageUrl) {
           if (imageUrl != null && imageUrl.isNotEmpty) {
             return CircleAvatar(
               backgroundImage: NetworkImage(imageUrl),
-              radius: 10.0,
+              radius: 12.0,
+              child: Text(
+                avatarText,
+                textAlign: TextAlign.center,
+                style:
+                    const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+              ),
             );
           } else {
             // Render a placeholder or an error image
-            return CircleAvatar(radius: 15.0, child: Text(avatarText));
+            return CircleAvatar(radius: 12.0, child: Text(avatarText));
           }
         },
         loading: () => const Center(

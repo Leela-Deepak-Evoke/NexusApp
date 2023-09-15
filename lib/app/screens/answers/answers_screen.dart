@@ -53,7 +53,7 @@ class _AnswersScreenState extends ConsumerState<AnswersScreen> {
           user: data,
           child: AnswersMobileView(user: data, questionid: widget.questionid, question: widget.question ,onPostClicked:onPostClicked),
           hasBackAction: true,
-          hasRightAction: true,
+          hasRightAction: false,
           topBarButtonAction: () {
             
              Navigator.push(

@@ -1,5 +1,6 @@
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/screens/org_updates/widgets/org_updates_media_view.dart';
+import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -48,12 +49,14 @@ class OrgUpdateListMobile extends ConsumerWidget {
                         leading: _profilePicWidget(item, ref),
                         title:
                             Text(author!, style: const TextStyle(fontSize: 16)),
-                        subtitle: Text(item.authorTitle!,
-                            style: const TextStyle(fontSize: 14)),
-                        trailing: Text(
-                          formattedDate,
-                          style: const TextStyle(
-                              fontStyle: FontStyle.italic, fontSize: 14),
+                            subtitle: Text(
+                          "${item.authorTitle!} | ${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString()))}",
+                          style: TextStyle(
+                            color: Color(0xff676A79),
+                            fontSize: 12.0,
+                            fontFamily: GoogleFonts.notoSans().fontFamily,
+                            fontWeight: FontWeight.normal,
+                          ),
                         ),
                       ),
                       Column(
@@ -203,10 +206,11 @@ class OrgUpdateListMobile extends ConsumerWidget {
     }
   }
 
+
   Widget _profilePicWidget(OrgUpdate item, WidgetRef ref) {
     final avatarText = getAvatarText(item.author!);
     if (item.authorThumbnail == null) {
-      return CircleAvatar(radius: 30.0, child: Text(avatarText));
+      return CircleAvatar(radius: 20.0, child: Text(avatarText));
     } else {
       // Note: We're using `watch` directly on the provider.
       final profilePicAsyncValue =
@@ -217,22 +221,22 @@ class OrgUpdateListMobile extends ConsumerWidget {
           if (imageUrl != null && imageUrl.isNotEmpty) {
             return CircleAvatar(
               backgroundImage: NetworkImage(imageUrl),
-              radius: 30.0,
+              radius: 20.0,
             );
           } else {
             // Render a placeholder or an error image
-            return CircleAvatar(radius: 30.0, child: Text(avatarText));
+            return CircleAvatar(radius: 20.0, child: Text(avatarText));
           }
         },
         loading: () => const Center(
           child: SizedBox(
-            height: 30.0,
-            width: 30.0,
+            height: 20.0,
+            width: 20.0,
             child: CircularProgressIndicator(),
           ),
         ),
         error: (error, stackTrace) => CircleAvatar(
-            radius: 30.0,
+            radius: 20.0,
             child: Text(avatarText)), // Handle error state appropriately
       );
     }

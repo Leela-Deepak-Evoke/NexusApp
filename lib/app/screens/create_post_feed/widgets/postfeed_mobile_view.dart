@@ -387,8 +387,8 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                     child: Stack(
                       children: <Widget>[
                         SizedBox(
-                          height: 100,
-                          width: 100,
+                          height: 200,
+                          width: 200,
                           child: AspectRatio(
                             aspectRatio:
                                 _videoPlayerController!.value.aspectRatio,

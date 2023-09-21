@@ -1,3 +1,4 @@
+import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:evoke_nexus_app/app/models/user_like.dart';
 import 'package:evoke_nexus_app/app/services/like_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,8 +16,15 @@ final likesProvider = FutureProvider.autoDispose
   return feeds;
 });
 
-final authorThumbnailProvider =
-    FutureProvider.autoDispose.family<String?, String>((ref, key) async {
+// final authorThumbnailProvider =
+//     FutureProvider.autoDispose.family<String?, String>((ref, key) async {
+//   final likeService = ref.watch(likeServiceProvider);
+//   return await likeService.getAuthorThumbnail(key);
+// });
+
+
+final postlikeDislikeProvider =
+    FutureProvider.family<void, PostLikeDislikeParams>((ref, params) async {
   final likeService = ref.watch(likeServiceProvider);
-  return await likeService.getAuthorThumbnail(key);
+  await likeService.postlikedislike(params);
 });

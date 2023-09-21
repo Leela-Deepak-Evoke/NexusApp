@@ -62,4 +62,47 @@ class LikeService {
       return null;
     }
   }
-}
+
+
+Future<void> postlikedislike( params) async {
+    try {
+      safePrint('Inside post feed');
+
+      final payload = {
+      "user": {"userId": params.userId},
+      "action": params.action,
+      "post": {"label" : params.postlabel, "id_prop_value": params.postIdPropValue},
+      };
+
+      safePrint('Payload: $payload');
+
+      final prefs = await SharedPreferences.getInstance();
+      final authToken = prefs.getString('authToken');
+      if (authToken != null) {
+        safePrint('authToken: $authToken');
+        final restOperation = Amplify.API.post(
+          'likedislike',
+          body: HttpPayload.json(payload),
+          headers: {'Authorization': authToken},
+        );
+        final response = await restOperation.response;
+        if (response.statusCode == 200) {
+          return;
+        } else {
+          throw Exception('Failed to load data');
+        }
+      } else {
+        throw Exception('Failed to load token');
+      }
+    } on AuthException catch (e) {
+      safePrint('Error retrieving auth session: ${e.message}');
+      rethrow;
+    } on ApiException catch (e) {
+      safePrint('POST call failed: $e');
+      rethrow;
+    }
+  }
+  }
+
+
+

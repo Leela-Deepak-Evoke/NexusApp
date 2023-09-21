@@ -2,17 +2,19 @@ import 'package:evoke_nexus_app/app/models/user_like.dart';
 import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 
 class LikesWidget extends ConsumerWidget {
   final String spaceName;
   final String spaceId;
   final String userId;
+   bool isLike;
 
-  const LikesWidget(
+   LikesWidget(
       {super.key,
       required this.spaceName,
       required this.spaceId,
-      required this.userId});
+      required this.userId, required this.isLike});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,6 +24,7 @@ class LikesWidget extends ConsumerWidget {
       'spaceId': spaceId,
       'userId': userId
     };
+
     // Watch the provider
     AsyncValue<List<UserLike>> likes = ref.watch(likesProvider(params));
     print("Async value state: ${likes.runtimeType}");

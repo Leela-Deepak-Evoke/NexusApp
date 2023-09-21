@@ -34,3 +34,4 @@ final postFeedProvider =
   await feedService.postFeed(params);
   ref.invalidate(feedsProvider);
 });
+

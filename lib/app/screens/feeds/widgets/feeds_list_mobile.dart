@@ -5,6 +5,7 @@ import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
+import 'package:evoke_nexus_app/app/screens/comments/comments_screen.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_media_view.dart';
 import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
@@ -245,7 +246,13 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
           ),
 
           TextButton.icon(
-            onPressed: () {},
+            onPressed: () {
+
+               Navigator.push(
+              context,
+              MaterialPageRoute(fullscreenDialog: true,
+                  builder: (context) =>const CommentScreen()));
+            },
             icon: Image.asset(
               'assets/images/chat_bubble_outline.png',
               width: 20,
@@ -306,4 +313,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
       ),
     );
   }
+
+
+
 }

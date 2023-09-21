@@ -57,6 +57,7 @@ dependencies:
   uuid: ^3.0.7
   path: ^1.8.3
   intl: ^0.18.0
+  comment_tree: ^0.3.0
 
 dev_dependencies:
   flutter_test:

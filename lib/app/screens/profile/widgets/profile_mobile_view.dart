@@ -206,7 +206,7 @@ class LogoutButton extends StatelessWidget {
     return Center(
       child: ElevatedButton(
         onPressed: () {
-          // Implement your logout logic here
+          
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,

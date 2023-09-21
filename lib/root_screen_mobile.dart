@@ -1,11 +1,9 @@
 
-import 'package:evoke_nexus_app/app/screens/login/login_screen.dart';
-import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_handler.dart';
+import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_screen.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:go_router/go_router.dart';
 
 import 'app/utils/app_routes.dart';
@@ -52,7 +50,7 @@ class RootScreenMobile extends ConsumerWidget {
     }
 
     // This should ideally never be reached, but it's here as a fallback.
-    return LoginScreen();
+    return Container(color: Colors.green,);
   }
 }
 

@@ -108,11 +108,12 @@ class TimelineListMobile extends ConsumerWidget {
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
-                                      return LikesWidget(
-                                        spaceId: item.feedId,
-                                        spaceName: 'Feed',
-                                        userId: user.userId,
-                                      );
+                                      // return LikesWidget(
+                                      //   spaceId: item.feedId,
+                                      //   spaceName: 'Feed',
+                                      //   userId: user.userId,
+                                      // );
+                                      return LikesWidget(spaceName: 'Feed', spaceId: item.feedId, userId: user.userId, isLike: false);
                                     },
                                   );
                                 },

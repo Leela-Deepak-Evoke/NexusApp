@@ -80,11 +80,12 @@ class OrgUpdateList extends ConsumerWidget {
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
-                                      return LikesWidget(
-                                        spaceId: item.orgUpdateId,
-                                        spaceName: 'OrgUpdate',
-                                        userId: user.userId,
-                                      );
+                                      // return LikesWidget(
+                                      //   spaceId: item.orgUpdateId,
+                                      //   spaceName: 'OrgUpdate',
+                                      //   userId: user.userId,
+                                      // );
+                                      return LikesWidget(spaceName: 'OrgUpdate', spaceId: item.orgUpdateId, userId: user.userId, isLike: false);
                                     },
                                   );
                                 },

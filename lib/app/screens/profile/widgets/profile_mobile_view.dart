@@ -7,16 +7,25 @@ import 'dart:io';
 import 'package:evoke_nexus_app/app/provider/profile_service_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProfileMobileView extends ConsumerWidget {
+class ProfileMobileView extends ConsumerStatefulWidget {
   final User user;
   Function() onPostClicked;
-  ProfileMobileView(
-      {super.key, required this.user, required this.onPostClicked});
 
+  ProfileMobileView({
+    super.key,
+    required this.user,
+    required this.onPostClicked,
+  });
+
+  @override
+  _ProfileMobileViewState createState() => _ProfileMobileViewState();
+}
+
+class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
   File? _image; // Variable to store the selected image
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     // Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -24,16 +33,15 @@ class ProfileMobileView extends ConsumerWidget {
         Column(
           children: [
             const SizedBox(height: 40), // Adjust the height as needed
-
-            _profilePicWidget(user, ref),
+            _profilePicWidget(widget.user, ref),
             TextButton(
-               onPressed: () {
+              onPressed: () {
                 
-           ref.read(uploadProfileImageProvider(user.userId));
-        },
-
-              // onPressed: () =>
-              //     ref.read(uploadProfileImageProvider(user.userId)),
+                ref.read(uploadProfileImageProvider(widget.user.userId));
+                // setState(() {
+                //   _profilePicWidget(widget.user, ref)
+                // });
+              },
               child: const Text('Change Profile Picture',
                   style: TextStyle(
                     fontSize: 8,
@@ -43,7 +51,7 @@ class ProfileMobileView extends ConsumerWidget {
 
             const SizedBox(height: 10),
             Text(
-              user.name,
+              widget.user.name,
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 16.0,
@@ -53,7 +61,7 @@ class ProfileMobileView extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              user.role,
+              widget.user.role,
               style: TextStyle(
                 color: Color(0xff676A79),
                 fontSize: 14.0,
@@ -117,20 +125,6 @@ class ProfileMobileView extends ConsumerWidget {
     return '';
   }
 
-  Future<void> _pickImage() async {
-    try {
-      final picker = ImagePicker();
-      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-      if (pickedFile != null) {
-        // setState(() {
-        //   _image = File(pickedFile.path);
-        // });
-      }
-    } catch (e) {
-      print('Error picking image: $e');
-    }
-  }
 }
 
 class VerticalCardList extends StatelessWidget {
@@ -233,3 +227,27 @@ class LogoutButton extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+  // Future<void> _pickImage() async {
+  //   try {
+  //     final picker = ImagePicker();
+  //     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+  //     if (pickedFile != null) {
+  //       // setState(() {
+  //       //   _image = File(pickedFile.path);
+  //       // });
+  //     }
+  //   } catch (e) {
+  //     print('Error picking image: $e');
+  //   }
+  // }

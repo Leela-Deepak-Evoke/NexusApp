@@ -1,6 +1,8 @@
 import 'package:evoke_nexus_app/app/models/feed.dart';
+import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
+import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_media_view.dart';
 import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
@@ -9,13 +11,23 @@ import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class FeedListMobile extends ConsumerWidget {
+class FeedListMobile extends ConsumerStatefulWidget {
   final User user;
   const FeedListMobile({super.key, required this.user});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final feedsAsyncValue = ref.watch(feedsProvider(user));
+  _FeedListMobileViewState createState() => _FeedListMobileViewState();
+}
+
+class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
+  
+// class FeedListMobile extends ConsumerWidget {
+  // final User user;
+  // const FeedListMobile({super.key, required this.user});
+
+  @override
+    Widget build(BuildContext context) {
+    final feedsAsyncValue = ref.watch(feedsProvider(widget.user));
 
     if (feedsAsyncValue is AsyncData) {
       final items = feedsAsyncValue.value!;
@@ -89,10 +101,7 @@ class FeedListMobile extends ConsumerWidget {
                             thickness: 1.0,
                             height: 1.0,
                           ),
-                          btnSharingInfoLayout(index, item),
-
-                      
-                      
+                          btnSharingInfoLayout(context, index, item, ref),
                         ],
                       ),
                     ],
@@ -190,27 +199,37 @@ class FeedListMobile extends ConsumerWidget {
     }
     return '';
   }
-
+        
 // BUTTONS: REACT, COMMENT, SHARE
-  Widget btnSharingInfoLayout(int index, Feed item) {
+  Widget btnSharingInfoLayout(
+      BuildContext context, int index, Feed item, WidgetRef ref) {
     return Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
+        children: [  
+
+ 
           TextButton.icon(
             onPressed: () {
-              
-              LikesWidget(
-                                        spaceId: item.feedId,
-                                        spaceName: 'Feed',
-                                        userId: user.userId,
-                                      );
+              print("CLick on Like");
+
+              ref.read(postlikeDislikeProvider(PostLikeDislikeParams(
+                  userId: widget.user.userId,
+                  action: item.currentUserLiked ? "DISLIKE" : "LIKE",
+                  postlabel: "Feed",
+                  postIdPropValue: item.feedId)));
+
+                     // Update the current item's like state
+          // item.currentUserLiked = !item.currentUserLiked;
+          // setState(() {});
             },
-            icon: Image.asset(
-              'assets/images/thumb_up.png',
-              width: 20,
-              height: 20,
-            ),
+            icon: (item.currentUserLiked
+                ? Icon(Icons.thumb_up)
+                : Image.asset(
+                    'assets/images/thumb_up.png',
+                    width: 20,
+                    height: 20,
+                  )),
             label: Text(
               'Like',
               style: TextStyle(
@@ -221,6 +240,46 @@ class FeedListMobile extends ConsumerWidget {
               ),
             ),
           ),
+      
+
+//       TextButton.icon(
+//   onPressed: () async {
+//     print("Click on Like");
+
+//     // Perform the like/dislike action and update the UI based on the response
+//     final updatedItem = await ref.read(
+//       postlikeDislikeProvider(
+//         PostLikeDislikeParams(
+//           userId: widget.user.userId,
+//           action: item.currentUserLiked ? "DISLIKE" : "LIKE",
+//           postlabel: "Feed",
+//           postIdPropValue: item.feedId,
+//         ),
+//       ),
+//     );
+
+//     // Riverpod automatically rebuilds the UI when the state changes, so you don't
+//     // need to manually trigger a rebuild with setState.
+//   },
+//   icon: (item.currentUserLiked
+//                 ? Icon(Icons.thumb_up)
+//                 : Image.asset(
+//                     'assets/images/thumb_up.png',
+//                     width: 20,
+//                     height: 20,
+//                   )),
+//             label: Text(
+//               'Like',
+//               style: TextStyle(
+//                 color: Color(0xff393E41),
+//                 fontFamily: GoogleFonts.inter().fontFamily,
+//                 fontWeight: FontWeight.normal,
+//                 fontSize: 14,
+//               ),
+//             ),
+// ),
+
+
           TextButton.icon(
             onPressed: () {},
             icon: Image.asset(

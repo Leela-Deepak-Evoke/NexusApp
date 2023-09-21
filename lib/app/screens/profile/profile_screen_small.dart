@@ -29,7 +29,7 @@ class _ProfileScreenSmallState extends ConsumerState<ProfileScreenSmall> {
             
           },),
           hasBackAction: false,
-          hasRightAction: true,
+          hasRightAction: false,
           topBarButtonAction: () {
             
           },

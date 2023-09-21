@@ -2,8 +2,8 @@ import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_media_view.dart';
-import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
+import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -89,7 +89,7 @@ class FeedListMobile extends ConsumerWidget {
                             thickness: 1.0,
                             height: 1.0,
                           ),
-                          btnSharingInfoLayout(index),
+                          btnSharingInfoLayout(index, item),
 
                           // Row(
                           //   crossAxisAlignment: CrossAxisAlignment.center,
@@ -254,13 +254,20 @@ class FeedListMobile extends ConsumerWidget {
   }
 
 // BUTTONS: REACT, COMMENT, SHARE
-  Widget btnSharingInfoLayout(int index) {
+  Widget btnSharingInfoLayout(int index, Feed item) {
     return Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           TextButton.icon(
-            onPressed: () {},
+            onPressed: () {
+              
+              LikesWidget(
+                                        spaceId: item.feedId,
+                                        spaceName: 'Feed',
+                                        userId: user.userId,
+                                      );
+            },
             icon: Image.asset(
               'assets/images/thumb_up.png',
               width: 20,

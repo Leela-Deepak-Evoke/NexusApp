@@ -543,6 +543,7 @@ bool isVisible = true; // Set this boolean based on your condition
     await ref.read(postFeedProvider(params).future);
     //  showMessage('Feed posted successfully');
     Navigator.pop(context);
+      _resetValues();
   }
 
 // POST BUTTON
@@ -598,7 +599,7 @@ bool isVisible = true; // Set this boolean based on your condition
         hasImage: false,
         hasVideo: false);
     _handleSubmit(params, ref);
-    _resetValues();
+  
   }
 
   createPostAttachments() async {
@@ -616,7 +617,7 @@ bool isVisible = true; // Set this boolean based on your condition
       category: 'General Feed',
     );
     _handleSubmit(params, ref);
-    _resetValues();
+    //_resetValues();
   }
 
   void dltImages(data) {

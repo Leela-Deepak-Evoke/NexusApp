@@ -14,13 +14,17 @@ class FeedsMobileView extends StatefulWidget {
 }
 
 class _FeedsMobileViewCardState extends State<FeedsMobileView> {
+
   final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getFeedsAPi();
+  }
+  @override
+  void didUpdateWidget(covariant FeedsMobileView oldWidget) {
+    super.didUpdateWidget(oldWidget);
   }
 
   @override

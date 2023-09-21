@@ -44,7 +44,7 @@ class QuestionsListMobile extends ConsumerWidget {
                     onTap: () {
                       context.goNamed(AppRoute.answersforum.name,
                           extra: item,
-                          queryParameters: {'questionid': item.questionId});
+                        );
                     },
                     child: Card(
                       // margin: const EdgeInsets.all(0),

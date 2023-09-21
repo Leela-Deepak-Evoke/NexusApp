@@ -1,23 +1,25 @@
 import 'package:evoke_nexus_app/app/models/question.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/screens/answers/answers_screen.dart';
+import 'package:evoke_nexus_app/app/screens/create_post_feed/create_post_feed_screen.dart';
+import 'package:evoke_nexus_app/app/screens/feeds/feeds_screen.dart';
 import 'package:evoke_nexus_app/app/screens/forum/forum_screen.dart';
 import 'package:evoke_nexus_app/app/screens/forum/widgets/post_forum_fab.dart';
-import 'package:evoke_nexus_app/app/screens/home/home_screen.dart';
+import 'package:evoke_nexus_app/app/screens/login/login_screen.dart';
+import 'package:evoke_nexus_app/app/screens/not_found/not_found_screen.dart';
+import 'package:evoke_nexus_app/app/screens/org_updates/org_updates_screen.dart';
+import 'package:evoke_nexus_app/app/screens/profile/profile_screen.dart';
+import 'package:evoke_nexus_app/app/screens/root_screen/root_screen.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_screen.dart';
 import 'package:evoke_nexus_app/app/screens/test/test_screen.dart';
 import 'package:evoke_nexus_app/app/screens/timeline/timeline_screen.dart';
-import 'package:evoke_nexus_app/root_screen_mobile.dart';
-import 'package:go_router/go_router.dart';
-import 'package:flutter/material.dart';
 import 'package:evoke_nexus_app/app/utils/app_routes.dart';
-import 'package:evoke_nexus_app/app/screens/root_screen/root_screen.dart';
-import 'package:evoke_nexus_app/app/screens/login/login_screen.dart';
-import 'package:evoke_nexus_app/app/screens/not_found/not_found_screen.dart';
-import 'package:evoke_nexus_app/app/screens/feeds/feeds_screen.dart';
-import 'package:evoke_nexus_app/app/screens/org_updates/org_updates_screen.dart';
-import 'package:evoke_nexus_app/app/screens/profile/profile_screen.dart';
-import 'package:evoke_nexus_app/app/screens/create_post_feed/create_post_feed_screen.dart';
+import 'package:evoke_nexus_app/root_screen_mobile.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+
 
 final router = GoRouter(
   initialLocation: '/${AppRoute.login.name}',
@@ -103,36 +105,39 @@ final router = GoRouter(
   errorBuilder: (context, state) => const NotFoundScreen(),
 );
 
-final mobileappRouter = GoRouter(
+
+final mobileappRouter = 
+   GoRouter(
   initialLocation: '/${AppRoute.login.name}',
+  redirectLimit: 2,
   debugLogDiagnostics: false,
   routes: [
     GoRoute(
       name: AppRoute.login.name,
       path: '/${AppRoute.login.name}',
-      
+      redirect: (context, state) 
+      async {
+       
+        final prefs = await SharedPreferences.getInstance();
+         final authToken = prefs.getString('authToken');
+           if(authToken == null)
+           {
+                return null;
+           }
+           else
+           {
+            return '/${AppRoute.rootNavigation.name}';
+           }
+        
+        
+      },
       pageBuilder: (context, state) => NoTransitionPage<void>(
         key: state.pageKey,
         child: const LoginScreen(),
       ),
       routes: [
       
-         GoRoute(
-          name: AppRoute.rootNavigation.name,
-          path: AppRoute.rootNavigation.name,
-          pageBuilder: (context, state) => MaterialPage<void>(
-            key: state.pageKey,
-            child: const RootScreenMobile(),
-          ),
-        ),
-        //  GoRoute(
-        //   name: AppRoute.login.name,
-        //   path: AppRoute.login.name,
-        //   pageBuilder: (context, state) => MaterialPage<void>(
-        //     key: state.pageKey,
-        //     child: const LoginScreen(),
-        //   ),
-        // ),
+        
         GoRoute(
           name: AppRoute.feeds.name,
           path: "feeds",
@@ -190,9 +195,28 @@ final mobileappRouter = GoRouter(
           ),
         ),
       ],
-    )
+    ),
+    GoRoute(
+          name: AppRoute.rootNavigation.name,
+          path: '/${AppRoute.rootNavigation.name}',
+          pageBuilder: (context, state) => MaterialPage<void>(
+            key: state.pageKey,
+            child: const RootScreenMobile(),
+          ),
+          routes: [
+             GoRoute(
+          name: AppRoute.tabbarscreen.name,
+          path: '${AppRoute.tabbarscreen.name}',
+          pageBuilder: (context, state) => MaterialPage<void>(
+            key: state.pageKey,
+            child:  TabbarScreen(),
+          ),),
+          ]
+        ),
   ],
-  errorBuilder: (context, state) => const NotFoundScreen(),
+  errorBuilder: (context, state) {
+    return const NotFoundScreen();
+  }
 );
 
 final feedsRouter = GoRouter(
@@ -252,11 +276,10 @@ final forumsRouter = GoRouter(
                 name: AppRoute.answersforum.name,
                 path: AppRoute.answersforum.name,
                 pageBuilder: (context, state) {
-                  var questionid = state.queryParameters['questionid'];
                   Question? question = state.extra as Question ;
                   return MaterialPage<void>(
                     key: state.pageKey,
-                    child: AnswersScreen(questionid: questionid ?? "",question: question),
+                    child: AnswersScreen(question: question),
                   );
                 }),
           ])
@@ -299,3 +322,6 @@ final profileRouter = GoRouter(
         ]
       )
     ]);
+
+
+

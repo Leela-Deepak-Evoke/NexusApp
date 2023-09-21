@@ -1,4 +1,5 @@
 import 'package:evoke_nexus_app/app/models/post_feed_params.dart';
+import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:evoke_nexus_app/app/services/feed_service.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
@@ -13,8 +14,6 @@ final feedsProvider =
 
   return feeds;
 });
-
-
 
 final mediaUrlProvider =
     FutureProvider.autoDispose.family<String?, String>((ref, key) async {
@@ -35,3 +34,10 @@ final postFeedProvider =
   ref.invalidate(feedsProvider);
 });
 
+final postlikeDislikeProvider = FutureProvider.autoDispose
+    .family<bool, PostLikeDislikeParams>((ref, params) async {
+  final likeService = ref.watch(feedServiceProvider);
+  final likeStatus = await likeService.postlikedislike(params);
+  ref.invalidate(feedsProvider);
+  return likeStatus;
+});

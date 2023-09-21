@@ -13,6 +13,8 @@ class Answer {
   final String? authorThumbnail;
   final int likes;
   final int comments;
+    final bool currentUserLiked;
+
 
   Answer(
       {required this.answerId,
@@ -27,7 +29,7 @@ class Answer {
       required this.authorTitle,
       required this.authorThumbnail,
       required this.likes,
-      required this.comments});
+      required this.comments, required this.currentUserLiked});
 
   Map<String, dynamic> toJson() => {
         'answerId': answerId,
@@ -42,7 +44,8 @@ class Answer {
         'authorTitle': authorTitle,
         'authorThumbnail': authorThumbnail,
         'likes': likes,
-        'comments': comments
+        'comments': comments,
+        'currentUserLiked': currentUserLiked
       };
 
   factory Answer.fromJson(Map<String, dynamic> json, String currentUserId) {
@@ -69,6 +72,8 @@ class Answer {
         authorTitle: json['user']['title'],
         authorThumbnail: authorThumbnail,
         likes: json['likes'] ?? 0,
-        comments: json['comments'] ?? 0);
+        comments: json['comments'] ?? 0,
+        currentUserLiked: json['currentUserLiked'] ?? false
+        );
   }
 }

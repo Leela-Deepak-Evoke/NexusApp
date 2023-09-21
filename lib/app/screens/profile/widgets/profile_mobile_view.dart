@@ -38,9 +38,7 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
               onPressed: () {
                 
                 ref.read(uploadProfileImageProvider(widget.user.userId));
-                // setState(() {
-                //   _profilePicWidget(widget.user, ref)
-                // });
+          
               },
               child: const Text('Change Profile Picture',
                   style: TextStyle(
@@ -94,23 +92,23 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
           return Center(
               child: CircleAvatar(
             backgroundImage: NetworkImage(data),
-            radius: 50.0,
+            radius: 80.0,
           ));
         } else {
           // Render a placeholder or an error image
-          return CircleAvatar(radius: 50.0, child: Text(avatarText));
+          return CircleAvatar(radius: 80.0, child: Text(avatarText));
         }
       },
       loading: () => const Center(
         child: SizedBox(
-          height: 50.0,
-          width: 50.0,
+          height: 80.0,
+          width: 80.0,
           child: CircularProgressIndicator(),
         ),
       ),
       error: (error, stack) {
         // Handle the error case if needed
-        return CircleAvatar(radius: 50.0, child: Text(avatarText));
+        return CircleAvatar(radius: 80.0, child: Text(avatarText));
       },
     );
   }

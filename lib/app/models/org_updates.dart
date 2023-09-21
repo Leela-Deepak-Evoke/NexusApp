@@ -17,6 +17,7 @@ class OrgUpdate {
   final String? authorThumbnail;
   final int likes;
   final int comments;
+  final bool currentUserLiked;
 
   OrgUpdate(
       {required this.orgUpdateId,
@@ -36,7 +37,7 @@ class OrgUpdate {
       required this.authorTitle,
       required this.authorThumbnail,
       required this.likes,
-      required this.comments});
+      required this.comments, required this.currentUserLiked});
 
   Map<String, dynamic> toJson() => {
         'orgUpdateId': orgUpdateId,
@@ -56,7 +57,8 @@ class OrgUpdate {
         'authorTitle': authorTitle,
         'authorThumbnail': authorThumbnail,
         'likes': likes,
-        'comments': comments
+        'comments': comments,
+        'currentUserLiked': currentUserLiked
       };
 
   factory OrgUpdate.fromJson(Map<String, dynamic> json, String currentUserId) {
@@ -88,6 +90,8 @@ class OrgUpdate {
         authorTitle: json['user']['title'],
         authorThumbnail: authorThumbnail,
         likes: json['likes'] ?? 0,
-        comments: json['comments'] ?? 0);
+        comments: json['comments'] ?? 0, 
+        currentUserLiked: json['currentUserLiked'] ?? false
+        );
   }
 }

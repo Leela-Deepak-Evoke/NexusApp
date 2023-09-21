@@ -1,4 +1,6 @@
+import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/org_updates/widgets/org_updates_media_view.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
@@ -85,8 +87,7 @@ class OrgUpdateListMobile extends ConsumerWidget {
                           thickness: 1.0,
                           height: 1.0,
                         ),
-                        btnSharingInfoLayout(index),
-
+btnSharingInfoLayout(context, index, item, ref)
 
 
                           // Row(
@@ -255,18 +256,33 @@ class OrgUpdateListMobile extends ConsumerWidget {
 
 
 // BUTTONS: REACT, COMMENT, SHARE
-  Widget btnSharingInfoLayout(int index) {
+   Widget btnSharingInfoLayout(
+      BuildContext context, int index, OrgUpdate item, WidgetRef ref) {
+    
     return Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          TextButton.icon(
-            onPressed: () {},
-            icon: Image.asset(
-              'assets/images/thumb_up.png',
-              width: 20,
-              height: 20,
-            ),
+         TextButton.icon(
+            onPressed: () async {
+              print("Click on Like");
+              // Perform the like/dislike action
+              final likeDislikeResult =
+                  ref.read(genricPostlikeDislikeProvider(PostLikeDislikeParams(
+                userId: user.userId,
+                action: item.currentUserLiked ? "DISLIKE" : "LIKE",
+                postlabel: "OrgUpdate",
+                postIdPropValue: item.orgUpdateId,
+              )));
+            
+            },
+            icon: (item.currentUserLiked
+                ? Icon(Icons.thumb_up)
+                : Image.asset(
+                    'assets/images/thumb_up.png',
+                    width: 20,
+                    height: 20,
+                  )),
             label: Text(
               'Like',
               style: TextStyle(
@@ -277,6 +293,9 @@ class OrgUpdateListMobile extends ConsumerWidget {
               ),
             ),
           ),
+
+
+
           TextButton.icon(
             onPressed: () {},
             icon: Image.asset(

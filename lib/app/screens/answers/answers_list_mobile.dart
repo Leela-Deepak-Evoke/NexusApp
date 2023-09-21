@@ -1,6 +1,8 @@
 import 'package:evoke_nexus_app/app/models/fetch_answer_params.dart';
+import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
+import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_utils.dart';
 import 'package:evoke_nexus_app/app/widgets/common/view_comments.dart';
 import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
@@ -79,13 +81,9 @@ class AnswerListMobile extends ConsumerWidget {
                           
                                   child: TextButton.icon(
                                     // <-- TextButton
-                                    onPressed: () => likeed(),
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all(
-                                                Color.fromARGB(
-                                                    255, 246, 230, 222))),
-                                    icon: Icon(
+                                    onPressed: () => postLikeDislikeAction(context, index, item, ref),
+                                   
+                                    icon: Icon(item.currentUserLiked ? Icons.thumb_up :
                                       Icons.thumb_up_alt_outlined,
                                       color: Color(0xffF16C24),
                                       size: 13,
@@ -132,7 +130,19 @@ class AnswerListMobile extends ConsumerWidget {
     return const SizedBox.shrink();
   }
 
-  void likeed() {}
+  void postLikeDislikeAction(BuildContext context, int index, Answer item, WidgetRef ref) {
+                                  final likeDislikeResult = ref.read(
+                                      genricPostlikeDislikeProvider(
+                                          PostLikeDislikeParams(
+                                    userId: user.userId,
+                                    action: item.currentUserLiked
+                                        ? "DISLIKE"
+                                        : "LIKE",
+                                    postlabel: "Answer",
+                                    postIdPropValue: item.answerId,
+                                  )));
+
+  }
 
   Widget askedbyViewHeader(Answer item, WidgetRef ref) {
     return Padding(

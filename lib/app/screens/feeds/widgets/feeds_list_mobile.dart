@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
@@ -20,13 +22,8 @@ class FeedListMobile extends ConsumerStatefulWidget {
 }
 
 class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
-  
-// class FeedListMobile extends ConsumerWidget {
-  // final User user;
-  // const FeedListMobile({super.key, required this.user});
-
   @override
-    Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     final feedsAsyncValue = ref.watch(feedsProvider(widget.user));
 
     if (feedsAsyncValue is AsyncData) {
@@ -199,29 +196,35 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
     }
     return '';
   }
-        
+
 // BUTTONS: REACT, COMMENT, SHARE
   Widget btnSharingInfoLayout(
       BuildContext context, int index, Feed item, WidgetRef ref) {
-    return Row(
+            return Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [  
-
- 
+        children: [
+      
           TextButton.icon(
-            onPressed: () {
-              print("CLick on Like");
+            onPressed: () async {
+              print("Click on Like");
+              // Perform the like/dislike action
+              final likeDislikeResult =
+                  ref.read(genricPostlikeDislikeProvider(PostLikeDislikeParams(
+                userId: widget.user.userId,
+                action: item.currentUserLiked ? "DISLIKE" : "LIKE",
+                postlabel: "Feed",
+                postIdPropValue: item.feedId,
+              )));
 
-              ref.read(postlikeDislikeProvider(PostLikeDislikeParams(
-                  userId: widget.user.userId,
-                  action: item.currentUserLiked ? "DISLIKE" : "LIKE",
-                  postlabel: "Feed",
-                  postIdPropValue: item.feedId)));
-
-                     // Update the current item's like state
-          // item.currentUserLiked = !item.currentUserLiked;
-          // setState(() {});
+              if (likeDislikeResult is AsyncData) {
+                // Update the current item's like state
+                setState(() {
+                  item.currentUserLiked = !item.currentUserLiked;
+                  print("Like status updated: ${item.currentUserLiked}");
+                });
+              }
+            
             },
             icon: (item.currentUserLiked
                 ? Icon(Icons.thumb_up)
@@ -240,45 +243,6 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
               ),
             ),
           ),
-      
-
-//       TextButton.icon(
-//   onPressed: () async {
-//     print("Click on Like");
-
-//     // Perform the like/dislike action and update the UI based on the response
-//     final updatedItem = await ref.read(
-//       postlikeDislikeProvider(
-//         PostLikeDislikeParams(
-//           userId: widget.user.userId,
-//           action: item.currentUserLiked ? "DISLIKE" : "LIKE",
-//           postlabel: "Feed",
-//           postIdPropValue: item.feedId,
-//         ),
-//       ),
-//     );
-
-//     // Riverpod automatically rebuilds the UI when the state changes, so you don't
-//     // need to manually trigger a rebuild with setState.
-//   },
-//   icon: (item.currentUserLiked
-//                 ? Icon(Icons.thumb_up)
-//                 : Image.asset(
-//                     'assets/images/thumb_up.png',
-//                     width: 20,
-//                     height: 20,
-//                   )),
-//             label: Text(
-//               'Like',
-//               style: TextStyle(
-//                 color: Color(0xff393E41),
-//                 fontFamily: GoogleFonts.inter().fontFamily,
-//                 fontWeight: FontWeight.normal,
-//                 fontSize: 14,
-//               ),
-//             ),
-// ),
-
 
           TextButton.icon(
             onPressed: () {},
@@ -297,7 +261,8 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
               ),
             ),
           ),
-        ]);
+        ]
+        );
   }
 
 // NUMBER OF VIEWS AND COMMENTS

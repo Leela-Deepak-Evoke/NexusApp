@@ -1,16 +1,17 @@
 import 'dart:io';
+
 import 'package:evoke_nexus_app/app/models/post_answer_params.dart';
 import 'package:evoke_nexus_app/app/models/question.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:uuid/uuid.dart';
 import 'package:evoke_nexus_app/app/services/feed_service.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 import 'package:video_player/video_player.dart';
 
 enum ContentType {
@@ -579,27 +580,6 @@ void initializeVideo(String url) {
                     answerId: answerId,
                     content: feedController.text,
                     hasImage: false);
-  //  final params = PostQuestionParams(
-  //        name: 'Question',
-  //        userId: widget.user.userId,
-  //        questionId: questionId,
-  //        content: feedController.text,
-  //        hasImage: false,
-  //        subCategory: "",
-  //        category: selectedCategory,
-  //  );
-    // final params = PostQuestionParams(
-    //   userId: widget.user.userId,
-    //   feedId: feedId,
-    //   content: feedController.text,
-    //   media: isMediaSelect,
-    //   hasImage: isImageSelect,
-    //   imagePath: uploadedFilePath!,
-    //   mediaCaption: mediaCaptionController.text,
-    //   hashTag: hashTagController.text,
-    //   hasVideo: isVideoSelect,
-    //   category: 'General Feed',
-    // );
     _handleSubmit(params, ref);
     
    

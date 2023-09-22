@@ -9,7 +9,7 @@ class AnswersMobileView extends StatefulWidget {
   final User user;
   final Question question;
   Function() onPostClicked;
-   AnswersMobileView({super.key, required this.user,required this.question,required this.onPostClicked});
+    AnswersMobileView({super.key, required this.user,required this.question,required this.onPostClicked});
 
   @override
   State<AnswersMobileView> createState() => _AnswersMobileViewCardState();

@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:evoke_nexus_app/app/screens/tab_bar/feeds_tab_menu.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/forums_tab_menu.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/orgupdates_tab_menu.dart';
@@ -7,31 +8,27 @@ import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_menu.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_utils.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_menu_item.dart';
 import 'package:flutter/material.dart';
+
 import '../../../app_router.dart';
 
 final TabBarNotifier _tabBarNotifier = TabBarNotifier();
 
 
 class TabBarHandler extends StatefulWidget {
-  const TabBarHandler({Key? key}) : super(key: key);
+   TabBarHandler({Key? key,required this.logoutAction}) : super(key: key);
+    Function() logoutAction;
+
   static const String route = '/';
 
   @override
   State<TabBarHandler> createState() => _TabBarHandlerState();
 }
 
-class _TabBarHandlerState extends State<TabBarHandler>
-    with SingleTickerProviderStateMixin {
+class _TabBarHandlerState extends State<TabBarHandler> {
 
 
 
-  final menuItemlist =  <TabMenuItem>[
-    TabMenuItem(Icons.rss_feed , 'Feeds', FeedsTabMenu(router: feedsRouter,)),
-    TabMenuItem(Icons.forum, 'Fourms',ForumsTabMenu(router : forumsRouter)),
-    TabMenuItem(Icons.update, 'OrgUpdates',OrgUpdatesTabMenu(router: orgupdatesRouter,)),
-    TabMenuItem(Icons.person, 'Profile',ProfileTabMenu(router: profileRouter,)),
-  ];
-
+  
   @override
   void initState() {
     super.initState();
@@ -47,6 +44,14 @@ class _TabBarHandlerState extends State<TabBarHandler>
 
   @override
   Widget build(BuildContext context) {
+
+    final menuItemlist =  <TabMenuItem>[
+    TabMenuItem(Icons.rss_feed , 'Feeds', FeedsTabMenu(router: feedsRouter,)),
+    TabMenuItem(Icons.forum, 'Fourms',ForumsTabMenu(router : forumsRouter)),
+    TabMenuItem(Icons.update, 'OrgUpdates',OrgUpdatesTabMenu(router: orgupdatesRouter,)),
+    TabMenuItem(Icons.person, 'Profile',ProfileTabMenu(router: profileRouter,logoutAction: widget.logoutAction,)),
+  ];
+
     
     return  Material(
 
@@ -85,6 +90,10 @@ class _TabBarHandlerState extends State<TabBarHandler>
             }),
       );
     
+  }
+
+  logoutAction() {
+    widget.logoutAction;
   }
 }
 

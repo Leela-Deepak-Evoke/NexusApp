@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'app/utils/app_routes.dart';
+import '../../utils/app_routes.dart';
 
 class RootScreenMobile extends ConsumerWidget {
   const RootScreenMobile({super.key});
@@ -15,9 +15,13 @@ class RootScreenMobile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final checkUserAsyncValue = ref.watch(checkUserProvider);
 
+    void logOutAction()
+    {
+
+    }
     if (checkUserAsyncValue is AsyncData) {
       
-      return TabbarScreen();
+      return TabbarScreen(logoutAction: logOutAction);
         // GoRouter.of(context).goNamed('${AppRoute.tabbarscreen.name}}');
       // return const SizedBox.shrink();
     }
@@ -30,12 +34,12 @@ class RootScreenMobile extends ConsumerWidget {
               begin: Alignment.topRight,
               end: Alignment.bottomLeft,
               colors: [
-               const  Color(ColorConstants.topbarbg),
-               const Color(ColorConstants.tabbg),
+               Color(ColorConstants.topbarbg),
+               Color(ColorConstants.tabbg),
               ],
             )
           ),
-          child: Center(
+          child: const Center(
             child: SizedBox(
           height: 50.0,
           width: 50.0,
@@ -45,11 +49,14 @@ class RootScreenMobile extends ConsumerWidget {
       );
     }
 
+
     if (checkUserAsyncValue is AsyncError) {
-        context.goNamed(AppRoute.login.name);
+      context.replaceNamed(AppRoute.login.name);
+        //context.goNamed('/${AppRoute.login.name}');
     }
 
     // This should ideally never be reached, but it's here as a fallback.
+     context.replaceNamed(AppRoute.login.name);
     return Container(color: Colors.green,);
   }
 }

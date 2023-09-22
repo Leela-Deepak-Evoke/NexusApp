@@ -19,7 +19,8 @@ class _AnswersScreenSmallState extends ConsumerState<AnswersScreenSmall> {
   Widget build(BuildContext context) 
   {
       void  onPostClicked()
-      {
+      {  
+        
 
       }
    final userAsyncValue = ref.watch(fetchUserProvider);
@@ -32,13 +33,15 @@ class _AnswersScreenSmallState extends ConsumerState<AnswersScreenSmall> {
           hasBackAction: true,
           hasRightAction: true,
           topBarButtonAction: () {
-            
+            setState(() {
+       
              Navigator.push(
               context,
               MaterialPageRoute(fullscreenDialog: true,
                   builder: (context) => CreatePostAnswerScreen(question: widget.question)));
 
-          },
+           }); 
+           },
           backButtonAction: () {
             Navigator.pop(context);
           },

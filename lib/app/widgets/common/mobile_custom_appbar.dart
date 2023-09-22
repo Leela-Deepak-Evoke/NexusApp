@@ -75,6 +75,7 @@ class CustomAppbar extends StatelessWidget {
   final String title;
   final bool hasBackAction;
   final bool hasRightAction;
+  final Widget? rightChildWiget;
   final Function() topBarButtonAction;
   final Function() backButtonAction;
    CustomAppbar(
@@ -84,7 +85,8 @@ class CustomAppbar extends StatelessWidget {
     required this.hasBackAction,
     required this.hasRightAction,
     required this.topBarButtonAction,
-     required this.backButtonAction
+     required this.backButtonAction,
+     required this.rightChildWiget,
     });
 
   @override
@@ -135,8 +137,14 @@ class CustomAppbar extends StatelessWidget {
                 textAlign: TextAlign.left,
               ),
               actions: [
-
-                hasRightAction ? IconButton(
+              
+                  hasRightAction ? 
+                 ((rightChildWiget != null) ?
+                  SizedBox(
+                    height: 30,
+                    width: 150,
+                    child: rightChildWiget!) :  
+                 IconButton(
                 icon: Image.asset(
                   'assets/images/create-post.png',
                   width: 24,
@@ -145,7 +153,8 @@ class CustomAppbar extends StatelessWidget {
                 onPressed: () {
                   topBarButtonAction();
                 },
-              ) : SizedBox()
+              ) )
+              : SizedBox()
               ],
               elevation: value ? 2.0 : 0.0,
             );

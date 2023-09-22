@@ -1,16 +1,17 @@
 import 'dart:io';
-import 'package:evoke_nexus_app/app/models/user.dart';
-import 'package:evoke_nexus_app/app/widgets/common/generic_bottom_sheet.dart';
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:evoke_nexus_app/app/models/post_feed_params.dart';
+import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
-import 'package:uuid/uuid.dart';
 import 'package:evoke_nexus_app/app/services/feed_service.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:evoke_nexus_app/app/widgets/common/generic_bottom_sheet.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 import 'package:video_player/video_player.dart';
 
 enum ContentType {
@@ -21,17 +22,18 @@ enum ContentType {
 
 class PostFeedsMobileView extends ConsumerStatefulWidget {
   final User user;
-  const PostFeedsMobileView({super.key, required this.user});
+  final String slectedCategory;
+  const PostFeedsMobileView({super.key, required this.user ,required this.slectedCategory});
 
   @override
-  ConsumerState<PostFeedsMobileView> createState() =>
-      _PostFeedsMobileViewState();
+ PostFeedsMobileViewState createState() =>
+      PostFeedsMobileViewState();
 }
 
-class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
+class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   String? uploadedFilePath;
   String? uploadedFileName;
-
+ 
   final TextEditingController hashTagController = TextEditingController();
   final TextEditingController mediaCaptionController = TextEditingController();
   final TextEditingController feedController = TextEditingController();
@@ -40,6 +42,7 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   bool isImageSelect = false;
   bool isVideoSelect = false;
 
+  String? selectedCategory;
   final ImagePicker imagePicker = ImagePicker();
   List<String> fileList = [];
   int? selectedIndex;
@@ -62,6 +65,11 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     } else {
       // User canceled the picker
     }
+  }
+
+  void onCategorySelected()
+  {
+  _showBottomSheet(context);
   }
 
   //Categories Static Array

@@ -1,7 +1,7 @@
 import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:evoke_nexus_app/app/widgets/common/mobile_custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:evoke_nexus_app/app/widgets/common/mobile_custom_appbar.dart';
 
 class MobileLayout extends StatefulWidget {
   final Widget child;
@@ -9,6 +9,7 @@ class MobileLayout extends StatefulWidget {
   final User user;
   final bool hasBackAction;
   final bool hasRightAction;
+  final Widget? rightChildWiget;
   final Function() topBarButtonAction;
   final Function() backButtonAction;
    const MobileLayout({
@@ -20,6 +21,7 @@ class MobileLayout extends StatefulWidget {
      required this.hasRightAction,
      required this.topBarButtonAction,
      required this.backButtonAction,
+     this.rightChildWiget
 
 
       });
@@ -43,7 +45,11 @@ class _MobileLayoutState extends State<MobileLayout> {
           Container(
               padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 120),
               child: widget.child),
-           CustomAppbar(title: widget.title,hasBackAction: widget.hasBackAction, hasRightAction: widget.hasRightAction, topBarButtonAction:() => widget.topBarButtonAction(),backButtonAction: () => widget.backButtonAction(), ),
+           CustomAppbar(title: widget.title,hasBackAction: widget.hasBackAction,
+            hasRightAction: widget.hasRightAction, 
+            topBarButtonAction:() => widget.topBarButtonAction(),
+            backButtonAction: () => widget.backButtonAction(), 
+            rightChildWiget: widget.rightChildWiget),
         ],
       ),
     );

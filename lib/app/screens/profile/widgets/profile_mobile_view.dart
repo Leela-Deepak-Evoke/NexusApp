@@ -1,11 +1,14 @@
+import 'dart:io';
+
 import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:evoke_nexus_app/app/provider/profile_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/timeline/timeline_screen.dart';
+import 'package:evoke_nexus_app/app/utils/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:evoke_nexus_app/app/provider/profile_service_provider.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProfileMobileView extends ConsumerWidget {
   final User user;
@@ -215,6 +218,7 @@ class LogoutButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () {
           // Implement your logout logic here
+          context.goNamed('${AppRoute.login.name}');
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,

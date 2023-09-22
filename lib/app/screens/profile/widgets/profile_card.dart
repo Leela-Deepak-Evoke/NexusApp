@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/profile_service_provider.dart';
+import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfileCard extends ConsumerWidget {
   const ProfileCard({super.key});
@@ -18,7 +18,8 @@ class ProfileCard extends ConsumerWidget {
     return SizedBox(
       height: 350,
       width: 500,
-      child: Card(
+      child:
+       Card(
         margin: const EdgeInsets.all(8),
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
@@ -100,23 +101,23 @@ class ProfileCard extends ConsumerWidget {
         if (data != null) {
           return CircleAvatar(
             backgroundImage: NetworkImage(data),
-            radius: 50.0,
+            radius: 100.0,
           );
         } else {
           // Render a placeholder or an error image
-          return CircleAvatar(radius: 50.0, child: Text(avatarText));
+          return CircleAvatar(radius: 100.0, child: Text(avatarText));
         }
       },
       loading: () => const Center(
         child: SizedBox(
-          height: 50.0,
-          width: 50.0,
+          height: 100.0,
+          width: 100.0,
           child: CircularProgressIndicator(),
         ),
       ),
       error: (error, stack) {
         // Handle the error case if needed
-        return CircleAvatar(radius: 50.0, child: Text(avatarText));
+        return CircleAvatar(radius: 100.0, child: Text(avatarText));
       },
     );
   }

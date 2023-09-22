@@ -3,8 +3,11 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ProfileTabMenu extends StatelessWidget {
-  const ProfileTabMenu({
+    Function() logoutAction;
+
+   ProfileTabMenu({
     Key? key,
+    required this.logoutAction,
     required this.router,
   }) : super(key: key);
   final GoRouter router;

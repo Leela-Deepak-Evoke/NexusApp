@@ -3,9 +3,9 @@ import 'package:evoke_nexus_app/app/models/fetch_answer_params.dart';
 import 'package:evoke_nexus_app/app/models/post_answer_params.dart';
 import 'package:evoke_nexus_app/app/models/post_question_params.dart';
 import 'package:evoke_nexus_app/app/models/question.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:evoke_nexus_app/app/services/forum_service.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:evoke_nexus_app/app/services/forum_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final forumServiceProvider = Provider<ForumService>((ref) => ForumService());
 
@@ -58,5 +58,6 @@ final postAnswerProvider = FutureProvider.autoDispose
     .family<void, PostAnswerParams>((ref, params) async {
   final forumService = ref.watch(forumServiceProvider);
   await forumService.postAnswer(params);
-  ref.invalidate(questionsProvider);
+  ref.invalidate(answerListProvider);
+  ref.invalidate(answersProvider);
 });

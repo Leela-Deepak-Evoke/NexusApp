@@ -2,12 +2,12 @@ import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_media_view.dart';
-import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
+import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class FeedListMobile extends ConsumerWidget {
   final User user;
@@ -36,7 +36,8 @@ class FeedListMobile extends ConsumerWidget {
               final formattedDate = DateFormat('MMM d HH:mm')
                   .format(DateTime.parse(item.postedAt.toString()).toLocal());
 
-              return Card(
+              return 
+              Card(
                 margin: const EdgeInsets.all(5),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(0)),
@@ -84,12 +85,12 @@ class FeedListMobile extends ConsumerWidget {
                           // ),
 
                           //LikesWidget comment
-                          getInfoOFViewsComments(index, item),
+                          getInfoOFViewsComments(index, item,context),
                           const Divider(
                             thickness: 1.0,
                             height: 1.0,
                           ),
-                          btnSharingInfoLayout(index, item),
+                          btnSharingInfoLayout(index, item,context),
 
                       
                       
@@ -192,7 +193,7 @@ class FeedListMobile extends ConsumerWidget {
   }
 
 // BUTTONS: REACT, COMMENT, SHARE
-  Widget btnSharingInfoLayout(int index, Feed item) {
+  Widget btnSharingInfoLayout(int index, Feed item,BuildContext context) {
     return Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -222,7 +223,39 @@ class FeedListMobile extends ConsumerWidget {
             ),
           ),
           TextButton.icon(
-            onPressed: () {},
+            onPressed: () {
+                 showModalBottomSheet(
+                    isScrollControlled: true,
+                    enableDrag: true,
+                    context: context,
+                    builder: (context) {
+                   var size =   MediaQuery.of(context).size;
+                       print(size);
+                        return 
+                        SizedBox(
+                            height : size.height - 100,
+                            child: 
+                            Container(
+                              color: Colors.red,
+                              child: 
+                              SingleChildScrollView(
+                                scrollDirection: Axis.vertical,
+                                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.manual,
+                                child: Wrap(
+                                  direction: Axis.vertical,
+                                  alignment: WrapAlignment.spaceBetween,
+                                  children: [
+                                    Container(color: Colors.amberAccent,),
+                                    
+                                    TextField( autofocus: true,),
+                                  ],
+                                ),
+                            
+                              ),
+                            )
+                        );
+                    });
+            },
             icon: Image.asset(
               'assets/images/chat_bubble_outline.png',
               width: 20,
@@ -242,7 +275,7 @@ class FeedListMobile extends ConsumerWidget {
   }
 
 // NUMBER OF VIEWS AND COMMENTS
-  Widget getInfoOFViewsComments(int index, Feed item) {
+  Widget getInfoOFViewsComments(int index, Feed item,BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
       child: Row(
@@ -250,7 +283,9 @@ class FeedListMobile extends ConsumerWidget {
         children: [
           TextButton.icon(
             // <-- TextButton
-            onPressed: () {},
+            onPressed: () {
+           
+            },
             icon: Image.asset(
               'assets/images/reactions.png',
             ),

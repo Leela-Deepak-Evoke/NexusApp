@@ -78,11 +78,12 @@ class AnswerList extends ConsumerWidget {
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
-                                      return LikesWidget(
-                                        spaceId: item.answerId,
-                                        spaceName: 'Answer',
-                                        userId: user.userId,
-                                      );
+                                      // return LikesWidget(
+                                      //   spaceId: item.answerId,
+                                      //   spaceName: 'Answer',
+                                      //   userId: user.userId,
+                                      // );
+                                      return LikesWidget(spaceName: 'Answer', spaceId: item.answerId, userId: user.userId, isLike: false);
                                     },
                                   );
                                 },

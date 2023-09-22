@@ -1,6 +1,11 @@
+import 'dart:async';
+
 import 'package:evoke_nexus_app/app/models/feed.dart';
+import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
+import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
+import 'package:evoke_nexus_app/app/screens/comments/comments_screen.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_media_view.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
@@ -9,13 +14,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
-class FeedListMobile extends ConsumerWidget {
+class FeedListMobile extends ConsumerStatefulWidget {
   final User user;
   const FeedListMobile({super.key, required this.user});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final feedsAsyncValue = ref.watch(feedsProvider(user));
+  _FeedListMobileViewState createState() => _FeedListMobileViewState();
+}
+
+class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
+  @override
+  Widget build(BuildContext context) {
+    final feedsAsyncValue = ref.watch(feedsProvider(widget.user));
 
     if (feedsAsyncValue is AsyncData) {
       final items = feedsAsyncValue.value!;
@@ -90,10 +100,7 @@ class FeedListMobile extends ConsumerWidget {
                             thickness: 1.0,
                             height: 1.0,
                           ),
-                          btnSharingInfoLayout(index, item,context),
-
-                      
-                      
+                          btnSharingInfoLayout(context, index, item, ref),
                         ],
                       ),
                     ],
@@ -193,25 +200,41 @@ class FeedListMobile extends ConsumerWidget {
   }
 
 // BUTTONS: REACT, COMMENT, SHARE
-  Widget btnSharingInfoLayout(int index, Feed item,BuildContext context) {
-    return Row(
+  Widget btnSharingInfoLayout(
+      BuildContext context, int index, Feed item, WidgetRef ref) {
+            return Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+      
           TextButton.icon(
-            onPressed: () {
-              
-              LikesWidget(
-                                        spaceId: item.feedId,
-                                        spaceName: 'Feed',
-                                        userId: user.userId,
-                                      );
+            onPressed: () async {
+              print("Click on Like");
+              // Perform the like/dislike action
+              final likeDislikeResult =
+                  ref.read(genricPostlikeDislikeProvider(PostLikeDislikeParams(
+                userId: widget.user.userId,
+                action: item.currentUserLiked ? "DISLIKE" : "LIKE",
+                postlabel: "Feed",
+                postIdPropValue: item.feedId,
+              )));
+
+              if (likeDislikeResult is AsyncData) {
+                // Update the current item's like state
+                setState(() {
+                  item.currentUserLiked = !item.currentUserLiked;
+                  print("Like status updated: ${item.currentUserLiked}");
+                });
+              }
+            
             },
-            icon: Image.asset(
-              'assets/images/thumb_up.png',
-              width: 20,
-              height: 20,
-            ),
+            icon: (item.currentUserLiked
+                ? Icon(Icons.thumb_up)
+                : Image.asset(
+                    'assets/images/thumb_up.png',
+                    width: 20,
+                    height: 20,
+                  )),
             label: Text(
               'Like',
               style: TextStyle(
@@ -222,39 +245,14 @@ class FeedListMobile extends ConsumerWidget {
               ),
             ),
           ),
+
           TextButton.icon(
             onPressed: () {
-                 showModalBottomSheet(
-                    isScrollControlled: true,
-                    enableDrag: true,
-                    context: context,
-                    builder: (context) {
-                   var size =   MediaQuery.of(context).size;
-                       print(size);
-                        return 
-                        SizedBox(
-                            height : size.height - 100,
-                            child: 
-                            Container(
-                              color: Colors.red,
-                              child: 
-                              SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.manual,
-                                child: Wrap(
-                                  direction: Axis.vertical,
-                                  alignment: WrapAlignment.spaceBetween,
-                                  children: [
-                                    Container(color: Colors.amberAccent,),
-                                    
-                                    TextField( autofocus: true,),
-                                  ],
-                                ),
-                            
-                              ),
-                            )
-                        );
-                    });
+
+               Navigator.push(
+              context,
+              MaterialPageRoute(fullscreenDialog: true,
+                  builder: (context) =>const CommentScreen()));
             },
             icon: Image.asset(
               'assets/images/chat_bubble_outline.png',
@@ -271,7 +269,8 @@ class FeedListMobile extends ConsumerWidget {
               ),
             ),
           ),
-        ]);
+        ]
+        );
   }
 
 // NUMBER OF VIEWS AND COMMENTS
@@ -317,4 +316,7 @@ class FeedListMobile extends ConsumerWidget {
       ),
     );
   }
+
+
+
 }

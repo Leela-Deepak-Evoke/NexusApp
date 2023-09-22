@@ -1,3 +1,4 @@
+import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/services/profile_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
@@ -14,11 +15,16 @@ final profileThumbnailProvider =
 final uploadProfileImageProvider =
     FutureProvider.autoDispose.family<void, String>((ref, userId) async {
   final profileService = ref.watch(profileServiceProvider);
-  return await profileService.uploadProfileImage(userId);
+   await profileService.uploadProfileImage(userId);
+      ref.invalidate(fetchUserProvider);
+   ref.invalidate(profileThumbnailProvider);
 });
 
 final updateUserProvider =
     FutureProvider.autoDispose.family<User, User>((ref, user) async {
   final profileService = ref.watch(profileServiceProvider);
-  return await profileService.updateUser(user);
+  final updateImage =  await profileService.updateUser(user);
+      ref.invalidate(fetchUserProvider);
+    ref.invalidate(profileThumbnailProvider);
+    return updateImage;
 });

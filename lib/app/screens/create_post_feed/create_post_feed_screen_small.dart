@@ -21,8 +21,9 @@ class _CreatePostFeedScreenSmallState extends ConsumerState<CreatePostFeedScreen
           title: "Post Feed",
           user: data,
           hasBackAction: true,
-          hasRightAction: false,
-          topBarButtonAction: () {           
+          hasRightAction: true,
+          topBarButtonAction: () {  
+
           },
           backButtonAction: () {
             Navigator.pop(context);

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:evoke_nexus_app/app/widgets/common/generic_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,7 +30,7 @@ class PostFeedsMobileView extends ConsumerStatefulWidget {
 
 class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   String? uploadedFilePath;
-    String? uploadedFileName;
+  String? uploadedFileName;
 
   final TextEditingController hashTagController = TextEditingController();
   final TextEditingController mediaCaptionController = TextEditingController();
@@ -46,7 +47,7 @@ class _PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   List<File>? _selectedPostImages;
   List<File>? get selectedPostImages => _selectedPostImages;
   String contentTypeSelected = "";
-bool isVisible = true; // Set this boolean based on your condition
+  bool isVisible = true; // Set this boolean based on your condition
 
   void _selectDocuments() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -62,6 +63,18 @@ bool isVisible = true; // Set this boolean based on your condition
       // User canceled the picker
     }
   }
+
+  //Categories Static Array
+  final List<String> checkListItems = [
+    'Java Practice',
+    'Microsoft Practice',
+    'CSC Practice',
+    'Pega Practice',
+    'Personal Assistant',
+    'UI Practice',
+    'Flutter Practice',
+    'iOS Practice',
+  ];
 
 //Video
   VideoPlayerController? _videoPlayerController;
@@ -124,12 +137,11 @@ bool isVisible = true; // Set this boolean based on your condition
                         feedsDescriptionUI(),
 
                         //VIDEOS,IMAGES PICKERS
-                      
 
                         videoPickerContent(size),
 
                         // Image Picker
-                           if (isVisible) imagePickerContent(size),
+                        if (isVisible) imagePickerContent(size),
                         // imagePickerContent(size),
 
                         const SizedBox(
@@ -307,8 +319,9 @@ bool isVisible = true; // Set this boolean based on your condition
                   child: TextButton.icon(
                     // <-- TextButton
                     onPressed: () {
-                        isVisible = true;
-                      _selectFile(ContentType.document);
+                      // isVisible = true;
+                      // _selectFile(ContentType.document);
+                      _showBottomSheet(context);
                     },
                     icon: Image.asset(
                       'assets/images/Vector-1.png',
@@ -379,7 +392,6 @@ bool isVisible = true; // Set this boolean based on your condition
     );
   }
 
-
   // VIDEO Content
   Widget videoPickerContent(Size size) {
     return Container(
@@ -395,7 +407,7 @@ bool isVisible = true; // Set this boolean based on your condition
                 ? Expanded(
                     child: Stack(
                       children: <Widget>[
-                       SizedBox(
+                        SizedBox(
                           //  height: size.height - 600,
                           // height: 200,
                           // width: 200,
@@ -431,8 +443,6 @@ bool isVisible = true; // Set this boolean based on your condition
           //   ),
         ],
       ),
-   
-   
     );
   }
 
@@ -440,30 +450,32 @@ bool isVisible = true; // Set this boolean based on your condition
   imageAttachment() async {
     final feedId = const Uuid().v4();
 
-    Map<String, dynamic>? resultFileName = await feedService.uploadMedia(feedId, 'Image');
+    Map<String, dynamic>? resultFileName =
+        await feedService.uploadMedia(feedId, 'Image');
     if (resultFileName != null) {
       setState(() {
         isMediaSelect = true;
         isImageSelect = true;
         isVideoSelect = false;
         uploadedFilePath = resultFileName["platformFilePath"];
-        uploadedFileName =  resultFileName["mediaPath"];
-
+        uploadedFileName = resultFileName["mediaPath"];
       });
       fileList.add(uploadedFilePath.toString());
-    } ;
+    }
+    ;
   }
 
-  videoAttachment() async {                          
+  videoAttachment() async {
     final feedId = const Uuid().v4();
-      Map<String, dynamic>? resultFileName = await feedService.uploadMedia(feedId, 'Video');
+    Map<String, dynamic>? resultFileName =
+        await feedService.uploadMedia(feedId, 'Video');
     if (resultFileName != null) {
       setState(() {
         isMediaSelect = true;
         isImageSelect = false;
         isVideoSelect = true;
-         uploadedFilePath = resultFileName["platformFilePath"];
-        uploadedFileName =  resultFileName["mediaPath"];
+        uploadedFilePath = resultFileName["platformFilePath"];
+        uploadedFileName = resultFileName["mediaPath"];
       });
       initializeVideo(uploadedFilePath.toString());
     }
@@ -510,7 +522,7 @@ bool isVisible = true; // Set this boolean based on your condition
   void _resetValues() {
     setState(() {
       uploadedFilePath = null;
-            uploadedFileName = null;
+      uploadedFileName = null;
       feedController.clear();
       hashTagController.clear();
       mediaCaptionController.clear();
@@ -523,10 +535,10 @@ bool isVisible = true; // Set this boolean based on your condition
     });
   }
 
-    void _resetImageDeleteValues(data) {
+  void _resetImageDeleteValues(data) {
     setState(() {
-       if (fileList.isNotEmpty){
-       fileList.remove(data);
+      if (fileList.isNotEmpty) {
+        fileList.remove(data);
       }
       // uploadedFilePath = null;
       //       uploadedFileName = null;
@@ -534,8 +546,6 @@ bool isVisible = true; // Set this boolean based on your condition
       hashTagController.clear();
       mediaCaptionController.clear();
       _videoPlayerController!.dispose();
-
-     
     });
   }
 
@@ -543,7 +553,7 @@ bool isVisible = true; // Set this boolean based on your condition
     await ref.read(postFeedProvider(params).future);
     //  showMessage('Feed posted successfully');
     Navigator.pop(context);
-      _resetValues();
+    _resetValues();
   }
 
 // POST BUTTON
@@ -594,12 +604,13 @@ bool isVisible = true; // Set this boolean based on your condition
         userId: widget.user.userId,
         feedId: feedId,
         content: feedController.text,
-        category: 'General Feed',
+        category: (selectedIndex != null)
+            ? checkListItems[selectedIndex ?? 0] 
+            : "General Feed",
         media: false,
         hasImage: false,
         hasVideo: false);
     _handleSubmit(params, ref);
-  
   }
 
   createPostAttachments() async {
@@ -614,14 +625,16 @@ bool isVisible = true; // Set this boolean based on your condition
       mediaCaption: mediaCaptionController.text,
       hashTag: hashTagController.text,
       hasVideo: isVideoSelect,
-      category: 'General Feed',
+      category: (selectedIndex != null)
+            ? checkListItems[selectedIndex ?? 0] 
+            : "General Feed",
     );
     _handleSubmit(params, ref);
     //_resetValues();
   }
 
   void dltImages(data) {
-   showDialog(
+    showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
@@ -671,5 +684,72 @@ bool isVisible = true; // Set this boolean based on your condition
             ],
           );
         });
+  }
+
+  void _handleCategorySelected(int? categoryIndex) {
+    if (categoryIndex != null) {
+      // Handle the selected category here
+      print('Selected category: $categoryIndex');
+      selectedIndex = categoryIndex;
+
+  setState(() {
+    selectedIndex = categoryIndex;
+      if (categoryIndex != null) {
+        selectedIndex = categoryIndex;
+        // selectedCategories.add(categories[index]);
+      }
+      // selectedIndex = categoryIndex;
+    });
+    }
+  }
+
+  void _showBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return GenericBottomSheet(
+          content: categoryListView(),
+          title: 'Select Post Category',
+          index: selectedIndex,
+          onCategoriesSelected: (selectedIndex) {
+            _handleCategorySelected(selectedIndex);
+          },
+        );
+      },
+    );
+  }
+
+  // LIST VIEW
+  Widget categoryListView() {
+    return Padding(
+        padding: EdgeInsets.all(20),
+        child: ListView.builder(
+          itemCount: checkListItems.length,
+          itemBuilder: (context, index) {
+            return CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.leading,
+              contentPadding: EdgeInsets.zero,
+              dense: true,
+              title: Text(
+                checkListItems[index],
+                style: TextStyle(
+                  color: Colors.black,
+                  fontFamily: GoogleFonts.roboto().fontFamily,
+                  fontWeight: FontWeight.normal,
+                  fontSize: 14,
+                ),
+              ),
+              value: selectedIndex == index,
+              onChanged: (value) {
+                setState(() {
+                  selectedIndex = index;
+                                      _handleCategorySelected(selectedIndex);
+
+                   Navigator.of(context).pop();
+                });
+              },
+            );
+          },
+        ));
   }
 }

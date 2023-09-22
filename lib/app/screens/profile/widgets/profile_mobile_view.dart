@@ -177,9 +177,6 @@ class VerticalCard extends StatelessWidget {
                         MaterialPageRoute(
                             fullscreenDialog: false,
                             builder: (context) => const TimelineScreen()));
-                  }else if (title == "Notifications") {
-
- _showBottomSheet(context);
                   }
                 },
                 child: ListTile(
@@ -201,33 +198,6 @@ class VerticalCard extends StatelessWidget {
       ),
     );
   }
-
-  void _showBottomSheet(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    builder: (BuildContext context) {
-      return GenericBottomSheet(
-        content: Column(
-          children: [
-            ListTile(
-              title: Text('Option 1'),
-              onTap: () {
-                // Handle Option 1
-              },
-            ),
-            ListTile(
-              title: Text('Option 2'),
-              onTap: () {
-                // Handle Option 2
-              },
-            ),
-            // Add more options as needed
-          ],
-        ),
-      );
-    },
-  );
-}
 }
 
 class LogoutButton extends StatelessWidget {
@@ -258,24 +228,3 @@ class LogoutButton extends StatelessWidget {
 
 
 
-
-
-
-
-
-
-
-  // Future<void> _pickImage() async {
-  //   try {
-  //     final picker = ImagePicker();
-  //     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-  //     if (pickedFile != null) {
-  //       // setState(() {
-  //       //   _image = File(pickedFile.path);
-  //       // });
-  //     }
-  //   } catch (e) {
-  //     print('Error picking image: $e');
-  //   }
-  // }

@@ -1,3 +1,4 @@
+import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
 import 'package:evoke_nexus_app/app/models/user_comment.dart';
 import 'package:evoke_nexus_app/app/provider/comment_service_provider.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ class CommentsWidget extends ConsumerWidget {
       'userId': userId
     };
     // Watch the provider
-    AsyncValue<List<UserComment>> likes = ref.watch(commentsProvider(params));
+    AsyncValue<List<UserComment>> likes = ref.watch(commentsProvider(GetCommentsParams(userId: userId, postId: spaceId, postType: spaceName)));
     print("Async value state: ${likes.runtimeType}");
 
     return likes.when(

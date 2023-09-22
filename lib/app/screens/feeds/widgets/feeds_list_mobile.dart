@@ -1,14 +1,12 @@
-import 'dart:async';
-
 import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/comments/comments_screen.dart';
+import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_header_card_view.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_media_view.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
-import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,8 +21,26 @@ class FeedListMobile extends ConsumerStatefulWidget {
 }
 
 class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
+
+
+  void _onCommentsPressed(Feed item)
+  {
+     Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      fullscreenDialog: true,
+                      builder: (context) => 
+                        CommentScreen(
+                          headerCard:
+                              FeedHeaderCardView(item: item, ref: ref),
+                              postId: item.feedId,
+                              posttype: "Feed",))
+                              );
+  }
   @override
   Widget build(BuildContext context) {
+
+
     final feedsAsyncValue = ref.watch(feedsProvider(widget.user));
 
     if (feedsAsyncValue is AsyncData) {
@@ -46,8 +62,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
               final formattedDate = DateFormat('MMM d HH:mm')
                   .format(DateTime.parse(item.postedAt.toString()).toLocal());
 
-              return 
-              Card(
+              return Card(
                 margin: const EdgeInsets.all(5),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(0)),
@@ -95,7 +110,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
                           // ),
 
                           //LikesWidget comment
-                          getInfoOFViewsComments(index, item,context),
+                          getInfoOFViewsComments(index, item, context),
                           const Divider(
                             thickness: 1.0,
                             height: 1.0,
@@ -202,11 +217,10 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
 // BUTTONS: REACT, COMMENT, SHARE
   Widget btnSharingInfoLayout(
       BuildContext context, int index, Feed item, WidgetRef ref) {
-            return Row(
+    return Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-      
           TextButton.icon(
             onPressed: () async {
               print("Click on Like");
@@ -226,7 +240,6 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
                   print("Like status updated: ${item.currentUserLiked}");
                 });
               }
-            
             },
             icon: (item.currentUserLiked
                 ? Icon(Icons.thumb_up)
@@ -245,14 +258,20 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
               ),
             ),
           ),
-
           TextButton.icon(
             onPressed: () {
-
-               Navigator.push(
-              context,
-              MaterialPageRoute(fullscreenDialog: true,
-                  builder: (context) =>const CommentScreen()));
+               _onCommentsPressed(item);
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //         fullscreenDialog: true,
+              //         builder: (context) => 
+              //           CommentScreen(
+              //             headerCard:
+              //                 FeedHeaderCardView(item: item, ref: ref),
+              //                 postId: item.feedId,
+              //                 posttype: "Feed",))
+              //                 );
             },
             icon: Image.asset(
               'assets/images/chat_bubble_outline.png',
@@ -269,12 +288,11 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
               ),
             ),
           ),
-        ]
-        );
+        ]);
   }
 
 // NUMBER OF VIEWS AND COMMENTS
-  Widget getInfoOFViewsComments(int index, Feed item,BuildContext context) {
+  Widget getInfoOFViewsComments(int index, Feed item, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
       child: Row(
@@ -282,9 +300,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
         children: [
           TextButton.icon(
             // <-- TextButton
-            onPressed: () {
-           
-            },
+            onPressed: () {},
             icon: Image.asset(
               'assets/images/reactions.png',
             ),
@@ -301,14 +317,33 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              TextButton.icon(
+                icon : 
+            SizedBox(
+              height: 15,
+              width: 15,
+              child: 
+              Center(
+                child: Image.asset(
+                  'assets/images/chat_bubble_outline.png',
+                ),
+              ),
+            ),
+                onPressed: () {
+                _onCommentsPressed(item);
+              },
+              
+              label: 
               Text(
-                '0 comments',
+                '${item.comments} comments',
                 style: TextStyle(
                   color: Color(0xff676A79),
                   fontSize: 12.0,
                   fontFamily: GoogleFonts.notoSans().fontFamily,
                   fontWeight: FontWeight.normal,
-                ),
+                )
+              ),
+              
               ),
             ],
           ),
@@ -316,7 +351,4 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
       ),
     );
   }
-
-
-
 }

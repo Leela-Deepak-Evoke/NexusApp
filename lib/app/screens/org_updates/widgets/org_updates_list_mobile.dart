@@ -1,15 +1,16 @@
+import 'package:evoke_nexus_app/app/models/org_updates.dart';
 import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
+import 'package:evoke_nexus_app/app/provider/org_update_service_provider.dart';
+import 'package:evoke_nexus_app/app/screens/comments/comments_screen.dart';
+import 'package:evoke_nexus_app/app/screens/org_updates/widgets/org_updates_header_card_view.dart';
 import 'package:evoke_nexus_app/app/screens/org_updates/widgets/org_updates_media_view.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
-import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:evoke_nexus_app/app/models/org_updates.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:evoke_nexus_app/app/provider/org_update_service_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class OrgUpdateListMobile extends ConsumerWidget {
   final User user;
@@ -40,8 +41,8 @@ class OrgUpdateListMobile extends ConsumerWidget {
 
               return Card(
                 margin: const EdgeInsets.all(5),
-                    shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(0)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0)),
                 clipBehavior: Clip.antiAlias,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -51,7 +52,7 @@ class OrgUpdateListMobile extends ConsumerWidget {
                         leading: _profilePicWidget(item, ref),
                         title:
                             Text(author!, style: const TextStyle(fontSize: 16)),
-                            subtitle: Text(
+                        subtitle: Text(
                           "${item.authorTitle!} | ${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString()))}",
                           style: TextStyle(
                             color: Color(0xff676A79),
@@ -65,9 +66,13 @@ class OrgUpdateListMobile extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 4.0),
-                           Padding(padding: EdgeInsets.fromLTRB(20,10,20,0), child: contentViewWidget(item)),
-                           Padding(padding: EdgeInsets.fromLTRB(20,5,20,10), child:hasTagViewWidget(item)),
-                     
+                          Padding(
+                              padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                              child: contentViewWidget(item)),
+                          Padding(
+                              padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                              child: hasTagViewWidget(item)),
+
                           //const SizedBox(height: 4.0),
                           item.media
                               ? AspectRatio(
@@ -81,82 +86,13 @@ class OrgUpdateListMobile extends ConsumerWidget {
                           //   height: 1.0,
                           // ),
 
-      //LikesWidget comment
-                        getInfoOFViewsComments(index, item),
-                        const Divider(
-                          thickness: 1.0,
-                          height: 1.0,
-                        ),
-btnSharingInfoLayout(context, index, item, ref)
-
-
-                          // Row(
-                          //   crossAxisAlignment: CrossAxisAlignment.center,
-                          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          //   children: [
-                          //     Row(
-                          //       children: [
-                          //         IconButton(
-                          //           icon: const Icon(Icons.thumb_up),
-                          //           iconSize: 15,
-                          //           color: Colors.blue,
-                          //           onPressed: () {
-                          //             showDialog(
-                          //               context: context,
-                          //               builder: (BuildContext context) {
-                          //                 return LikesWidget(
-                          //                   spaceId: item.orgUpdateId,
-                          //                   spaceName: 'OrgUpdate',
-                          //                   userId: user.userId,
-                          //                 );
-                          //               },
-                          //             );
-                          //           },
-                          //         ),
-                          //         const SizedBox(width: 2.0),
-                          //         Text(item.likes.toString(),
-                          //             style: const TextStyle(fontSize: 12)),
-                          //         const Text(' Likes',
-                          //             style: TextStyle(fontSize: 12)),
-                          //         const SizedBox(width: 8.0),
-                          //         IconButton(
-                          //           icon: const Icon(Icons.comment),
-                          //           iconSize: 15,
-                          //           color: Colors.blue,
-                          //           onPressed: () {},
-                          //         ),
-                          //         const SizedBox(width: 2.0),
-                          //         Text(item.comments.toString(),
-                          //             style: const TextStyle(fontSize: 12)),
-                          //         const Text(' Comments',
-                          //             style: TextStyle(fontSize: 12)),
-                          //       ],
-                          //     ),
-                          //     const SizedBox(width: 8.0),
-                          //     Row(
-                          //       children: [
-                          //         IconButton(
-                          //           icon: const Icon(Icons.thumb_up_outlined),
-                          //           iconSize: 20,
-                          //           color: Colors.blue,
-                          //           onPressed: () {},
-                          //           tooltip: "Like",
-                          //         ),
-                          //         const SizedBox(width: 4.0),
-                          //         IconButton(
-                          //           icon: const Icon(Icons.comment_outlined),
-                          //           iconSize: 20,
-                          //           color: Colors.blue,
-                          //           onPressed: () {},
-                          //           tooltip: "Comment",
-                          //         ),
-                          //       ],
-                          //     ),
-                          //   ],
-                          // ),
-                       
-                       
-                       
+                          //LikesWidget comment
+                          getInfoOFViewsComments(context, ref, index, item),
+                          const Divider(
+                            thickness: 1.0,
+                            height: 1.0,
+                          ),
+                          btnSharingInfoLayout(context, index, item, ref)
                         ],
                       ),
                     ],
@@ -167,8 +103,11 @@ btnSharingInfoLayout(context, index, item, ref)
             separatorBuilder: (BuildContext context, int index) {
               return const Divider();
             },
-          ))
-             ,const SizedBox(height: 100,)]),
+          )),
+          const SizedBox(
+            height: 100,
+          )
+        ]),
       );
     }
     if (orgUpdatesAsyncValue is AsyncLoading) {
@@ -189,6 +128,18 @@ btnSharingInfoLayout(context, index, item, ref)
     return const SizedBox.shrink();
   }
 
+  void _onCommentsPressed(BuildContext context, OrgUpdate item, WidgetRef ref) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (context) => CommentScreen(
+                  headerCard: OrgUpdateHeaderCardView(item: item),
+                  postId: item.orgUpdateId,
+                  posttype: "OrgUpdate",
+                )));
+  }
+
   Widget hasTagViewWidget(OrgUpdate item) {
     if (item.hashTag != null) {
       return Text(item.hashTag!, style: const TextStyle(fontSize: 14));
@@ -206,7 +157,6 @@ btnSharingInfoLayout(context, index, item, ref)
       return const SizedBox(height: 5.0);
     }
   }
-
 
   Widget _profilePicWidget(OrgUpdate item, WidgetRef ref) {
     final avatarText = getAvatarText(item.author!);
@@ -253,17 +203,14 @@ btnSharingInfoLayout(context, index, item, ref)
     return '';
   }
 
-
-
 // BUTTONS: REACT, COMMENT, SHARE
-   Widget btnSharingInfoLayout(
+  Widget btnSharingInfoLayout(
       BuildContext context, int index, OrgUpdate item, WidgetRef ref) {
-    
     return Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-         TextButton.icon(
+          TextButton.icon(
             onPressed: () async {
               print("Click on Like");
               // Perform the like/dislike action
@@ -274,7 +221,6 @@ btnSharingInfoLayout(context, index, item, ref)
                 postlabel: "OrgUpdate",
                 postIdPropValue: item.orgUpdateId,
               )));
-            
             },
             icon: (item.currentUserLiked
                 ? Icon(Icons.thumb_up)
@@ -293,11 +239,10 @@ btnSharingInfoLayout(context, index, item, ref)
               ),
             ),
           ),
-
-
-
           TextButton.icon(
-            onPressed: () {},
+            onPressed: () {
+             _onCommentsPressed(context,item,ref);
+            },
             icon: Image.asset(
               'assets/images/chat_bubble_outline.png',
               width: 20,
@@ -317,7 +262,8 @@ btnSharingInfoLayout(context, index, item, ref)
   }
 
 // NUMBER OF VIEWS AND COMMENTS
-  Widget getInfoOFViewsComments(int index, OrgUpdate item) {
+  Widget getInfoOFViewsComments(
+      BuildContext context, WidgetRef ref, int index, OrgUpdate item) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
       child: Row(
@@ -325,7 +271,9 @@ btnSharingInfoLayout(context, index, item, ref)
         children: [
           TextButton.icon(
             // <-- TextButton
-            onPressed: () {},
+            onPressed: () {
+             
+            },
             icon: Image.asset(
               'assets/images/reactions.png',
             ),
@@ -342,20 +290,36 @@ btnSharingInfoLayout(context, index, item, ref)
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                '0 comments',
-                style: TextStyle(
-                  color: Color(0xff676A79),
-                  fontSize: 12.0,
-                  fontFamily: GoogleFonts.notoSans().fontFamily,
-                  fontWeight: FontWeight.normal,
+              TextButton.icon(
+            // <-- TextButton
+            onPressed: () {
+             
+            },
+            icon: 
+            SizedBox(
+              height: 15,
+              width: 15,
+              child: 
+              Center(
+                child: Image.asset(
+                  'assets/images/chat_bubble_outline.png',
                 ),
               ),
+            ),
+            label: Text(
+              '${item.comments} comments',
+              style: TextStyle(
+                color: Color(0xff676A79),
+                fontSize: 12.0,
+                fontFamily: GoogleFonts.notoSans().fontFamily,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ),
             ],
           ),
         ],
       ),
     );
   }
-
 }

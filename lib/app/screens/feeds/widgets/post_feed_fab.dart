@@ -1,12 +1,9 @@
 import 'package:evoke_nexus_app/app/models/post_feed_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
-import 'package:evoke_nexus_app/app/screens/feeds/widgets/video_uploader.dart';
 import 'package:evoke_nexus_app/app/widgets/common/expandable_fab.dart';
 import 'package:flutter/material.dart';
-
 import 'package:uuid/uuid.dart';
-import 'package:evoke_nexus_app/app/screens/feeds/widgets/image_uploader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PostFeedFAB extends ConsumerStatefulWidget {

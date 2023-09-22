@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:evoke_nexus_app/app/models/post_answer_params.dart';
-import 'package:evoke_nexus_app/app/models/post_question_params.dart';
 import 'package:evoke_nexus_app/app/models/question.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';

@@ -5,8 +5,6 @@ import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:evoke_nexus_app/app/models/post_feed_params.dart';
-import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:evoke_nexus_app/app/services/feed_service.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';

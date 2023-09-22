@@ -1,11 +1,7 @@
-import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
-import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/timeline_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/comments/comments_screen.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_media_view.dart';
-import 'package:evoke_nexus_app/app/widgets/common/view_comments.dart';
-import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:evoke_nexus_app/app/models/feed.dart';
@@ -204,38 +200,7 @@ class TimelineListMobile extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-      
-          TextButton.icon(
-            onPressed: () async {
-              print("Click on Like");
-              // Perform the like/dislike action
-              final likeDislikeResult =
-                  ref.read(genricPostlikeDislikeProvider(PostLikeDislikeParams(
-                userId: user.userId,
-                action: item.currentUserLiked ? "DISLIKE" : "LIKE",
-                postlabel: "Feed",
-                postIdPropValue: item.feedId,
-              )));
-            },
-            icon: (item.currentUserLiked
-                ? Icon(Icons.thumb_up)
-                : Image.asset(
-                    'assets/images/thumb_up.png',
-                    width: 20,
-                    height: 20,
-                  )),
-            label: Text(
-              'Like',
-              style: TextStyle(
-                color: Color(0xff393E41),
-                fontFamily: GoogleFonts.inter().fontFamily,
-                fontWeight: FontWeight.normal,
-                fontSize: 14,
-              ),
-            ),
-          ),
-
-          TextButton.icon(
+                TextButton.icon(
             onPressed: () {
 
                Navigator.push(

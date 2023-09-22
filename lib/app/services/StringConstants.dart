@@ -1,9 +1,6 @@
 
 
-
-
 import 'package:flutter/material.dart';
-
 
 // all urls
 const String BASE_URL = "http://172.16.20.16:8088/api/";

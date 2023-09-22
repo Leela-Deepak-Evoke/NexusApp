@@ -1,4 +1,5 @@
 import 'package:evoke_nexus_app/app/screens/create_post_forum/widgets/post_forum_mobile_view.dart';
+import 'package:evoke_nexus_app/app/widgets/common/round_action_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
@@ -14,6 +15,9 @@ class CreatePostForumScreenSmall extends ConsumerStatefulWidget {
 class _CreatePostForumScreenSmallState extends ConsumerState<CreatePostForumScreenSmall> {
   @override
   Widget build(BuildContext context) {
+    String rightActionTitle = 'Select Category';
+      GlobalKey<PostForumMobileViewState> childKey = GlobalKey();
+
     final userAsyncValue = ref.watch(fetchUserProvider);
     return userAsyncValue.when(
       data: (data) {
@@ -21,13 +25,20 @@ class _CreatePostForumScreenSmallState extends ConsumerState<CreatePostForumScre
           title: "Post Question",
           user: data,
           hasBackAction: true,
-          hasRightAction: false,
-          topBarButtonAction: () {           
+          hasRightAction: true,
+          topBarButtonAction: () {   
+                    
           },
           backButtonAction: () {
             Navigator.pop(context);
           },
-          child: PostForumMobileView(user: data),
+         
+            rightChildWiget: RoundedActionView(onPressed:() {
+            childKey.currentState?.onCategorySelected();
+          }
+          , title: rightActionTitle),
+          child: PostForumMobileView(key: childKey, user: data),
+
         );
   }, 
     loading: () => const Center(

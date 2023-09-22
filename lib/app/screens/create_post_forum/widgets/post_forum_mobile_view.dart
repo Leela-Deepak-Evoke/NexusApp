@@ -24,11 +24,10 @@ class PostForumMobileView extends ConsumerStatefulWidget {
   const PostForumMobileView({super.key, required this.user});
 
   @override
-  ConsumerState<PostForumMobileView> createState() =>
-      _PostForumMobileViewState();
+  PostForumMobileViewState createState() => PostForumMobileViewState();
 }
 
-class _PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
+class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
 
   @override
   void setState(VoidCallback fn) {
@@ -666,6 +665,7 @@ void dltImages(data) {
         });
   }
 
+  void onCategorySelected() {_showBottomSheet(context);}
 
   void _handleCategorySelected(int? categoryIndex) {
     if (categoryIndex != null) {
@@ -733,4 +733,5 @@ void dltImages(data) {
           },
         ));
   }
+
 }

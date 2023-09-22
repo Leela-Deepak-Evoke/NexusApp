@@ -3,7 +3,11 @@ import 'dart:io';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/profile_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/timeline/timeline_screen.dart';
+import 'package:evoke_nexus_app/app/widgets/common/generic_bottom_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'dart:io';
+import 'package:evoke_nexus_app/app/provider/profile_service_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -177,6 +181,9 @@ class VerticalCard extends StatelessWidget {
                         MaterialPageRoute(
                             fullscreenDialog: false,
                             builder: (context) => const TimelineScreen()));
+                  }else if (title == "Notifications") {
+
+ _showBottomSheet(context);
                   }
                 },
                 child: ListTile(
@@ -198,6 +205,33 @@ class VerticalCard extends StatelessWidget {
       ),
     );
   }
+
+  void _showBottomSheet(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    builder: (BuildContext context) {
+      return GenericBottomSheet(
+        content: Column(
+          children: [
+            ListTile(
+              title: Text('Option 1'),
+              onTap: () {
+                // Handle Option 1
+              },
+            ),
+            ListTile(
+              title: Text('Option 2'),
+              onTap: () {
+                // Handle Option 2
+              },
+            ),
+            // Add more options as needed
+          ],
+        ),
+      );
+    },
+  );
+}
 }
 
 class LogoutButton extends StatelessWidget {

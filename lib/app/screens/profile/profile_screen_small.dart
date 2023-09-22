@@ -1,11 +1,8 @@
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/profile/widgets/profile_mobile_view.dart';
-import 'package:evoke_nexus_app/app/widgets/common/mobile_nav_topbar.dart';
 import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../forum/widgets/forum_mobile_view.dart';
-import '../tab_bar/tab_bar_utils.dart';
 
 class ProfileScreenSmall extends ConsumerStatefulWidget {
    const ProfileScreenSmall({super.key});

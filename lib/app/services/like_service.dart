@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:evoke_nexus_app/app/models/user_like.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

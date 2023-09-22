@@ -90,7 +90,7 @@ class TimelineListMobile extends ConsumerWidget {
                               // ),
 
                               //LikesWidget comment
-                              getInfoOFViewsComments(context, ref, index, item),
+                              getInfoOFViewsComments(index, item),
                               const Divider(
                                 thickness: 1.0,
                                 height: 1.0,
@@ -271,7 +271,7 @@ void _onCommentsPressed(BuildContext context,WidgetRef ref, Feed item ) {
                   )));
     }
 // NUMBER OF VIEWS AND COMMENTS
-  Widget getInfoOFViewsComments(BuildContext context,WidgetRef ref,int index, Feed item) {
+  Widget getInfoOFViewsComments(int index, Feed item) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
       child: Row(

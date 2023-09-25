@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/profile_service_provider.dart';
+import 'package:evoke_nexus_app/app/screens/login/login_screen.dart';
 import 'package:evoke_nexus_app/app/screens/timeline/timeline_screen.dart';
 import 'package:evoke_nexus_app/app/widgets/common/generic_bottom_sheet.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'dart:io';
 import 'package:evoke_nexus_app/app/provider/profile_service_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileMobileView extends ConsumerStatefulWidget {
   final User user;
@@ -127,6 +129,33 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
     return '';
   }
 
+    void logout() async {
+  Center(
+      child: ElevatedButton(
+        onPressed: () async {
+              final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('token');
+    debugPrint('did call logout');
+Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+  
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          elevation: 0, // Set the background color to transparent
+        ),
+        child: Text(
+          'Logout',
+          style: TextStyle(
+            color: Color(0xffB54242),
+            fontSize: 20.0,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class VerticalCardList extends StatelessWidget {
@@ -205,12 +234,20 @@ class VerticalCard extends StatelessWidget {
 }
 
 class LogoutButton extends StatelessWidget {
+  const LogoutButton({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: ElevatedButton(
-        onPressed: () {
-          
+        onPressed: () async {
+              final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('token');
+    debugPrint('did call logout');
+// ignore: use_build_context_synchronously
+Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+  
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,

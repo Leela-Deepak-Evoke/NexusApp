@@ -21,28 +21,21 @@ class FeedListMobile extends ConsumerStatefulWidget {
 }
 
 class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
-
-
-  void _onCommentsPressed(Feed item)
-  {
-     Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      fullscreenDialog: true,
-                      builder: (context) => 
-                        CommentScreen(
-                          headerCard:
-                              FeedHeaderCardView(item: item, ref: ref),
-                              postId: item.feedId,
-                              posttype: "Feed",))
-                              );
+  void _onCommentsPressed(Feed item) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (context) => CommentScreen(
+                  headerCard: FeedHeaderCardView(item: item, ref: ref),
+                  postId: item.feedId,
+                  posttype: "Feed",
+                )));
   }
+
   @override
   Widget build(BuildContext context) {
-
-
     final feedsAsyncValue = ref.watch(feedsProvider(widget.user));
-
     if (feedsAsyncValue is AsyncData) {
       final items = feedsAsyncValue.value!;
       return Container(
@@ -260,12 +253,12 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
           ),
           TextButton.icon(
             onPressed: () {
-               _onCommentsPressed(item);
+              _onCommentsPressed(item);
               // Navigator.push(
               //     context,
               //     MaterialPageRoute(
               //         fullscreenDialog: true,
-              //         builder: (context) => 
+              //         builder: (context) =>
               //           CommentScreen(
               //             headerCard:
               //                 FeedHeaderCardView(item: item, ref: ref),
@@ -318,32 +311,25 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               TextButton.icon(
-                icon : 
-            SizedBox(
-              height: 15,
-              width: 15,
-              child: 
-              Center(
-                child: Image.asset(
-                  'assets/images/chat_bubble_outline.png',
+                icon: SizedBox(
+                  height: 15,
+                  width: 15,
+                  child: Center(
+                    child: Image.asset(
+                      'assets/images/chat_bubble_outline.png',
+                    ),
+                  ),
                 ),
-              ),
-            ),
                 onPressed: () {
-                _onCommentsPressed(item);
-              },
-              
-              label: 
-              Text(
-                '${item.comments} comments',
-                style: TextStyle(
-                  color: Color(0xff676A79),
-                  fontSize: 12.0,
-                  fontFamily: GoogleFonts.notoSans().fontFamily,
-                  fontWeight: FontWeight.normal,
-                )
-              ),
-              
+                  _onCommentsPressed(item);
+                },
+                label: Text('${item.comments} comments',
+                    style: TextStyle(
+                      color: Color(0xff676A79),
+                      fontSize: 12.0,
+                      fontFamily: GoogleFonts.notoSans().fontFamily,
+                      fontWeight: FontWeight.normal,
+                    )),
               ),
             ],
           ),

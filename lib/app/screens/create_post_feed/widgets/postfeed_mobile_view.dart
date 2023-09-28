@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/models/post_feed_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
@@ -23,17 +24,22 @@ enum ContentType {
 class PostFeedsMobileView extends ConsumerStatefulWidget {
   final User user;
   final String slectedCategory;
-  const PostFeedsMobileView({super.key, required this.user ,required this.slectedCategory});
+  final Feed? feedItem;
+
+  const PostFeedsMobileView(
+      {super.key,
+      required this.user,
+      required this.slectedCategory,
+      this.feedItem});
 
   @override
- PostFeedsMobileViewState createState() =>
-      PostFeedsMobileViewState();
+  PostFeedsMobileViewState createState() => PostFeedsMobileViewState();
 }
 
 class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   String? uploadedFilePath;
   String? uploadedFileName;
- 
+
   final TextEditingController hashTagController = TextEditingController();
   final TextEditingController mediaCaptionController = TextEditingController();
   final TextEditingController feedController = TextEditingController();
@@ -67,9 +73,8 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     }
   }
 
-  void onCategorySelected()
-  {
-  _showBottomSheet(context);
+  void onCategorySelected() {
+    _showBottomSheet(context);
   }
 
   //Categories Static Array
@@ -140,7 +145,13 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                   padding: const EdgeInsets.all(0),
                   child: Card(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        categoryHearViewWidget(),
+                        // const SizedBox(
+                        //   height: 5,
+                        // ),
+
                         //Share your thoughts
                         feedsDescriptionUI(),
 
@@ -202,6 +213,9 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                 ),
                 decoration: const InputDecoration.collapsed(
                     hintText: "Share your thoughts with colleagues.."),
+//                               InputDecoration.collapsed(
+//   hintText: ref.read(selectedItemProvider)?.content ?? 'Share your thoughts with colleagues..',
+// ),
               )),
             ],
           ),
@@ -229,7 +243,10 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                   fontWeight: FontWeight.normal,
                 ),
                 decoration:
-                    const InputDecoration.collapsed(hintText: "HashTag #"),
+                    const InputDecoration.collapsed(hintText: "HashTag1 #"),
+//                     InputDecoration.collapsed(
+//   hintText: ref.read(selectedItemProvider)?.hashTag ?? 'HashTag #',
+// )
               )),
             ],
           ),
@@ -329,7 +346,6 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                     onPressed: () {
                       // isVisible = true;
                       // _selectFile(ContentType.document);
-                      _showBottomSheet(context);
                     },
                     icon: Image.asset(
                       'assets/images/Vector-1.png',
@@ -613,7 +629,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
         feedId: feedId,
         content: feedController.text,
         category: (selectedIndex != null)
-            ? checkListItems[selectedIndex ?? 0] 
+            ? checkListItems[selectedIndex ?? 0]
             : "General Feed",
         media: false,
         hasImage: false,
@@ -634,8 +650,8 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
       hashTag: hashTagController.text,
       hasVideo: isVideoSelect,
       category: (selectedIndex != null)
-            ? checkListItems[selectedIndex ?? 0] 
-            : "General Feed",
+          ? checkListItems[selectedIndex ?? 0]
+          : "General Feed",
     );
     _handleSubmit(params, ref);
     //_resetValues();
@@ -700,14 +716,14 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
       print('Selected category: $categoryIndex');
       selectedIndex = categoryIndex;
 
-  setState(() {
-    selectedIndex = categoryIndex;
-      if (categoryIndex != null) {
+      setState(() {
         selectedIndex = categoryIndex;
-        // selectedCategories.add(categories[index]);
-      }
-      // selectedIndex = categoryIndex;
-    });
+        if (categoryIndex != null) {
+          selectedIndex = categoryIndex;
+          // selectedCategories.add(categories[index]);
+        }
+        // selectedIndex = categoryIndex;
+      });
     }
   }
 
@@ -751,13 +767,39 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
               onChanged: (value) {
                 setState(() {
                   selectedIndex = index;
-                                      _handleCategorySelected(selectedIndex);
+                  _handleCategorySelected(selectedIndex);
 
-                   Navigator.of(context).pop();
+                  Navigator.of(context).pop();
                 });
               },
             );
           },
         ));
+  }
+
+  Widget categoryHearViewWidget() {
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+        child: Wrap(
+            spacing: 5,
+            direction: Axis.horizontal,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              const CircleAvatar(
+                radius: 3,
+                backgroundColor: Color(0xffB54242),
+              ),
+              Text(
+                (selectedIndex != null)
+                    ? checkListItems[selectedIndex ?? 0]
+                    : "General Feed",
+                style: TextStyle(
+                  color: Color(0xffB54242),
+                  fontSize: 12.0,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ]));
   }
 }

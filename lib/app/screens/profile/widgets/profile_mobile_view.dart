@@ -1,16 +1,11 @@
 import 'dart:io';
-
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/profile_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/login/login_screen.dart';
 import 'package:evoke_nexus_app/app/screens/timeline/timeline_screen.dart';
-import 'package:evoke_nexus_app/app/widgets/common/generic_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'dart:io';
-import 'package:evoke_nexus_app/app/provider/profile_service_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileMobileView extends ConsumerStatefulWidget {
@@ -133,11 +128,11 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
   Center(
       child: ElevatedButton(
         onPressed: () async {
-              final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove('token');
-    debugPrint('did call logout');
-Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+//               final SharedPreferences prefs = await SharedPreferences.getInstance();
+//     prefs.remove('token');
+//     debugPrint('did call logout');
+// Navigator.pushReplacement(
+//         context, MaterialPageRoute(builder: (context) => const LoginScreen()));
   
         },
         style: ElevatedButton.styleFrom(

@@ -7,8 +7,8 @@ class Feed {
   final String? mediaCaption;
   final String? imagePath;
   final String? videoPath;
-  final String? hashTag;
-  final String? content;
+   String? hashTag;
+   String? content;
   final DateTime postedAt;
   final String status;
   final String? author;

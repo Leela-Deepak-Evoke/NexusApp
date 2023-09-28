@@ -139,7 +139,10 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
                   padding: const EdgeInsets.all(0),
                   child: Card(
                     child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+
                       children: [
+                        categoryHearViewWidget(),
                         //Share your thoughts
                         feedsDescriptionUI(),
 
@@ -326,7 +329,6 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
                     // <-- TextButton
                     onPressed: () {
                       // _selectFile(ContentType.document);
-                        _showBottomSheet(context);
                     },
                     icon: Image.asset(
                       'assets/images/Vector-1.png',
@@ -734,4 +736,29 @@ void dltImages(data) {
         ));
   }
 
+ Widget categoryHearViewWidget() {
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+        child: Wrap(
+            spacing: 5,
+            direction: Axis.horizontal,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              const CircleAvatar(
+                radius: 3,
+                backgroundColor: Color(0xffB54242),
+              ),
+              Text(
+                (selectedIndex != null)
+            ? checkListItems[selectedIndex ?? 0] 
+            : selectedCategory,
+                style: TextStyle(
+                  color: Color(0xffB54242),
+                  fontSize: 12.0,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ]));
+  }
 }

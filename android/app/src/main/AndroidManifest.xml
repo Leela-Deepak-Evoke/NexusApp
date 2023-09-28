@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:label="evoke_nexus_app"
         android:name="${applicationName}"
@@ -22,10 +24,11 @@
               />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-                <action android:name="android.intent.action.VIEW" />
+                <!-- <action android:name="android.intent.action.VIEW" /> -->
                 <category android:name="android.intent.category.LAUNCHER"/>
-                <category android:name="android.intent.category.DEFAULT" />
+                <!-- <category android:name="android.intent.category.DEFAULT" /> -->
                 <category android:name="android.intent.category.BROWSABLE" />
+                <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
                 <data android:scheme="nexusapp" />
             </intent-filter>
         </activity>

@@ -3,7 +3,9 @@ import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
+import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/comments/comments_screen.dart';
+import 'package:evoke_nexus_app/app/screens/create_post_feed/create_post_feed_screen.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_header_card_view.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_media_view.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
@@ -54,6 +56,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
 
               final formattedDate = DateFormat('MMM d HH:mm')
                   .format(DateTime.parse(item.postedAt.toString()).toLocal());
+              bool isCurrentUser = item.authorId == widget.user.userId;
 
               return Card(
                 margin: const EdgeInsets.all(5),
@@ -77,6 +80,66 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
                             fontWeight: FontWeight.normal,
                           ),
                         ),
+                        trailing: isCurrentUser
+                            ? Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.edit),
+                                    onPressed: () {
+                                // ref.read(selectedItemProvider)?.hashTag = item.hashTag;
+                                // ref.read(selectedItemProvider)?.content = item.content;
+
+// ref.read(selectedItemProvider)!.content = item.content;
+
+
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              fullscreenDialog: true,
+                                              builder: (context) =>
+                                                  const CreatePostFeedScreen()));
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.delete),
+                                    onPressed: () {
+                                      // Show a confirmation dialog before deleting the item.
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text("Confirm Delete"),
+                                            content: Text(
+                                                "Are you sure you want to delete this item?"),
+                                            actions: [
+                                              TextButton(
+                                                child: Text("Cancel"),
+                                                onPressed: () {
+                                                  Navigator.of(context)
+                                                      .pop(); // Close the dialog
+                                                },
+                                              ),
+                                              TextButton(
+                                                child: Text("Delete"),
+                                                onPressed: () {
+                                                  // Perform the delete action here, e.g., remove the item from the list.
+                                                  setState(() {
+                                                    items.remove(item);
+                                                  });
+                                                  Navigator.of(context)
+                                                      .pop(); // Close the dialog
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ],
+                              )
+                            : null,
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

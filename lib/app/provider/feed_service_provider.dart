@@ -7,6 +7,9 @@ import 'package:evoke_nexus_app/app/models/feed.dart';
 
 final feedServiceProvider = Provider<FeedService>((ref) => FeedService());
 
+final selectedItemProvider = StateProvider<Feed?>((ref) => null);
+
+
 final feedsProvider =
     FutureProvider.autoDispose.family<List<Feed>, User>((ref, user) async {
   final feedService = ref.read(feedServiceProvider);
@@ -41,3 +44,7 @@ final postlikeDislikeProvider = FutureProvider.autoDispose
   ref.invalidate(feedsProvider);
   return likeStatus;
 });
+
+
+
+

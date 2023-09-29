@@ -5,6 +5,8 @@ import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feeds_mobile_view.dart';
 import 'package:evoke_nexus_app/app/screens/create_post_feed/create_post_feed_screen.dart';
 
+import 'package:evoke_nexus_app/app/models/feed.dart';
+
 class FeedsScreenSmall extends ConsumerStatefulWidget {
   const FeedsScreenSmall({super.key});
   @override
@@ -28,7 +30,7 @@ class _FeedsScreenSmallState extends ConsumerState<FeedsScreenSmall> {
                Navigator.push(
               context,
               MaterialPageRoute(fullscreenDialog: true,
-                  builder: (context) =>const CreatePostFeedScreen()));
+                  builder: (context) => CreatePostFeedScreen()));
             
           },
           backButtonAction: () {

@@ -1,3 +1,4 @@
+import 'package:evoke_nexus_app/app/screens/create_post_orgupdates/create_post_orgupdates_screen.dart';
 import 'package:evoke_nexus_app/app/screens/org_updates/widgets/org_updates_mobile_view.dart';
 import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 import 'package:flutter/material.dart';
@@ -23,9 +24,13 @@ class _OrgUpdatesScreenSmall extends ConsumerState<OrgUpdatesScreenSmall> {
           user: data,
           child: OrgUpdateMobileView(user: data, onPostClicked: () {  },),
           hasBackAction: false,
-          hasRightAction: (data.role == 'Member') ? false : true,
+          hasRightAction: true,   //(data.role == 'Member') ? false : true,
           topBarButtonAction: () {
-            
+             
+               Navigator.push(
+              context,
+              MaterialPageRoute(fullscreenDialog: true,
+                  builder: (context) => CreatePostOrgUpdatesScreen()));
           },
           backButtonAction: () {
             Navigator.pop(context);

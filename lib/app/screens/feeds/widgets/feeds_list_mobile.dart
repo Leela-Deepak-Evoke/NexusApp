@@ -9,6 +9,7 @@ import 'package:evoke_nexus_app/app/screens/create_post_feed/create_post_feed_sc
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_header_card_view.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_media_view.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
+import 'package:evoke_nexus_app/app/widgets/common/edit_delete_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,8 +25,7 @@ class FeedListMobile extends ConsumerStatefulWidget {
 }
 
 class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
-        // final RefreshIndicator _refreshController = RefreshIndicator(child: , onRefresh: );
-
+  // final RefreshIndicator _refreshController = RefreshIndicator(child: , onRefresh: );
 
   void _onCommentsPressed(Feed item) {
     Navigator.push(
@@ -45,157 +45,117 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
     if (feedsAsyncValue is AsyncData) {
       final items = feedsAsyncValue.value!;
       return Container(
-        alignment: AlignmentDirectional.topStart,
-        padding: const EdgeInsets.only(left: 0, right: 0, top: 10, bottom: 0),
-    child: RefreshIndicator(
-        onRefresh: _onRefresh,
-      
-        child: Column(children: [
-          Expanded(
-              child: ListView.separated(
+          alignment: AlignmentDirectional.topStart,
+          padding: const EdgeInsets.only(left: 0, right: 0, top: 10, bottom: 0),
+          child: RefreshIndicator(
+            onRefresh: _onRefresh,
+            child: Column(children: [
+              Expanded(
+                  child: ListView.separated(
                 // controller: _refreshController.scrollController,
-            padding:
-                const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
-            shrinkWrap: true,
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final item = items[index];
-              final author = item.author;
+                padding:
+                    const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
+                shrinkWrap: true,
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  final item = items[index];
+                  final author = item.author;
 
-              final formattedDate = DateFormat('MMM d HH:mm')
-                  .format(DateTime.parse(item.postedAt.toString()).toLocal());
-              bool isCurrentUser = item.authorId == widget.user.userId;
+                  final formattedDate = DateFormat('MMM d HH:mm').format(
+                      DateTime.parse(item.postedAt.toString()).toLocal());
+                  bool isCurrentUser = item.authorId == widget.user.userId;
 
-              return Card(
-                margin: const EdgeInsets.all(5),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(0)),
-                clipBehavior: Clip.antiAlias,
-                child: Padding(
-                  padding: const EdgeInsets.all(0),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        leading: _profilePicWidget(item, ref),
-                        title:
-                            Text(author!, style: const TextStyle(fontSize: 16)),
-                        subtitle: Text(
-                          "${item.authorTitle!} | ${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString()))}",
-                          style: TextStyle(
-                            color: Color(0xff676A79),
-                            fontSize: 12.0,
-                            fontFamily: GoogleFonts.notoSans().fontFamily,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                        trailing: isCurrentUser
-                            ? Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                    icon: Icon(Icons.edit),
-                                    onPressed: () {
-                                // ref.read(selectedItemProvider)?.hashTag = item.hashTag;
-                                // ref.read(selectedItemProvider)?.content = item.content;
-
-// ref.read(selectedItemProvider)!.content = item.content;
-
-
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              fullscreenDialog: true,
-                                              builder: (context) =>
-                                                  const CreatePostFeedScreen()));
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.delete),
-                                    onPressed: () {
-                                      // Show a confirmation dialog before deleting the item.
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: Text("Confirm Delete"),
-                                            content: Text(
-                                                "Are you sure you want to delete this item?"),
-                                            actions: [
-                                              TextButton(
-                                                child: Text("Cancel"),
-                                                onPressed: () {
-                                                  Navigator.of(context)
-                                                      .pop(); // Close the dialog
-                                                },
-                                              ),
-                                              TextButton(
-                                                child: Text("Delete"),
-                                                onPressed: () {
-                                                  // Perform the delete action here, e.g., remove the item from the list.
-                                                  setState(() {
-                                                    items.remove(item);
-                                                  });
-                                                  Navigator.of(context)
-                                                      .pop(); // Close the dialog
-                                                },
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
-                                  ),
-                                ],
-                              )
-                            : null,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  return Card(
+                    margin: const EdgeInsets.all(5),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0)),
+                    clipBehavior: Clip.antiAlias,
+                    child: Padding(
+                      padding: const EdgeInsets.all(0),
+                      child: Column(
                         children: [
-                          const SizedBox(height: 4.0),
-                          Padding(
-                              padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-                              child: contentViewWidget(item)),
-                          Padding(
-                              padding: const EdgeInsets.fromLTRB(20, 5, 20, 10),
-                              child: hasTagViewWidget(item)),
-
-                          //const SizedBox(height: 4.0),
-                          item.media
-                              ? AspectRatio(
-                                  aspectRatio: 16 / 9,
-                                  child: FeedMediaView(item: item),
-                                )
-                              : const SizedBox(height: 2.0),
-                          const SizedBox(height: 4.0),
-                          // const Divider(
-                          //   thickness: 1.0,
-                          //   height: 1.0,
-                          // ),
-
-                          //LikesWidget comment
-                          getInfoOFViewsComments(index, item, context),
-                          const Divider(
-                            thickness: 1.0,
-                            height: 1.0,
+                          ListTile(
+                            leading: _profilePicWidget(item, ref),
+                            title: Text(author!,
+                                style: const TextStyle(fontSize: 16)),
+                            subtitle: Text(
+                              "${item.authorTitle!} | ${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString()))}",
+                              style: TextStyle(
+                                color: Color(0xff676A79),
+                                fontSize: 12.0,
+                                fontFamily: GoogleFonts.notoSans().fontFamily,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                            trailing: isCurrentUser
+                                ? Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      EditButton(
+                                        onPressed: () {
+                                          _editItem(
+                                              item); // Call the edit function
+                                        },
+                                      ),
+                                      DeleteButton(
+                                        onPressed: () {
+                                          _deleteItem(
+                                              item); // Call the delete function
+                                        },
+                                      ),
+                                    ],
+                                  )
+                                : null,
                           ),
-                          btnSharingInfoLayout(context, index, item, ref),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 4.0),
+                              Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                  child: contentViewWidget(item)),
+                              Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                  child: hasTagViewWidget(item)),
+
+                              //const SizedBox(height: 4.0),
+                              item.media
+                                  ? AspectRatio(
+                                      aspectRatio: 16 / 9,
+                                      child: FeedMediaView(item: item),
+                                    )
+                                  : const SizedBox(height: 2.0),
+                              const SizedBox(height: 4.0),
+                              // const Divider(
+                              //   thickness: 1.0,
+                              //   height: 1.0,
+                              // ),
+
+                              //LikesWidget comment
+                              getInfoOFViewsComments(index, item, context),
+                              const Divider(
+                                thickness: 1.0,
+                                height: 1.0,
+                              ),
+                              btnSharingInfoLayout(context, index, item, ref),
+                            ],
+                          ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-              );
-            },
-            separatorBuilder: (BuildContext context, int index) {
-              return const Divider();
-            },
-          )),
-          const SizedBox(
-            height: 100,
-          )
-        ]),
-      ));
+                    ),
+                  );
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return const Divider();
+                },
+              )),
+              const SizedBox(
+                height: 100,
+              )
+            ]),
+          ));
     }
     if (feedsAsyncValue is AsyncLoading) {
       return const Center(
@@ -423,7 +383,59 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
     // });
 
     // Complete the refresh.
-    // _refreshController.refreshCompleted();
+    // _refreshController.refreshCompleted(); --->
   }
 
+// Edit an item
+  void _editItem(Feed item) {
+    // Implement your edit logic here, e.g., navigate to the edit screen
+
+    setState(() {
+       Navigator.push(
+      context,
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (context) => CreatePostFeedScreen(feedItem: item),
+      ),
+    );
+    });
+   
+  }
+
+// Delete an item
+  void _deleteItem(Feed item) {
+    // Show a confirmation dialog before deleting the item.
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirm Delete"),
+          content: Text("Are you sure you want to delete this item?"),
+          actions: [
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+            TextButton(
+              child: Text("Delete"),
+              onPressed: () {
+                // Perform the delete action here, e.g., remove the item from the list.
+                setState(() {
+                  final feedsAsyncValue = ref.watch(feedsProvider(widget.user));
+                  if (feedsAsyncValue is AsyncData) {
+                    final items = feedsAsyncValue.value!;
+
+                    items.remove(item);
+                  }
+                });
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

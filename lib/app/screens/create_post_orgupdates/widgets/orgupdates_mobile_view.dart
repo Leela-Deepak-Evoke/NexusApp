@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/models/post_feed_params.dart';
+import 'package:evoke_nexus_app/app/models/post_org_update_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
+import 'package:evoke_nexus_app/app/provider/org_update_service_provider.dart';
 import 'package:evoke_nexus_app/app/services/feed_service.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/generic_bottom_sheet.dart';
@@ -21,22 +23,22 @@ enum ContentType {
   document,
 }
 
-class PostFeedsMobileView extends ConsumerStatefulWidget {
+class OrgUpdatesMobileView extends ConsumerStatefulWidget {
   final User user;
   final String slectedCategory;
   final Feed? feedItem;
 
-  const PostFeedsMobileView(
+  const OrgUpdatesMobileView(
       {super.key,
       required this.user,
       required this.slectedCategory,
       this.feedItem});
 
   @override
-  PostFeedsMobileViewState createState() => PostFeedsMobileViewState();
+  OrgUpdatesMobileViewMobileViewState createState() => OrgUpdatesMobileViewMobileViewState();
 }
 
-class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
+class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobileView> {
   String? uploadedFilePath;
   String? uploadedFileName;
 
@@ -148,7 +150,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        categoryHearViewWidget(),
+                        // categoryHearViewWidget(),
                         // const SizedBox(
                         //   height: 5,
                         // ),
@@ -552,11 +554,6 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
       hashTagController.clear();
       mediaCaptionController.clear();
       _videoPlayerController!.dispose();
-      // dropdownValue = 'General Feed';
-
-      // if (fileList.isNotEmpty){
-      //  fileList.remove(data);
-      // }
     });
   }
 
@@ -574,9 +571,8 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     });
   }
 
-  void _handleSubmit(PostFeedParams params, WidgetRef ref) async {
-    await ref.read(postFeedProvider(params).future);
-    //  showMessage('Feed posted successfully');
+  void _handleSubmit(PostOrgUpdateParams params, WidgetRef ref) async {
+    await ref.read(postOrgUpdateProvider(params).future);
     Navigator.pop(context);
     _resetValues();
   }
@@ -624,14 +620,17 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   }
 
   createPostWithoutAttachment() async {
-    final feedId = const Uuid().v4();
-    final params = PostFeedParams(
+    final orgId = const Uuid().v4();
+    
+    final params = PostOrgUpdateParams(
         userId: widget.user.userId,
-        feedId: feedId,
+        orgUpdateId: orgId,
         content: feedController.text,
-        category: (selectedIndex != null)
-            ? checkListItems[selectedIndex ?? 0]
-            : "General Feed",
+        category : "General", 
+
+        // category: (selectedIndex != null)
+        //     ? checkListItems[selectedIndex ?? 0]
+        //     : "General",
         media: false,
         hasImage: false,
         hasVideo: false);
@@ -639,10 +638,10 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   }
 
   createPostAttachments() async {
-    final feedId = const Uuid().v4();
-    final params = PostFeedParams(
+    final orgId = const Uuid().v4();
+    final params = PostOrgUpdateParams(
       userId: widget.user.userId,
-      feedId: feedId,
+      orgUpdateId: orgId,
       content: feedController.text,
       media: isMediaSelect,
       hasImage: isImageSelect,
@@ -650,9 +649,10 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
       mediaCaption: mediaCaptionController.text,
       hashTag: hashTagController.text,
       hasVideo: isVideoSelect,
-      category: (selectedIndex != null)
-          ? checkListItems[selectedIndex ?? 0]
-          : "General Feed",
+      category : "General", 
+      // category: (selectedIndex != null)
+      //     ? checkListItems[selectedIndex ?? 0]
+      //     : "General",
     );
     _handleSubmit(params, ref);
     //_resetValues();
@@ -700,7 +700,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                 onPressed: () {
                   Navigator.pop(context);
                   _resetValues();
-                  if (text == 'Feed posted successfully') {
+                  if (text == 'OrgUpdate posted successfully') {
                     Navigator.pop(context);
                   }
                 },
@@ -793,7 +793,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
               Text(
                 (selectedIndex != null)
                     ? checkListItems[selectedIndex ?? 0]
-                    : "General Feed",
+                    : "General",
                 style: TextStyle(
                   color: Color(0xffB54242),
                   fontSize: 12.0,

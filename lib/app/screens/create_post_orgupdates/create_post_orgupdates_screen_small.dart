@@ -2,24 +2,25 @@ import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/create_post_feed/widgets/postfeed_mobile_view.dart';
 import 'package:evoke_nexus_app/app/screens/create_post_forum/widgets/post_forum_mobile_view.dart';
+import 'package:evoke_nexus_app/app/screens/create_post_orgupdates/widgets/orgupdates_mobile_view.dart';
 import 'package:evoke_nexus_app/app/widgets/common/round_action_view.dart';
 import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CreatePostFeedScreenSmall extends ConsumerStatefulWidget {
+class CreatePostOrgUpdatesScreenSmall extends ConsumerStatefulWidget {
      Feed? feedItem; // Add a parameter for the Feed item
 
-  CreatePostFeedScreenSmall({Key? key,  this.feedItem}) : super(key: key);
+  CreatePostOrgUpdatesScreenSmall({Key? key,  this.feedItem}) : super(key: key);
 
 
   // const CreatePostFeedScreenSmall({super.key});
 
   @override
-  ConsumerState<CreatePostFeedScreenSmall> createState() => _CreatePostFeedScreenSmallState();
+  ConsumerState<CreatePostOrgUpdatesScreenSmall> createState() => _CreatePostOrgUpdatesScreenSmallState();
 }
 
-class _CreatePostFeedScreenSmallState extends ConsumerState<CreatePostFeedScreenSmall> {
+class _CreatePostOrgUpdatesScreenSmallState extends ConsumerState<CreatePostOrgUpdatesScreenSmall> {
   @override
   Widget build(BuildContext context) {
         final feedItem = widget.feedItem;
@@ -31,10 +32,10 @@ class _CreatePostFeedScreenSmallState extends ConsumerState<CreatePostFeedScreen
     return userAsyncValue.when(
       data: (data) {
          return    MobileLayout(
-          title: "Post Feed",
+          title: "Post OrgUpdates",
           user: data,
           hasBackAction: true,
-          hasRightAction: true,
+          hasRightAction: false,
 
           topBarButtonAction: () {  
 
@@ -42,11 +43,11 @@ class _CreatePostFeedScreenSmallState extends ConsumerState<CreatePostFeedScreen
           backButtonAction: () {
             Navigator.pop(context);
           },
-          rightChildWiget: RoundedActionView(onPressed:() {
-            childKey.currentState?.onCategorySelected();
-          }
-          , title: rightActionTitle),
-          child: PostFeedsMobileView(key: childKey, user: data,slectedCategory:  rightActionTitle, feedItem: feedItem),
+          // rightChildWiget: RoundedActionView(onPressed:() {
+          //   childKey.currentState?.onCategorySelected();
+          // }
+          // , title: rightActionTitle),
+          child: OrgUpdatesMobileView(key: childKey, user: data,slectedCategory:  rightActionTitle, feedItem: feedItem),
 
         );
   }, 

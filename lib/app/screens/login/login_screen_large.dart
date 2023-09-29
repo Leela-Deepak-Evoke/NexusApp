@@ -85,10 +85,21 @@ class _LoginScreenLargeState extends ConsumerState<LoginScreenLarge>
                     ),
                   )),
                   ElevatedButton(
-                    onPressed: () => {authService.login(((isSucess) 
+                    onPressed: () =>
+                     {
+                  authService.login((isSucess) 
+                  {
+
+                    if(isSucess)
                     {
-                      
-                    }))},
+                        // GoRouter.of(context).goNamed('${AppRoute.rootNavigation.name}');
+                        // authService.login(isSucess);
+                    }
+
+                  }, context)
+              
+                  },
+                    
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 5, 14, 69),
                       padding: const EdgeInsets.all(10),

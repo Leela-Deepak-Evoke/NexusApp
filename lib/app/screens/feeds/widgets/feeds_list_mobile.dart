@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+// import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class FeedListMobile extends ConsumerStatefulWidget {
   final User user;
@@ -23,6 +24,9 @@ class FeedListMobile extends ConsumerStatefulWidget {
 }
 
 class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
+        // final RefreshIndicator _refreshController = RefreshIndicator(child: , onRefresh: );
+
+
   void _onCommentsPressed(Feed item) {
     Navigator.push(
         context,
@@ -43,9 +47,13 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
       return Container(
         alignment: AlignmentDirectional.topStart,
         padding: const EdgeInsets.only(left: 0, right: 0, top: 10, bottom: 0),
+    child: RefreshIndicator(
+        onRefresh: _onRefresh,
+      
         child: Column(children: [
           Expanded(
               child: ListView.separated(
+                // controller: _refreshController.scrollController,
             padding:
                 const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
             shrinkWrap: true,
@@ -187,7 +195,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
             height: 100,
           )
         ]),
-      );
+      ));
     }
     if (feedsAsyncValue is AsyncLoading) {
       return const Center(
@@ -400,4 +408,22 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
       ),
     );
   }
+
+  Future<void> _onRefresh() async {
+    // Implement your refresh logic here.
+    // Fetch new data or refresh your existing data.
+    // You can update the UI when the refresh is complete.
+
+    // For example, you can fetch new data using:
+    // final newData = await fetchData();
+
+    // Update the UI and complete the refresh indicator.
+    // setState(() {
+    //   // Update your data with newData.
+    // });
+
+    // Complete the refresh.
+    // _refreshController.refreshCompleted();
+  }
+
 }

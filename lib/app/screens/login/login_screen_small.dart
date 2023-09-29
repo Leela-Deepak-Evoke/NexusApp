@@ -234,7 +234,7 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
                         GoRouter.of(context).goNamed('${AppRoute.rootNavigation.name}');
                     }
 
-                  })
+                  }, context)
               
                   },
                 label: Text('Login with Evoke ID',

@@ -9,6 +9,12 @@ final feedServiceProvider = Provider<FeedService>((ref) => FeedService());
 
 final selectedItemProvider = StateProvider<Feed?>((ref) => null);
 
+final refresFeedsProvider =
+    FutureProvider.autoDispose.family<bool, String>((ref, user) async {
+  ref.invalidate(feedsProvider);
+return true;
+});
+
 
 final feedsProvider =
     FutureProvider.autoDispose.family<List<Feed>, User>((ref, user) async {

@@ -2,6 +2,7 @@
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_screen.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
+import 'package:evoke_nexus_app/app/widgets/common/error_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -53,11 +54,17 @@ class RootScreenMobile extends ConsumerWidget {
     if (checkUserAsyncValue is AsyncError) {
       context.replaceNamed(AppRoute.login.name);
         //context.goNamed('/${AppRoute.login.name}');
+       return ErrorScreen(onRetryPressed: onRetryPressed);
     }
 
     // This should ideally never be reached, but it's here as a fallback.
-     context.replaceNamed(AppRoute.login.name);
-    return Container(color: Colors.green,);
+    //  context.replaceNamed(AppRoute.login.name);
+      return ErrorScreen(onRetryPressed: onRetryPressed);
+    // return Container(color: Colors.green,);
+  }
+
+  void onRetryPressed(){
+
   }
 }
 

@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 class AuthenticationService {
-  FlutterWebviewPlugin _webviewPlugin = FlutterWebviewPlugin();
+  FlutterWebviewPlugin flutterWebViewPlugin = FlutterWebviewPlugin();
 
   Future<void> login(
       Function(bool isSucess) onloginComplition, BuildContext context) async {
@@ -28,40 +28,23 @@ class AuthenticationService {
       onloginComplition(true);
     } else {
       final result = await Amplify.Auth.signInWithWebUI(
-        provider: const AuthProvider.saml("EvokeAzureAD"),
-      );
-      safePrint('Result: $result');
+          provider: const AuthProvider.saml("EvokeAzureAD"));
+
+      debugPrint('Result: $result');
       onloginComplition(true);
 
+      // final result = await Amplify.Auth.signInWithWebUI(provider: const AuthProvider.saml("EvokeAzureAD"));
 
-      
-      // Navigator.pop(context);
-
-      // final result = await Amplify.Auth.signInWithWebUI(
-      //   provider: const AuthProvider.saml("EvokeAzureAD"),
-      // );
+      // // Add WebView settings here
+      // flutterWebViewPlugin.onStateChanged.listen((viewState) {
+      //   if (viewState.type == WebViewState.finishLoad) {
+      //     // Apply WebView settings here, e.g., clearing cache
+      //     flutterWebViewPlugin.clearCache(); // Clear WebView cache
+      //   }
+      // });
 
       // safePrint('Result: $result');
       // onloginComplition(true);
-      // if (result.isSignedIn) {
-      //   _webviewPlugin.close();
-      // } else {
-      //   print("User is not signed in.");
-      // }
-
-      // Close the WebView when the login is successful
-      // if (result.isSignedIn) {
-      //   _webviewPlugin.clearCache();
-
-      //   _webviewPlugin.close();
-      // }
-
-//       if (result.isSignedIn) {
-//         // Introduce a delay before closing the WebView
-//         await Future.delayed(
-//             Duration(seconds: 1)); // Adjust the duration as needed
-//         _webviewPlugin.close();
-// }
     }
   }
 }

@@ -370,6 +370,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
   }
 
   Future<void> _onRefresh() async {
+    ref.watch(refresFeedsProvider(""));
     // Implement your refresh logic here.
     // Fetch new data or refresh your existing data.
     // You can update the UI when the refresh is complete.
@@ -383,7 +384,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
     // });
 
     // Complete the refresh.
-    // _refreshController.refreshCompleted(); --->
+    // _refreshController.refreshCompleted(); 
   }
 
 // Edit an item

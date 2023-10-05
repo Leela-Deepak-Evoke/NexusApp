@@ -7,108 +7,124 @@ import 'package:evoke_nexus_app/app/screens/comments/comments_screen.dart';
 import 'package:evoke_nexus_app/app/screens/org_updates/widgets/org_updates_header_card_view.dart';
 import 'package:evoke_nexus_app/app/screens/org_updates/widgets/org_updates_media_view.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
+import 'package:evoke_nexus_app/app/widgets/common/error_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
-class OrgUpdateListMobile extends ConsumerWidget {
+class OrgUpdateListMobile extends ConsumerStatefulWidget {
   final User user;
   const OrgUpdateListMobile({super.key, required this.user});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final orgUpdatesAsyncValue = ref.watch(orgUpdatesProvider(user));
+  _OrgUpdateListMobileViewState createState() =>
+      _OrgUpdateListMobileViewState();
+}
+
+class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
+  @override
+  Widget build(BuildContext context) {
+    final orgUpdatesAsyncValue = ref.watch(orgUpdatesProvider(widget.user));
 
     if (orgUpdatesAsyncValue is AsyncData) {
       final items = orgUpdatesAsyncValue.value!;
-      return Container(
-        alignment: AlignmentDirectional.topStart,
-        padding: const EdgeInsets.only(left: 0, right: 0, top: 10, bottom: 0),
-        child: Column(children: [
-          Expanded(
-              child: ListView.separated(
+      if (items.isEmpty) {
+        // Handle the case where there is no data found
+        return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
+      } else {
+        return Container(
+            alignment: AlignmentDirectional.topStart,
             padding:
-                const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
-            shrinkWrap: true,
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final item = items[index];
-              final author = item.author;
+                const EdgeInsets.only(left: 0, right: 0, top: 10, bottom: 0),
+            child: RefreshIndicator(
+              onRefresh: _onRefresh,
+              child: Column(children: [
+                Expanded(
+                    child: ListView.separated(
+                  padding: const EdgeInsets.only(
+                      left: 0, right: 0, top: 0, bottom: 0),
+                  shrinkWrap: true,
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+                    final author = item.author;
 
-              final formattedDate = DateFormat('MMM d HH:mm')
-                  .format(DateTime.parse(item.postedAt.toString()).toLocal());
+                    final formattedDate = DateFormat('MMM d HH:mm').format(
+                        DateTime.parse(item.postedAt.toString()).toLocal());
 
-              return Card(
-                margin: const EdgeInsets.all(5),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(0)),
-                clipBehavior: Clip.antiAlias,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        leading: _profilePicWidget(item, ref),
-                        title:
-                            Text(author!, style: const TextStyle(fontSize: 16)),
-                        subtitle: Text(
-                          "${item.authorTitle!} | ${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString()))}",
-                          style: TextStyle(
-                            color: Color(0xff676A79),
-                            fontSize: 12.0,
-                            fontFamily: GoogleFonts.notoSans().fontFamily,
-                            fontWeight: FontWeight.normal,
-                          ),
+                    return Card(
+                      margin: const EdgeInsets.all(5),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(0)),
+                      clipBehavior: Clip.antiAlias,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            ListTile(
+                              leading: _profilePicWidget(item, ref),
+                              title: Text(author!,
+                                  style: const TextStyle(fontSize: 16)),
+                              subtitle: Text(
+                                "${item.authorTitle!} | ${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString()))}",
+                                style: TextStyle(
+                                  color: Color(0xff676A79),
+                                  fontSize: 12.0,
+                                  fontFamily: GoogleFonts.notoSans().fontFamily,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 4.0),
+                                Padding(
+                                    padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                    child: contentViewWidget(item)),
+                                Padding(
+                                    padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                    child: hasTagViewWidget(item)),
+
+                                //const SizedBox(height: 4.0),
+                                item.media
+                                    ? AspectRatio(
+                                        aspectRatio: 16 / 9,
+                                        child: OrgUpdateMediaView(item: item),
+                                      )
+                                    : const SizedBox(height: 2.0),
+                                const SizedBox(height: 4.0),
+                                // const Divider(
+                                //   thickness: 1.0,
+                                //   height: 1.0,
+                                // ),
+
+                                //LikesWidget comment
+                                getInfoOFViewsComments(
+                                    context, ref, index, item),
+                                const Divider(
+                                  thickness: 1.0,
+                                  height: 1.0,
+                                ),
+                                btnSharingInfoLayout(context, index, item, ref)
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 4.0),
-                          Padding(
-                              padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                              child: contentViewWidget(item)),
-                          Padding(
-                              padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                              child: hasTagViewWidget(item)),
-
-                          //const SizedBox(height: 4.0),
-                          item.media
-                              ? AspectRatio(
-                                  aspectRatio: 16 / 9,
-                                  child: OrgUpdateMediaView(item: item),
-                                )
-                              : const SizedBox(height: 2.0),
-                          const SizedBox(height: 4.0),
-                          // const Divider(
-                          //   thickness: 1.0,
-                          //   height: 1.0,
-                          // ),
-
-                          //LikesWidget comment
-                          getInfoOFViewsComments(context, ref, index, item),
-                          const Divider(
-                            thickness: 1.0,
-                            height: 1.0,
-                          ),
-                          btnSharingInfoLayout(context, index, item, ref)
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-            separatorBuilder: (BuildContext context, int index) {
-              return const Divider();
-            },
-          )),
-          const SizedBox(
-            height: 100,
-          )
-        ]),
-      );
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return const Divider();
+                  },
+                )),
+                const SizedBox(
+                  height: 100,
+                )
+              ]),
+            ));
+      }
     }
     if (orgUpdatesAsyncValue is AsyncLoading) {
       return const Center(
@@ -120,8 +136,12 @@ class OrgUpdateListMobile extends ConsumerWidget {
       );
     }
 
+    // if (orgUpdatesAsyncValue is AsyncError) {
+    //   return Text('An error occurred: ${orgUpdatesAsyncValue.error}');
+    // }
+
     if (orgUpdatesAsyncValue is AsyncError) {
-      return Text('An error occurred: ${orgUpdatesAsyncValue.error}');
+      return ErrorScreen(showErrorMessage: true, onRetryPressed: retry);
     }
 
     // This should ideally never be reached, but it's here as a fallback.
@@ -216,7 +236,7 @@ class OrgUpdateListMobile extends ConsumerWidget {
               // Perform the like/dislike action
               final likeDislikeResult =
                   ref.read(genricPostlikeDislikeProvider(PostLikeDislikeParams(
-                userId: user.userId,
+                userId: widget.user.userId,
                 action: item.currentUserLiked ? "DISLIKE" : "LIKE",
                 postlabel: "OrgUpdate",
                 postIdPropValue: item.orgUpdateId,
@@ -241,7 +261,7 @@ class OrgUpdateListMobile extends ConsumerWidget {
           ),
           TextButton.icon(
             onPressed: () {
-             _onCommentsPressed(context,item,ref);
+              _onCommentsPressed(context, item, ref);
             },
             icon: Image.asset(
               'assets/images/chat_bubble_outline.png',
@@ -271,9 +291,7 @@ class OrgUpdateListMobile extends ConsumerWidget {
         children: [
           TextButton.icon(
             // <-- TextButton
-            onPressed: () {
-             
-            },
+            onPressed: () {},
             icon: Image.asset(
               'assets/images/reactions.png',
             ),
@@ -291,38 +309,39 @@ class OrgUpdateListMobile extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               TextButton.icon(
-            // <-- TextButton
-            onPressed: () {
-             
-            },
-            icon: 
-            SizedBox(
-              height: 15,
-              width: 15,
-              child: 
-              Center(
-                child: Image.asset(
-                  'assets/images/chat_bubble_outline.png',
+                // <-- TextButton
+                onPressed: () {},
+                icon: SizedBox(
+                  height: 15,
+                  width: 15,
+                  child: Center(
+                    child: Image.asset(
+                      'assets/images/chat_bubble_outline.png',
+                    ),
+                  ),
+                ),
+                label: Text(
+                  '${item.comments} comments',
+                  style: TextStyle(
+                    color: Color(0xff676A79),
+                    fontSize: 12.0,
+                    fontFamily: GoogleFonts.notoSans().fontFamily,
+                    fontWeight: FontWeight.normal,
+                  ),
                 ),
               ),
-            ),
-            label: Text(
-              '${item.comments} comments',
-              style: TextStyle(
-                color: Color(0xff676A79),
-                fontSize: 12.0,
-                fontFamily: GoogleFonts.notoSans().fontFamily,
-                fontWeight: FontWeight.normal,
-              ),
-            ),
-          ),
             ],
           ),
         ],
       ),
     );
   }
+
+  Future<void> _onRefresh() async {
+    ref.watch(refresOrgUpdatesProvider(""));
+  }
+
+  void retry() {
+    _onRefresh();
+  }
 }
-
-
-

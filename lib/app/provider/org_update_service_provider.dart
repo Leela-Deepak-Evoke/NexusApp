@@ -34,3 +34,10 @@ final postOrgUpdateProvider = FutureProvider.autoDispose
   ref.invalidate(orgUpdatesProvider);
 
 });
+
+
+final refresOrgUpdatesProvider =
+    FutureProvider.autoDispose.family<bool, String>((ref, user) async {
+  ref.invalidate(orgUpdatesProvider);
+return true;
+});

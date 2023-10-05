@@ -27,24 +27,9 @@ class AuthenticationService {
       safePrint('Result: $result');
       onloginComplition(true);
     } else {
-      final result = await Amplify.Auth.signInWithWebUI(
-          provider: const AuthProvider.saml("EvokeAzureAD"));
-
-      debugPrint('Result: $result');
+      final result = await Amplify.Auth.signInWithWebUI(provider: const AuthProvider.saml("EvokeAzureAD"));
+      safePrint('Result: $result');
       onloginComplition(true);
-
-      // final result = await Amplify.Auth.signInWithWebUI(provider: const AuthProvider.saml("EvokeAzureAD"));
-
-      // // Add WebView settings here
-      // flutterWebViewPlugin.onStateChanged.listen((viewState) {
-      //   if (viewState.type == WebViewState.finishLoad) {
-      //     // Apply WebView settings here, e.g., clearing cache
-      //     flutterWebViewPlugin.clearCache(); // Clear WebView cache
-      //   }
-      // });
-
-      // safePrint('Result: $result');
-      // onloginComplition(true);
     }
   }
 }

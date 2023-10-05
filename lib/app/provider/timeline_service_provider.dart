@@ -13,3 +13,10 @@ final timelineProvider =
   final timlines = await timlineService.fetchTimeline(user);
   return timlines;
 });
+
+
+final refresTimelineProvider =
+    FutureProvider.autoDispose.family<bool, String>((ref, user) async {
+  ref.invalidate(timelineProvider);
+return true;
+});

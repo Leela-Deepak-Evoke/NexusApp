@@ -3,9 +3,20 @@ import 'package:evoke_nexus_app/app/screens/profile/widgets/profile_mobile_view.
 import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfileScreenSmall extends ConsumerStatefulWidget {
-   const ProfileScreenSmall({super.key});
+    final GoRouter router; // Add this line
+final BuildContext context;
+
+const ProfileScreenSmall({
+    super.key,
+    required this.context,
+    required this.router, // Add this line
+  });
+
+
+  //  const ProfileScreenSmall({super.key});
 
  @override
   ConsumerState<ProfileScreenSmall> createState() => _ProfileScreenSmallState();
@@ -22,7 +33,7 @@ class _ProfileScreenSmallState extends ConsumerState<ProfileScreenSmall> {
         return MobileLayout(
           title: 'Profile',
           user: data,
-          child:ProfileMobileView(user: data,onPostClicked: () {
+          child:ProfileMobileView(user: data, context: widget.context, router: widget.router, onPostClicked: () {
             
           },),
           hasBackAction: false,

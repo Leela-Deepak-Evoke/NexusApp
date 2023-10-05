@@ -4,6 +4,7 @@ import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/forum/widgets/answers_list.dart';
 import 'package:evoke_nexus_app/app/utils/app_routes.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
+import 'package:evoke_nexus_app/app/widgets/common/error_screen.dart';
 import 'package:evoke_nexus_app/app/widgets/common/search_header_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,23 +12,32 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class QuestionsListMobile extends ConsumerWidget {
+class QuestionsListMobile extends ConsumerStatefulWidget {
   final User user;
-
   const QuestionsListMobile({super.key, required this.user});
 
-  //final feedService = FeedService();
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  _QuestionsListMobileViewState createState() => _QuestionsListMobileViewState();
+}
+
+class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
+  @override
+  Widget build(BuildContext context) {
     final TextEditingController _searchController = TextEditingController();
     final Size size = MediaQuery.of(context).size;
-    final questionsAsyncValue = ref.watch(questionsProvider(user));
+    final questionsAsyncValue = ref.watch(questionsProvider(widget.user));
     if (questionsAsyncValue is AsyncData) {
       final items = questionsAsyncValue.value!;
-
+if (items.isEmpty) {
+    // Handle the case where there is no data found
+    return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
+  } 
+  else{ 
       return Container(
         alignment: AlignmentDirectional.topStart,
         padding: const EdgeInsets.only(left: 0, right: 0, top: 10, bottom: 0),
+       child: RefreshIndicator(
+            onRefresh: _onRefresh,
         child: Column(children: [
           Expanded(
             child: ListView.builder(
@@ -80,8 +90,8 @@ class QuestionsListMobile extends ConsumerWidget {
             height: 100,
           )
         ]),
-      );
-    }
+      ));
+    }}
     if (questionsAsyncValue is AsyncLoading) {
       return Container(
         color: Colors.white,
@@ -95,9 +105,14 @@ class QuestionsListMobile extends ConsumerWidget {
       );
     }
 
-    if (questionsAsyncValue is AsyncError) {
-      return Text('An error occurred: ${questionsAsyncValue.error}');
+    // if (questionsAsyncValue is AsyncError) {
+    //   return Text('An error occurred: ${questionsAsyncValue.error}');
+    // }
+
+     if (questionsAsyncValue is AsyncError) {
+     return ErrorScreen(showErrorMessage: true, onRetryPressed: retry);
     }
+
     // This should ideally never be reached, but it's here as a fallback.
     return const SizedBox.shrink();
   }
@@ -272,6 +287,14 @@ class QuestionsListMobile extends ConsumerWidget {
     return '';
   }
 
+   Future<void> _onRefresh() async {
+    ref.watch(refresForumProvider(""));
+  }
+
+  void retry(){
+       _onRefresh();
+  }
+  
   void _showAnswers(BuildContext context, String questionId, User user) {
     showDialog(
         context: context,
@@ -302,4 +325,5 @@ class QuestionsListMobile extends ConsumerWidget {
               ));
         });
   }
+
 }

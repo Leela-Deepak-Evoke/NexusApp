@@ -17,6 +17,13 @@ final questionsProvider =
   return forums;
 });
 
+final refresForumProvider =
+    FutureProvider.autoDispose.family<bool, String>((ref, user) async {
+  ref.invalidate(questionsProvider);
+return true;
+});
+
+
 
 final answerListProvider = FutureProvider.autoDispose.
  family<List<Answer>,FetchAnswerParams>((ref, params)  async

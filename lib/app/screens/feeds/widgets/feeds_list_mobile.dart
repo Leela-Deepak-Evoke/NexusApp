@@ -10,6 +10,7 @@ import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_header_card_view.
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_media_view.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/edit_delete_button.dart';
+import 'package:evoke_nexus_app/app/widgets/common/error_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,7 +26,6 @@ class FeedListMobile extends ConsumerStatefulWidget {
 }
 
 class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
-  // final RefreshIndicator _refreshController = RefreshIndicator(child: , onRefresh: );
 
   void _onCommentsPressed(Feed item) {
     Navigator.push(
@@ -44,6 +44,11 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
     final feedsAsyncValue = ref.watch(feedsProvider(widget.user));
     if (feedsAsyncValue is AsyncData) {
       final items = feedsAsyncValue.value!;
+     if (items.isEmpty) {
+    // Handle the case where there is no data found
+    return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
+  } 
+  else{ 
       return Container(
           alignment: AlignmentDirectional.topStart,
           padding: const EdgeInsets.only(left: 0, right: 0, top: 10, bottom: 0),
@@ -157,6 +162,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
             ]),
           ));
     }
+    }
     if (feedsAsyncValue is AsyncLoading) {
       return const Center(
         child: SizedBox(
@@ -168,7 +174,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
     }
 
     if (feedsAsyncValue is AsyncError) {
-      return Text('An error occurred: ${feedsAsyncValue.error}');
+      return ErrorScreen(showErrorMessage: true, onRetryPressed: retry);
     }
 
     // This should ideally never be reached, but it's here as a fallback.
@@ -371,20 +377,10 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
 
   Future<void> _onRefresh() async {
     ref.watch(refresFeedsProvider(""));
-    // Implement your refresh logic here.
-    // Fetch new data or refresh your existing data.
-    // You can update the UI when the refresh is complete.
+  }
 
-    // For example, you can fetch new data using:
-    // final newData = await fetchData();
-
-    // Update the UI and complete the refresh indicator.
-    // setState(() {
-    //   // Update your data with newData.
-    // });
-
-    // Complete the refresh.
-    // _refreshController.refreshCompleted(); 
+  void retry(){
+       _onRefresh();
   }
 
 // Edit an item

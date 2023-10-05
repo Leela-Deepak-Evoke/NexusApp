@@ -4,10 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 
 class ProfileTabMenu extends StatelessWidget {
     Function() logoutAction;
+  final BuildContext context;
 
    ProfileTabMenu({
     Key? key,
     required this.logoutAction,
+    required this.context,
     required this.router,
   }) : super(key: key);
   final GoRouter router;

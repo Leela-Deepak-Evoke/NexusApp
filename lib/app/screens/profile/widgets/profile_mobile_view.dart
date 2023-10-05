@@ -1,22 +1,37 @@
 import 'dart:io';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/profile_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/login/login_screen.dart';
 import 'package:evoke_nexus_app/app/screens/timeline/timeline_screen.dart';
+import 'package:evoke_nexus_app/app/utils/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileMobileView extends ConsumerStatefulWidget {
   final User user;
+  final BuildContext context; // Add this line
   Function() onPostClicked;
+  final GoRouter router; // Add this line
 
   ProfileMobileView({
-    super.key,
+    Key? key,
     required this.user,
+    required this.context,
+    required this.router, // Add this line
     required this.onPostClicked,
-  });
+    // Add this line
+  }) : super(key: key);
+
+  // ProfileMobileView({
+  //   super.key,
+  //   required this.user,
+  //   required this.onPostClicked,
+  // });
 
   @override
   _ProfileMobileViewState createState() => _ProfileMobileViewState();
@@ -37,9 +52,7 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
             _profilePicWidget(widget.user, ref),
             TextButton(
               onPressed: () {
-                
                 ref.read(uploadProfileImageProvider(widget.user.userId));
-          
               },
               child: const Text('Change Profile Picture',
                   style: TextStyle(
@@ -76,7 +89,8 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
           child: VerticalCardList(),
         ),
         const SizedBox(height: 20),
-        LogoutButton(),
+        // LogoutButton(),
+        _logout(),
       ],
     );
   }
@@ -124,16 +138,42 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
     return '';
   }
 
-    void logout() async {
-  Center(
+  Widget _logout() {
+    return Center(
       child: ElevatedButton(
         onPressed: () async {
-//               final SharedPreferences prefs = await SharedPreferences.getInstance();
-//     prefs.remove('token');
-//     debugPrint('did call logout');
-// Navigator.pushReplacement(
-//         context, MaterialPageRoute(builder: (context) => const LoginScreen()));
-  
+          // bool confirmed = false;
+
+          // Show a confirmation dialog
+          await showDialog(
+            context: context,
+            builder: (BuildContext dialogContext) {
+              return AlertDialog(
+                title: Text("Confirmation"),
+                content: Text("Are you sure you want to logout?"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop(false); // No
+                    },
+                    child: Text("No"),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop(true); // Yes
+                    },
+                    child: Text("Yes"),
+                  ),
+                ],
+              );
+            },
+          ).then((value) {
+            // The user's choice will be available in the 'value' variable
+            if (value == true) {
+              // User clicked "Yes," proceed with the logout
+              doLogout();
+            }
+          });
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
@@ -150,6 +190,32 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
         ),
       ),
     );
+  }
+
+  doLogout() async {
+    final result = await Amplify.Auth.signOut();
+    if (result is CognitoCompleteSignOut) {
+      safePrint('Sign out completed successfully');
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
+      // await prefs.remove('token');
+      // context.replaceNamed(AppRoute.login.name);
+
+      // widget.context.replaceNamed(AppRoute.login.name);
+
+
+      // widget.router.goNamed(AppRoute.login.name);
+      // Navigator.of(widget.context).pushNamed(AppRoute.login.name);
+
+      // GoRouter.of(context).goNamed('/${AppRoute.login.name}');
+
+      // GoRouter.of(context).goNamed('${AppRoute.login.name}');
+      //rootnavigation tabbview
+      // tabbview -  tabhandler , rootscreen, context
+
+      // rootnavigation tabbview
+    } else if (result is CognitoFailedSignOut) {
+      safePrint('Error signing user out: ${result.exception.message}');
+    }
   }
 }
 
@@ -227,40 +293,3 @@ class VerticalCard extends StatelessWidget {
     );
   }
 }
-
-class LogoutButton extends StatelessWidget {
-  const LogoutButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: ElevatedButton(
-        onPressed: () async {
-              final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove('token');
-    debugPrint('did call logout');
-// ignore: use_build_context_synchronously
-Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => const LoginScreen()));
-  
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          elevation: 0, // Set the background color to transparent
-        ),
-        child: Text(
-          'Logout',
-          style: TextStyle(
-            color: Color(0xffB54242),
-            fontSize: 20.0,
-            fontFamily: GoogleFonts.poppins().fontFamily,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-
-

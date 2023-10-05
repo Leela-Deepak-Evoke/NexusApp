@@ -13,10 +13,14 @@ import '../../../app_router.dart';
 
 final TabBarNotifier _tabBarNotifier = TabBarNotifier();
 
-
 class TabBarHandler extends StatefulWidget {
-   TabBarHandler({Key? key,required this.logoutAction}) : super(key: key);
-    Function() logoutAction;
+  // TabBarHandler({Key? key, required this.logoutAction}) : super(key: key);
+  // Function() logoutAction;
+
+  Function() logoutAction;
+  final BuildContext context;
+   TabBarHandler({Key? key, required this.logoutAction, required this.context})
+      : super(key: key);
 
   static const String route = '/';
 
@@ -25,16 +29,9 @@ class TabBarHandler extends StatefulWidget {
 }
 
 class _TabBarHandlerState extends State<TabBarHandler> {
-
-
-
-  
   @override
   void initState() {
     super.initState();
-   
-  
-
   }
 
   @override
@@ -44,62 +41,69 @@ class _TabBarHandlerState extends State<TabBarHandler> {
 
   @override
   Widget build(BuildContext context) {
+    final menuItemlist = <TabMenuItem>[
+      TabMenuItem(
+          Icons.rss_feed,
+          'Feeds',
+          FeedsTabMenu(
+            router: feedsRouter,
+          )),
+      TabMenuItem(Icons.forum, 'Fourms', ForumsTabMenu(router: forumsRouter)),
+      TabMenuItem(
+          Icons.update,
+          'OrgUpdates',
+          OrgUpdatesTabMenu(
+            router: orgupdatesRouter,
+          )),
+      TabMenuItem(
+          Icons.person,
+          'Profile',
+          ProfileTabMenu(logoutAction: widget.logoutAction, context: widget.context, router: profileRouter)
+          // ProfileTabMenu(
+          //   router: profileRouter,
+          //   logoutAction: widget.logoutAction,
+          // )
+          ),
+    ];
 
-    final menuItemlist =  <TabMenuItem>[
-    TabMenuItem(Icons.rss_feed , 'Feeds', FeedsTabMenu(router: feedsRouter,)),
-    TabMenuItem(Icons.forum, 'Fourms',ForumsTabMenu(router : forumsRouter)),
-    TabMenuItem(Icons.update, 'OrgUpdates',OrgUpdatesTabMenu(router: orgupdatesRouter,)),
-    TabMenuItem(Icons.person, 'Profile',ProfileTabMenu(router: profileRouter,logoutAction: widget.logoutAction,)),
-  ];
-
-    
-    return  Material(
-
-        child: AnimatedBuilder(
-            animation: _tabBarNotifier,
-            builder: (context, snapshot) 
-            {
-              
-              return Stack(
-                children: [
-                  IndexedStack(
-                    index: _tabBarNotifier.index,
-                    children: [
-                      for (int i = 0; i < menuItemlist.length; i++)
-                        menuItemlist[i].child
-                    ],
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: TabBarMenu(
-                        model: _tabBarNotifier,
-                        onItemTapped: (x) {
-                          if (_tabBarNotifier.index == x) {
-                            _tabBarNotifier.popAllRoutes(x);
-                          } else {
-                            _tabBarNotifier.index = x;
-                          }
-                        
-                        },
-                        menuItems: menuItemlist),
-                  ),
-                ],
-              );
-            }),
-      );
-    
+    return Material(
+      child: AnimatedBuilder(
+          animation: _tabBarNotifier,
+          builder: (context, snapshot) {
+            return Stack(
+              children: [
+                IndexedStack(
+                  index: _tabBarNotifier.index,
+                  children: [
+                    for (int i = 0; i < menuItemlist.length; i++)
+                      menuItemlist[i].child
+                  ],
+                ),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: TabBarMenu(
+                      model: _tabBarNotifier,
+                      onItemTapped: (x) {
+                        if (_tabBarNotifier.index == x) {
+                          _tabBarNotifier.popAllRoutes(x);
+                        } else {
+                          _tabBarNotifier.index = x;
+                        }
+                      },
+                      menuItems: menuItemlist),
+                ),
+              ],
+            );
+          }),
+    );
   }
 
   logoutAction() {
     widget.logoutAction;
   }
 }
-
-
-
-
 
 class TabBarNotifier extends ChangeNotifier {
   int _index = 0;
@@ -118,7 +122,6 @@ class TabBarNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-
   FutureOr<bool> onBackButtonPressed() async {
     bool exitingApp = true;
     switch (_tabBarNotifier.index) {
@@ -129,20 +132,19 @@ class TabBarNotifier extends ChangeNotifier {
         }
         break;
       case 0:
-        if (feedkey.currentState != null &&
-            feedkey.currentState!.canPop()) {
+        if (feedkey.currentState != null && feedkey.currentState!.canPop()) {
           feedkey.currentState!.pop();
           exitingApp = false;
         }
         break;
-         case 1:
+      case 1:
         if (fourmskey.currentState != null &&
             fourmskey.currentState!.canPop()) {
           fourmskey.currentState!.pop();
           exitingApp = false;
         }
         break;
-         case 2:
+      case 2:
         if (orgupdateskey.currentState != null &&
             orgupdateskey.currentState!.canPop()) {
           orgupdateskey.currentState!.pop();
@@ -167,24 +169,22 @@ class TabBarNotifier extends ChangeNotifier {
   }
 
   void popAllRoutes(int index) {
-
-    switch (index) 
-    {
+    switch (index) {
       case -1:
         if (homeKey.currentState!.canPop()) {
           homeKey.currentState!.popUntil((route) => route.isFirst);
         }
         return;
       case 0:
-              // GoRouter router = GoRouter.of(context);
-              // router.go('/feeds');
+        // GoRouter router = GoRouter.of(context);
+        // router.go('/feeds');
         return;
-          case 1:
+      case 1:
         if (fourmskey.currentState!.canPop()) {
           fourmskey.currentState!.popUntil((route) => route.isFirst);
         }
         return;
-          case 2:
+      case 2:
         if (orgupdateskey.currentState!.canPop()) {
           orgupdateskey.currentState!.popUntil((route) => route.isFirst);
         }

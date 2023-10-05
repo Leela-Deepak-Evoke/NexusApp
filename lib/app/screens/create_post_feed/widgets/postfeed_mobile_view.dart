@@ -378,8 +378,10 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     return SizedBox(
       height: size.height - 600,
       //color: Colors.green,
-      child: Expanded(
-          child: Padding(
+      child: 
+      // Expanded(
+      //     child: 
+          Padding(
               padding: const EdgeInsets.all(0),
               child: GridView.builder(
                   itemCount: fileList.length,
@@ -413,7 +415,8 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                         ],
                       ),
                     );
-                  }))),
+                  }))
+                  // ),
     );
   }
 

@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 // class ErrorScreen extends StatelessWidget {
 
 //  final VoidCallback onRetryPressed; // Change the type to VoidCallback
@@ -37,15 +37,15 @@ import 'package:flutter/material.dart';
 //   }
 // }
 
-
-
-
 class ErrorScreen extends StatelessWidget {
   final VoidCallback onRetryPressed;
   final String? strErrorMessage;
   final bool? showErrorMessage;
 
-  ErrorScreen({this.strErrorMessage,  this.showErrorMessage, required this.onRetryPressed});
+  ErrorScreen(
+      {this.strErrorMessage,
+      this.showErrorMessage,
+      required this.onRetryPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -66,22 +66,31 @@ class ErrorScreen extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
+
         Positioned(
-         bottom: showErrorMessage ?? false
-              ? MediaQuery.of(context).size.height * 0.15
-              : MediaQuery.of(context).size.height * 0.14,
-          left: 
-               MediaQuery.of(context).size.width * 0.3,
-        
-         right: MediaQuery.of(context).size.width * 0.3,
+          bottom: showErrorMessage ?? false
+              ? MediaQuery.of(context).size.height * 0.12
+              : MediaQuery.of(context).size.height * 0.10,
+
+right: 70,
+left: 70,
+              // width: double.infinity, //MediaQuery.of(context).size.width - 230,
+              height: 50,
+          // left: MediaQuery.of(context).size.width * 0.3,
+          // right: MediaQuery.of(context).size.width * 0.3,
           child: ElevatedButton(
             onPressed: onRetryPressed,
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red[700],
             ),
             child: Text(
-              "Try Again".toUpperCase(),
-              style: TextStyle(color: Colors.white),
+              "Try Again",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16.0,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                fontWeight: FontWeight.normal,
+              ),
             ),
           ),
         ),
@@ -89,5 +98,3 @@ class ErrorScreen extends StatelessWidget {
     );
   }
 }
-
-

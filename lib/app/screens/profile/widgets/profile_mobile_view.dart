@@ -156,13 +156,13 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
                     onPressed: () {
                       Navigator.of(dialogContext).pop(false); // No
                     },
-                    child: Text("No"),
+                    child: const Text("No"),
                   ),
                   TextButton(
                     onPressed: () {
                       Navigator.of(dialogContext).pop(true); // Yes
                     },
-                    child: Text("Yes"),
+                    child: const Text("Yes"),
                   ),
                 ],
               );
@@ -196,11 +196,11 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
     final result = await Amplify.Auth.signOut();
     if (result is CognitoCompleteSignOut) {
       safePrint('Sign out completed successfully');
-      // SharedPreferences prefs = await SharedPreferences.getInstance();
-      // await prefs.remove('token');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.remove('token');
       // context.replaceNamed(AppRoute.login.name);
 
-      // widget.context.replaceNamed(AppRoute.login.name);
+      widget.context.replaceNamed(AppRoute.login.name);
 
 
       // widget.router.goNamed(AppRoute.login.name);

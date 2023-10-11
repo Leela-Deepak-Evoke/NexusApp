@@ -6,13 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class ProfileScreenSmall extends ConsumerStatefulWidget {
-    final GoRouter router; // Add this line
 final BuildContext context;
 
 const ProfileScreenSmall({
     super.key,
     required this.context,
-    required this.router, // Add this line
   });
 
 
@@ -33,7 +31,7 @@ class _ProfileScreenSmallState extends ConsumerState<ProfileScreenSmall> {
         return MobileLayout(
           title: 'Profile',
           user: data,
-          child:ProfileMobileView(user: data, context: widget.context, router: widget.router, onPostClicked: () {
+          child:ProfileMobileView(user: data, context: widget.context, onPostClicked: () {
             
           },),
           hasBackAction: false,

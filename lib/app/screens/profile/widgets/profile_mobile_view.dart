@@ -16,22 +16,13 @@ class ProfileMobileView extends ConsumerStatefulWidget {
   final User user;
   final BuildContext context; // Add this line
   Function() onPostClicked;
-  final GoRouter router; // Add this line
 
   ProfileMobileView({
     Key? key,
     required this.user,
     required this.context,
-    required this.router, // Add this line
     required this.onPostClicked,
-    // Add this line
   }) : super(key: key);
-
-  // ProfileMobileView({
-  //   super.key,
-  //   required this.user,
-  //   required this.onPostClicked,
-  // });
 
   @override
   _ProfileMobileViewState createState() => _ProfileMobileViewState();
@@ -198,21 +189,30 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
       safePrint('Sign out completed successfully');
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.remove('token');
-      // context.replaceNamed(AppRoute.login.name);
 
-      widget.context.replaceNamed(AppRoute.login.name);
+      // widget.context.replaceNamed(AppRoute.login.name);
+              // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+        //                         builder: (context) => const LoginScreen()), (route) => false);
 
+//  showDialog(
+//                     context: context,
+//                     builder: (BuildContext context) {
+//                       return Dialog(
+//                         child: Text('Dialog.'),
+//                       );
+//                     });
 
-      // widget.router.goNamed(AppRoute.login.name);
-      // Navigator.of(widget.context).pushNamed(AppRoute.login.name);
+      // setState(() {
+      //   Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+      //     MaterialPageRoute(
+      //       builder: (context) {
+      //         return const LoginScreen();
+      //       },
+      //     ),
+      //     (_) => false,
+      //   );
 
-      // GoRouter.of(context).goNamed('/${AppRoute.login.name}');
-
-      // GoRouter.of(context).goNamed('${AppRoute.login.name}');
-      //rootnavigation tabbview
-      // tabbview -  tabhandler , rootscreen, context
-
-      // rootnavigation tabbview
+      // });
     } else if (result is CognitoFailedSignOut) {
       safePrint('Error signing user out: ${result.exception.message}');
     }

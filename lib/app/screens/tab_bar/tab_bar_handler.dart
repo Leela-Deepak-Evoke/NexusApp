@@ -14,13 +14,14 @@ import '../../../app_router.dart';
 final TabBarNotifier _tabBarNotifier = TabBarNotifier();
 
 class TabBarHandler extends StatefulWidget {
-  // TabBarHandler({Key? key, required this.logoutAction}) : super(key: key);
-  // Function() logoutAction;
-
   Function() logoutAction;
-  final BuildContext context;
-   TabBarHandler({Key? key, required this.logoutAction, required this.context})
+  // final BuildContext? context;
+  final BuildContext? rootScreenMobileContext; // Add this parameter
+TabBarHandler({Key? key, required this.logoutAction, this.rootScreenMobileContext})
       : super(key: key);
+
+  // TabBarHandler({Key? key, required this.logoutAction, this.context})
+  //     : super(key: key);
 
   static const String route = '/';
 
@@ -58,11 +59,10 @@ class _TabBarHandlerState extends State<TabBarHandler> {
       TabMenuItem(
           Icons.person,
           'Profile',
-          ProfileTabMenu(logoutAction: widget.logoutAction, context: widget.context, router: profileRouter)
-          // ProfileTabMenu(
-          //   router: profileRouter,
-          //   logoutAction: widget.logoutAction,
-          // )
+          ProfileTabMenu(
+              logoutAction: widget.logoutAction,
+              rootScreenMobileContext: widget.rootScreenMobileContext,
+              router: profileRouter)
           ),
     ];
 
@@ -85,6 +85,7 @@ class _TabBarHandlerState extends State<TabBarHandler> {
                   right: 0,
                   child: TabBarMenu(
                       model: _tabBarNotifier,
+                      rootScreenMobileContext: widget.rootScreenMobileContext,
                       onItemTapped: (x) {
                         if (_tabBarNotifier.index == x) {
                           _tabBarNotifier.popAllRoutes(x);

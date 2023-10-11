@@ -10,9 +10,8 @@ import 'package:go_router/go_router.dart';
 import '../../utils/app_routes.dart';
 
 class RootScreenMobile extends ConsumerWidget {
-  final BuildContext context; // Add this line
 
-  const RootScreenMobile({super.key, required this.context});
+  const RootScreenMobile({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,7 +26,7 @@ class RootScreenMobile extends ConsumerWidget {
     }
 
     if (checkUserAsyncValue is AsyncData) {
-      return TabBarHandler(logoutAction: logOutAction, context: this.context);
+      return TabBarHandler(logoutAction: logOutAction, rootScreenMobileContext: context);
       // return TabbarScreen(logoutAction: logOutAction);
       // GoRouter.of(context).goNamed('${AppRoute.tabbarscreen.name}}');
       // return const SizedBox.shrink();

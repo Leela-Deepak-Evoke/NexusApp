@@ -8,15 +8,15 @@ import 'package:go_router/go_router.dart';
 class ProfileScreen extends StatelessWidget {
   //  ProfileScreen({Key? key}) : super(key: key);
 
-final BuildContext context;
-  final GoRouter router; // Add this line
-  ProfileScreen({Key? key, required this.context, required this.router}) : super(key: key); // Update the constructor
+final BuildContext? rootScreenMobileContext;
+
+  const ProfileScreen({Key? key, this.rootScreenMobileContext}) : super(key: key);
 
 
   @override
   Widget build(BuildContext context) {
     return  ResponsiveLayout(
-      smallScreenLayout: ProfileScreenSmall(context: context, router: router),
+      smallScreenLayout: ProfileScreenSmall(context: rootScreenMobileContext!),
       mediumScreenLayout: ProfileScreenMedium(),
       largeScreenLayout: ProfileScreenLarge(),
     );

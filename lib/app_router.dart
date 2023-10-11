@@ -11,6 +11,7 @@ import 'package:evoke_nexus_app/app/screens/org_updates/org_updates_screen.dart'
 import 'package:evoke_nexus_app/app/screens/profile/profile_screen.dart';
 import 'package:evoke_nexus_app/app/screens/root_screen/root_screen.dart';
 import 'package:evoke_nexus_app/app/screens/root_screen/root_screen_mobile.dart';
+import 'package:evoke_nexus_app/app/screens/tab_bar/profile_tab_menu.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_screen.dart';
 import 'package:evoke_nexus_app/app/screens/test/test_screen.dart';
 import 'package:evoke_nexus_app/app/screens/timeline/timeline_screen.dart';
@@ -18,7 +19,6 @@ import 'package:evoke_nexus_app/app/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
   initialLocation: '/${AppRoute.login.name}',
@@ -155,7 +155,7 @@ final mobileappRouter = GoRouter(
             path: "profile",
             pageBuilder: (context, state) => MaterialPage<void>(
               key: state.pageKey,
-              child: ProfileScreen(context: context, router: router),
+              child: ProfileScreen(),
             ),
           ),
           GoRoute(
@@ -190,7 +190,7 @@ final mobileappRouter = GoRouter(
           pageBuilder: (context, state) => MaterialPage<void>(
                 key: state.pageKey,
                 // child: const RootScreenMobile(),
-                child: RootScreenMobile(context: context),
+                child: RootScreenMobile(),
               ),
           routes: [
             GoRoute(
@@ -198,7 +198,7 @@ final mobileappRouter = GoRouter(
               path: '${AppRoute.tabbarscreen.name}',
               pageBuilder: (context, state) => MaterialPage<void>(
                 key: state.pageKey,
-                child: TabbarScreen(context: context,
+                child: TabbarScreen(
                   logoutAction: () {},
                 ),
               ),
@@ -226,7 +226,7 @@ final feedsRouter = GoRouter(
               path: AppRoute.forum.name,
               pageBuilder: (context, state) => NoTransitionPage<void>(
                 key: state.pageKey,
-                child: ProfileScreen(context: context, router: router),
+                child: ProfileScreen(),
               ),
             )
           ])
@@ -249,7 +249,7 @@ final forumsRouter = GoRouter(
               path: AppRoute.profile.name,
               pageBuilder: (context, state) => MaterialPage<void>(
                 key: state.pageKey,
-                child: ProfileScreen(context: context, router: router),
+                child: ProfileScreen(),
               ),
             ),
             GoRoute(
@@ -298,7 +298,7 @@ final profileRouter = GoRouter(
           path: '/${AppRoute.profile.name}',
           pageBuilder: (context, state) => NoTransitionPage<void>(
                 key: state.pageKey,
-                child: ProfileScreen(context: context, router: router),
+                child: ProfileScreen(rootScreenMobileContext: context),
               ),
           routes: [
             GoRoute(
@@ -311,3 +311,44 @@ final profileRouter = GoRouter(
             )
           ])
     ]);
+
+// final profileRouter = GoRouter(
+//     initialLocation: '/${AppRoute.profile.name}',
+//     debugLogDiagnostics: false,
+//     routes: [
+//       GoRoute(
+//           name: AppRoute.profile.name,
+//           path: '/${AppRoute.profile.name}',
+//           pageBuilder: (context, state) {
+            
+//             final BuildContext? rootScreenMobileContext =
+//                 state.extra as BuildContext;
+
+//             if (rootScreenMobileContext != null) {
+//               return NoTransitionPage<void>(
+//                 key: state.pageKey,
+//                 child: ProfileTabMenu(
+//                   logoutAction: () {},
+//                   rootScreenMobileContext: rootScreenMobileContext,
+//                   router: router,
+//                 ),
+//               );
+//             } else {
+//               return NoTransitionPage<void>(
+//                 key: state.pageKey,
+//                 child: ProfileScreen(),
+//               );
+//             }
+
+//           },
+//           routes: [
+//             GoRoute(
+//               name: AppRoute.timeline.name,
+//               path: AppRoute.timeline.name,
+//               pageBuilder: (context, state) => NoTransitionPage<void>(
+//                 key: state.pageKey,
+//                 child: TimelineScreen(),
+//               ),
+//             )
+//           ])
+//     ]);

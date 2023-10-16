@@ -206,7 +206,7 @@ class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobile
                     ? 'Share your thoughts cannot be blank'
                     : null,
                 controller: feedController,
-                textInputAction: TextInputAction.next,
+                textInputAction: TextInputAction.done,
                 maxLines: null,
                 style: TextStyle(
                   color: Colors.black,
@@ -223,37 +223,37 @@ class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobile
             ],
           ),
         ),
-        const Divider(
-          thickness: 1,
-          color: Color(0xffEAEAEA),
-          height: 1,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                  child: TextFormField(
-                validator: (value) => value!.isEmpty ? 'HashTag #' : null,
-                controller: hashTagController,
-                textInputAction: TextInputAction.done,
-                maxLines: null,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 14.0,
-                  fontFamily: GoogleFonts.notoSans().fontFamily,
-                  fontWeight: FontWeight.normal,
-                ),
-                decoration:
-                    const InputDecoration.collapsed(hintText: "HashTag1 #"),
-//                     InputDecoration.collapsed(
-//   hintText: ref.read(selectedItemProvider)?.hashTag ?? 'HashTag #',
-// )
-              )),
-            ],
-          ),
-        ),
+//         const Divider(
+//           thickness: 1,
+//           color: Color(0xffEAEAEA),
+//           height: 1,
+//         ),
+//         Padding(
+//           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//             children: [
+//               Expanded(
+//                   child: TextFormField(
+//                 validator: (value) => value!.isEmpty ? 'HashTag #' : null,
+//                 controller: hashTagController,
+//                 textInputAction: TextInputAction.done,
+//                 maxLines: null,
+//                 style: TextStyle(
+//                   color: Colors.black,
+//                   fontSize: 14.0,
+//                   fontFamily: GoogleFonts.notoSans().fontFamily,
+//                   fontWeight: FontWeight.normal,
+//                 ),
+//                 decoration:
+//                     const InputDecoration.collapsed(hintText: "HashTag1 #"),
+// //                     InputDecoration.collapsed(
+// //   hintText: ref.read(selectedItemProvider)?.hashTag ?? 'HashTag #',
+// // )
+//               )),
+//             ],
+//           ),
+//         ),
       ],
     );
   }
@@ -600,10 +600,12 @@ class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobile
         onPressed: () {
           if (feedController == null || feedController.value.text.isEmpty) {
             showMessage('Please share your thoughts');
-          } else if (hashTagController == null ||
-              hashTagController.value.text.isEmpty) {
-            showMessage('Please add hashtag');
-          } else {
+          } 
+          // else if (hashTagController == null ||
+          //     hashTagController.value.text.isEmpty) {
+          //   showMessage('Please add hashtag');
+          // }
+           else {
             if (isMediaSelect == false) {
               createPostWithoutAttachment();
             } else {

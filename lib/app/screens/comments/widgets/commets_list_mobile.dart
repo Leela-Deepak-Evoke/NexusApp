@@ -9,13 +9,17 @@ import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 class CommentsListMobileView extends ConsumerStatefulWidget {
   final User user;
   final String posttype;
   final String postId;
   final GetCommentsParams params;
-  const CommentsListMobileView({super.key, required this.user,required this.posttype,required this.postId ,required this.params});
+  const CommentsListMobileView(
+      {super.key,
+      required this.user,
+      required this.posttype,
+      required this.postId,
+      required this.params});
 
   @override
   ConsumerState<CommentsListMobileView> createState() =>
@@ -24,8 +28,8 @@ class CommentsListMobileView extends ConsumerStatefulWidget {
 
 class _CommentsListMobileViewState
     extends ConsumerState<CommentsListMobileView> {
-
-String getAvatarText(String name) {
+      
+  String getAvatarText(String name) {
     final nameParts = name.split(' ');
     if (nameParts.length >= 2) {
       return nameParts[0][0].toUpperCase() + nameParts[1][0].toUpperCase();
@@ -34,7 +38,8 @@ String getAvatarText(String name) {
     }
     return '';
   }
-      Widget _profilePicWidget(UserComment item, WidgetRef ref) {
+
+  Widget _profilePicWidget(UserComment item, WidgetRef ref) {
     final avatarText = getAvatarText(item.userName!);
     if (item.authorThumbnail == null) {
       return CircleAvatar(radius: 12.0, child: Text(avatarText));
@@ -77,22 +82,17 @@ String getAvatarText(String name) {
 
   @override
   Widget build(BuildContext context) {
-
-   final commentsAsyncValue = ref.watch(commentsProvider(widget.params
-                         ));
+    final commentsAsyncValue = ref.watch(commentsProvider(widget.params));
 
     if (commentsAsyncValue is AsyncData) {
       final items = commentsAsyncValue.value!;
-    final Size size = MediaQuery.of(context).size;
-    return
-    SliverList.builder(
-        
+      final Size size = MediaQuery.of(context).size;
+      return SliverList.builder(
           itemCount: items.length,
           itemBuilder: (context, index) {
             var item = items[index];
-            return 
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8.0,0,8.0,0),
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
               child: Container(
                 color: Colors.white,
                 padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -108,20 +108,20 @@ String getAvatarText(String name) {
                     child: _profilePicWidget(item, ref),
                     preferredSize: Size.fromRadius(18),
                   ),
-                 
+
                   //Child tree list
-                  avatarChild: (context, data) =>  PreferredSize(
+                  avatarChild: (context, data) => PreferredSize(
                     preferredSize: Size.fromRadius(12),
                     child: _profilePicWidget(item, ref),
-                   
                   ),
-                 
+
                   contentChild: (context, data) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                           decoration: BoxDecoration(
                               color: Colors.grey[100],
                               borderRadius: BorderRadius.circular(12)),
@@ -129,7 +129,7 @@ String getAvatarText(String name) {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                 '${data.userName}',
+                                '${data.userName}',
                                 style: Theme.of(context)
                                     .textTheme
                                     .caption
@@ -156,12 +156,12 @@ String getAvatarText(String name) {
                     );
                   },
                   contentRoot: (context, data) {
-                    
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                           decoration: BoxDecoration(
                               color: Colors.grey[100],
                               borderRadius: BorderRadius.circular(12)),
@@ -211,45 +211,35 @@ String getAvatarText(String name) {
           });
     }
     if (commentsAsyncValue is AsyncLoading) {
-      return 
-      SliverList.builder(
+      return SliverList.builder(
         itemCount: 1,
-        itemBuilder:(context, index) {
-
-          return    const Center(
-        child: SizedBox(
-          height: 50.0,
-          width: 50.0,
-          child: CircularProgressIndicator(),
-        ),
+        itemBuilder: (context, index) {
+          return const Center(
+            child: SizedBox(
+              height: 50.0,
+              width: 50.0,
+              child: CircularProgressIndicator(),
+            ),
+          );
+        },
       );
-        
-      },);
-      
-   
     }
 
     if (commentsAsyncValue is AsyncError) {
-      return
-      SliverList.builder(
+      return SliverList.builder(
         itemCount: 1,
-        itemBuilder:(context, index) {
-
-          return   Text('');
-      
-        
-      },);
-      
+        itemBuilder: (context, index) {
+          return Text('');
+        },
+      );
     }
 
     // This should ideally never be reached, but it's here as a fallback.
     return SliverList.builder(
-        itemCount: 1,
-        itemBuilder:(context, index) {
-
-          return   Container(color: Colors.amber);
-      
-        
-      },);
+      itemCount: 1,
+      itemBuilder: (context, index) {
+        return Container(color: Colors.amber);
+      },
+    );
   }
 }

@@ -54,6 +54,12 @@ final authorThumbnailProvider =
   return await forumService.getAuthorThumbnail(key);
 });
 
+final authorThumbnailProviderAnswer =
+    FutureProvider.autoDispose.family<String?, String>((ref, key) async {
+  final forumService = ref.watch(forumServiceProvider);
+  return await forumService.getAuthorThumbnail(key);
+});
+
 final postQuestionProvider = FutureProvider.autoDispose
     .family<void, PostQuestionParams>((ref, params) async {
   final forumService = ref.watch(forumServiceProvider);

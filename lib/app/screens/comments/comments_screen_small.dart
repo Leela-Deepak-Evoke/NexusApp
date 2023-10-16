@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CommentScreenSmall extends ConsumerStatefulWidget {
-  final Widget headerCard;
+  final Widget? headerCard;
     final String posttype;
   final String postId;
-  const CommentScreenSmall({super.key,required this.headerCard,required this.posttype,required this.postId});
+  const CommentScreenSmall({super.key, this.headerCard,required this.posttype,required this.postId});
   
   @override
   ConsumerState<CommentScreenSmall> createState() => _CommentScreenSmallState();
@@ -31,7 +31,7 @@ class _CommentScreenSmallState extends ConsumerState<CommentScreenSmall> {
             Navigator.pop(context);
           },
           child:
-           CommentsMobileView(user: data,headerCard: widget.headerCard ,postId: widget.postId,posttype: widget.posttype),
+           CommentsMobileView(user: data,headerCard: widget.headerCard ?? Container() ,postId: widget.postId,posttype: widget.posttype),
         );
   }, 
     loading: () => const Center(

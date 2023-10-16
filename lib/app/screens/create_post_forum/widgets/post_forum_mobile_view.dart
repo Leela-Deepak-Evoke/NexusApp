@@ -182,35 +182,35 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
     return Column(
       children: [
        
-       
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                  child: TextFormField(
-                validator: (value) => value!.isEmpty ? 'Title' : null,
-                controller: hashTagController,
-                textInputAction: TextInputAction.done,
-                maxLines: null,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 14.0,
-                  fontFamily: GoogleFonts.notoSans().fontFamily,
-                  fontWeight: FontWeight.normal,
-                ),
-                decoration:
-                    const InputDecoration.collapsed(hintText: "Title"),
-              )),
-            ],
-          ),
-        ),
-         const Divider(
-          thickness: 1,
-          color: Color(0xffEAEAEA),
-          height: 1,
-        ),
+       //COMMENTED QUESTION TITLE
+        // Padding(
+        //   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //     children: [
+        //       Expanded(
+        //           child: TextFormField(
+        //         validator: (value) => value!.isEmpty ? 'Title' : null,
+        //         controller: hashTagController,
+        //         textInputAction: TextInputAction.done,
+        //         maxLines: null,
+        //         style: TextStyle(
+        //           color: Colors.black,
+        //           fontSize: 14.0,
+        //           fontFamily: GoogleFonts.notoSans().fontFamily,
+        //           fontWeight: FontWeight.normal,
+        //         ),
+        //         decoration:
+        //             const InputDecoration.collapsed(hintText: "Title"),
+        //       )),
+        //     ],
+        //   ),
+        // ),
+        //  const Divider(
+        //   thickness: 1,
+        //   color: Color(0xffEAEAEA),
+        //   height: 1,
+        // ),
 
          Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
@@ -220,10 +220,10 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
               Expanded(
                   child: TextFormField(
                 validator: (value) => value!.isEmpty
-                    ? 'Share your thoughts cannot be blank'
+                    ? 'Question field cannot be blank'
                     : null,
                 controller: feedController,
-                textInputAction: TextInputAction.next,
+                textInputAction: TextInputAction.done,
                 maxLines: null,
                 style: TextStyle(
                   color: Colors.black,
@@ -232,7 +232,7 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
                   fontWeight: FontWeight.normal,
                 ),
                 decoration: const InputDecoration.collapsed(
-                    hintText: "Share your thoughts with colleagues.."),
+                    hintText: "Ask your question here"),
               )),
             ],
           ),
@@ -568,11 +568,13 @@ void initializeVideo(String url) {
 
         onPressed: () {
           if (feedController == null || feedController.value.text.isEmpty) {
-            showMessage('Please share your thoughts');
-          } else if (hashTagController == null ||
-              hashTagController.value.text.isEmpty) {
-            showMessage('Please add hashtag');
-          } else {
+            showMessage('Question field should not be empty.');
+          } 
+          // else if (hashTagController == null ||
+          //     hashTagController.value.text.isEmpty) {
+          //   showMessage('Please add hashtag');
+          // }
+           else {
             createPost();
           }
         },

@@ -211,7 +211,7 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
                     ? 'Share your thoughts cannot be blank'
                     : null,
                 controller: feedController,
-                textInputAction: TextInputAction.next,
+                textInputAction: TextInputAction.done,
                 maxLines: null,
                 style: TextStyle(
                   color: Colors.black,
@@ -555,10 +555,12 @@ void initializeVideo(String url) {
         onPressed: () {
           if (feedController == null || feedController.value.text.isEmpty) {
             showMessage('Please share your thoughts');
-          } else if (hashTagController == null ||
-              hashTagController.value.text.isEmpty) {
-            showMessage('Please add hashtag');
-          } else {
+          }
+          //  else if (hashTagController == null ||
+          //     hashTagController.value.text.isEmpty) {
+          //   showMessage('Please add hashtag');
+          // }
+           else {
             createPost();
           }
         },

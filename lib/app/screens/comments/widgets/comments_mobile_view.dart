@@ -9,14 +9,14 @@ import 'package:uuid/uuid.dart';
 
 class CommentsMobileView extends ConsumerStatefulWidget {
   final User user;
-  final Widget headerCard;
+  final Widget? headerCard;
   final String posttype;
   final String postId;
 
   const CommentsMobileView(
       {super.key,
       required this.user,
-      required this.headerCard,
+       this.headerCard,
       required this.posttype,
       required this.postId});
 

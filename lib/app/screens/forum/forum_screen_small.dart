@@ -24,7 +24,7 @@ class _ForumScreenSmallState extends ConsumerState<ForumScreenSmall> {
     return userAsyncValue.when(
       data: (data) {
         return   MobileLayout(
-          title: 'Forums',
+          title: 'Forum',
           user: data,
           child:  ForumMobileView(user: data,onPostClicked: () {
             context.goNamed(AppRoute.postforum.name,extra: data);

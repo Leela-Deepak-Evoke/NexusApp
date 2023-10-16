@@ -131,7 +131,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    feedController.text = widget.feedItem?.content ?? "" ;
+    feedController.text = widget.feedItem?.content ?? feedController.text ; //ADD CONDITION FOR EDIT (isEdit)
     return Padding(
         padding: const EdgeInsets.only(top: 0),
         child: SingleChildScrollView(
@@ -204,37 +204,6 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                     ? 'Share your thoughts cannot be blank'
                     : null,
                 controller: feedController,
-                textInputAction: TextInputAction.next,
-                maxLines: null,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 14.0,
-                  fontFamily: GoogleFonts.notoSans().fontFamily,
-                  fontWeight: FontWeight.normal,
-                ),
-                decoration: const InputDecoration.collapsed(
-                    hintText: "Share your thoughts with colleagues.."),
-//                               InputDecoration.collapsed(
-//   hintText: ref.read(selectedItemProvider)?.content ?? 'Share your thoughts with colleagues..',
-// ),
-              )),
-            ],
-          ),
-        ),
-        const Divider(
-          thickness: 1,
-          color: Color(0xffEAEAEA),
-          height: 1,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                  child: TextFormField(
-                validator: (value) => value!.isEmpty ? 'HashTag #' : null,
-                controller: hashTagController,
                 textInputAction: TextInputAction.done,
                 maxLines: null,
                 style: TextStyle(
@@ -243,15 +212,48 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                   fontFamily: GoogleFonts.notoSans().fontFamily,
                   fontWeight: FontWeight.normal,
                 ),
-                decoration:
-                    const InputDecoration.collapsed(hintText: "HashTag1 #"),
-//                     InputDecoration.collapsed(
-//   hintText: ref.read(selectedItemProvider)?.hashTag ?? 'HashTag #',
-// )
+                decoration: const InputDecoration.collapsed(hintText: "Share your thoughts with colleagues.."),
+//                               InputDecoration.collapsed(
+//   hintText: ref.read(selectedItemProvider)?.content ?? 'Share your thoughts with colleagues..',
+// ),
               )),
             ],
           ),
         ),
+        
+        //HASH TAG CODE COMMENTED//
+
+        // const Divider(
+        //   thickness: 1,
+        //   color: Color(0xffEAEAEA),
+        //   height: 1,
+        // ),
+//         Padding(
+//           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//             children: [
+//               Expanded(
+//                   child: TextFormField(
+//                 validator: (value) => value!.isEmpty ? 'HashTag #' : null,
+//                 controller: hashTagController,
+//                 textInputAction: TextInputAction.done,
+//                 maxLines: null,
+//                 style: TextStyle(
+//                   color: Colors.black,
+//                   fontSize: 14.0,
+//                   fontFamily: GoogleFonts.notoSans().fontFamily,
+//                   fontWeight: FontWeight.normal,
+//                 ),
+//                 decoration:
+//                     const InputDecoration.collapsed(hintText: "HashTag1 #"),
+// //                     InputDecoration.collapsed(
+// //   hintText: ref.read(selectedItemProvider)?.hashTag ?? 'HashTag #',
+// // )
+//               )),
+//             ],
+//           ),
+//         ),
       ],
     );
   }
@@ -603,10 +605,12 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
         onPressed: () {
           if (feedController == null || feedController.value.text.isEmpty) {
             showMessage('Please share your thoughts');
-          } else if (hashTagController == null ||
-              hashTagController.value.text.isEmpty) {
-            showMessage('Please add hashtag');
-          } else {
+          }
+          //  else if (hashTagController == null ||
+          //     hashTagController.value.text.isEmpty) {
+          //   showMessage('Please add hashtag');
+          // } 
+          else {
             if (isMediaSelect == false) {
               createPostWithoutAttachment();
             } else {
@@ -614,7 +618,8 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
             }
           }
         },
-        //POSt Feed
+
+        //POST Feed
         child: Text('Post',
             style: TextStyle(
               color: Colors.white,
@@ -634,7 +639,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
         content: feedController.text,
         category: (selectedIndex != null)
             ? checkListItems[selectedIndex ?? 0]
-            : "General Feed",
+            : "General",
         media: false,
         hasImage: false,
         hasVideo: false);
@@ -651,11 +656,11 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
       hasImage: isImageSelect,
       imagePath: uploadedFileName ?? "",
       mediaCaption: mediaCaptionController.text,
-      hashTag: hashTagController.text,
+      // hashTag: hashTagController.text,
       hasVideo: isVideoSelect,
       category: (selectedIndex != null)
           ? checkListItems[selectedIndex ?? 0]
-          : "General Feed",
+          : "General",
     );
     _handleSubmit(params, ref);
     //_resetValues();
@@ -796,7 +801,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
               Text(
                 (selectedIndex != null)
                     ? checkListItems[selectedIndex ?? 0]
-                    : "General Feed",
+                    : "General",
                 style: TextStyle(
                   color: Color(0xffB54242),
                   fontSize: 12.0,

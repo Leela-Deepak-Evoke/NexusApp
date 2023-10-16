@@ -5,15 +5,15 @@ import 'package:evoke_nexus_app/app/screens/responsive/responsive_layout.dart';
 import 'package:flutter/material.dart';
 
 class CommentScreen extends StatelessWidget {
-    final Widget headerCard;
+    final Widget? headerCard;
       final String posttype;
         final String postId;
-   CommentScreen({Key? key,required this.headerCard ,required this.posttype,required this.postId}) : super(key: key);
+   CommentScreen({Key? key, this.headerCard ,required this.posttype,required this.postId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return  ResponsiveLayout(
-      smallScreenLayout: CommentScreenSmall(headerCard: headerCard,postId: postId,posttype: posttype),
+      smallScreenLayout: CommentScreenSmall(headerCard: headerCard ?? Container(), postId: postId,posttype: posttype),
       mediumScreenLayout: CommentScreenMedium(),
       largeScreenLayout: CommentScreenLarge(),
     );

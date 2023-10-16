@@ -40,7 +40,7 @@ import 'package:google_fonts/google_fonts.dart';
 class ErrorScreen extends StatelessWidget {
   final VoidCallback onRetryPressed;
   final String? strErrorMessage;
-  final bool? showErrorMessage;
+  final bool? showErrorMessage; //
 
   ErrorScreen(
       {this.strErrorMessage,

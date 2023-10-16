@@ -26,7 +26,7 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>This app will only needs to post pictures or select them from your camera roll.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
+	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need access to your photo library to upload and share photos within the app.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>

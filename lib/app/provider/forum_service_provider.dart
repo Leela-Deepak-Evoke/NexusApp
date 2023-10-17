@@ -74,3 +74,10 @@ final postAnswerProvider = FutureProvider.autoDispose
   ref.invalidate(answerListProvider);
   ref.invalidate(answersProvider);
 });
+
+
+final refresAnswerProvider =
+    FutureProvider.autoDispose.family<bool, String>((ref, user) async {
+  ref.invalidate(answerListProvider);
+return true;
+});

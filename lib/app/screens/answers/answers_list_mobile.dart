@@ -6,6 +6,7 @@ import 'package:evoke_nexus_app/app/provider/comment_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/comments/widgets/comments_mobile_view.dart';
+import 'package:evoke_nexus_app/app/widgets/common/error_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:evoke_nexus_app/app/models/answer.dart';
@@ -151,14 +152,22 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
     }
 
     if (answersAsyncValue is AsyncError) {
-      return Text('An error occurred: ${answersAsyncValue.error}');
+            return ErrorScreen(showErrorMessage: true, onRetryPressed: retry);
+
+      // return Text('An error occurred: ${answersAsyncValue.error}');
     }
 
     // This should ideally never be reached, but it's here as a fallback.
     return const SizedBox.shrink();
   }
 
-  
+  Future<void> _onRefresh() async {
+    ref.watch(refresAnswerProvider(""));
+  }
+
+  void retry(){
+       _onRefresh();
+  }
 
   void postLikeDislikeAction(
       BuildContext context, int index, Answer item, WidgetRef ref) {

@@ -1,6 +1,8 @@
+import 'package:evoke_nexus_app/app/models/delete.dart';
 import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:evoke_nexus_app/app/provider/delete_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
@@ -11,6 +13,7 @@ import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_media_view.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/edit_delete_button.dart';
 import 'package:evoke_nexus_app/app/widgets/common/error_screen.dart';
+import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -330,7 +333,20 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
         children: [
           TextButton.icon(
             // <-- TextButton
-            onPressed: () {},
+            onPressed: () {
+                      showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      // return LikesWidget(
+                                      //   spaceId: item.feedId,
+                                      //   spaceName: 'Feed',
+                                      //   userId: user.userId,
+                                      // );
+
+                                      return LikesWidget(spaceName: 'Feed', spaceId: item.feedId, userId: widget.user.userId, isLike: false);
+                                    },
+                                  );
+            },
             icon: Image.asset(
               'assets/images/reactions.png',
             ),
@@ -400,7 +416,60 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
   }
 
 // Delete an item
-  void _deleteItem(Feed item) {
+void _deleteItem(Feed item) async {
+  // Show a confirmation dialog before deleting the item.
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Confirm Delete"),
+        content: Text("Are you sure you want to delete this item?"),
+        actions: [
+          TextButton(
+            child: Text("Cancel"),
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the dialog
+            },
+          ),
+          TextButton(
+            child: Text("Delete"),
+            onPressed: () async {
+              // Perform the delete action here, e.g., remove the item from the list.
+              try {
+                final deleteParams = Delete(
+                  label: 'Feed', 
+                  idPropValue: item.feedId, userId: widget.user.userId, 
+                );
+                await ref.read(deleteProvider(deleteParams).future);
+
+                // Refresh the feed after successful deletion
+                // await _onRefresh();
+                 setState(() {
+                  final feedsAsyncValue = ref.watch(feedsProvider(widget.user));
+                  if (feedsAsyncValue is AsyncData) {
+                    final items = feedsAsyncValue.value!;
+
+                    items.remove(item);
+                               _onRefresh();
+
+                  }
+                });
+              } catch (error) {
+                // Handle the error, e.g., show an error message
+                print("Error deleting item: $error");
+              }
+
+              Navigator.of(context).pop(); // Close the dialog
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
+  void _deleteItem_old(Feed item) {
     // Show a confirmation dialog before deleting the item.
     showDialog(
       context: context,

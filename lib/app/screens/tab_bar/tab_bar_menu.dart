@@ -54,7 +54,7 @@ class _TabBarMenuState extends State<TabBarMenu> {
       // selectedItemColor: Colors.white,
 
        unselectedItemColor: Colors.white,
-      selectedItemColor: Color(0xffE9AD64),
+      selectedItemColor: Color(0xffFF69B4),
 
       items: widget.menuItems
           .map((TabMenuItem menuItem) => BottomNavigationBarItem(

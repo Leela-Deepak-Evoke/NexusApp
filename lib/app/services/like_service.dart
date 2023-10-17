@@ -7,9 +7,14 @@ class LikeService {
   Future<List<UserLike>> getLikes(
       String spaceName, String spaceId, String userId) async {
     try {
+      // final userPayload = {
+      //   "feed": {"label": spaceName, "id_prop_value": spaceId}
+      // };
       final userPayload = {
-        "feed": {"label": spaceName, "id_prop_value": spaceId}
-      };
+    "label": spaceName,
+    "id_prop_value": spaceId
+  };
+
       final prefs = await SharedPreferences.getInstance();
       final authToken = prefs.getString('authToken');
       if (authToken != null) {

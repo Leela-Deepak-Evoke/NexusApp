@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:evoke_nexus_app/app/models/delete.dart';
 import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/models/post_feed_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
@@ -253,4 +254,5 @@ class FeedService {
       return false;  //rethrow;
     }
   }
+
 }

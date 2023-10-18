@@ -49,7 +49,7 @@ class _TabBarHandlerState extends State<TabBarHandler> {
           FeedsTabMenu(
             router: feedsRouter,
           )),
-      TabMenuItem(Icons.forum, 'Fourms', ForumsTabMenu(router: forumsRouter)),
+      TabMenuItem(Icons.forum, 'Forum', ForumsTabMenu(router: forumsRouter)),
       TabMenuItem(
           Icons.update,
           'OrgUpdates',

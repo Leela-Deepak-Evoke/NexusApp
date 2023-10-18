@@ -504,7 +504,7 @@ Widget categoryHearViewWidget(Question item) {
               onPressed: () async {
                 try {
                   final deleteParams = Delete(
-                    label: 'Fourm',
+                    label: 'Forum',
                     idPropValue: item.questionId,
                     userId: widget.user.userId,
                   );

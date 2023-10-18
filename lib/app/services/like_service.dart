@@ -26,19 +26,7 @@ class LikeService {
           final jsonResponse = json.decode(response.decodeBody());
            print(response.decodeBody());
            print(jsonResponse);
-          // if (jsonResponse is List) {
-          //   print("likes json");
-          //   final resultJson = jsonResponse
-          //       .map((feedJson) => UserLike.fromJson(feedJson, params.userId))
-          //       .toList();
-          //       // print( jsonResponse
-          //       // .map<UserLike>(
-          //       //     (feedJson) => UserLike.fromJson(feedJson, userId))
-          //       // .toList());
-
-          //   print(resultJson);
-          //   return resultJson;
-          // } 
+       
            if (jsonResponse["users"] is List) {
             print("likes json");
            final resultJson = jsonResponse["users"]

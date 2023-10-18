@@ -11,6 +11,7 @@ import 'package:evoke_nexus_app/app/screens/comments/widgets/comments_mobile_vie
 import 'package:evoke_nexus_app/app/screens/create_post_answers/create_post_answer_screen.dart';
 import 'package:evoke_nexus_app/app/widgets/common/edit_delete_button.dart';
 import 'package:evoke_nexus_app/app/widgets/common/error_screen.dart';
+import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:evoke_nexus_app/app/models/answer.dart';
@@ -36,7 +37,8 @@ class AnswerListMobile extends ConsumerStatefulWidget {
 class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
   bool isCommentsVisible = false;
   Answer? selectedItem; // Define item here
-  int? isCommentsVisibleList = -1; // List to store visibility state for each row
+  int? isCommentsVisibleList =
+      -1; // List to store visibility state for each row
 
   @override
   Widget build(BuildContext context) {
@@ -90,8 +92,7 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
                                 vertical: 8.0,
                               ),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   SizedBox(
                                     child: TextButton.icon(
@@ -104,15 +105,50 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
                                         color: Color(0xffF16C24),
                                         size: 13,
                                       ),
-                                      label: Text(
-                                        '${item.likes}',
-                                        style: TextStyle(
-                                          color: Color(0xffF16C24),
-                                          fontSize: 11.0,
-                                          fontFamily:
-                                              GoogleFonts.inter().fontFamily,
-                                          fontWeight: FontWeight.normal,
-                                        ),
+                                      label: Text("")
+                                      // label: Text(
+                                      //   '${item.likes}',
+                                      //   style: TextStyle(
+                                      //     color: Color(0xffF16C24),
+                                      //     fontSize: 11.0,
+                                      //     fontFamily:
+                                      //         GoogleFonts.inter().fontFamily,
+                                      //     fontWeight: FontWeight.normal,
+                                      //   ),
+                                      // ),
+                                    ),
+                                  ),
+                                  if (item.likes != 0)
+                                  TextButton.icon(
+                                    // <-- TextButton
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          var params = GetCommentsParams(
+                                              userId: widget.user.userId,
+                                              postId: item.answerId,
+                                              postType: "Answer");
+
+                                          return LikesWidget(
+                                              user: widget.user,
+                                              spaceName: "Answer",
+                                              spaceId: item.answerId,
+                                              params: params);
+                                        },
+                                      );
+                                    },
+                                    icon: Image.asset(
+                                      'assets/images/reactions.png',
+                                    ),
+                                    label: Text(
+                                      '${item.likes}',
+                                      style: TextStyle(
+                                        color: Color(0xff676A79),
+                                        fontSize: 12.0,
+                                        fontFamily:
+                                            GoogleFonts.notoSans().fontFamily,
+                                        fontWeight: FontWeight.normal,
                                       ),
                                     ),
                                   ),
@@ -121,7 +157,6 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
                               ),
                             ),
                             if (isCommentsVisibleList == index)
-                         
                               Visibility(
                                   visible: isCommentsVisible,
                                   child: Container(
@@ -156,7 +191,7 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
     }
 
     if (answersAsyncValue is AsyncError) {
-            return ErrorScreen(showErrorMessage: true, onRetryPressed: retry);
+      return ErrorScreen(showErrorMessage: true, onRetryPressed: retry);
 
       // return Text('An error occurred: ${answersAsyncValue.error}');
     }
@@ -169,8 +204,8 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
     ref.watch(refresAnswerProvider(""));
   }
 
-  void retry(){
-       _onRefresh();
+  void retry() {
+    _onRefresh();
   }
 
   void postLikeDislikeAction(
@@ -184,78 +219,77 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
     )));
   }
 
+  Widget askedbyViewHeader(Answer item, WidgetRef ref) {
+    bool isCurrentUser = item.authorId == widget.user.userId;
 
-
-Widget askedbyViewHeader(Answer item, WidgetRef ref) {
-  bool isCurrentUser = item.authorId == widget.user.userId;
-
-  return Padding(
-    padding: EdgeInsets.all(10),
-    child: Row( // Use a Row instead of Wrap for horizontal alignment
-      children: [
-        _profilePicWidget(item, ref),
-        const SizedBox(
-          width: 5,
-        ),
-        Text("Asked by",
-            style: TextStyle(
-              color: Color(0xff676A79),
-              fontSize: 12.0,
-              fontFamily: GoogleFonts.notoSans().fontFamily,
-              fontWeight: FontWeight.normal,
-            )),
-        Text(item.author ?? "",
-            style: TextStyle(
-              color: Color(0xff676A79),
-              fontSize: 12.0,
-              fontFamily: GoogleFonts.notoSans().fontFamily,
-              fontWeight: FontWeight.normal,
-            )),
-        Spacer(), // Add a Spacer widget to push the PopupMenuButton to the right.
-        if (isCurrentUser)
-          Container(
-            width: 30, // Adjust the width as needed
-            child: PopupMenuButton<String>(
-              icon: const Icon(
-                Icons.more_vert,
+    return Padding(
+      padding: EdgeInsets.all(10),
+      child: Row(
+        // Use a Row instead of Wrap for horizontal alignment
+        children: [
+          _profilePicWidget(item, ref),
+          const SizedBox(
+            width: 5,
+          ),
+          Text("Asked by",
+              style: TextStyle(
+                color: Color(0xff676A79),
+                fontSize: 12.0,
+                fontFamily: GoogleFonts.notoSans().fontFamily,
+                fontWeight: FontWeight.normal,
+              )),
+          Text(item.author ?? "",
+              style: TextStyle(
+                color: Color(0xff676A79),
+                fontSize: 12.0,
+                fontFamily: GoogleFonts.notoSans().fontFamily,
+                fontWeight: FontWeight.normal,
+              )),
+          Spacer(), // Add a Spacer widget to push the PopupMenuButton to the right.
+          if (isCurrentUser)
+            Container(
+              width: 30, // Adjust the width as needed
+              child: PopupMenuButton<String>(
+                icon: const Icon(
+                  Icons.more_vert,
+                ),
+                onSelected: (String choice) {
+                  // Handle button selection here
+                  if (choice == 'Edit') {
+                    _editItem(item); // Call the edit function
+                  } else if (choice == 'Delete') {
+                    _deleteItem(item); // Call the delete function
+                  }
+                },
+                itemBuilder: (BuildContext context) {
+                  return <PopupMenuEntry<String>>[
+                    PopupMenuItem<String>(
+                      value: 'Edit',
+                      child: EditButton(
+                        onPressed: () {
+                          _editItem(item); // Call the edit function
+                        },
+                      ),
+                    ),
+                    PopupMenuItem<String>(
+                      value: 'Delete',
+                      child: DeleteButton(
+                        onPressed: () {
+                          _deleteItem(item); // Call the delete function
+                        },
+                      ),
+                    ),
+                  ];
+                },
               ),
-              onSelected: (String choice) {
-                // Handle button selection here
-                if (choice == 'Edit') {
-                  _editItem(item); // Call the edit function
-                } else if (choice == 'Delete') {
-                  _deleteItem(item); // Call the delete function
-                }
-              },
-              itemBuilder: (BuildContext context) {
-                return <PopupMenuEntry<String>>[
-                  PopupMenuItem<String>(
-                    value: 'Edit',
-                    child: EditButton(
-                      onPressed: () {
-                        _editItem(item); // Call the edit function
-                      },
-                    ),
-                  ),
-                  PopupMenuItem<String>(
-                    value: 'Delete',
-                    child: DeleteButton(
-                      onPressed: () {
-                        _deleteItem(item); // Call the delete function
-                      },
-                    ),
-                  ),
-                ];
-              },
-            ),
-          )
-      ],
-    ),
-  );
-}
+            )
+        ],
+      ),
+    );
+  }
 
   Widget askedbyViewHeader_OLD(Answer item, WidgetRef ref) {
-        bool isCurrentUser = item.authorId == widget.user.userId;
+    bool isCurrentUser = item.authorId == widget.user.userId;
 
     return Padding(
       padding: EdgeInsets.all(10),
@@ -282,53 +316,48 @@ Widget askedbyViewHeader(Answer item, WidgetRef ref) {
                 fontFamily: GoogleFonts.notoSans().fontFamily,
                 fontWeight: FontWeight.normal,
               )),
+          if (isCurrentUser)
+            Container(
+              width: 30, // Adjust the width as needed
+              child: PopupMenuButton<String>(
+                //  padding: const EdgeInsets.only(left: 50, right: 0),
 
-                       if(isCurrentUser)
-                                   Container(
-                                      width: 30, // Adjust the width as needed
-                                      child: PopupMenuButton<String>(
-                                        //  padding: const EdgeInsets.only(left: 50, right: 0),
+                icon: const Icon(
+                  Icons.more_vert,
+                ),
+                onSelected: (String choice) {
+                  // Handle button selection here
+                  if (choice == 'Edit') {
+                    _editItem(item); // Call the edit function
+                  } else if (choice == 'Delete') {
+                    _deleteItem(item); // Call the delete function
+                  }
+                },
+                itemBuilder: (BuildContext context) {
+                  return <PopupMenuEntry<String>>[
+                    PopupMenuItem<String>(
+                      // padding: const EdgeInsets.only(left: 50, right: 0),
 
-                                        icon: const Icon(
-                                          Icons.more_vert,
-                                        ),
-                                        onSelected: (String choice) {
-                                          // Handle button selection here
-                                          if (choice == 'Edit') {
-                                            _editItem(
-                                                item); // Call the edit function
-                                          } else if (choice == 'Delete') {
-                                            _deleteItem(
-                                                item); // Call the delete function
-                                          }
-                                        },
-                                        itemBuilder: (BuildContext context) {
-                                          return <PopupMenuEntry<String>>[
-                                            PopupMenuItem<String>(
-                                              // padding: const EdgeInsets.only(left: 50, right: 0),
-
-                                              value: 'Edit',
-                                              child: EditButton(
-                                                onPressed: () {
-                                                  _editItem(
-                                                      item); // Call the edit function
-                                                },
-                                              ),
-                                            ),
-                                            PopupMenuItem<String>(
-                                              // padding: const EdgeInsets.only(left: 50, right: 0),
-                                              value: 'Delete',
-                                              child: DeleteButton(
-                                                onPressed: () {
-                                                  _deleteItem(
-                                                      item); // Call the delete function
-                                                },
-                                              ),
-                                            ),
-                                          ];
-                                        },
-                                      ),
-                                    )
+                      value: 'Edit',
+                      child: EditButton(
+                        onPressed: () {
+                          _editItem(item); // Call the edit function
+                        },
+                      ),
+                    ),
+                    PopupMenuItem<String>(
+                      // padding: const EdgeInsets.only(left: 50, right: 0),
+                      value: 'Delete',
+                      child: DeleteButton(
+                        onPressed: () {
+                          _deleteItem(item); // Call the delete function
+                        },
+                      ),
+                    ),
+                  ];
+                },
+              ),
+            )
         ],
       ),
     );
@@ -398,7 +427,6 @@ Widget askedbyViewHeader(Answer item, WidgetRef ref) {
     }
     return '';
   }
-
 
 // Edit an item
   void _editItem(Answer item) {
@@ -482,7 +510,7 @@ Widget askedbyViewHeader(Answer item, WidgetRef ref) {
               label: Text(
                 isCommentsVisible && isCommentsVisibleList == index
                     ? 'Hide Comments'
-                    : 'View ${item.comments} more Comments',
+                    : 'View ${item.comments} Comments',
                 style: TextStyle(
                   color: Color(0xff393E41),
                   fontFamily: GoogleFonts.inter().fontFamily,
@@ -496,5 +524,4 @@ Widget askedbyViewHeader(Answer item, WidgetRef ref) {
       ],
     );
   }
-
 }

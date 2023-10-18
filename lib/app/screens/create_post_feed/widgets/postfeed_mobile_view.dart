@@ -131,7 +131,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    feedController.text = widget.feedItem?.content ?? "" ;
+    feedController.text = widget.feedItem?.content ?? feedController.text ;
     return Padding(
         padding: const EdgeInsets.only(top: 0),
         child: SingleChildScrollView(
@@ -204,7 +204,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                     ? 'Share your thoughts cannot be blank'
                     : null,
                 controller: feedController,
-                textInputAction: TextInputAction.next,
+                textInputAction: TextInputAction.done,
                 maxLines: null,
                 style: TextStyle(
                   color: Colors.black,
@@ -221,37 +221,38 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
             ],
           ),
         ),
-        const Divider(
-          thickness: 1,
-          color: Color(0xffEAEAEA),
-          height: 1,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                  child: TextFormField(
-                validator: (value) => value!.isEmpty ? 'HashTag #' : null,
-                controller: hashTagController,
-                textInputAction: TextInputAction.done,
-                maxLines: null,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 14.0,
-                  fontFamily: GoogleFonts.notoSans().fontFamily,
-                  fontWeight: FontWeight.normal,
-                ),
-                decoration:
-                    const InputDecoration.collapsed(hintText: "HashTag1 #"),
-//                     InputDecoration.collapsed(
-//   hintText: ref.read(selectedItemProvider)?.hashTag ?? 'HashTag #',
-// )
-              )),
-            ],
-          ),
-        ),
+        // const Divider(
+        //   thickness: 1,
+        //   color: Color(0xffEAEAEA),
+        //   height: 1,
+        // ),
+//         Padding(
+//           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//             children: [
+//               Expanded(
+//                   child: TextFormField(
+//                 validator: (value) => value!.isEmpty ? 'HashTag #' : null,
+//                 controller: hashTagController,
+//                 textInputAction: TextInputAction.done,
+//                 maxLines: null,
+//                 style: TextStyle(
+//                   color: Colors.black,
+//                   fontSize: 14.0,
+//                   fontFamily: GoogleFonts.notoSans().fontFamily,
+//                   fontWeight: FontWeight.normal,
+//                 ),
+//                 decoration:
+//                     const InputDecoration.collapsed(hintText: "HashTag1 #"),
+// //                     InputDecoration.collapsed(
+// //   hintText: ref.read(selectedItemProvider)?.hashTag ?? 'HashTag #',
+// // )
+//               )
+//               ),
+//             ],
+//           ),
+//         ),
       ],
     );
   }
@@ -603,10 +604,12 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
         onPressed: () {
           if (feedController == null || feedController.value.text.isEmpty) {
             showMessage('Please share your thoughts');
-          } else if (hashTagController == null ||
-              hashTagController.value.text.isEmpty) {
-            showMessage('Please add hashtag');
-          } else {
+          } 
+          // else if (hashTagController == null ||
+          //     hashTagController.value.text.isEmpty) {
+          //   showMessage('Please add hashtag');
+          // }
+           else {
             if (isMediaSelect == false) {
               createPostWithoutAttachment();
             } else {
@@ -651,7 +654,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
       hasImage: isImageSelect,
       imagePath: uploadedFileName ?? "",
       mediaCaption: mediaCaptionController.text,
-      hashTag: hashTagController.text,
+      // hashTag: hashTagController.text,
       hasVideo: isVideoSelect,
       category: (selectedIndex != null)
           ? checkListItems[selectedIndex ?? 0]

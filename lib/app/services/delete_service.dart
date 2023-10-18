@@ -9,9 +9,11 @@ class DeleteService {
     try {
       safePrint('Inside post delete');
       final payload = {
+         "post": {
         "user": {"userId": params.userId},
         "label": params.label,
         "id_prop_value": params.idPropValue,
+         },
       };
       safePrint('Payload: $payload');
       final prefs = await SharedPreferences.getInstance();
@@ -23,8 +25,15 @@ class DeleteService {
           body: HttpPayload.json(payload),
           headers: {'Authorization': authToken},
         );
-        final response = await restOperation.response;
+        
+                final response = await restOperation.response;
         if (response.statusCode == 200) {
+          final jsonResponse = json.decode(response.decodeBody());
+           print(response.decodeBody());
+
+
+        // final response = await restOperation.response;
+        // if (response.statusCode == 200) {
           return;
         } else {
           throw Exception('Failed to load data');

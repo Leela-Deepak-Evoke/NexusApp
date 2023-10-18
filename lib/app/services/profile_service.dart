@@ -22,7 +22,7 @@ class ProfileService {
     }
   }
 
-  Future<void> uploadProfileImage(String userId) async {
+  Future<void> uploadProfileImage(String rootId, String userId) async {
     try {
       safePrint('In upload');
       // Select a file from the device
@@ -41,15 +41,16 @@ class ProfileService {
       final platformFile = fileResult.files.single;
 
       const options = StorageUploadFileOptions(
-        accessLevel: StorageAccessLevel.protected,
+        accessLevel: StorageAccessLevel.guest,  //protected
       );
+      final String mediaPath = 'profile/$rootId/${platformFile.name}';
 
       final result = await Amplify.Storage.uploadFile(
         localFile: AWSFile.fromStream(
           platformFile.readStream!,
           size: platformFile.size,
         ),
-        key: platformFile.name,
+        key: mediaPath, // platformFile.name,
         options: options,
         onProgress: (progress) {
           safePrint('Fraction completed: ${progress.fractionCompleted}');

@@ -17,9 +17,9 @@ final commentsProvider = FutureProvider.autoDispose
   final spaceId = params.postId ?? '';
   final userId = params.userId ?? '';
 
-  final feeds = await likeService.getComments(spaceName, spaceId, userId);
-  print(feeds);
-  return feeds;
+  final comment = await likeService.getComments(spaceName, spaceId, userId);
+  print(comment);
+  return comment;
 });
 
 

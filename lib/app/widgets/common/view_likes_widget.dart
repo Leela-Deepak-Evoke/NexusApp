@@ -1,38 +1,41 @@
+import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
+import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/models/user_like.dart';
 import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class LikesWidget extends ConsumerWidget {
+class LikesWidget extends ConsumerStatefulWidget {
+  final User user;
   final String spaceName;
   final String spaceId;
-  final String userId;
-   bool isLike;
+  final GetCommentsParams params;
 
-   LikesWidget(
+  const LikesWidget(
       {super.key,
+      required this.user,
       required this.spaceName,
       required this.spaceId,
-      required this.userId, required this.isLike});
+      required this.params});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    print(" Inside Like widget");
-    Map<String, dynamic> params = {
-      'spaceName': spaceName,
-      'spaceId': spaceId,
-      'userId': userId
-    };
+  ConsumerState<LikesWidget> createState() => _LikesWidgetViewState();
+}
 
-    // Watch the provider
-    AsyncValue<List<UserLike>> likes = ref.watch(likesProvider(params));
-    print("Async value state: ${likes.runtimeType}");
+class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
+  
+@override
+Widget build(BuildContext context) {
+  final likesAsyncValue = ref.watch(likesProvider(widget.params));
+  if (likesAsyncValue is AsyncData) {
+    final items = likesAsyncValue.value!;
 
-    return likes.when(
-      data: (userLikes) {
-        print("Data received: $userLikes");
-        return Dialog(
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Dialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
@@ -45,11 +48,16 @@ class LikesWidget extends ConsumerWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: Column(
-              mainAxisSize: MainAxisSize.min, // To make the card compact
+              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                const Text(
+                 Text(
                   "Likes",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                                  color: Color(0xff676A79),
+                                  fontSize: 20.0,
+                                  fontFamily: GoogleFonts.notoSans().fontFamily,
+                                  fontWeight: FontWeight.bold,
+                                ),
                 ),
                 const SizedBox(
                   height: 16,
@@ -57,41 +65,71 @@ class LikesWidget extends ConsumerWidget {
                 SizedBox(
                   height: 250, // Adjust the height as needed
                   child: ListView.builder(
-                    itemCount: userLikes.length,
+                    itemCount: items.length,
                     itemBuilder: (context, index) {
-                      final userLike = userLikes[index];
+                      final userLike = items[index];
                       return ListTile(
-                          leading: _userProfilePicWidget(userLike, ref),
-                          title: Text(userLike.userName));
+                        leading: _userProfilePicWidget(userLike, ref),
+                          minLeadingWidth: 0,
+                              minVerticalPadding: 15,
+                        title: Text(userLike.userName),
+                      );
                     },
                   ),
                 ),
               ],
             ),
           ),
-        );
-      },
-      loading: () {
-        print("Data is loading");
-        return const AlertDialog(
-          content: Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
-      },
-      error: (e, s) {
-        print("Error occurred: $e");
-        return AlertDialog(
-          content: Text('An error occurred: $e'),
-        );
-      },
+        ),
+      ),
     );
   }
+
+if (likesAsyncValue is AsyncLoading) {
+    return CustomScrollView(
+      slivers: [
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              return Center(
+                child: SizedBox(
+                  height: 50.0,
+                  width: 50.0,
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            },
+            childCount: 1,
+          ),
+        ),
+      ],
+    );
+  }
+
+  if (likesAsyncValue is AsyncError) {
+    return CustomScrollView(
+      slivers: [
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              return Text('');
+            },
+            childCount: 1,
+          ),
+        ),
+      ],
+    );
+  }
+
+  return SizedBox.shrink();
+}
+
+
 
   Widget _userProfilePicWidget(UserLike item, WidgetRef ref) {
     final avatarText = getAvatarText(item.userName);
     if (item.profilePicture.isEmpty) {
-      return CircleAvatar(radius: 25.0, child: Text(avatarText));
+      return CircleAvatar(radius: 15.0, child: Text(avatarText));
     } else {
       // Note: We're using `watch` directly on the provider.
       final profilePicAsyncValue =
@@ -102,22 +140,22 @@ class LikesWidget extends ConsumerWidget {
           if (imageUrl != null && imageUrl.isNotEmpty) {
             return CircleAvatar(
               backgroundImage: NetworkImage(imageUrl),
-              radius: 25.0,
+              radius: 15.0,
             );
           } else {
             // Render a placeholder or an error image
-            return CircleAvatar(radius: 30.0, child: Text(avatarText));
+            return CircleAvatar(radius: 15.0, child: Text(avatarText));
           }
         },
         loading: () => const Center(
           child: SizedBox(
-            height: 25.0,
-            width: 25.0,
+            height: 15.0,
+            width: 15.0,
             child: CircularProgressIndicator(),
           ),
         ),
         error: (error, stackTrace) => CircleAvatar(
-            radius: 25.0,
+            radius: 15.0,
             child: Text(avatarText)), // Handle error state appropriately
       );
     }

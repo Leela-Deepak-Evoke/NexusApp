@@ -1,19 +1,17 @@
 import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
 import 'package:evoke_nexus_app/app/models/user_like.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LikeService {
-  Future<List<UserLike>> getLikes(
-      String spaceName, String spaceId, String userId) async {
+    Future<List<UserLike>> getLikes(GetCommentsParams params) async {
+
+  // Future<List<UserLike>> getLikes(String spaceName, String spaceId, String userId) async {
     try {
-      // final userPayload = {
-      //   "feed": {"label": spaceName, "id_prop_value": spaceId}
-      // };
       final userPayload = {
-    "label": spaceName,
-    "id_prop_value": spaceId
-  };
+        "post": {"label": params.postType, "id_prop_value": params.postId},
+      };
 
       final prefs = await SharedPreferences.getInstance();
       final authToken = prefs.getString('authToken');
@@ -26,14 +24,31 @@ class LikeService {
         final response = await restOperation.response;
         if (response.statusCode == 200) {
           final jsonResponse = json.decode(response.decodeBody());
-          if (jsonResponse is List) {
+           print(response.decodeBody());
+           print(jsonResponse);
+          // if (jsonResponse is List) {
+          //   print("likes json");
+          //   final resultJson = jsonResponse
+          //       .map((feedJson) => UserLike.fromJson(feedJson, params.userId))
+          //       .toList();
+          //       // print( jsonResponse
+          //       // .map<UserLike>(
+          //       //     (feedJson) => UserLike.fromJson(feedJson, userId))
+          //       // .toList());
+
+          //   print(resultJson);
+          //   return resultJson;
+          // } 
+           if (jsonResponse["users"] is List) {
             print("likes json");
-            final resultJson = jsonResponse
-                .map((feedJson) => UserLike.fromJson(feedJson, userId))
+           final resultJson = jsonResponse["users"]
+                .map<UserLike>(
+                    (feedJson) => UserLike.fromJson(feedJson, params.userId))
                 .toList();
-            print(resultJson);
+                print(resultJson);
             return resultJson;
-          } else {
+          }
+          else {
             throw Exception('Unexpected data format');
           }
         } else {
@@ -68,14 +83,17 @@ class LikeService {
     }
   }
 
- Future<bool> postlikedislike( params) async {
+  Future<bool> postlikedislike(params) async {
     try {
       safePrint('Inside post feed');
 
       final payload = {
-      "user": {"userId": params.userId},
-      "action": params.action,
-      "post": {"label" : params.postlabel, "id_prop_value": params.postIdPropValue},
+        "user": {"userId": params.userId},
+        "action": params.action,
+        "post": {
+          "label": params.postlabel,
+          "id_prop_value": params.postIdPropValue
+        },
       };
 
       safePrint('Payload: $payload');
@@ -91,25 +109,21 @@ class LikeService {
         );
         final response = await restOperation.response;
         if (response.statusCode == 200) {
-       final jsonResponse = json.decode(response.decodeBody());
+          final jsonResponse = json.decode(response.decodeBody());
           print(jsonResponse);
           return true;
         } else {
-           return false; //throw Exception('Failed to load data');
+          return false; //throw Exception('Failed to load data');
         }
       } else {
-         return false; //throw Exception('Failed to load token');
+        return false; //throw Exception('Failed to load token');
       }
     } on AuthException catch (e) {
       safePrint('Error retrieving auth session: ${e.message}');
       return false; //rethrow;
     } on ApiException catch (e) {
       safePrint('POST call failed: $e');
-      return false;  //rethrow;
+      return false; //rethrow;
     }
   }
-
-  }
-
-
-
+}

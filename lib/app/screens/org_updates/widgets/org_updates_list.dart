@@ -77,17 +77,17 @@ class OrgUpdateList extends ConsumerWidget {
                                 iconSize: 15,
                                 color: Colors.blue,
                                 onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      // return LikesWidget(
-                                      //   spaceId: item.orgUpdateId,
-                                      //   spaceName: 'OrgUpdate',
-                                      //   userId: user.userId,
-                                      // );
-                                      return LikesWidget(spaceName: 'OrgUpdate', spaceId: item.orgUpdateId, userId: user.userId, isLike: false);
-                                    },
-                                  );
+                                  // showDialog(
+                                  //   context: context,
+                                  //   builder: (BuildContext context) {
+                                  //     // return LikesWidget(
+                                  //     //   spaceId: item.orgUpdateId,
+                                  //     //   spaceName: 'OrgUpdate',
+                                  //     //   userId: user.userId,
+                                  //     // );
+                                  //     return LikesWidget(spaceName: 'OrgUpdate', spaceId: item.orgUpdateId, userId: user.userId, isLike: false);
+                                  //   },
+                                  // );
                                 },
                               ),
                               const SizedBox(width: 2.0),

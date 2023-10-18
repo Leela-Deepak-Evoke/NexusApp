@@ -79,17 +79,17 @@ class TimelineList extends ConsumerWidget {
                                 iconSize: 15,
                                 color: Colors.blue,
                                 onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      // return LikesWidget(
-                                      //   spaceId: item.feedId,
-                                      //   spaceName: 'Feed',
-                                      //   userId: user.userId,
-                                      // );
-                                      return LikesWidget(spaceName: 'Feed', spaceId: item.feedId, userId: user.userId, isLike: false);
-                                    },
-                                  );
+                                  // showDialog(
+                                  //   context: context,
+                                  //   builder: (BuildContext context) {
+                                  //     // return LikesWidget(
+                                  //     //   spaceId: item.feedId,
+                                  //     //   spaceName: 'Feed',
+                                  //     //   userId: user.userId,
+                                  //     // );
+                                  //     return LikesWidget(spaceName: 'Feed', spaceId: item.feedId, userId: user.userId, isLike: false);
+                                  //   },
+                                  // );
                                 },
                               ),
                               const SizedBox(width: 2.0),

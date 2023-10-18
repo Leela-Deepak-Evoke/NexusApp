@@ -1,11 +1,15 @@
+import 'package:evoke_nexus_app/app/models/delete.dart';
 import 'package:evoke_nexus_app/app/models/fetch_answer_params.dart';
 import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
 import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/comment_service_provider.dart';
+import 'package:evoke_nexus_app/app/provider/delete_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/comments/widgets/comments_mobile_view.dart';
+import 'package:evoke_nexus_app/app/screens/create_post_answers/create_post_answer_screen.dart';
+import 'package:evoke_nexus_app/app/widgets/common/edit_delete_button.dart';
 import 'package:evoke_nexus_app/app/widgets/common/error_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -180,7 +184,79 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
     )));
   }
 
-  Widget askedbyViewHeader(Answer item, WidgetRef ref) {
+
+
+Widget askedbyViewHeader(Answer item, WidgetRef ref) {
+  bool isCurrentUser = item.authorId == widget.user.userId;
+
+  return Padding(
+    padding: EdgeInsets.all(10),
+    child: Row( // Use a Row instead of Wrap for horizontal alignment
+      children: [
+        _profilePicWidget(item, ref),
+        const SizedBox(
+          width: 5,
+        ),
+        Text("Asked by",
+            style: TextStyle(
+              color: Color(0xff676A79),
+              fontSize: 12.0,
+              fontFamily: GoogleFonts.notoSans().fontFamily,
+              fontWeight: FontWeight.normal,
+            )),
+        Text(item.author ?? "",
+            style: TextStyle(
+              color: Color(0xff676A79),
+              fontSize: 12.0,
+              fontFamily: GoogleFonts.notoSans().fontFamily,
+              fontWeight: FontWeight.normal,
+            )),
+        Spacer(), // Add a Spacer widget to push the PopupMenuButton to the right.
+        if (isCurrentUser)
+          Container(
+            width: 30, // Adjust the width as needed
+            child: PopupMenuButton<String>(
+              icon: const Icon(
+                Icons.more_vert,
+              ),
+              onSelected: (String choice) {
+                // Handle button selection here
+                if (choice == 'Edit') {
+                  _editItem(item); // Call the edit function
+                } else if (choice == 'Delete') {
+                  _deleteItem(item); // Call the delete function
+                }
+              },
+              itemBuilder: (BuildContext context) {
+                return <PopupMenuEntry<String>>[
+                  PopupMenuItem<String>(
+                    value: 'Edit',
+                    child: EditButton(
+                      onPressed: () {
+                        _editItem(item); // Call the edit function
+                      },
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'Delete',
+                    child: DeleteButton(
+                      onPressed: () {
+                        _deleteItem(item); // Call the delete function
+                      },
+                    ),
+                  ),
+                ];
+              },
+            ),
+          )
+      ],
+    ),
+  );
+}
+
+  Widget askedbyViewHeader_OLD(Answer item, WidgetRef ref) {
+        bool isCurrentUser = item.authorId == widget.user.userId;
+
     return Padding(
       padding: EdgeInsets.all(10),
       child: Wrap(
@@ -205,7 +281,54 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
                 fontSize: 12.0,
                 fontFamily: GoogleFonts.notoSans().fontFamily,
                 fontWeight: FontWeight.normal,
-              ))
+              )),
+
+                       if(isCurrentUser)
+                                   Container(
+                                      width: 30, // Adjust the width as needed
+                                      child: PopupMenuButton<String>(
+                                        //  padding: const EdgeInsets.only(left: 50, right: 0),
+
+                                        icon: const Icon(
+                                          Icons.more_vert,
+                                        ),
+                                        onSelected: (String choice) {
+                                          // Handle button selection here
+                                          if (choice == 'Edit') {
+                                            _editItem(
+                                                item); // Call the edit function
+                                          } else if (choice == 'Delete') {
+                                            _deleteItem(
+                                                item); // Call the delete function
+                                          }
+                                        },
+                                        itemBuilder: (BuildContext context) {
+                                          return <PopupMenuEntry<String>>[
+                                            PopupMenuItem<String>(
+                                              // padding: const EdgeInsets.only(left: 50, right: 0),
+
+                                              value: 'Edit',
+                                              child: EditButton(
+                                                onPressed: () {
+                                                  _editItem(
+                                                      item); // Call the edit function
+                                                },
+                                              ),
+                                            ),
+                                            PopupMenuItem<String>(
+                                              // padding: const EdgeInsets.only(left: 50, right: 0),
+                                              value: 'Delete',
+                                              child: DeleteButton(
+                                                onPressed: () {
+                                                  _deleteItem(
+                                                      item); // Call the delete function
+                                                },
+                                              ),
+                                            ),
+                                          ];
+                                        },
+                                      ),
+                                    )
         ],
       ),
     );
@@ -276,6 +399,60 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
     return '';
   }
 
+
+// Edit an item
+  void _editItem(Answer item) {
+    // Implement your edit logic here, e.g., navigate to the edit screen
+
+    // setState(() {
+    //   Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       fullscreenDialog: true,
+    //       builder: (context) => CreatePostAnswerScreen(question: widget.questionId),
+    //     ),
+    //   );
+    // });
+  }
+
+// Delete an item
+  void _deleteItem(Answer item) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirm Delete"),
+          content: Text("Are you sure you want to delete this item?"),
+          actions: [
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+            TextButton(
+              child: Text("Delete"),
+              onPressed: () async {
+                try {
+                  final deleteParams = Delete(
+                    label: 'Answer',
+                    idPropValue: item.answerId,
+                    userId: widget.user.userId,
+                  );
+                  await ref.read(deleteProvider(deleteParams).future);
+                  await _onRefresh();
+                } catch (error) {
+                  print("Error deleting item: $error");
+                }
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   // BUTTONS: COMMENT
   Widget btnCommentsLayout(
       BuildContext context, int index, Answer item, WidgetRef ref) {
@@ -319,4 +496,5 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
       ],
     );
   }
+
 }

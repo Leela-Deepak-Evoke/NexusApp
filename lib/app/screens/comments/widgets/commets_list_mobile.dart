@@ -1,11 +1,14 @@
 import 'package:comment_tree/data/comment.dart';
 import 'package:comment_tree/widgets/comment_tree_widget.dart';
 import 'package:comment_tree/widgets/tree_theme_data.dart';
+import 'package:evoke_nexus_app/app/models/delete.dart';
 import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/models/user_comment.dart';
 import 'package:evoke_nexus_app/app/provider/comment_service_provider.dart';
+import 'package:evoke_nexus_app/app/provider/delete_service_provider.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
+import 'package:evoke_nexus_app/app/widgets/common/edit_delete_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -28,7 +31,6 @@ class CommentsListMobileView extends ConsumerStatefulWidget {
 
 class _CommentsListMobileViewState
     extends ConsumerState<CommentsListMobileView> {
-      
   String getAvatarText(String name) {
     final nameParts = name.split(' ');
     if (nameParts.length >= 2) {
@@ -91,6 +93,8 @@ class _CommentsListMobileViewState
           itemCount: items.length,
           itemBuilder: (context, index) {
             var item = items[index];
+            bool isCurrentUser = item.userId == widget.user.userId;
+
             return Padding(
               padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
               child: Container(
@@ -168,15 +172,61 @@ class _CommentsListMobileViewState
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                '${data.userName}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .caption!
-                                    .copyWith(
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.black),
-                              ),
+                              Row(children: [
+                                Expanded(
+                                    // Wrap the Text widget with Align to eliminate top and bottom space
+                                    child: Text(
+                                  '${data.userName}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .caption!
+                                      .copyWith(
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black),
+                                )),
+                                Spacer(), // Add a Spacer to push the PopupMenuButton to the right edge
+                                if (isCurrentUser)
+                                  Container(
+                                    width: 30, // Adjust the width as needed
+                                    child: PopupMenuButton<String>(
+                                      icon: const Icon(
+                                        Icons.more_vert,
+                                      ),
+                                      onSelected: (String choice) {
+                                        // Handle button selection here
+                                        if (choice == 'Edit') {
+                                          _editItem(
+                                              item); // Call the edit function
+                                        } else if (choice == 'Delete') {
+                                          _deleteItem(
+                                              item); // Call the delete function
+                                        }
+                                      },
+                                      itemBuilder: (BuildContext context) {
+                                        return <PopupMenuEntry<String>>[
+                                          PopupMenuItem<String>(
+                                            value: 'Edit',
+                                            child: EditButton(
+                                              onPressed: () {
+                                                _editItem(
+                                                    item); // Call the edit function
+                                              },
+                                            ),
+                                          ),
+                                          PopupMenuItem<String>(
+                                            value: 'Delete',
+                                            child: DeleteButton(
+                                              onPressed: () {
+                                                _deleteItem(
+                                                    item); // Call the delete function
+                                              },
+                                            ),
+                                          ),
+                                        ];
+                                      },
+                                    ),
+                                  ),
+                              ]),
                               Text(
                                 '${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.commentedAt.toString()))}',
                                 style: Theme.of(context)
@@ -239,6 +289,58 @@ class _CommentsListMobileViewState
       itemCount: 1,
       itemBuilder: (context, index) {
         return Container(color: Colors.amber);
+      },
+    );
+  }
+
+  void _editItem(UserComment item) {
+    // Implement your edit logic here, e.g., navigate to the edit screen
+
+    // setState(() {
+    //   Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       fullscreenDialog: true,
+    //       builder: (context) => CreatePostAnswerScreen(question: widget.questionId),
+    //     ),
+    //   );
+    // });
+  }
+
+// Delete an item
+  void _deleteItem(UserComment item) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirm Delete"),
+          content: Text("Are you sure you want to delete this item?"),
+          actions: [
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+            TextButton(
+              child: Text("Delete"),
+              onPressed: () async {
+                try {
+                  final deleteParams = Delete(
+                    label: 'Comment',
+                    idPropValue: item.commentId,
+                    userId: widget.user.userId,
+                  );
+                  await ref.read(deleteProvider(deleteParams).future);
+                  // await _onRefresh();
+                } catch (error) {
+                  print("Error deleting item: $error");
+                }
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+          ],
+        );
       },
     );
   }

@@ -1,13 +1,19 @@
+import 'package:evoke_nexus_app/app/models/delete.dart';
+import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
 import 'package:evoke_nexus_app/app/models/org_updates.dart';
 import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:evoke_nexus_app/app/provider/delete_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/org_update_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/comments/comments_screen.dart';
+import 'package:evoke_nexus_app/app/screens/create_post_orgupdates/create_post_orgupdates_screen.dart';
 import 'package:evoke_nexus_app/app/screens/org_updates/widgets/org_updates_header_card_view.dart';
 import 'package:evoke_nexus_app/app/screens/org_updates/widgets/org_updates_media_view.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
+import 'package:evoke_nexus_app/app/widgets/common/edit_delete_button.dart';
 import 'package:evoke_nexus_app/app/widgets/common/error_screen.dart';
+import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -52,6 +58,7 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
 
                     final formattedDate = DateFormat('MMM d HH:mm').format(
                         DateTime.parse(item.postedAt.toString()).toLocal());
+                    bool isCurrentUser = item.authorId == widget.user.userId;
 
                     return Card(
                       margin: const EdgeInsets.all(5),
@@ -75,6 +82,54 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
                                   fontWeight: FontWeight.normal,
                                 ),
                               ),
+                               trailing: isCurrentUser && (widget.user.role == 'Group' || widget.user.role == 'Leader')
+                                  ? Container(
+                                      width: 30, // Adjust the width as needed
+                                      child: PopupMenuButton<String>(
+                                        //  padding: const EdgeInsets.only(left: 50, right: 0),
+
+                                        icon: const Icon(
+                                          Icons.more_vert,
+                                        ),
+                                        onSelected: (String choice) {
+                                          // Handle button selection here
+                                          if (choice == 'Edit') {
+                                            _editItem(
+                                                item); // Call the edit function
+                                          } else if (choice == 'Delete') {
+                                            _deleteItem(
+                                                item); // Call the delete function
+                                          }
+                                        },
+                                        itemBuilder: (BuildContext context) {
+                                          return <PopupMenuEntry<String>>[
+                                            PopupMenuItem<String>(
+                                              // padding: const EdgeInsets.only(left: 50, right: 0),
+
+                                              value: 'Edit',
+                                              child: EditButton(
+                                                onPressed: () {
+                                                  _editItem(
+                                                      item); // Call the edit function
+                                                },
+                                              ),
+                                            ),
+                                            PopupMenuItem<String>(
+                                              // padding: const EdgeInsets.only(left: 50, right: 0),
+                                              value: 'Delete',
+                                              child: DeleteButton(
+                                                onPressed: () {
+                                                  _deleteItem(
+                                                      item); // Call the delete function
+                                                },
+                                              ),
+                                            ),
+                                          ];
+                                        },
+                                      ),
+                                    )
+                                  : null,
+                             
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,9 +138,9 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
                                 Padding(
                                     padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
                                     child: contentViewWidget(item)),
-                                Padding(
-                                    padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                                    child: hasTagViewWidget(item)),
+                                // Padding(
+                                //     padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                //     child: hasTagViewWidget(item)),
 
                                 //const SizedBox(height: 4.0),
                                 item.media
@@ -291,7 +346,23 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
         children: [
           TextButton.icon(
             // <-- TextButton
-            onPressed: () {},
+            onPressed: () {
+                showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  var params = GetCommentsParams(
+                      userId: widget.user.userId,
+                      postId: item.orgUpdateId,
+                      postType: "OrgUpdates");
+
+                  return LikesWidget(
+                      user: widget.user,
+                      spaceName: "OrgUpdates",
+                      spaceId: item.orgUpdateId,
+                      params: params);
+                },
+              );
+            },
             icon: Image.asset(
               'assets/images/reactions.png',
             ),
@@ -343,5 +414,55 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
 
   void retry() {
     _onRefresh();
+  }
+
+  // Edit an item
+  void _editItem(OrgUpdate item) {
+    setState(() {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (context) => CreatePostOrgUpdatesScreen()),
+      );
+    });
+  }
+
+// Delete an item
+  void _deleteItem(OrgUpdate item) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirm Delete"),
+          content: Text("Are you sure you want to delete this item?"),
+          actions: [
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+            TextButton(
+              child: Text("Delete"),
+              onPressed: () async {
+                try {
+                  final deleteParams = Delete(
+                    label: 'OrgUpdate',
+                    idPropValue: item.orgUpdateId,
+                    userId: widget.user.userId,
+                  );
+                  await ref.read(deleteProvider(deleteParams).future);
+                  await _onRefresh();
+                } catch (error) {
+                  print("Error deleting item: $error");
+                }
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

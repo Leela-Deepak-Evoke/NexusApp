@@ -1,3 +1,4 @@
+import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
 import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:evoke_nexus_app/app/models/user_like.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
@@ -9,16 +10,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final likeServiceProvider = Provider<LikeService>((ref) => LikeService());
 
-final likesProvider = FutureProvider.autoDispose
-    .family<List<UserLike>, Map<String, dynamic>>((ref, params) async {
-  final likeService = ref.read(likeServiceProvider);
-  final spaceName = params['spaceName'] ?? '';
-  final spaceId = params['spaceId'] ?? '';
-  final userId = params['userId'] ?? '';
+// final likesProvider = FutureProvider.autoDispose
+//     .family<List<UserLike>, GetCommentsParams>((ref, params) async {
+//   final likeService = ref.read(likeServiceProvider);
+//   final spaceName = params.postType ?? '';
+//   final spaceId = params.postId ?? '';
+//   final userId = params.userId ?? '';
+//   final like = await likeService.getLikes(spaceName, spaceId, userId);
+//   return like;
+// });
 
-  final feeds = await likeService.getLikes(spaceName, spaceId, userId);
-  return feeds;
-});
+final likesProvider = FutureProvider.autoDispose.
+ family<List<UserLike>,GetCommentsParams>((ref, params)  async
+{
+   final likeService = ref.read(likeServiceProvider);
+  final like = await likeService.getLikes(params);
+  return like;
+  
+},);
+
 
 final genricPostlikeDislikeProvider = FutureProvider.autoDispose
     .family<bool, PostLikeDislikeParams>((ref, params) async {

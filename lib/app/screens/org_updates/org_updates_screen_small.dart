@@ -24,7 +24,7 @@ class _OrgUpdatesScreenSmall extends ConsumerState<OrgUpdatesScreenSmall> {
           user: data,
           child: OrgUpdateMobileView(user: data, onPostClicked: () {  },),
           hasBackAction: false,
-          hasRightAction: (data.role == 'Member') ? false : true,
+          hasRightAction: (data.role == 'Group' || data.role == 'Leader') ? true : false,
           topBarButtonAction: () {
              
                Navigator.push(

@@ -1,4 +1,5 @@
 import 'package:evoke_nexus_app/app/models/fetch_answer_params.dart';
+import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
@@ -83,7 +84,15 @@ class AnswerList extends ConsumerWidget {
                                       //   spaceName: 'Answer',
                                       //   userId: user.userId,
                                       // );
-                                      return LikesWidget(spaceName: 'Answer', spaceId: item.answerId, userId: user.userId, isLike: false);
+
+  var params = GetCommentsParams(
+                      userId: user.userId,
+                      postId: item.answerId,
+                      postType: "Feed");
+
+
+                                      return LikesWidget(user: user, spaceName: "Answer", spaceId: item.answerId, params: params);
+                                      // return LikesWidget(spaceName: 'Answer', spaceId: item.answerId, userId: user.userId, isLike: false);
                                     },
                                   );
                                 },
@@ -219,4 +228,5 @@ class AnswerList extends ConsumerWidget {
     }
     return '';
   }
+  
 }

@@ -10,7 +10,7 @@ class ProfileService {
       final result = await Amplify.Storage.getUrl(
         key: key,
         options: const StorageGetUrlOptions(
-          accessLevel: StorageAccessLevel.protected,
+          accessLevel: StorageAccessLevel.guest, //.protected,
         ),
       ).result;
       //print("S3 result");
@@ -41,7 +41,7 @@ class ProfileService {
       final platformFile = fileResult.files.single;
 
       const options = StorageUploadFileOptions(
-        accessLevel: StorageAccessLevel.guest,  //protected
+        accessLevel: StorageAccessLevel.guest, //protected
       );
       final String mediaPath = 'profile/$rootId/${platformFile.name}';
 
@@ -58,7 +58,7 @@ class ProfileService {
       ).result;
       safePrint('Successfully uploaded file: ${result.uploadedItem.key}');
       final userPayload = {
-        "user": {"userId": userId, "new_profile_key": platformFile.name}
+        "user": {"userId": userId, "new_profile_key": mediaPath}
       };
       final prefs = await SharedPreferences.getInstance();
       final authToken = prefs.getString('authToken');

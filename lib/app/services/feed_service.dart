@@ -26,11 +26,7 @@ class FeedService {
           final jsonResponse = json.decode(response.decodeBody());
           if (jsonResponse is List) {
             return jsonResponse
-                .map(
-                  (feedJson) 
-                  => 
-                 
-                  Feed.fromJson(feedJson, user.userId))
+                .map((feedJson) => Feed.fromJson(feedJson, user.userId))
                 .toList();
           } else {
             throw Exception('Unexpected data format');
@@ -55,7 +51,7 @@ class FeedService {
       final result = await Amplify.Storage.getUrl(
         key: key,
         options: const StorageGetUrlOptions(
-          accessLevel: StorageAccessLevel.protected,
+          accessLevel: StorageAccessLevel.guest, //protected,
         ),
       ).result;
       //print("S3 result");
@@ -108,7 +104,7 @@ class FeedService {
 //       },
 //     ).result;
 //     safePrint('Successfully uploaded file: ${result.uploadedItem.key}');
-    
+
 //     return {
 //       'platformFilePath': platformFile.path,
 //       'uploadedKey': result.uploadedItem.key,
@@ -121,7 +117,8 @@ class FeedService {
 
   ///
 
-  Future<Map<String, dynamic>?> uploadMedia(String rootId, String mediaType) async {
+  Future<Map<String, dynamic>?> uploadMedia(
+      String rootId, String mediaType) async {
     try {
       safePrint('In upload');
       // Select a file from the device
@@ -158,10 +155,10 @@ class FeedService {
       ).result;
       safePrint('Successfully uploaded file: ${result.uploadedItem.key}');
       // return platformFile.path;
-       return {
-      'platformFilePath': platformFile.path,
-      'mediaPath': mediaPath,
-    };
+      return {
+        'platformFilePath': platformFile.path,
+        'mediaPath': mediaPath,
+      };
     } catch (e) {
       safePrint('UploadFile Err: $e');
       return null;
@@ -214,14 +211,17 @@ class FeedService {
     }
   }
 
-  Future<bool> postlikedislike( params) async {
+  Future<bool> postlikedislike(params) async {
     try {
       safePrint('Inside post feed');
 
       final payload = {
-      "user": {"userId": params.userId},
-      "action": params.action,
-      "post": {"label" : params.postlabel, "id_prop_value": params.postIdPropValue},
+        "user": {"userId": params.userId},
+        "action": params.action,
+        "post": {
+          "label": params.postlabel,
+          "id_prop_value": params.postIdPropValue
+        },
       };
 
       safePrint('Payload: $payload');
@@ -237,22 +237,21 @@ class FeedService {
         );
         final response = await restOperation.response;
         if (response.statusCode == 200) {
-       final jsonResponse = json.decode(response.decodeBody());
+          final jsonResponse = json.decode(response.decodeBody());
           print(jsonResponse);
           return true;
         } else {
-           return false; //throw Exception('Failed to load data');
+          return false; //throw Exception('Failed to load data');
         }
       } else {
-         return false; //throw Exception('Failed to load token');
+        return false; //throw Exception('Failed to load token');
       }
     } on AuthException catch (e) {
       safePrint('Error retrieving auth session: ${e.message}');
       return false; //rethrow;
     } on ApiException catch (e) {
       safePrint('POST call failed: $e');
-      return false;  //rethrow;
+      return false; //rethrow;
     }
   }
-
 }

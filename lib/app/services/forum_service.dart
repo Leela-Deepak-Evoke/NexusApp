@@ -84,6 +84,9 @@ class ForumService {
       rethrow;
     } on ApiException catch (e) {
       safePrint('POST call failed: $e');
+       if (e.message == "The incoming token has expired") {
+        // refresh token
+     }  
       rethrow;
     }
   }

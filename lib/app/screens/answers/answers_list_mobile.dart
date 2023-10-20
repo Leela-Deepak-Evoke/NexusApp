@@ -196,6 +196,9 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
     }
 
     if (answersAsyncValue is AsyncError) {
+      if (answersAsyncValue.error == "The incoming token has expired") {
+                print("TOKEN EXPR");
+      }
       return ErrorScreen(showErrorMessage: true, onRetryPressed: retry); //
 
       // return Text('An error occurred: ${answersAsyncValue.error}');
@@ -287,6 +290,7 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
                       value: 'Edit',
                       child: EditButton(
                         onPressed: () {
+                          Navigator.pop(context);
                           _editItem(item); // Call the edit function
                         },
                       ),
@@ -295,6 +299,7 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
                       value: 'Delete',
                       child: DeleteButton(
                         onPressed: () {
+                          Navigator.pop(context);
                           _deleteItem(item); // Call the delete function
                         },
                       ),

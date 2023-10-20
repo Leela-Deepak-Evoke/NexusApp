@@ -120,21 +120,21 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
                                         itemBuilder: (BuildContext context) {
                                           return <PopupMenuEntry<String>>[
                                             PopupMenuItem<String>(
-                                              // padding: const EdgeInsets.only(left: 50, right: 0),
-
                                               value: 'Edit',
                                               child: EditButton(
                                                 onPressed: () {
+                                                  Navigator.pop(context);
+
                                                   _editItem(
                                                       item); // Call the edit function
                                                 },
                                               ),
                                             ),
                                             PopupMenuItem<String>(
-                                              // padding: const EdgeInsets.only(left: 50, right: 0),
                                               value: 'Delete',
                                               child: DeleteButton(
                                                 onPressed: () {
+                                                  Navigator.pop(context);
                                                   _deleteItem(
                                                       item); // Call the delete function
                                                 },
@@ -145,26 +145,6 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
                                       ),
                                     )
                                   : null,
-
-                              // trailing: isCurrentUser
-                              //     ? Row(
-                              //         mainAxisSize: MainAxisSize.min,
-                              //         children: [
-                              //           EditButton(
-                              //             onPressed: () {
-                              //               _editItem(
-                              //                   item); // Call the edit function
-                              //             },
-                              //           ),
-                              //           DeleteButton(
-                              //             onPressed: () {
-                              //               _deleteItem(
-                              //                   item); // Call the delete function
-                              //             },
-                              //           ),
-                              //         ],
-                              //       )
-                              //     : null,
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,

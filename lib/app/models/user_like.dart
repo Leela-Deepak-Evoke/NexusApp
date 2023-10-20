@@ -24,7 +24,8 @@ class UserLike {
       if (json['userId'] == currentUserId) {
         authorThumbnail = json['profilePicture'];
       } else {
-        authorThumbnail = json['identityId'] + '/' + json['profilePicture'];
+        authorThumbnail = json[
+            'profilePicture']; //json['identityId'] + '/' + json['profilePicture'];
       }
     }
     print("convert likes to json");
@@ -37,6 +38,3 @@ class UserLike {
         profilePicture: authorThumbnail!);
   }
 }
-
-
-

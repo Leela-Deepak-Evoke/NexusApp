@@ -25,7 +25,8 @@ class User_Comment {
       if (json['userId'] == currentUserId) {
         authorThumbnail = json['profilePicture'];
       } else {
-        authorThumbnail = json['identityId'] + '/' + json['profilePicture'];
+        authorThumbnail = json['profilePicture'];
+        //json['identityId'] + '/' + json['profilePicture'];
       }
     }
     print("convert likes to json");
@@ -39,13 +40,12 @@ class User_Comment {
   }
 }
 
-
 // class Comments {
 //   Comments({
 //     required this.users,
 //   });
 //   late final List<Users> users;
-  
+
 //   Comments.fromJson(Map<String, dynamic> json){
 //     users = List.from(json['users']).map((e)=>Users.fromJson(e)).toList();
 //   }
@@ -57,7 +57,6 @@ class User_Comment {
 //   }
 // }
 class UserComment {
-
   UserComment({
     required this.userName,
     required this.userId,
@@ -67,8 +66,7 @@ class UserComment {
     required this.comment,
     required this.commentedAt,
     required this.commentStatus,
-   required this.authorThumbnail,
-
+    required this.authorThumbnail,
   });
   late final String userName;
   late final String userId;
@@ -79,32 +77,31 @@ class UserComment {
   late final String commentedAt;
   late final String commentStatus;
   late final String? authorThumbnail;
-  
- factory UserComment.fromJson(Map<String, dynamic> json , String currentUserId ){
-     String? authorThumbnail;
 
-   if (json['profilePicture'] != null) {
+  factory UserComment.fromJson(
+      Map<String, dynamic> json, String currentUserId) {
+    String? authorThumbnail;
+
+    if (json['profilePicture'] != null) {
       if (json['userId'] == currentUserId) {
-         authorThumbnail = json['profilePicture'];
+        authorThumbnail = json['profilePicture'];
       } else {
-        authorThumbnail =
-            json['identityId'] + '/' + json['profilePicture'];
+        authorThumbnail = json[
+            'profilePicture']; //json['identityId'] + '/' + json['profilePicture'];
       }
     }
 
-   return 
-   UserComment
-   (
-    userName : json['userName'],
-    userId : json['userId'],
-    identityId : json['identityId'],
-    profilePicture : json['profilePicture'],
-    commentId : json['commentId'],
-    comment : json['comment'],
-    commentedAt : json['commentedAt'],
-    commentStatus : json['commentStatus'],
-    authorThumbnail: authorThumbnail,
-   );
+    return UserComment(
+      userName: json['userName'],
+      userId: json['userId'],
+      identityId: json['identityId'],
+      profilePicture: json['profilePicture'],
+      commentId: json['commentId'],
+      comment: json['comment'],
+      commentedAt: json['commentedAt'],
+      commentStatus: json['commentStatus'],
+      authorThumbnail: authorThumbnail,
+    );
   }
 
   Map<String, dynamic> toJson() {

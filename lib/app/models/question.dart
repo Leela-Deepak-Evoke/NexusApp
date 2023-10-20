@@ -53,8 +53,8 @@ class Question {
       if (json['user']['userId'] == currentUserId) {
         authorThumbnail = json['user']['profilePicture'];
       } else {
-        authorThumbnail =
-            json['user']['identityId'] + '/' + json['user']['profilePicture'];
+        authorThumbnail = json['user']['profilePicture'];
+        //json['user']['identityId'] + '/' + json['user']['profilePicture'];
       }
     }
 

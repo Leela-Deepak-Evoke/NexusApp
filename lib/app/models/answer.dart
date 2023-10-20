@@ -13,8 +13,7 @@ class Answer {
   final String? authorThumbnail;
   final int likes;
   final int comments;
-    final bool currentUserLiked;
-
+  final bool currentUserLiked;
 
   Answer(
       {required this.answerId,
@@ -29,7 +28,8 @@ class Answer {
       required this.authorTitle,
       required this.authorThumbnail,
       required this.likes,
-      required this.comments, required this.currentUserLiked});
+      required this.comments,
+      required this.currentUserLiked});
 
   Map<String, dynamic> toJson() => {
         'answerId': answerId,
@@ -54,8 +54,8 @@ class Answer {
       if (json['user']['userId'] == currentUserId) {
         authorThumbnail = json['user']['profilePicture'];
       } else {
-        authorThumbnail =
-            json['user']['identityId'] + '/' + json['user']['profilePicture'];
+        authorThumbnail = json['user']['profilePicture'];
+        //json['user']['identityId'] + '/' + json['user']['profilePicture'];
       }
     }
 
@@ -73,7 +73,6 @@ class Answer {
         authorThumbnail: authorThumbnail,
         likes: json['likes'] ?? 0,
         comments: json['comments'] ?? 0,
-        currentUserLiked: json['currentUserLiked'] ?? false
-        );
+        currentUserLiked: json['currentUserLiked'] ?? false);
   }
 }

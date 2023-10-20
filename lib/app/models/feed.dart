@@ -7,8 +7,8 @@ class Feed {
   final String? mediaCaption;
   final String? imagePath;
   final String? videoPath;
-   String? hashTag;
-   String? content;
+  String? hashTag;
+  String? content;
   final DateTime postedAt;
   final String status;
   final String? author;
@@ -37,7 +37,8 @@ class Feed {
       required this.authorTitle,
       required this.authorThumbnail,
       required this.likes,
-      required this.comments, required this.currentUserLiked});
+      required this.comments,
+      required this.currentUserLiked});
 
   Map<String, dynamic> toJson() => {
         'feedId': feedId,
@@ -67,32 +68,31 @@ class Feed {
       if (json['user']['userId'] == currentUserId) {
         authorThumbnail = json['user']['profilePicture'];
       } else {
-        authorThumbnail =
-            json['user']['identityId'] + '/' + json['user']['profilePicture'];
+        authorThumbnail = json['user']['profilePicture'];
+        // json['user']['identityId'] + '/' + json['user']['profilePicture'];
       }
     }
 
     return Feed(
-        feedId: json['feed']['feedId'],
-        media: json['feed']['media'],
-        hasImage: json['feed']['hasImage'],
-        imagePath: json['feed']['imagePath'],
-        hasVideo: json['feed']['hasVideo'],
-        videoPath: json['feed']['videoPath'],
-        mediaCaption: json['feed']['mediaCaption'],
-        hashTag: json['feed']['hashTag'],
-        name: json['feed']['name'],
-        content: json['feed']['content'],
-        postedAt: DateTime.parse(json['feed']['postedAt']),
-        status: json['feed']['status'],
-        author: json['user']['name'],
-        authorId: json['user']['userId'],
-        authorTitle: json['user']['title'],
-        authorThumbnail: authorThumbnail,
-        likes: json['likes'] ?? 0,
-        comments: json['comments'] ?? 0,
-        currentUserLiked: json['currentUserLiked'] ?? false,
-        );
-        
+      feedId: json['feed']['feedId'],
+      media: json['feed']['media'],
+      hasImage: json['feed']['hasImage'],
+      imagePath: json['feed']['imagePath'],
+      hasVideo: json['feed']['hasVideo'],
+      videoPath: json['feed']['videoPath'],
+      mediaCaption: json['feed']['mediaCaption'],
+      hashTag: json['feed']['hashTag'],
+      name: json['feed']['name'],
+      content: json['feed']['content'],
+      postedAt: DateTime.parse(json['feed']['postedAt']),
+      status: json['feed']['status'],
+      author: json['user']['name'],
+      authorId: json['user']['userId'],
+      authorTitle: json['user']['title'],
+      authorThumbnail: authorThumbnail,
+      likes: json['likes'] ?? 0,
+      comments: json['comments'] ?? 0,
+      currentUserLiked: json['currentUserLiked'] ?? false,
+    );
   }
 }

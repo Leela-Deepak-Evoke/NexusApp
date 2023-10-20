@@ -37,7 +37,8 @@ class OrgUpdate {
       required this.authorTitle,
       required this.authorThumbnail,
       required this.likes,
-      required this.comments, required this.currentUserLiked});
+      required this.comments,
+      required this.currentUserLiked});
 
   Map<String, dynamic> toJson() => {
         'orgUpdateId': orgUpdateId,
@@ -67,8 +68,8 @@ class OrgUpdate {
       if (json['user']['userId'] == currentUserId) {
         authorThumbnail = json['user']['profilePicture'];
       } else {
-        authorThumbnail =
-            json['user']['identityId'] + '/' + json['user']['profilePicture'];
+        authorThumbnail = json['user']['profilePicture'];
+        //json['user']['identityId'] + '/' + json['user']['profilePicture'];
       }
     }
 
@@ -90,8 +91,7 @@ class OrgUpdate {
         authorTitle: json['user']['title'],
         authorThumbnail: authorThumbnail,
         likes: json['likes'] ?? 0,
-        comments: json['comments'] ?? 0, 
-        currentUserLiked: json['currentUserLiked'] ?? false
-        );
+        comments: json['comments'] ?? 0,
+        currentUserLiked: json['currentUserLiked'] ?? false);
   }
 }

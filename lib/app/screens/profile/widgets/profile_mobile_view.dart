@@ -188,7 +188,7 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
     if (result is CognitoCompleteSignOut) {
       safePrint('Sign out completed successfully');
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.remove('token');
+      await prefs.remove('authToken');
 
       // widget.context.replaceNamed(AppRoute.login.name);
               // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(

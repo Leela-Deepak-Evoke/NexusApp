@@ -12,13 +12,14 @@ class CommentsMobileView extends ConsumerStatefulWidget {
   final Widget? headerCard;
   final String posttype;
   final String postId;
+final BuildContext? context; 
 
   const CommentsMobileView(
       {super.key,
       required this.user,
        this.headerCard,
       required this.posttype,
-      required this.postId});
+      required this.postId, this.context});
 
   @override
   ConsumerState<CommentsMobileView> createState() => _CommentsMobileViewState();
@@ -69,7 +70,8 @@ class _CommentsMobileViewState extends ConsumerState<CommentsMobileView> {
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
+    final tempContext = widget.context ?? context;
+    final Size size = MediaQuery.of(tempContext).size;
     var params = GetCommentsParams(
         userId: widget.user.userId,
         postId: widget.postId,

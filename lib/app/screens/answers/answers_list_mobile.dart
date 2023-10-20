@@ -7,6 +7,7 @@ import 'package:evoke_nexus_app/app/provider/comment_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/delete_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
+import 'package:evoke_nexus_app/app/screens/comments/comments_screen.dart';
 import 'package:evoke_nexus_app/app/screens/comments/widgets/comments_mobile_view.dart';
 import 'package:evoke_nexus_app/app/screens/create_post_answers/create_post_answer_screen.dart';
 import 'package:evoke_nexus_app/app/widgets/common/edit_delete_button.dart';
@@ -92,82 +93,86 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
                                 vertical: 8.0,
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   SizedBox(
                                     child: TextButton.icon(
-                                      onPressed: () => postLikeDislikeAction(
-                                          context, index, item, ref),
-                                      icon: Icon(
-                                        item.currentUserLiked
-                                            ? Icons.thumb_up
-                                            : Icons.thumb_up_alt_outlined,
-                                        color: Color(0xffF16C24),
-                                        size: 13,
-                                      ),
-                                      label: Text("")
-                                      // label: Text(
-                                      //   '${item.likes}',
-                                      //   style: TextStyle(
-                                      //     color: Color(0xffF16C24),
-                                      //     fontSize: 11.0,
-                                      //     fontFamily:
-                                      //         GoogleFonts.inter().fontFamily,
-                                      //     fontWeight: FontWeight.normal,
-                                      //   ),
-                                      // ),
-                                    ),
+                                        onPressed: () => postLikeDislikeAction(
+                                            context, index, item, ref),
+                                        icon: Icon(
+                                          item.currentUserLiked
+                                              ? Icons.thumb_up
+                                              : Icons.thumb_up_alt_outlined,
+                                          color: Color(0xffF16C24),
+                                          size: 13,
+                                        ),
+                                        label: Text("")
+                                        // label: Text(
+                                        //   '${item.likes}',
+                                        //   style: TextStyle(
+                                        //     color: Color(0xffF16C24),
+                                        //     fontSize: 11.0,
+                                        //     fontFamily:
+                                        //         GoogleFonts.inter().fontFamily,
+                                        //     fontWeight: FontWeight.normal,
+                                        //   ),
+                                        // ),
+                                        ),
                                   ),
                                   if (item.likes != 0)
-                                  TextButton.icon(
-                                    // <-- TextButton
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          var params = GetCommentsParams(
-                                              userId: widget.user.userId,
-                                              postId: item.answerId,
-                                              postType: "Answer");
+                                    TextButton.icon(
+                                      // <-- TextButton
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            var params = GetCommentsParams(
+                                                userId: widget.user.userId,
+                                                postId: item.answerId,
+                                                postType: "Answer");
 
-                                          return LikesWidget(
-                                              user: widget.user,
-                                              spaceName: "Answer",
-                                              spaceId: item.answerId,
-                                              params: params);
-                                        },
-                                      );
-                                    },
-                                    icon: Image.asset(
-                                      'assets/images/reactions.png',
-                                    ),
-                                    label: Text(
-                                      '${item.likes}',
-                                      style: TextStyle(
-                                        color: Color(0xff676A79),
-                                        fontSize: 12.0,
-                                        fontFamily:
-                                            GoogleFonts.notoSans().fontFamily,
-                                        fontWeight: FontWeight.normal,
+                                            return LikesWidget(
+                                                user: widget.user,
+                                                spaceName: "Answer",
+                                                spaceId: item.answerId,
+                                                params: params);
+                                          },
+                                        );
+                                      },
+                                      icon: Image.asset(
+                                        'assets/images/reactions.png',
+                                      ),
+                                      label: Text(
+                                        '${item.likes}',
+                                        style: TextStyle(
+                                          color: Color(0xff676A79),
+                                          fontSize: 12.0,
+                                          fontFamily:
+                                              GoogleFonts.notoSans().fontFamily,
+                                          fontWeight: FontWeight.normal,
+                                        ),
                                       ),
                                     ),
-                                  ),
                                   btnCommentsLayout(context, index, item, ref),
                                 ],
                               ),
                             ),
                             if (isCommentsVisibleList == index)
                               Visibility(
-                                  visible: isCommentsVisible,
-                                  child: Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.5,
-                                    child: CommentsMobileView(
-                                      user: widget.user,
-                                      postId: selectedItem?.answerId ?? '',
-                                      posttype: "Answer",
-                                    ),
-                                  )),
+                                visible: isCommentsVisible,
+                                child: navigateToCommentScreen(),
+
+                                // SizedBox(
+                                //   height: MediaQuery.of(context).size.height *
+                                //       0.5,
+                                //   child: CommentsMobileView(
+                                //     user: widget.user,
+                                //     postId: selectedItem?.answerId ?? '',
+                                //     posttype: "Answer",
+                                //   ),
+                                // )
+                              ),
                           ],
                         ),
                       ),
@@ -191,13 +196,28 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
     }
 
     if (answersAsyncValue is AsyncError) {
-      return ErrorScreen(showErrorMessage: true, onRetryPressed: retry);
+      return ErrorScreen(showErrorMessage: true, onRetryPressed: retry); //
 
       // return Text('An error occurred: ${answersAsyncValue.error}');
     }
 
     // This should ideally never be reached, but it's here as a fallback.
     return const SizedBox.shrink();
+  }
+
+  // Create a function for navigation
+  Widget navigateToCommentScreen() {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.5,
+      child: CommentsMobileView(
+        user: widget.user,
+        postId: selectedItem?.answerId ?? '',
+        posttype: "Answer",
+          context: context,
+
+      ),
+    );
+    
   }
 
   Future<void> _onRefresh() async {
@@ -272,81 +292,6 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
                       ),
                     ),
                     PopupMenuItem<String>(
-                      value: 'Delete',
-                      child: DeleteButton(
-                        onPressed: () {
-                          _deleteItem(item); // Call the delete function
-                        },
-                      ),
-                    ),
-                  ];
-                },
-              ),
-            )
-        ],
-      ),
-    );
-  }
-
-  Widget askedbyViewHeader_OLD(Answer item, WidgetRef ref) {
-    bool isCurrentUser = item.authorId == widget.user.userId;
-
-    return Padding(
-      padding: EdgeInsets.all(10),
-      child: Wrap(
-        direction: Axis.horizontal,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 2,
-        children: [
-          _profilePicWidget(item, ref),
-          const SizedBox(
-            width: 5,
-          ),
-          Text("Asked by",
-              style: TextStyle(
-                color: Color(0xff676A79),
-                fontSize: 12.0,
-                fontFamily: GoogleFonts.notoSans().fontFamily,
-                fontWeight: FontWeight.normal,
-              )),
-          Text(item.author ?? "",
-              style: TextStyle(
-                color: Color(0xff676A79),
-                fontSize: 12.0,
-                fontFamily: GoogleFonts.notoSans().fontFamily,
-                fontWeight: FontWeight.normal,
-              )),
-          if (isCurrentUser)
-            Container(
-              width: 30, // Adjust the width as needed
-              child: PopupMenuButton<String>(
-                //  padding: const EdgeInsets.only(left: 50, right: 0),
-
-                icon: const Icon(
-                  Icons.more_vert,
-                ),
-                onSelected: (String choice) {
-                  // Handle button selection here
-                  if (choice == 'Edit') {
-                    _editItem(item); // Call the edit function
-                  } else if (choice == 'Delete') {
-                    _deleteItem(item); // Call the delete function
-                  }
-                },
-                itemBuilder: (BuildContext context) {
-                  return <PopupMenuEntry<String>>[
-                    PopupMenuItem<String>(
-                      // padding: const EdgeInsets.only(left: 50, right: 0),
-
-                      value: 'Edit',
-                      child: EditButton(
-                        onPressed: () {
-                          _editItem(item); // Call the edit function
-                        },
-                      ),
-                    ),
-                    PopupMenuItem<String>(
-                      // padding: const EdgeInsets.only(left: 50, right: 0),
                       value: 'Delete',
                       child: DeleteButton(
                         onPressed: () {

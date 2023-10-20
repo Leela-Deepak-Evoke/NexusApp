@@ -131,7 +131,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    feedController.text = widget.feedItem?.content ?? feedController.text ;
+    feedController.text = widget.feedItem?.content ?? feedController.text ; //set indition for edit (isedit)
     return Padding(
         padding: const EdgeInsets.only(top: 0),
         child: SingleChildScrollView(

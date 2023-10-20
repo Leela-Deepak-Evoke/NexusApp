@@ -38,7 +38,7 @@ Future<void> signOutCurrentUser() async {
   final result = await Amplify.Auth.signOut();
   if (result is CognitoCompleteSignOut) {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('token');
+    await prefs.remove('authToken');
     safePrint('Sign out completed successfully');
   } else if (result is CognitoFailedSignOut) {
     safePrint('Error signing user out: ${result.exception.message}');

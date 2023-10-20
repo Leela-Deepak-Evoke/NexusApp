@@ -353,11 +353,11 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
                   var params = GetCommentsParams(
                       userId: widget.user.userId,
                       postId: item.orgUpdateId,
-                      postType: "OrgUpdates");
+                      postType: "OrgUpdate");
 
                   return LikesWidget(
                       user: widget.user,
-                      spaceName: "OrgUpdates",
+                      spaceName: "OrgUpdate",
                       spaceId: item.orgUpdateId,
                       params: params);
                 },

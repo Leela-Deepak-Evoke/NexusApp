@@ -208,6 +208,7 @@ class _CommentsListMobileViewState
                                             value: 'Edit',
                                             child: EditButton(
                                               onPressed: () {
+                                                Navigator.pop(context);
                                                 _editItem(
                                                     item); // Call the edit function
                                               },
@@ -217,6 +218,7 @@ class _CommentsListMobileViewState
                                             value: 'Delete',
                                             child: DeleteButton(
                                               onPressed: () {
+                                                Navigator.pop(context);
                                                 _deleteItem(
                                                     item); // Call the delete function
                                               },

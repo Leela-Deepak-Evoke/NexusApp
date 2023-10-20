@@ -90,7 +90,7 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
     final avatarText = getAvatarText(user.name);
 
     final profileThumbnailAsyncValue =
-        ref.watch(profileThumbnailProvider(user.profilePicture!));
+        ref.watch(profileThumbnailProvider(user.profilePicture ?? ""));
 
     return profileThumbnailAsyncValue.when(
       data: (data) {

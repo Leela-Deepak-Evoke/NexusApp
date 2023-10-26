@@ -9,8 +9,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CreatePostFeedScreenSmall extends ConsumerStatefulWidget {
      Feed? feedItem; // Add a parameter for the Feed item
+   bool? isEditFeed;
 
-  CreatePostFeedScreenSmall({Key? key,  this.feedItem}) : super(key: key);
+  CreatePostFeedScreenSmall({Key? key,  this.feedItem, this.isEditFeed}) : super(key: key);
 
 
   // const CreatePostFeedScreenSmall({super.key});
@@ -23,6 +24,7 @@ class _CreatePostFeedScreenSmallState extends ConsumerState<CreatePostFeedScreen
   @override
   Widget build(BuildContext context) {
         final feedItem = widget.feedItem;
+         final isEditFeed = widget.isEditFeed;
 
     String rightActionTitle = 'Select Category';
       GlobalKey<PostFeedsMobileViewState> childKey = GlobalKey();
@@ -46,7 +48,7 @@ class _CreatePostFeedScreenSmallState extends ConsumerState<CreatePostFeedScreen
             childKey.currentState?.onCategorySelected();
           }
           , title: rightActionTitle),
-          child: PostFeedsMobileView(key: childKey, user: data,slectedCategory:  rightActionTitle, feedItem: feedItem),
+          child: PostFeedsMobileView(key: childKey, user: data,slectedCategory:  rightActionTitle, feedItem: feedItem, isEditFeed: isEditFeed),
 
         );
   }, 

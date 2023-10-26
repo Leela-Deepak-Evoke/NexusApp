@@ -25,12 +25,14 @@ class PostFeedsMobileView extends ConsumerStatefulWidget {
   final User user;
   final String slectedCategory;
   final Feed? feedItem;
+  final bool? isEditFeed;
 
   const PostFeedsMobileView(
       {super.key,
       required this.user,
       required this.slectedCategory,
-      this.feedItem});
+      this.feedItem,
+      this.isEditFeed});
 
   @override
   PostFeedsMobileViewState createState() => PostFeedsMobileViewState();
@@ -96,6 +98,9 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   @override
   void initState() {
     super.initState();
+    if (widget.isEditFeed == true) {
+      feedController.text = widget.feedItem?.content ?? feedController.text;
+    }
   }
 
   _selectFile(ContentType type) {
@@ -131,7 +136,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    feedController.text = widget.feedItem?.content ?? feedController.text ; //set indition for edit (isedit)
+    feedController.text = feedController.text;
     return Padding(
         padding: const EdgeInsets.only(top: 0),
         child: SingleChildScrollView(
@@ -377,48 +382,49 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   // IMAGE Content
   Widget imagePickerContent(Size size) {
     return SizedBox(
-      height: size.height - 600,
-      //color: Colors.green,
-      child: 
-      // Expanded(
-      //     child: 
-          Padding(
-              padding: const EdgeInsets.all(0),
-              child: GridView.builder(
-                  itemCount: fileList.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 1),
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Stack(
-                        //alignment: Alignment.topRight,
-                        children: [
-                          // SizedBox(
-                          //   height: 100,
-                          //   width: 100,
-                          //   child: Image.file(File(imageFileList![index].path), fit: BoxFit.cover),
-                          // ),
+        height: size.height - 600,
+        //color: Colors.green,
+        child:
+            // Expanded(
+            //     child:
+            Padding(
+                padding: const EdgeInsets.all(0),
+                child: GridView.builder(
+                    itemCount: fileList.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 1),
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Stack(
+                          //alignment: Alignment.topRight,
+                          children: [
+                            // SizedBox(
+                            //   height: 100,
+                            //   width: 100,
+                            //   child: Image.file(File(imageFileList![index].path), fit: BoxFit.cover),
+                            // ),
 
-                          returnFileContainer(index),
-                          Positioned(
-                              top: -10,
-                              right: 1,
-                              child: IconButton(
-                                onPressed: () {
-                                  dltImages(fileList[index]);
-                                },
-                                icon: const Icon(
-                                  Icons.cancel,
-                                  color: AppColors.blueTextColour,
-                                ),
-                              ))
-                        ],
-                      ),
-                    );
-                  }))
-                  // ),
-    );
+                            returnFileContainer(index),
+                            Positioned(
+                                top: -10,
+                                right: 1,
+                                child: IconButton(
+                                  onPressed: () {
+                                    dltImages(fileList[index]);
+                                  },
+                                  icon: const Icon(
+                                    Icons.cancel,
+                                    color: AppColors.blueTextColour,
+                                  ),
+                                ))
+                          ],
+                        ),
+                      );
+                    }))
+        // ),
+        );
   }
 
   // VIDEO Content
@@ -579,8 +585,11 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   }
 
   void _handleSubmit(PostFeedParams params, WidgetRef ref) async {
-    await ref.read(postFeedProvider(params).future);
-    //  showMessage('Feed posted successfully');
+    if (widget.isEditFeed == true) {
+      await ref.read(editFeedProvider(params).future);
+    } else {
+      await ref.read(postFeedProvider(params).future);
+    }
     Navigator.pop(context);
     _resetValues();
   }
@@ -604,12 +613,12 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
         onPressed: () {
           if (feedController == null || feedController.value.text.isEmpty) {
             showMessage('Please share your thoughts');
-          } 
+          }
           // else if (hashTagController == null ||
           //     hashTagController.value.text.isEmpty) {
           //   showMessage('Please add hashtag');
           // }
-           else {
+          else {
             if (isMediaSelect == false) {
               createPostWithoutAttachment();
             } else {
@@ -633,8 +642,9 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     final feedId = const Uuid().v4();
     final params = PostFeedParams(
         userId: widget.user.userId,
-        feedId: feedId,
-        content: feedController.text,
+        feedId: widget.isEditFeed == true ? widget.feedItem?.feedId ?? feedId : feedId,
+        content: feedController
+            .text, //widget.isEditFeed == true ? widget.feedItem?.content :
         category: (selectedIndex != null)
             ? checkListItems[selectedIndex ?? 0]
             : "General Feed",
@@ -648,7 +658,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     final feedId = const Uuid().v4();
     final params = PostFeedParams(
       userId: widget.user.userId,
-      feedId: feedId,
+      feedId: widget.isEditFeed == true ? widget.feedItem?.feedId ?? feedId : feedId,
       content: feedController.text,
       media: isMediaSelect,
       hasImage: isImageSelect,

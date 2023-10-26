@@ -442,7 +442,8 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
         context,
         MaterialPageRoute(
           fullscreenDialog: true,
-          builder: (context) => CreatePostFeedScreen(feedItem: item),
+          // builder: (context) => CreatePostFeedScreen(feedItem: item),
+          builder: (context) => CreatePostFeedScreen(feedItem: item, isEditFeed: true),
         ),
       );
     });

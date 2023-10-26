@@ -7,13 +7,13 @@ import 'package:evoke_nexus_app/app/screens/responsive/responsive_layout.dart';
 
 class CreatePostFeedScreen extends StatelessWidget {
    Feed? feedItem; // Remove the const keyword
-
-   CreatePostFeedScreen({Key? key, this.feedItem}) : super(key: key);
+   bool? isEditFeed;
+   CreatePostFeedScreen({Key? key, this.feedItem, this.isEditFeed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ResponsiveLayout(
-      smallScreenLayout: CreatePostFeedScreenSmall(feedItem: feedItem),
+      smallScreenLayout: CreatePostFeedScreenSmall(feedItem: feedItem, isEditFeed: isEditFeed),
       mediumScreenLayout: CreatePostFeedScreenMedium(),
       largeScreenLayout: CreatePostFeedScreenLarge(),
     );

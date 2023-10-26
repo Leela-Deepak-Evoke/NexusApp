@@ -36,6 +36,13 @@ final postFeedProvider =
   ref.invalidate(feedsProvider);
 });
 
+final editFeedProvider =
+    FutureProvider.family<void, PostFeedParams>((ref, params) async {
+  final feedService = ref.watch(feedServiceProvider);
+  await feedService.editFeed(params);
+  ref.invalidate(feedsProvider);
+});
+
 final postlikeDislikeProvider = FutureProvider.autoDispose
     .family<bool, PostLikeDislikeParams>((ref, params) async {
   final likeService = ref.watch(feedServiceProvider);

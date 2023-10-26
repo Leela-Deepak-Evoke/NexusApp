@@ -24,6 +24,8 @@ class FeedService {
         final response = await restOperation.response;
         if (response.statusCode == 200) {
           final jsonResponse = json.decode(response.decodeBody());
+          print(jsonResponse);
+safePrint(jsonResponse);
           if (jsonResponse is List) {
             return jsonResponse
                 .map((feedJson) => Feed.fromJson(feedJson, user.userId))
@@ -195,6 +197,56 @@ class FeedService {
         );
         final response = await restOperation.response;
         if (response.statusCode == 200) {
+          return;
+        } else {
+          throw Exception('Failed to load data');
+        }
+      } else {
+        throw Exception('Failed to load token');
+      }
+    } on AuthException catch (e) {
+      safePrint('Error retrieving auth session: ${e.message}');
+      rethrow;
+    } on ApiException catch (e) {
+      safePrint('POST call failed: $e');
+      rethrow;
+    }
+  }
+
+
+  Future<void> editFeed(PostFeedParams params) async {
+    try {
+      safePrint('Inside edit feed');
+      final payload = {
+        "user": {"userId": params.userId},
+        "feed": {
+          "feedId": params.feedId,
+          "content": params.content,
+          "category": params.category,
+          "media": params.media,
+          "hasImage": params.hasImage,
+          "imagePath": params.imagePath,
+          "hasVideo": params.hasVideo,
+          "videoPath": params.videoPath,
+          "mediaCaption": params.mediaCaption,
+          "hashTag": params.hashTag
+        }
+      };
+      safePrint('Payload: $payload');
+      final prefs = await SharedPreferences.getInstance();
+      final authToken = prefs.getString('authToken');
+      if (authToken != null) {
+        safePrint('authToken: $authToken');
+        final restOperation = Amplify.API.post(
+          'editfeed', //  /postfeed  and /editfeed 
+          body: HttpPayload.json(payload),
+          headers: {'Authorization': authToken},
+        );
+        final response = await restOperation.response;
+        if (response.statusCode == 200) {
+          final jsonResponse = json.decode(response.decodeBody());
+          print(jsonResponse);
+          safePrint(jsonResponse);
           return;
         } else {
           throw Exception('Failed to load data');

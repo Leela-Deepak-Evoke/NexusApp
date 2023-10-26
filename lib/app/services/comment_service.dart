@@ -53,7 +53,7 @@ class CommentService {
       final result = await Amplify.Storage.getUrl(
         key: key,
         options: const StorageGetUrlOptions(
-          accessLevel: StorageAccessLevel.protected,
+          accessLevel: StorageAccessLevel.guest, //protected,
         ),
       ).result;
       //print("S3 result");

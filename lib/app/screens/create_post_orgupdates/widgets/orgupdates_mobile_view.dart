@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:evoke_nexus_app/app/models/feed.dart';
+import 'package:evoke_nexus_app/app/models/org_updates.dart';
 import 'package:evoke_nexus_app/app/models/post_feed_params.dart';
 import 'package:evoke_nexus_app/app/models/post_org_update_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
+import 'package:evoke_nexus_app/app/provider/get_categories_provider.dart';
 import 'package:evoke_nexus_app/app/provider/org_update_service_provider.dart';
 import 'package:evoke_nexus_app/app/services/feed_service.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
@@ -26,17 +28,18 @@ enum ContentType {
 class OrgUpdatesMobileView extends ConsumerStatefulWidget {
   final User user;
   final String slectedCategory;
-  final Feed? feedItem;
+  final OrgUpdate? orgUpdateItem;
 
   const OrgUpdatesMobileView(
       {super.key,
       required this.user,
       required this.slectedCategory,
-      this.feedItem});
+      this.orgUpdateItem});
 
   @override
   OrgUpdatesMobileViewMobileViewState createState() => OrgUpdatesMobileViewMobileViewState();
 }
+
 
 class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobileView> {
   String? uploadedFilePath;
@@ -80,16 +83,8 @@ class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobile
   }
 
   //Categories Static Array
-  final List<String> checkListItems = [
-    'Java Practice',
-    'Microsoft Practice',
-    'CSC Practice',
-    'Pega Practice',
-    'Personal Assistant',
-    'UI Practice',
-    'Flutter Practice',
-    'iOS Practice',
-  ];
+  List<String> checkListItems = [];
+
 
 //Video
   VideoPlayerController? _videoPlayerController;
@@ -132,8 +127,25 @@ class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobile
 
   @override
   Widget build(BuildContext context) {
+       final categoryAsyncValue = ref.watch(categoriesProviderorgUpdates);
+    if (categoryAsyncValue is AsyncData<List<String>>) {
+      final orgUpdatesCategoryList = categoryAsyncValue;
+      checkListItems = orgUpdatesCategoryList.value;
+    }
+
+    if (categoryAsyncValue is AsyncLoading) {
+       const Center(
+        child: SizedBox(
+          height: 50.0,
+          width: 50.0,
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+
     final Size size = MediaQuery.of(context).size;
-    feedController.text = widget.feedItem?.content ?? "" ;
+    feedController.text = widget.orgUpdateItem?.content ?? "" ;
     return Padding(
         padding: const EdgeInsets.only(top: 0),
         child: SingleChildScrollView(
@@ -155,6 +167,7 @@ class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobile
                         //   height: 5,
                         // ),
 
+  categoryHearViewWidget(),
                         //Share your thoughts
                         feedsDescriptionUI(),
 

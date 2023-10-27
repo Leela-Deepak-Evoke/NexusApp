@@ -1,29 +1,26 @@
-
 import 'dart:convert';
-import 'package:evoke_nexus_app/app/models/categories.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:evoke_nexus_app/app/models/post_feed_params.dart';
+import 'package:evoke_nexus_app/app/models/categories.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CategoriesService {
+  // Future<Categories> getCategories() async {
+      Future<Map<String, dynamic>> getCategories() async {
 
-Future<void> getCategories() async {
-     try {
-      final userPayload = {
-      };
+    try {
       final prefs = await SharedPreferences.getInstance();
       final authToken = prefs.getString('authToken');
       if (authToken != null) {
-        final restOperation = Amplify.API.post(
+        final restOperation = Amplify.API.get(
           'getcategories',
-          body: HttpPayload.json(userPayload),
           headers: {'Authorization': authToken},
         );
         final response = await restOperation.response;
         if (response.statusCode == 200) {
           final jsonResponse = json.decode(response.decodeBody());
-          print(jsonResponse);
-          return;
+           print(jsonResponse);
+
+          return jsonResponse;
         } else {
           throw Exception('Failed to load data');
         }
@@ -37,6 +34,9 @@ Future<void> getCategories() async {
       safePrint('POST call failed: $e');
       rethrow;
     }
+  }
 }
 
-}
+
+  // final categories = Categories.fromJson(jsonResponse);
+          // print(categories);

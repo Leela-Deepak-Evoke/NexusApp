@@ -1,7 +1,10 @@
 import 'dart:io';
+import 'package:evoke_nexus_app/app/models/categories.dart';
 import 'package:evoke_nexus_app/app/models/post_question_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
+import 'package:evoke_nexus_app/app/provider/get_categories_provider.dart';
+import 'package:evoke_nexus_app/app/widgets/common/error_screen.dart';
 import 'package:evoke_nexus_app/app/widgets/common/generic_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,13 +31,12 @@ class PostForumMobileView extends ConsumerStatefulWidget {
 }
 
 class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
-
   @override
   void setState(VoidCallback fn) {
     // TODO: implement setState
     super.setState(fn);
-    
   }
+
   // TextEditingController txtShareThoughts = TextEditingController();
   String? uploadedFilePath;
   final TextEditingController hashTagController = TextEditingController();
@@ -51,7 +53,7 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
   int? selectedIndex;
   List<XFile>? imageFileList = [];
   List<File>? _selectedPostImages;
-  
+
   String selectedCategory = "General";
   List<File>? get selectedPostImages => _selectedPostImages;
   String contentTypeSelected = "";
@@ -72,16 +74,7 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
   }
 
 //Categories Static Array
-  final List<String> checkListItems = [
-    'Java Practice',
-    'Microsoft Practice',
-    'CSC Practice',
-    'Pega Practice',
-    'Personal Assistant',
-    'UI Practice',
-    'Flutter Practice',
-    'iOS Practice',
-  ];
+  List<String> checkListItems = [];
 
 //Video
   VideoPlayerController? _videoPlayerController;
@@ -124,6 +117,26 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
 
   @override
   Widget build(BuildContext context) {
+       final categoryAsyncValue = ref.watch(categoriesProviderQuestion);
+    if (categoryAsyncValue is AsyncData<List<String>>) {
+      final questionsList = categoryAsyncValue;
+      print('Questions: $questionsList ');
+      checkListItems = questionsList.value;
+    }
+
+    if (categoryAsyncValue is AsyncLoading) {
+       const Center(
+        child: SizedBox(
+          height: 50.0,
+          width: 50.0,
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (categoryAsyncValue is AsyncError) {
+       Text('An error occurred: ${categoryAsyncValue.error}');
+    }
     final Size size = MediaQuery.of(context).size;
     return Padding(
         padding: const EdgeInsets.only(top: 0),
@@ -139,8 +152,7 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
                   padding: const EdgeInsets.all(0),
                   child: Card(
                     child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         categoryHearViewWidget(),
                         //Share your thoughts
@@ -157,7 +169,7 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
                         ),
 
                         //SELECT PHOTOS/VIDEOS/
-                      //  attchmentFileButtons(context, ref),
+                        //  attchmentFileButtons(context, ref),
                         const SizedBox(
                           height: 10,
                         )
@@ -181,8 +193,7 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
   Widget feedsDescriptionUI() {
     return Column(
       children: [
-       
-       //COMMENTED QUESTION TITLE
+        //COMMENTED QUESTION TITLE
         // Padding(
         //   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
         //   child: Row(
@@ -212,16 +223,15 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
         //   height: 1,
         // ),
 
-         Padding(
+        Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Expanded(
                   child: TextFormField(
-                validator: (value) => value!.isEmpty
-                    ? 'Question field cannot be blank'
-                    : null,
+                validator: (value) =>
+                    value!.isEmpty ? 'Question field cannot be blank' : null,
                 controller: feedController,
                 textInputAction: TextInputAction.done,
                 maxLines: null,
@@ -357,51 +367,50 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
 
   // IMAGE Content
   Widget imagePickerContent(Size size) {
-     return SizedBox(
-      height: size.height - 600,
-      //color: Colors.green,
-      child: 
-      // Expanded(
-      //     child:
-          Padding(
-              padding: const EdgeInsets.all(0),
-              child: GridView.builder(
-                  itemCount: fileList.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 1),
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Stack(
-                        //alignment: Alignment.topRight,
-                        children: [
-                          // SizedBox(
-                          //   height: 100,
-                          //   width: 100,
-                          //   child: Image.file(File(imageFileList![index].path), fit: BoxFit.cover),
-                          // ),
+    return SizedBox(
+        height: size.height - 600,
+        //color: Colors.green,
+        child:
+            // Expanded(
+            //     child:
+            Padding(
+                padding: const EdgeInsets.all(0),
+                child: GridView.builder(
+                    itemCount: fileList.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 1),
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Stack(
+                          //alignment: Alignment.topRight,
+                          children: [
+                            // SizedBox(
+                            //   height: 100,
+                            //   width: 100,
+                            //   child: Image.file(File(imageFileList![index].path), fit: BoxFit.cover),
+                            // ),
 
-
-                          returnFileContainer(index),
-                          Positioned(
-                              top: -10,
-                              right: 1,
-                              child: IconButton(
-                                onPressed: () {
-                                  dltImages(fileList[index]);
-                                },
-                                icon: const Icon(
-                                  Icons.cancel,
-                                  color: AppColors.blueTextColour,
-                                ),
-                              ))
-                        ],
-                      ),
-                    );
-                  })
-                  )
-                  // ),
-    );
+                            returnFileContainer(index),
+                            Positioned(
+                                top: -10,
+                                right: 1,
+                                child: IconButton(
+                                  onPressed: () {
+                                    dltImages(fileList[index]);
+                                  },
+                                  icon: const Icon(
+                                    Icons.cancel,
+                                    color: AppColors.blueTextColour,
+                                  ),
+                                ))
+                          ],
+                        ),
+                      );
+                    }))
+        // ),
+        );
   }
 
   // VIDEO Content
@@ -460,36 +469,38 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
   imageAttachment() async {
     final feedId = const Uuid().v4();
 
-    Map<String, dynamic>? resultFileName = await feedService.uploadMedia(feedId, 'Image');
+    Map<String, dynamic>? resultFileName =
+        await feedService.uploadMedia(feedId, 'Image');
     if (resultFileName != null) {
       setState(() {
         isMediaSelect = true;
         isImageSelect = true;
         isVideoSelect = false;
-         uploadedFilePath = resultFileName["platformFilePath"];
-        uploadedFileName =  resultFileName["mediaPath"];
+        uploadedFilePath = resultFileName["platformFilePath"];
+        uploadedFileName = resultFileName["mediaPath"];
       });
-       fileList.add(uploadedFilePath.toString());
-
-    };
+      fileList.add(uploadedFilePath.toString());
+    }
+    ;
   }
 
   videoAttachment() async {
     final feedId = const Uuid().v4();
-    Map<String, dynamic>? resultFileName = await feedService.uploadMedia(feedId, 'Video');
+    Map<String, dynamic>? resultFileName =
+        await feedService.uploadMedia(feedId, 'Video');
     if (resultFileName != null) {
       setState(() {
         isMediaSelect = true;
         isImageSelect = false;
         isVideoSelect = true;
-       uploadedFilePath = resultFileName["platformFilePath"];
-        uploadedFileName =  resultFileName["mediaPath"];
+        uploadedFilePath = resultFileName["platformFilePath"];
+        uploadedFileName = resultFileName["mediaPath"];
       });
-        initializeVideo(uploadedFilePath.toString());
+      initializeVideo(uploadedFilePath.toString());
     }
   }
 
-void initializeVideo(String url) {
+  void initializeVideo(String url) {
     _videoPlayerController = VideoPlayerController.file(File(url))
       ..initialize().then((_) {
         _videoPlayerController!.setVolume(0);
@@ -498,19 +509,16 @@ void initializeVideo(String url) {
       });
   }
 
-
- Widget returnFileContainer(int index) {
+  Widget returnFileContainer(int index) {
     if (!fileList[index].contains('mp4')) {
       return Padding(
           padding: const EdgeInsets.only(top: 10, right: 10),
-             child: Image.file(File(uploadedFilePath ?? ""),
-                  fit: BoxFit.cover)
-          );
+          child: Image.file(File(uploadedFilePath ?? ""), fit: BoxFit.cover));
     } else {
       return FittedBox(
           fit: BoxFit.cover,
           child: Padding(
-             padding: const EdgeInsets.only(top: 10, right: 10),
+            padding: const EdgeInsets.only(top: 10, right: 10),
             // width: 100,
             // height: 100,
             child: VideoPlayer(_videoPlayerController!),
@@ -520,9 +528,8 @@ void initializeVideo(String url) {
 
   void _removeVideo() {
     _resetValues();
-     
-        _videoPlayerController = null;
 
+    _videoPlayerController = null;
   }
 
   void _updateFilePath(String path) {
@@ -537,7 +544,7 @@ void initializeVideo(String url) {
       feedController.clear();
       hashTagController.clear();
       mediaCaptionController.clear();
-       _videoPlayerController!.dispose();
+      _videoPlayerController!.dispose();
       // dropdownValue = 'General Feed';
     });
   }
@@ -545,10 +552,9 @@ void initializeVideo(String url) {
   void _handleSubmit(PostQuestionParams params, WidgetRef ref) async {
     await ref.read(postQuestionProvider(params).future);
     //  showMessage('Feed posted successfully');
-      Navigator.pop(context);
-       _resetValues();
+    Navigator.pop(context);
+    _resetValues();
   }
-
 
 // POST BUTTON
   Widget btnPost(Size size) {
@@ -569,12 +575,12 @@ void initializeVideo(String url) {
         onPressed: () {
           if (feedController == null || feedController.value.text.isEmpty) {
             showMessage('Question field should not be empty.');
-          } 
+          }
           // else if (hashTagController == null ||
           //     hashTagController.value.text.isEmpty) {
           //   showMessage('Please add hashtag');
           // }
-           else {
+          else {
             createPost();
           }
         },
@@ -592,17 +598,17 @@ void initializeVideo(String url) {
 
   createPost() async {
     final questionId = const Uuid().v4();
-   final params = PostQuestionParams(
-         name: 'Question',
-         userId: widget.user.userId,
-         questionId: questionId,
-         content: feedController.text,
-         hasImage: false,
-         subCategory: "",
-          category: (selectedIndex != null)
-            ? checkListItems[selectedIndex ?? 0] 
-            : selectedCategory,
-   );
+    final params = PostQuestionParams(
+      name: 'Question',
+      userId: widget.user.userId,
+      questionId: questionId,
+      content: feedController.text,
+      hasImage: false,
+      subCategory: "",
+      category: (selectedIndex != null)
+          ? checkListItems[selectedIndex ?? 0]
+          : selectedCategory,
+    );
     // final params = PostQuestionParams(
     //   userId: widget.user.userId,
     //   feedId: feedId,
@@ -616,11 +622,9 @@ void initializeVideo(String url) {
     //   category: 'General Feed',
     // );
     _handleSubmit(params, ref);
-    
-   
   }
 
-void dltImages(data) {
+  void dltImages(data) {
     showDialog(
         context: context,
         builder: (context) {
@@ -632,9 +636,9 @@ void dltImages(data) {
                 onPressed: () {
                   Navigator.pop(context);
                   _resetValues();
-                   setState(() {
-                  fileList.remove(data);
-                });
+                  setState(() {
+                    fileList.remove(data);
+                  });
                 },
                 child: const Text('OK'),
               ),
@@ -648,7 +652,6 @@ void dltImages(data) {
           );
         });
   }
-  
 
 //Validation
   void showMessage(String text) {
@@ -656,7 +659,7 @@ void dltImages(data) {
         context: context,
         builder: (context) {
           return AlertDialog(
-             content: Text(text),
+            content: Text(text),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
@@ -673,7 +676,10 @@ void dltImages(data) {
         });
   }
 
-  void onCategorySelected() {_showBottomSheet(context);}
+  void onCategorySelected() {
+   
+    _showBottomSheet(context);
+  }
 
   void _handleCategorySelected(int? categoryIndex) {
     if (categoryIndex != null) {
@@ -681,18 +687,20 @@ void dltImages(data) {
       print('Selected category: $categoryIndex');
       selectedIndex = categoryIndex;
 
-  setState(() {
-    selectedIndex = categoryIndex;
-      if (categoryIndex != null) {
+      setState(() {
         selectedIndex = categoryIndex;
-        // selectedCategories.add(categories[index]);
-      }
-      // selectedIndex = categoryIndex;
-    });
+        if (categoryIndex != null) {
+          selectedIndex = categoryIndex;
+          // selectedCategories.add(categories[index]);
+        }
+        // selectedIndex = categoryIndex;
+      });
     }
   }
 
   void _showBottomSheet(BuildContext context) {
+    
+    
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -732,9 +740,9 @@ void dltImages(data) {
               onChanged: (value) {
                 setState(() {
                   selectedIndex = index;
-                                      _handleCategorySelected(selectedIndex);
+                  _handleCategorySelected(selectedIndex);
 
-                   Navigator.of(context).pop();
+                  Navigator.of(context).pop();
                 });
               },
             );
@@ -742,7 +750,7 @@ void dltImages(data) {
         ));
   }
 
- Widget categoryHearViewWidget() {
+  Widget categoryHearViewWidget() {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
         child: Wrap(
@@ -756,8 +764,8 @@ void dltImages(data) {
               ),
               Text(
                 (selectedIndex != null)
-            ? checkListItems[selectedIndex ?? 0] 
-            : selectedCategory,
+                    ? checkListItems[selectedIndex ?? 0]
+                    : selectedCategory,
                 style: TextStyle(
                   color: Color(0xffB54242),
                   fontSize: 12.0,

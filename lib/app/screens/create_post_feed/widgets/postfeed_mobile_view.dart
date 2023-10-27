@@ -4,6 +4,7 @@ import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/models/post_feed_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
+import 'package:evoke_nexus_app/app/provider/get_categories_provider.dart';
 import 'package:evoke_nexus_app/app/services/feed_service.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/generic_bottom_sheet.dart';
@@ -80,16 +81,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   }
 
   //Categories Static Array
-  final List<String> checkListItems = [
-    'Java Practice',
-    'Microsoft Practice',
-    'CSC Practice',
-    'Pega Practice',
-    'Personal Assistant',
-    'UI Practice',
-    'Flutter Practice',
-    'iOS Practice',
-  ];
+  List<String> checkListItems = [];
 
 //Video
   VideoPlayerController? _videoPlayerController;
@@ -135,6 +127,23 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
 
   @override
   Widget build(BuildContext context) {
+      final categoryAsyncValue = ref.watch(categoriesProviderFeed);
+    if (categoryAsyncValue is AsyncData<List<String>>) {
+      final feedsCategoryList = categoryAsyncValue;
+      checkListItems = feedsCategoryList.value;
+    }
+
+    if (categoryAsyncValue is AsyncLoading) {
+       const Center(
+        child: SizedBox(
+          height: 50.0,
+          width: 50.0,
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+
     final Size size = MediaQuery.of(context).size;
     feedController.text = feedController.text;
     return Padding(

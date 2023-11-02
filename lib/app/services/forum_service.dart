@@ -210,6 +210,52 @@ class ForumService {
     }
   }
 
+
+  Future<void> editForum(PostQuestionParams params) async {
+    try {
+      safePrint('Inside edit forum');
+    final payload = {
+        "user": {"userId": params.userId},
+        "question": {
+          "questionId": params.questionId,
+          "content": params.content,
+          "hasImage": params.hasImage,
+          "imagePath": params.imagePath,
+          "category": params.category,
+          "subCategory": params.subCategory
+        }
+      };
+      safePrint('Payload: $payload');
+      final prefs = await SharedPreferences.getInstance();
+      final authToken = prefs.getString('authToken');
+      if (authToken != null) {
+        safePrint('authToken: $authToken');
+        final restOperation = Amplify.API.post(
+          'editquestion', //  /postfeed  and /editfeed 
+          body: HttpPayload.json(payload),
+          headers: {'Authorization': authToken},
+        );
+        final response = await restOperation.response;
+        if (response.statusCode == 200) {
+          final jsonResponse = json.decode(response.decodeBody());
+          print(jsonResponse);
+          safePrint(jsonResponse);
+          return;
+        } else {
+          throw Exception('Failed to load data');
+        }
+      } else {
+        throw Exception('Failed to load token');
+      }
+    } on AuthException catch (e) {
+      safePrint('Error retrieving auth session: ${e.message}');
+      rethrow;
+    } on ApiException catch (e) {
+      safePrint('POST call failed: $e');
+      rethrow;
+    }
+  }
+
   Future<void> postAnswer(PostAnswerParams params) async {
     try {
       safePrint('Inside post forum');

@@ -35,6 +35,13 @@ final postOrgUpdateProvider = FutureProvider.autoDispose
 
 });
 
+final editOrgUpdateProvider =
+    FutureProvider.family<void, PostOrgUpdateParams>((ref, params) async {
+  final feedService = ref.watch(orgUpdateServiceProvider);
+  await feedService.editOrgUpdate(params);
+  ref.invalidate(orgUpdatesProvider);
+});
+
 
 final refresOrgUpdatesProvider =
     FutureProvider.autoDispose.family<bool, String>((ref, user) async {

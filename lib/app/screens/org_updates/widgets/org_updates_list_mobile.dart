@@ -82,7 +82,7 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
                                   fontWeight: FontWeight.normal,
                                 ),
                               ),
-                               trailing: isCurrentUser && (widget.user.role == 'Group' || widget.user.role == 'Leader')
+                               trailing: isCurrentUser && (widget.user.role != 'Group' || widget.user.role != 'Leader')
                                   ? Container(
                                       width: 30, // Adjust the width as needed
                                       child: PopupMenuButton<String>(
@@ -425,7 +425,7 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
         context,
         MaterialPageRoute(
             fullscreenDialog: true,
-            builder: (context) => CreatePostOrgUpdatesScreen()),
+            builder: (context) => CreatePostOrgUpdatesScreen(orgUpdateItem: item, isEditOrgUpdate: true)),
       );
     });
   }

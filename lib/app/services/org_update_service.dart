@@ -168,4 +168,50 @@ class OrgUpdateService {
       rethrow;
     }
   }
+
+  Future<void> editOrgUpdate(PostOrgUpdateParams params) async {
+    try {
+      safePrint('Inside post org updates');
+      final payload = {
+        "user": {"userId": params.userId},
+        "orgUpdate": {
+          "orgUpdateId": params.orgUpdateId,
+          "content": params.content,
+          "category": params.category,
+          "media": params.media,
+          "hasImage": params.hasImage,
+          "imagePath": params.imagePath,
+          "hasVideo": params.hasVideo,
+          "videoPath": params.videoPath,
+          "mediaCaption": params.mediaCaption,
+          "hashTag": params.hashTag
+        }
+      };
+      safePrint('Payload: $payload');
+      final prefs = await SharedPreferences.getInstance();
+      final authToken = prefs.getString('authToken');
+      if (authToken != null) {
+        safePrint('authToken: $authToken');
+        final restOperation = Amplify.API.post(
+          'editorgupdate',
+          body: HttpPayload.json(payload),
+          headers: {'Authorization': authToken},
+        );
+        final response = await restOperation.response;
+        if (response.statusCode == 200) {
+          return;
+        } else {
+          throw Exception('Failed to load data');
+        }
+      } else {
+        throw Exception('Failed to load token');
+      }
+    } on AuthException catch (e) {
+      safePrint('Error retrieving auth session: ${e.message}');
+      rethrow;
+    } on ApiException catch (e) {
+      safePrint('POST call failed: $e');
+      rethrow;
+    }
+  }
 }

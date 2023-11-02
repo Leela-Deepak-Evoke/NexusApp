@@ -10,16 +10,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final likeServiceProvider = Provider<LikeService>((ref) => LikeService());
 
-// final likesProvider = FutureProvider.autoDispose
-//     .family<List<UserLike>, GetCommentsParams>((ref, params) async {
-//   final likeService = ref.read(likeServiceProvider);
-//   final spaceName = params.postType ?? '';
-//   final spaceId = params.postId ?? '';
-//   final userId = params.userId ?? '';
-//   final like = await likeService.getLikes(spaceName, spaceId, userId);
-//   return like;
-// });
-
 final likesProvider = FutureProvider.autoDispose.
  family<List<UserLike>,GetCommentsParams>((ref, params)  async
 {
@@ -29,6 +19,11 @@ final likesProvider = FutureProvider.autoDispose.
   
 },);
 
+final authorThumbnailProviderViewLike =
+    FutureProvider.autoDispose.family<String?, String>((ref, key) async {
+  final likeService = ref.watch(likeServiceProvider);
+  return await likeService.getAuthorThumbnail(key);
+});
 
 final genricPostlikeDislikeProvider = FutureProvider.autoDispose
     .family<bool, PostLikeDislikeParams>((ref, params) async {

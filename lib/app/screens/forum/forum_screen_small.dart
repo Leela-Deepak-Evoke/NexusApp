@@ -37,7 +37,7 @@ class _ForumScreenSmallState extends ConsumerState<ForumScreenSmall> {
              Navigator.push(
               context,
               MaterialPageRoute(fullscreenDialog: true,
-                  builder: (context) =>const CreatePostForumScreen()));
+                  builder: (context) => CreatePostForumScreen()));
   
 
           },

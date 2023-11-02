@@ -8,13 +8,13 @@ import 'package:evoke_nexus_app/app/screens/responsive/responsive_layout.dart';
 
 class CreatePostOrgUpdatesScreen extends StatelessWidget {
    OrgUpdate? orgUpdateItem; 
-
-   CreatePostOrgUpdatesScreen({Key? key, this.orgUpdateItem}) : super(key: key);
+   bool? isEditOrgUpdate;
+   CreatePostOrgUpdatesScreen({Key? key, this.orgUpdateItem, this.isEditOrgUpdate}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ResponsiveLayout(
-      smallScreenLayout: CreatePostOrgUpdatesScreenSmall(orgUpdateItem: orgUpdateItem),
+      smallScreenLayout: CreatePostOrgUpdatesScreenSmall(orgUpdateItem: orgUpdateItem, isEditOrgUpdate: isEditOrgUpdate),
       mediumScreenLayout: CreatePostOrgUpdatesScreenMedium(),
       largeScreenLayout: CreatePostOrgUpdatesScreenLarge(),
     );

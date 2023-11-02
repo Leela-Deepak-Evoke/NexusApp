@@ -6,8 +6,10 @@ import 'package:evoke_nexus_app/app/models/post_feed_params.dart';
 import 'package:evoke_nexus_app/app/models/post_org_update_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
+import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/get_categories_provider.dart';
 import 'package:evoke_nexus_app/app/provider/org_update_service_provider.dart';
+import 'package:evoke_nexus_app/app/screens/org_updates/widgets/org_updates_media_view.dart';
 import 'package:evoke_nexus_app/app/services/feed_service.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/generic_bottom_sheet.dart';
@@ -29,19 +31,22 @@ class OrgUpdatesMobileView extends ConsumerStatefulWidget {
   final User user;
   final String slectedCategory;
   final OrgUpdate? orgUpdateItem;
+  final bool? isEditOrgUpdate;
 
   const OrgUpdatesMobileView(
       {super.key,
       required this.user,
       required this.slectedCategory,
-      this.orgUpdateItem});
+      this.orgUpdateItem,
+      this.isEditOrgUpdate});
 
   @override
-  OrgUpdatesMobileViewMobileViewState createState() => OrgUpdatesMobileViewMobileViewState();
+  OrgUpdatesMobileViewMobileViewState createState() =>
+      OrgUpdatesMobileViewMobileViewState();
 }
 
-
-class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobileView> {
+class OrgUpdatesMobileViewMobileViewState
+    extends ConsumerState<OrgUpdatesMobileView> {
   String? uploadedFilePath;
   String? uploadedFileName;
 
@@ -52,6 +57,7 @@ class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobile
   bool isMediaSelect = false;
   bool isImageSelect = false;
   bool isVideoSelect = false;
+  bool replaceImageTriggered = false; // Add this line
 
   String? selectedCategory;
   final ImagePicker imagePicker = ImagePicker();
@@ -85,7 +91,6 @@ class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobile
   //Categories Static Array
   List<String> checkListItems = [];
 
-
 //Video
   VideoPlayerController? _videoPlayerController;
   File? _video;
@@ -93,6 +98,10 @@ class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobile
   @override
   void initState() {
     super.initState();
+    if (widget.isEditOrgUpdate == true) {
+      feedController.text =
+          widget.orgUpdateItem?.content ?? feedController.text;
+    }
   }
 
   _selectFile(ContentType type) {
@@ -108,9 +117,11 @@ class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobile
     });
     switch (type) {
       case ContentType.image:
+        replaceImageTriggered = true;
         imageAttachment();
         break;
       case ContentType.video:
+        replaceImageTriggered = true;
         videoAttachment();
         break;
       case ContentType.document:
@@ -127,14 +138,14 @@ class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobile
 
   @override
   Widget build(BuildContext context) {
-       final categoryAsyncValue = ref.watch(categoriesProviderorgUpdates);
+    final categoryAsyncValue = ref.watch(categoriesProviderorgUpdates);
     if (categoryAsyncValue is AsyncData<List<String>>) {
       final orgUpdatesCategoryList = categoryAsyncValue;
       checkListItems = orgUpdatesCategoryList.value;
     }
 
     if (categoryAsyncValue is AsyncLoading) {
-       const Center(
+      const Center(
         child: SizedBox(
           height: 50.0,
           width: 50.0,
@@ -143,9 +154,9 @@ class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobile
       );
     }
 
-
     final Size size = MediaQuery.of(context).size;
-    feedController.text = widget.orgUpdateItem?.content ?? "" ;
+    feedController.text = feedController.text;
+
     return Padding(
         padding: const EdgeInsets.only(top: 0),
         child: SingleChildScrollView(
@@ -167,7 +178,7 @@ class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobile
                         //   height: 5,
                         // ),
 
-  categoryHearViewWidget(),
+                        categoryHearViewWidget(),
                         //Share your thoughts
                         feedsDescriptionUI(),
 
@@ -390,50 +401,56 @@ class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobile
 
   // IMAGE Content
   Widget imagePickerContent(Size size) {
-    return SizedBox(
-      height: size.height - 600,
-      //color: Colors.green,
-      child:
-      //  Expanded(
-      //     child:
-           Padding(
-              padding: const EdgeInsets.all(0),
-              child: GridView.builder(
-                  itemCount: fileList.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 1),
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Stack(
-                        //alignment: Alignment.topRight,
-                        children: [
-                          // SizedBox(
-                          //   height: 100,
-                          //   width: 100,
-                          //   child: Image.file(File(imageFileList![index].path), fit: BoxFit.cover),
-                          // ),
+    if (widget.isEditOrgUpdate == true && !replaceImageTriggered && widget.orgUpdateItem?.hasImage == true) {
+      return AspectRatio(
+        aspectRatio: 16 / 9,
+        child: OrgUpdateMediaView(item: widget.orgUpdateItem!),
+      );
+    } else {
+      return SizedBox(
+          height: size.height - 600,
+          child:
+              //  Expanded(
+              //     child:
+              Padding(
+                  padding: const EdgeInsets.all(0),
+                  child: GridView.builder(
+                      itemCount: fileList.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 1),
+                      itemBuilder: (BuildContext context, int index) {
+                        return Container(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Stack(
+                            //alignment: Alignment.topRight,
+                            children: [
+                              // SizedBox(
+                              //   height: 100,
+                              //   width: 100,
+                              //   child: Image.file(File(imageFileList![index].path), fit: BoxFit.cover),
+                              // ),
 
-                          returnFileContainer(index),
-                          Positioned(
-                              top: -10,
-                              right: 1,
-                              child: IconButton(
-                                onPressed: () {
-                                  dltImages(fileList[index]);
-                                },
-                                icon: const Icon(
-                                  Icons.cancel,
-                                  color: AppColors.blueTextColour,
-                                ),
-                              ))
-                        ],
-                      ),
-                    );
-                  })
-                  )
-                  // ),
-    );
+                              returnFileContainer(index),
+                              Positioned(
+                                  top: -10,
+                                  right: 1,
+                                  child: IconButton(
+                                    onPressed: () {
+                                      dltImages(fileList[index]);
+                                    },
+                                    icon: const Icon(
+                                      Icons.cancel,
+                                      color: AppColors.blueTextColour,
+                                    ),
+                                  ))
+                            ],
+                          ),
+                        );
+                      }))
+          // ),
+          );
+    }
   }
 
   // VIDEO Content
@@ -589,7 +606,11 @@ class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobile
   }
 
   void _handleSubmit(PostOrgUpdateParams params, WidgetRef ref) async {
-    await ref.read(postOrgUpdateProvider(params).future);
+    if (widget.isEditOrgUpdate == true) {
+      await ref.read(editOrgUpdateProvider(params).future);
+    } else {
+      await ref.read(postOrgUpdateProvider(params).future);
+    }
     Navigator.pop(context);
     _resetValues();
   }
@@ -613,12 +634,12 @@ class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobile
         onPressed: () {
           if (feedController == null || feedController.value.text.isEmpty) {
             showMessage('Please share your thoughts');
-          } 
+          }
           // else if (hashTagController == null ||
           //     hashTagController.value.text.isEmpty) {
           //   showMessage('Please add hashtag');
           // }
-           else {
+          else {
             if (isMediaSelect == false) {
               createPostWithoutAttachment();
             } else {
@@ -640,12 +661,14 @@ class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobile
 
   createPostWithoutAttachment() async {
     final orgId = const Uuid().v4();
-    
+
     final params = PostOrgUpdateParams(
         userId: widget.user.userId,
-        orgUpdateId: orgId,
+        orgUpdateId: widget.isEditOrgUpdate == true
+            ? widget.orgUpdateItem?.orgUpdateId ?? orgId
+            : orgId,
         content: feedController.text,
-        category : "General", 
+        category: "General",
 
         // category: (selectedIndex != null)
         //     ? checkListItems[selectedIndex ?? 0]
@@ -660,7 +683,9 @@ class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobile
     final orgId = const Uuid().v4();
     final params = PostOrgUpdateParams(
       userId: widget.user.userId,
-      orgUpdateId: orgId,
+      orgUpdateId: widget.isEditOrgUpdate == true
+          ? widget.orgUpdateItem?.orgUpdateId ?? orgId
+          : orgId,
       content: feedController.text,
       media: isMediaSelect,
       hasImage: isImageSelect,
@@ -668,7 +693,7 @@ class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobile
       mediaCaption: mediaCaptionController.text,
       hashTag: hashTagController.text,
       hasVideo: isVideoSelect,
-      category : "General", 
+      category: "General",
       // category: (selectedIndex != null)
       //     ? checkListItems[selectedIndex ?? 0]
       //     : "General",
@@ -689,10 +714,10 @@ class OrgUpdatesMobileViewMobileViewState extends ConsumerState<OrgUpdatesMobile
                 onPressed: () {
                   Navigator.pop(context);
                   // _resetValues();
-                  _resetImageDeleteValues(data);
-                  // setState(() {
-                  //   fileList.remove(data);
-                  // });
+                  // _resetImageDeleteValues(data);
+                  setState(() {
+                    fileList.remove(data);
+                  });
                 },
                 child: const Text('OK'),
               ),

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:evoke_nexus_app/app/models/categories.dart';
 import 'package:evoke_nexus_app/app/models/post_question_params.dart';
+import 'package:evoke_nexus_app/app/models/question.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/get_categories_provider.dart';
@@ -24,7 +25,11 @@ enum ContentType {
 
 class PostForumMobileView extends ConsumerStatefulWidget {
   final User user;
-  const PostForumMobileView({super.key, required this.user});
+   final Question? questionItem; // Remove the const keyword
+   final bool? isEditQuestion;
+
+  const PostForumMobileView({super.key, required this.user, this.questionItem,
+      this.isEditQuestion});
 
   @override
   PostForumMobileViewState createState() => PostForumMobileViewState();
@@ -47,6 +52,7 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
   bool isMediaSelect = false;
   bool isImageSelect = false;
   bool isVideoSelect = false;
+  bool replaceImageTriggered = false; // Add this line
 
   final ImagePicker imagePicker = ImagePicker();
   List<String> fileList = [];
@@ -83,6 +89,9 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
   @override
   void initState() {
     super.initState();
+    if (widget.isEditQuestion == true) {
+      feedController.text = widget.questionItem?.content ?? feedController.text;
+    }
   }
 
   _selectFile(ContentType type) {
@@ -98,9 +107,11 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
     });
     switch (type) {
       case ContentType.image:
+              replaceImageTriggered = true;
         imageAttachment();
         break;
       case ContentType.video:
+        replaceImageTriggered = true;
         videoAttachment();
         break;
       case ContentType.document:
@@ -138,6 +149,7 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
        Text('An error occurred: ${categoryAsyncValue.error}');
     }
     final Size size = MediaQuery.of(context).size;
+        feedController.text = feedController.text;
     return Padding(
         padding: const EdgeInsets.only(top: 0),
         child: SingleChildScrollView(
@@ -409,8 +421,8 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
                         ),
                       );
                     }))
-        // ),
-        );
+          );
+
   }
 
   // VIDEO Content
@@ -550,8 +562,11 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
   }
 
   void _handleSubmit(PostQuestionParams params, WidgetRef ref) async {
-    await ref.read(postQuestionProvider(params).future);
-    //  showMessage('Feed posted successfully');
+     if (widget.isEditQuestion == true) {
+      await ref.read(editForumProvider(params).future);
+    } else {
+      await ref.read(postQuestionProvider(params).future);
+    }
     Navigator.pop(context);
     _resetValues();
   }
@@ -601,7 +616,8 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
     final params = PostQuestionParams(
       name: 'Question',
       userId: widget.user.userId,
-      questionId: questionId,
+      // questionId: questionId,
+        questionId: widget.isEditQuestion == true ? widget.questionItem?.questionId ?? questionId : questionId,
       content: feedController.text,
       hasImage: false,
       subCategory: "",

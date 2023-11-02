@@ -30,6 +30,12 @@ class FeedListMobile extends ConsumerStatefulWidget {
 }
 
 class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
+  
+  //  @override
+  // void initState() {
+  //   super.initState();
+  // }
+
   void _onCommentsPressed(Feed item) {
     Navigator.push(
         context,
@@ -41,6 +47,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
                   posttype: "Feed",
                 )));
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -436,6 +443,12 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
 // Edit an item
   void _editItem(Feed item) {
     // Implement your edit logic here, e.g., navigate to the edit screen
+// var result = await Navigator.of(context).push(
+//             MaterialPageRoute(builder: (context) => CreatePostFeedScreen(feedItem: item, isEditFeed: true)));
+//         // if (result != null) {
+//           setState(() {
+//             _onRefresh();
+//           })
 
     setState(() {
       Navigator.push(

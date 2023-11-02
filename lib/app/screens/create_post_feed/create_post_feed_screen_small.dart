@@ -13,9 +13,6 @@ class CreatePostFeedScreenSmall extends ConsumerStatefulWidget {
 
   CreatePostFeedScreenSmall({Key? key,  this.feedItem, this.isEditFeed}) : super(key: key);
 
-
-  // const CreatePostFeedScreenSmall({super.key});
-
   @override
   ConsumerState<CreatePostFeedScreenSmall> createState() => _CreatePostFeedScreenSmallState();
 }

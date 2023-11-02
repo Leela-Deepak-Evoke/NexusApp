@@ -11,8 +11,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CreatePostOrgUpdatesScreenSmall extends ConsumerStatefulWidget {
   OrgUpdate? orgUpdateItem; // Add a parameter for the Feed item
+   bool? isEditOrgUpdate;
 
-  CreatePostOrgUpdatesScreenSmall({Key? key, this.orgUpdateItem}) : super(key: key);
+  CreatePostOrgUpdatesScreenSmall({Key? key, this.orgUpdateItem, this.isEditOrgUpdate}) : super(key: key);
 
   // const CreatePostFeedScreenSmall({super.key});
 
@@ -51,7 +52,7 @@ class _CreatePostOrgUpdatesScreenSmallState
               key: childKey,
               user: data,
               slectedCategory: rightActionTitle,
-              orgUpdateItem: orgUpdateItem),
+              orgUpdateItem: orgUpdateItem, isEditOrgUpdate: widget.isEditOrgUpdate),
         );
       },
       loading: () => const Center(

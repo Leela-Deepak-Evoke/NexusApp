@@ -11,12 +11,13 @@ class UserLike {
     required this.profilePicture,
   });
 
-  Map<String, dynamic> toJson() => {
-        'userName': userName,
-        'userId': userId,
-        'identityId': identityId,
-        "profilePicture": profilePicture
-      };
+  // Map<String, dynamic> toJson() => {
+  //       'userName': userName,
+  //       'userId': userId,
+  //       'identityId': identityId,
+  //       "profilePicture": profilePicture
+  //     };
+
 
   factory UserLike.fromJson(Map<String, dynamic> json, String currentUserId) {
     String? authorThumbnail;
@@ -24,17 +25,25 @@ class UserLike {
       if (json['userId'] == currentUserId) {
         authorThumbnail = json['profilePicture'];
       } else {
-        authorThumbnail = json[
-            'profilePicture']; //json['identityId'] + '/' + json['profilePicture'];
+        authorThumbnail = json['profilePicture']; //json['identityId'] + '/' + json['profilePicture'];
       }
     }
-    print("convert likes to json");
-    print(json.toString());
-    print(authorThumbnail);
     return UserLike(
         userName: json['userName'],
         userId: json['userId'],
         identityId: json['identityId'],
         profilePicture: authorThumbnail!);
   }
+
+
+    Map<String, dynamic> toJson() {
+    final _data = <String, dynamic>{};
+    _data['userName'] = userName;
+    _data['userId'] = userId;
+    _data['identityId'] = identityId;
+    _data['profilePicture'] = profilePicture;
+    return _data;
+  }
 }
+
+

@@ -481,7 +481,8 @@ Widget categoryHearViewWidget(Question item) {
         context,
         MaterialPageRoute(
             fullscreenDialog: true,
-            builder: (context) => CreatePostForumScreen()),
+                      builder: (context) => CreatePostForumScreen(questionItem: item, isEditQuestion: true)),
+
       );
     });
   }

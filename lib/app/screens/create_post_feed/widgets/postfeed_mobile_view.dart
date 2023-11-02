@@ -5,6 +5,7 @@ import 'package:evoke_nexus_app/app/models/post_feed_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/get_categories_provider.dart';
+import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_media_view.dart';
 import 'package:evoke_nexus_app/app/services/feed_service.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/generic_bottom_sheet.dart';
@@ -50,6 +51,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   bool isMediaSelect = false;
   bool isImageSelect = false;
   bool isVideoSelect = false;
+  bool replaceImageTriggered = false; // Add this line
 
   String? selectedCategory;
   final ImagePicker imagePicker = ImagePicker();
@@ -108,9 +110,11 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     });
     switch (type) {
       case ContentType.image:
+        replaceImageTriggered = true;
         imageAttachment();
         break;
       case ContentType.video:
+        replaceImageTriggered = true;
         videoAttachment();
         break;
       case ContentType.document:
@@ -127,14 +131,14 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
 
   @override
   Widget build(BuildContext context) {
-      final categoryAsyncValue = ref.watch(categoriesProviderFeed);
+    final categoryAsyncValue = ref.watch(categoriesProviderFeed);
     if (categoryAsyncValue is AsyncData<List<String>>) {
       final feedsCategoryList = categoryAsyncValue;
       checkListItems = feedsCategoryList.value;
     }
 
     if (categoryAsyncValue is AsyncLoading) {
-       const Center(
+      const Center(
         child: SizedBox(
           height: 50.0,
           width: 50.0,
@@ -142,7 +146,6 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
         ),
       );
     }
-
 
     final Size size = MediaQuery.of(context).size;
     feedController.text = feedController.text;
@@ -390,50 +393,61 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
 
   // IMAGE Content
   Widget imagePickerContent(Size size) {
-    return SizedBox(
-        height: size.height - 600,
-        //color: Colors.green,
-        child:
-            // Expanded(
-            //     child:
-            Padding(
-                padding: const EdgeInsets.all(0),
-                child: GridView.builder(
-                    itemCount: fileList.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 1),
-                    itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Stack(
-                          //alignment: Alignment.topRight,
-                          children: [
-                            // SizedBox(
-                            //   height: 100,
-                            //   width: 100,
-                            //   child: Image.file(File(imageFileList![index].path), fit: BoxFit.cover),
-                            // ),
+    final feedId = widget.isEditFeed == true
+        ? widget.feedItem?.feedId ?? const Uuid().v4()
+        : const Uuid().v4();
 
-                            returnFileContainer(index),
-                            Positioned(
-                                top: -10,
-                                right: 1,
-                                child: IconButton(
-                                  onPressed: () {
-                                    dltImages(fileList[index]);
-                                  },
-                                  icon: const Icon(
-                                    Icons.cancel,
-                                    color: AppColors.blueTextColour,
-                                  ),
-                                ))
-                          ],
-                        ),
-                      );
-                    }))
-        // ),
-        );
+    if (widget.isEditFeed == true && !replaceImageTriggered) {
+      return AspectRatio(
+        aspectRatio: 16 / 9,
+        child: FeedMediaView(item: widget.feedItem!),
+      );
+    } else {
+      return SizedBox(
+          height: size.height - 600,
+          //color: Colors.green,
+          child:
+              // Expanded(
+              //     child:
+              Padding(
+                  padding: const EdgeInsets.all(0),
+                  child: GridView.builder(
+                      itemCount: fileList.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 1),
+                      itemBuilder: (BuildContext context, int index) {
+                        return Container(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Stack(
+                            //alignment: Alignment.topRight,
+                            children: [
+                              // SizedBox(
+                              //   height: 100,
+                              //   width: 100,
+                              //   child: Image.file(File(imageFileList![index].path), fit: BoxFit.cover),
+                              // ),
+
+                              returnFileContainer(index),
+                              Positioned(
+                                  top: -10,
+                                  right: 1,
+                                  child: IconButton(
+                                    onPressed: () {
+                                      dltImages(fileList[index]);
+                                    },
+                                    icon: const Icon(
+                                      Icons.cancel,
+                                      color: AppColors.blueTextColour,
+                                    ),
+                                  ))
+                            ],
+                          ),
+                        );
+                      }))
+          // ),
+          );
+    }
   }
 
   // VIDEO Content
@@ -651,7 +665,9 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     final feedId = const Uuid().v4();
     final params = PostFeedParams(
         userId: widget.user.userId,
-        feedId: widget.isEditFeed == true ? widget.feedItem?.feedId ?? feedId : feedId,
+        feedId: widget.isEditFeed == true
+            ? widget.feedItem?.feedId ?? feedId
+            : feedId,
         content: feedController
             .text, //widget.isEditFeed == true ? widget.feedItem?.content :
         category: (selectedIndex != null)
@@ -667,7 +683,9 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     final feedId = const Uuid().v4();
     final params = PostFeedParams(
       userId: widget.user.userId,
-      feedId: widget.isEditFeed == true ? widget.feedItem?.feedId ?? feedId : feedId,
+      feedId: widget.isEditFeed == true
+          ? widget.feedItem?.feedId ?? feedId
+          : feedId,
       content: feedController.text,
       media: isMediaSelect,
       hasImage: isImageSelect,
@@ -695,10 +713,10 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                 onPressed: () {
                   Navigator.pop(context);
                   // _resetValues();
-                  _resetImageDeleteValues(data);
-                  // setState(() {
-                  //   fileList.remove(data);
-                  // });
+                  // _resetImageDeleteValues(data);
+                  setState(() {
+                    fileList.remove(data);
+                  });
                 },
                 child: const Text('OK'),
               ),

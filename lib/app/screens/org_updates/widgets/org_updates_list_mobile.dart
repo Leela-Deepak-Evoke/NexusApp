@@ -6,6 +6,7 @@ import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/delete_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/org_update_service_provider.dart';
+import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/comments/comments_screen.dart';
 import 'package:evoke_nexus_app/app/screens/create_post_orgupdates/create_post_orgupdates_screen.dart';
 import 'package:evoke_nexus_app/app/screens/org_updates/widgets/org_updates_header_card_view.dart';
@@ -411,6 +412,7 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
   }
 
   Future<void> _onRefresh() async {
+     ref.read(refresUserProvider(""));
     ref.watch(refresOrgUpdatesProvider(""));
   }
 

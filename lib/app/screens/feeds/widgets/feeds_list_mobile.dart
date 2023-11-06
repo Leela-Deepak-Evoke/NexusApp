@@ -432,7 +432,9 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
     );
   }
 
+
   Future<void> _onRefresh() async {
+      ref.read(refresUserProvider(""));
     ref.watch(refresFeedsProvider(""));
   }
 

@@ -401,7 +401,7 @@ class OrgUpdatesMobileViewMobileViewState
 
   // IMAGE Content
   Widget imagePickerContent(Size size) {
-    if (widget.isEditOrgUpdate == true && !replaceImageTriggered && widget.orgUpdateItem?.hasImage == true) {
+    if (widget.isEditOrgUpdate == true && !replaceImageTriggered && widget.orgUpdateItem!.hasImage == true) {
       return AspectRatio(
         aspectRatio: 16 / 9,
         child: OrgUpdateMediaView(item: widget.orgUpdateItem!),

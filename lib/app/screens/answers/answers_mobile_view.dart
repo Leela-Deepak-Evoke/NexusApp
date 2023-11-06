@@ -33,7 +33,7 @@ class _AnswersMobileViewCardState extends State<AnswersMobileView> {
         Expanded(
           child: Padding(
           padding: const EdgeInsets.only(left: 0, right: 0, top: 0), 
-            child:   AnswerListMobile(params: FetchAnswerParams(userId: widget.user.userId, questionId: widget.question.questionId), user: widget.user, questionId: widget.question.questionId)  )
+            child:   AnswerListMobile(params: FetchAnswerParams(userId: widget.user.userId, questionId: widget.question.questionId), user: widget.user, questionId: widget.question.questionId, question: widget.question)  )
 ,
           ),
         

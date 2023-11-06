@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:evoke_nexus_app/app/models/answer.dart';
 import 'package:evoke_nexus_app/app/models/post_answer_params.dart';
 import 'package:evoke_nexus_app/app/models/question.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
@@ -23,8 +24,10 @@ enum ContentType {
 class PostAnswerMobileView extends ConsumerStatefulWidget {
   final User user;
   final Question question;
-  
-  const PostAnswerMobileView({super.key, required this.user,required this.question});
+  final Answer? answerItem;
+       bool? isEditAnswer;
+
+   PostAnswerMobileView({super.key, required this.user,required this.question, this.answerItem, this.isEditAnswer});
 
   @override
   ConsumerState<PostAnswerMobileView> createState() =>
@@ -78,6 +81,9 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
   void initState() {
     super.initState();
      hashTagController.text = widget.question.content ?? "";
+      if (widget.isEditAnswer == true) {
+      feedController.text = widget.answerItem?.content ?? feedController.text;
+    }
   }
 
   _selectFile(ContentType type) {
@@ -113,6 +119,7 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+        feedController.text = feedController.text;
     return Padding(
         padding: const EdgeInsets.only(top: 0),
         child: SingleChildScrollView(
@@ -531,7 +538,11 @@ void initializeVideo(String url) {
   }
 
   void _handleSubmit(PostAnswerParams params, WidgetRef ref) async {
+     if (widget.isEditAnswer == true) {
+      await ref.read(editAnswerProvider(params).future);
+    } else {
     await ref.read(postAnswerProvider(params).future);
+    }
       Navigator.pop(context);
        _resetValues();
   }
@@ -583,7 +594,8 @@ void initializeVideo(String url) {
                     name: 'Answer',
                     userId: widget.user.userId,
                     questionId: widget.question.questionId,
-                    answerId: answerId,
+                    // answerId: answerId,
+                    answerId: widget.isEditAnswer == true ? widget.answerItem?.answerId ?? answerId: answerId,
                     content: feedController.text,
                     hasImage: false);
     _handleSubmit(params, ref);

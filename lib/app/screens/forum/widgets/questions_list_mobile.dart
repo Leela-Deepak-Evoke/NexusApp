@@ -3,6 +3,7 @@ import 'package:evoke_nexus_app/app/models/question.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/delete_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
+import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/create_post_forum/create_post_forum_screen.dart';
 import 'package:evoke_nexus_app/app/screens/forum/widgets/answers_list.dart';
 import 'package:evoke_nexus_app/app/utils/app_routes.dart';
@@ -434,6 +435,7 @@ Widget categoryHearViewWidget(Question item) {
   }
 
   Future<void> _onRefresh() async {
+          ref.read(refresUserProvider(""));
     ref.watch(refresForumProvider(""));
   }
 

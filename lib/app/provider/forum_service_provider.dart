@@ -83,6 +83,14 @@ final postAnswerProvider = FutureProvider.autoDispose
 });
 
 
+final editAnswerProvider = FutureProvider.autoDispose
+    .family<void, PostAnswerParams>((ref, params) async {
+  final forumService = ref.watch(forumServiceProvider);
+  await forumService.editAnswer(params);
+  ref.invalidate(answerListProvider);
+  ref.invalidate(answersProvider);
+});
+
 final refresAnswerProvider =
     FutureProvider.autoDispose.family<bool, String>((ref, user) async {
   ref.invalidate(answerListProvider);

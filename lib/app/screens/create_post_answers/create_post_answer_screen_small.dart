@@ -1,3 +1,4 @@
+import 'package:evoke_nexus_app/app/models/answer.dart';
 import 'package:evoke_nexus_app/app/models/question.dart';
 import 'package:evoke_nexus_app/app/screens/create_post_answers/widgets/post_answer_mobile_view.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +8,10 @@ import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 
 class CreatePostAnswerScreenSmall extends ConsumerStatefulWidget {
     final Question question;
+final Answer? answerItem;
+       bool? isEditAnswer;
 
-  const CreatePostAnswerScreenSmall({super.key,required this.question});
+   CreatePostAnswerScreenSmall({super.key,required this.question, this.answerItem, this.isEditAnswer});
   
   @override
   ConsumerState<CreatePostAnswerScreenSmall> createState() => _CreatePostAnswerScreenSmallState();
@@ -30,7 +33,7 @@ class _CreatePostAnswerScreenSmallState extends ConsumerState<CreatePostAnswerSc
           backButtonAction: () {
             Navigator.pop(context);
           },
-          child: PostAnswerMobileView(user: data ,question: widget.question),
+          child: PostAnswerMobileView(user: data ,question: widget.question, answerItem: widget.answerItem, isEditAnswer: widget.isEditAnswer),
         );
   }, 
     loading: () => const Center(

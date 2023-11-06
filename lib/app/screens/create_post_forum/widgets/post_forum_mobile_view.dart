@@ -103,7 +103,11 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
     //   return;
     // }
     setState(() {
-      contentTypeSelected = type.name;
+       if (widget.isEditQuestion == true) {
+      contentTypeSelected = widget.questionItem?.category ?? type.name;
+       }else{
+         contentTypeSelected =  type.name;
+       }
     });
     switch (type) {
       case ContentType.image:

@@ -2,11 +2,13 @@ import 'package:evoke_nexus_app/app/models/delete.dart';
 import 'package:evoke_nexus_app/app/models/fetch_answer_params.dart';
 import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
 import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
+import 'package:evoke_nexus_app/app/models/question.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/comment_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/delete_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
+import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/comments/comments_screen.dart';
 import 'package:evoke_nexus_app/app/screens/comments/widgets/comments_mobile_view.dart';
 import 'package:evoke_nexus_app/app/screens/create_post_answers/create_post_answer_screen.dart';
@@ -23,12 +25,14 @@ class AnswerListMobile extends ConsumerStatefulWidget {
   final User user;
   final String questionId;
   final FetchAnswerParams params;
+    final Question question;
 
   const AnswerListMobile({
     super.key,
     required this.params,
     required this.user,
     required this.questionId,
+     required this.question
   });
 
   @override
@@ -224,6 +228,7 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
   }
 
   Future<void> _onRefresh() async {
+     ref.read(refresUserProvider(""));
     ref.watch(refresAnswerProvider(""));
   }
 
@@ -380,17 +385,16 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
 
 // Edit an item
   void _editItem(Answer item) {
-    // Implement your edit logic here, e.g., navigate to the edit screen
+    
+    setState(() {
+    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          fullscreenDialog: true,
+                          builder: (context) =>
+                              CreatePostAnswerScreen(question: widget.question, answerItem: item, isEditAnswer: true)));
 
-    // setState(() {
-    //   Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       fullscreenDialog: true,
-    //       builder: (context) => CreatePostAnswerScreen(question: widget.questionId),
-    //     ),
-    //   );
-    // });
+    });
   }
 
 // Delete an item

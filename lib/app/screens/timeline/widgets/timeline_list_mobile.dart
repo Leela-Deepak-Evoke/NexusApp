@@ -4,6 +4,7 @@ import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/timeline_service_provider.dart';
+import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/comments/comments_screen.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_header_card_view.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_media_view.dart';
@@ -343,6 +344,7 @@ class _TimelineListMobileViewState extends ConsumerState<TimelineListMobile> {
   }
 
   Future<void> _onRefresh() async {
+     ref.read(refresUserProvider(""));
     ref.watch(refresTimelineProvider(""));
   }
 

@@ -16,26 +16,82 @@ class _OrgUpdateMediaViewState extends ConsumerState<OrgUpdateMediaView> {
   VideoPlayerController? _controller;
   late String? mediaURL;
 
-  @override
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   if (widget.item.hasImage) {
+  //     mediaURL = widget.item.imagePath;
+  //   } else if (widget.item.hasVideo) {
+  //     mediaURL = widget.item.videoPath;
+  //     _controller = VideoPlayerController.network(mediaURL!)
+  //       ..initialize().then((_) {
+  //         setState(() {});
+  //       }).catchError((error) {
+  //         print("video error");
+  //         print(error);
+  //       });
+  //   }
+  //  else
+  //   {
+  //     mediaURL = null;
+  //   }
+   
+  // }
+
+  
+
+@override
   void initState() {
     super.initState();
-    if (widget.item.hasImage) {
+    updateMedia();
+  }
+
+  @override
+  void didUpdateWidget(OrgUpdateMediaView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.item != oldWidget.item) {
+      updateMedia();
+    }
+  }
+
+  void updateMedia() {
+    //   if (widget.item.hasImage && widget.item.imagePath != null ) {
+    //   mediaURL = widget.item.imagePath;
+    // } else if (widget.item.hasVideo && widget.item.videoPath != null) {
+    //   mediaURL = widget.item.videoPath;
+    //   _controller = VideoPlayerController.networkUrl(Uri.parse(mediaURL!))
+    //     ..initialize().then((_) {
+    //       setState(() {});
+    //     }).catchError((error) {
+    //       print("video error");
+    //       print(error);
+    //     });
+    // }
+    // else
+    // {
+    //   mediaURL = null;
+    // }
+
+    if (widget.item.hasImage && widget.item.imagePath != null) {
       mediaURL = widget.item.imagePath;
-    } else if (widget.item.hasVideo) {
+      _controller?.dispose();
+      _controller = null;
+    } else if (widget.item.hasVideo && widget.item.videoPath != null) {
       mediaURL = widget.item.videoPath;
-      _controller = VideoPlayerController.network(mediaURL!)
+      _controller = VideoPlayerController.networkUrl(Uri.parse(mediaURL!))
         ..initialize().then((_) {
-          setState(() {});
+          if (mounted) {
+            setState(() {});
+          }
         }).catchError((error) {
           print("video error");
           print(error);
         });
-    }
-   else
-    {
+    } else {
       mediaURL = null;
+      _controller?.dispose();
+      _controller = null;
     }
-   
   }
 
   @override

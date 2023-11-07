@@ -1,6 +1,7 @@
 import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
 import 'package:evoke_nexus_app/app/models/post_comment_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:evoke_nexus_app/app/models/user_comment.dart';
 import 'package:evoke_nexus_app/app/provider/comment_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/comments/widgets/commets_list_mobile.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,9 @@ class _CommentsMobileViewState extends ConsumerState<CommentsMobileView> {
   final TextEditingController _commentController = TextEditingController();
   final FocusNode _textFieldFocus = FocusNode();
   bool _isKeyboardVisible = false;
+  bool isEditComment = false;
+   
+   UserComment? commentItem;
 
   @override
   void initState() {
@@ -41,8 +45,12 @@ class _CommentsMobileViewState extends ConsumerState<CommentsMobileView> {
     });
   }
   void _handleSubmit(PostCommentsParams params, WidgetRef ref) async {
+
+if (commentItem?.commentStatus == "PUBLISHED"){
+    await ref.read(editCommentProvider(params).future);
+}else{
     await ref.read(postCommentProvider(params).future);
-    
+}
   }
   @override
   void dispose() {
@@ -60,12 +68,22 @@ class _CommentsMobileViewState extends ConsumerState<CommentsMobileView> {
     var params = PostCommentsParams(
                 userId: widget.user.userId, 
                 content: _commentController.text, 
-                commentId: commentId, 
+                commentId: commentItem?.commentStatus == "PUBLISHED" ? commentItem?.commentId ?? commentId : commentId, 
                 postIdPropValue: widget.postId,
                  postlabel: widget.posttype);
     _textFieldFocus.unfocus();
     _commentController.text = "";
     _handleSubmit(params, ref);
+  }
+
+ // Define a method to handle the edited comment content passed from CommentsListMobileView
+  void handleCommentEdited(String editedComment, bool isEditComment, UserComment item) {
+    setState(() {
+      _commentController.text = editedComment;
+      isEditComment = isEditComment;
+      commentItem = item;
+      print(commentItem);
+    });
   }
 
   @override
@@ -88,12 +106,20 @@ class _CommentsMobileViewState extends ConsumerState<CommentsMobileView> {
                 return widget.headerCard;
               },
             ),
+             Builder(
+  builder: (context) {
+    return
             CommentsListMobileView(
               user: widget.user,
               postId: widget.postId,
               posttype: widget.posttype,
               params: params,
-            )
+          onCommentEdited: handleCommentEdited,
+
+            );
+ },
+)
+           
           ],
         ),
       ),
@@ -127,52 +153,5 @@ class _CommentsMobileViewState extends ConsumerState<CommentsMobileView> {
           ))
     ]);
 
-    // return SingleChildScrollView(
-    //   scrollDirection: Axis.vertical,
-    //   child:
-    //   Column (
-    //     children :
-    //     [
-    //      widget.headerCard,
-    //     //  ListView.builder(
-    //     //   itemCount: 3,
-    //     //   itemBuilder:(context, index) {
-    //     //     return Container(color:  Colors.red,);
-
-    //     //  },),
-    //  //   Expanded(child: CommentsListMobileView(user: widget.user)),
-    //     Container(child:
-    //     Row(
-    //       children: [
-    //          Expanded(
-    //            child: Container(
-    //                    padding: const EdgeInsets.all(16.0),
-    //                    child: TextField(
-    //                      controller: _commentController,
-    //                      focusNode: _textFieldFocus,
-    //                      maxLines: null ,
-    //                     keyboardType: TextInputType.multiline,
-    //                      decoration: const InputDecoration(
-    //             labelText: "Add a comment...",
-    //             border: OutlineInputBorder(),
-    //                      ),
-    //                    ),
-    //                  ),
-    //          ),
-    //       ElevatedButton(
-    //       onPressed: _sendComment,
-    //       child: Text("Send"),
-    //     ),
-
-    //       ]),
-    //     ),
-    //     SizedBox(
-    //         height: _isKeyboardVisible ? 0 : 100,
-    //         child: Container(
-    //           color: Colors.white,
-    //         )),
-    //   ],
-    // )
-    // );
   }
 }

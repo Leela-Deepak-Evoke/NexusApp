@@ -9,6 +9,7 @@ import 'package:evoke_nexus_app/app/provider/delete_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
+import 'package:evoke_nexus_app/app/screens/answers/answer_header_card_view.dart';
 import 'package:evoke_nexus_app/app/screens/comments/comments_screen.dart';
 import 'package:evoke_nexus_app/app/screens/comments/widgets/comments_mobile_view.dart';
 import 'package:evoke_nexus_app/app/screens/create_post_answers/create_post_answer_screen.dart';
@@ -214,6 +215,7 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
 
   // Create a function for navigation
   Widget navigateToCommentScreen() {
+    
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.5,
       child: CommentsMobileView(
@@ -438,6 +440,7 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
   // BUTTONS: COMMENT
   Widget btnCommentsLayout(
       BuildContext context, int index, Answer item, WidgetRef ref) {
+
     return Column(
       children: [
         Row(
@@ -446,15 +449,25 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
           children: [
             TextButton.icon(
               onPressed: () {
-                setState(() {
-                  isCommentsVisible = !isCommentsVisible;
+                // setState(() {
+                //   isCommentsVisible = !isCommentsVisible;
 
-                  if (isCommentsVisible == false) {
-                    isCommentsVisibleList = -1;
-                  } else {
-                    isCommentsVisibleList = index;
-                  }
-                });
+                //   if (isCommentsVisible == false) {
+                //     isCommentsVisibleList = -1;
+                //   } else {
+                //     isCommentsVisibleList = index;
+                //   }
+                // });
+
+                 Navigator.push(
+        context,
+        MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (context) => CommentScreen(
+                  headerCard: AnswerHeaderCardView(item: item, ref: ref),
+                  postId: item.answerId,
+                  posttype: "Answer",
+                )));
               },
               icon: Image.asset(
                 'assets/images/chat_bubble_outline.png',

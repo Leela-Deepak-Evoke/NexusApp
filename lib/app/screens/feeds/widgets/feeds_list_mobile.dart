@@ -52,6 +52,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
   @override
   Widget build(BuildContext context) {
     final feedsAsyncValue = ref.watch(feedsProvider(widget.user));
+
     if (feedsAsyncValue is AsyncData) {
       final items = feedsAsyncValue.value!;
       if (items.isEmpty) {
@@ -443,16 +444,28 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
   }
 
 // Edit an item
-  void _editItem(Feed item) {
-    setState(() {
-      Navigator.push(
+  void _editItem(Feed item) async{
+    // setState(() {
+    //   Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       fullscreenDialog: true,
+    //       builder: (context) => CreatePostFeedScreen(feedItem: item, isEditFeed: true),
+    //     ),
+    //   );
+    // });
+
+// setState(() {
+    var result =   Navigator.push(
         context,
         MaterialPageRoute(
           fullscreenDialog: true,
           builder: (context) => CreatePostFeedScreen(feedItem: item, isEditFeed: true),
         ),
       );
-    });
+      await ref.read(feedsProvider(widget.user).future);
+       await _onRefresh();
+//  });
   }
 
 // Delete an item

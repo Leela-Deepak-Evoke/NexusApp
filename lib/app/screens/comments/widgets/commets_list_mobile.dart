@@ -17,12 +17,14 @@ class CommentsListMobileView extends ConsumerStatefulWidget {
   final String posttype;
   final String postId;
   final GetCommentsParams params;
+    final Function(String, bool, UserComment)? onCommentEdited;
+
   const CommentsListMobileView(
       {super.key,
       required this.user,
       required this.posttype,
       required this.postId,
-      required this.params});
+      required this.params, this.onCommentEdited});
 
   @override
   ConsumerState<CommentsListMobileView> createState() =>
@@ -296,17 +298,48 @@ class _CommentsListMobileViewState
   }
 
   void _editItem(UserComment item) {
-    // Implement your edit logic here, e.g., navigate to the edit screen
+   final TextEditingController editController = TextEditingController();
+    editController.text = item.comment;
+                  widget.onCommentEdited!(editController.text, true, item);
 
-    // setState(() {
-    //   Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       fullscreenDialog: true,
-    //       builder: (context) => CreatePostAnswerScreen(question: widget.questionId),
-    //     ),
-    //   );
-    // });
+
+
+    // showDialog(
+    //   context: context,
+    //   builder: (BuildContext context) {
+    //     return AlertDialog(
+    //       title: Text("Edit Comment"),
+    //       content: TextField(
+    //         controller: editController,
+    //         maxLines: null,
+    //         decoration: const InputDecoration(
+    //           labelText: "Edit your comment...",
+    //           border: OutlineInputBorder(),
+    //         ),
+    //       ),
+    //       actions: [
+    //         TextButton(
+    //           child: Text("Cancel"),
+    //           onPressed: () {
+    //             Navigator.of(context).pop();
+    //           },
+    //         ),
+    //         TextButton(
+    //           child: Text("Save"),
+    //           onPressed: () async {
+    //             final updatedComment = editController.text;
+    //             if (updatedComment.isNotEmpty) {
+    //               // Call the callback function to pass the edited comment content
+    //               widget.onCommentEdited!(updatedComment);
+
+    //               Navigator.of(context).pop();
+    //             }
+    //           },
+    //         ),
+    //       ],
+    //     );
+    //   },
+    // );
   }
 
 // Delete an item

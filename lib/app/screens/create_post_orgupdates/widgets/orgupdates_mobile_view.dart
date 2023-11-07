@@ -336,8 +336,9 @@ class OrgUpdatesMobileViewMobileViewState
                       : false,
                   child: TextButton.icon(
                     onPressed: () {
-                      isVisible = false;
-                      _selectFile(ContentType.video);
+                      // isVisible = false;
+                      // _selectFile(ContentType.video);
+                      _showToast(context);
                     },
                     icon: Image.asset(
                       'assets/images/Vector.png',
@@ -373,6 +374,7 @@ class OrgUpdatesMobileViewMobileViewState
                     onPressed: () {
                       // isVisible = true;
                       // _selectFile(ContentType.document);
+                      _showToast(context);
                     },
                     icon: Image.asset(
                       'assets/images/Vector-1.png',
@@ -846,5 +848,18 @@ class OrgUpdatesMobileViewMobileViewState
                 ),
               ),
             ]));
+  }
+
+  void _showToast(BuildContext context) {
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: const SizedBox(
+              height:70,
+              child: Text('In Progress'),
+        ),
+        action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+      ),
+    );
   }
 }

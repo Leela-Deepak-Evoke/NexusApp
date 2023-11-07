@@ -220,9 +220,14 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
 
 void _showToast(BuildContext context) {
     final scaffold = ScaffoldMessenger.of(context);
+
     scaffold.showSnackBar(
       SnackBar(
-        content: const Text('Added to favorite'),
+        // content: const Text('Added to favorite'),
+        content: const SizedBox(
+              height:70,
+              child: Text('Added to favorite'),
+        ),
         action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
       ),
     );
@@ -275,12 +280,15 @@ class VerticalCard extends StatelessWidget {
           children: [
             GestureDetector(
                 onTap: () {
-                  if (title == "TimeLine") {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            fullscreenDialog: false,
-                            builder: (context) => const TimelineScreen()));
+                  if (title == "TimeLine" || title == "Notifications" || title == "Settings") {
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         fullscreenDialog: false,
+                    //         builder: (context) => const TimelineScreen()));
+
+
+                    _showToast(context);
                   }
                 },
                 child: ListTile(
@@ -299,6 +307,21 @@ class VerticalCard extends StatelessWidget {
                 )),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showToast(BuildContext context) {
+    final scaffold = ScaffoldMessenger.of(context);
+
+    scaffold.showSnackBar(
+      SnackBar(
+        // content: const Text('Added to favorite'),
+        content: const SizedBox(
+              height:70,
+              child: Text('In Progress'),
+        ),
+        action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
       ),
     );
   }

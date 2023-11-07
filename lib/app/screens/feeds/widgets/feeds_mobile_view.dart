@@ -45,8 +45,23 @@ class _FeedsMobileViewCardState extends State<FeedsMobileView> {
   //Call Back
   onSearchClicked() {
     setState(() {});
+    _showToast(context);
   }
 
+ void _showToast(BuildContext context) {
+    final scaffold = ScaffoldMessenger.of(context);
+
+    scaffold.showSnackBar(
+      SnackBar(
+        // content: const Text('Added to favorite'),
+        content: const SizedBox(
+              height:70,
+              child: Text('In Progress'),
+        ),
+        action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+      ),
+    );
+  }
   //BOTTOM SHEET CATEGORIES AND SORT
 
   onCategoriesTapped(int? index) {}

@@ -333,8 +333,10 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                       : false,
                   child: TextButton.icon(
                     onPressed: () {
-                      isVisible = false;
-                      _selectFile(ContentType.video);
+                      // isVisible = false;
+                      // _selectFile(ContentType.video);
+
+                      _showToast(context);
                     },
                     icon: Image.asset(
                       'assets/images/Vector.png',
@@ -370,6 +372,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                     onPressed: () {
                       // isVisible = true;
                       // _selectFile(ContentType.document);
+                       _showToast(context);
                     },
                     icon: Image.asset(
                       'assets/images/Vector-1.png',
@@ -852,5 +855,20 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                 ),
               ),
             ]));
+  }
+
+
+
+ void _showToast(BuildContext context) {
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: const SizedBox(
+              height:70,
+              child: Text('In Progress'),
+        ),
+        action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+      ),
+    );
   }
 }

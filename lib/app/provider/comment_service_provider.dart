@@ -44,3 +44,13 @@ final postCommentProvider =
     ref.invalidate(orgUpdatesProvider);
     ref.invalidate(answerListProvider);
 });
+
+final editCommentProvider =
+    FutureProvider.family<void, PostCommentsParams>((ref, params) async {
+  final feedService = ref.watch(commentServiceProvider);
+  await feedService.editComment(params);
+  ref.invalidate(commentsProvider);
+   ref.invalidate(feedsProvider);
+    ref.invalidate(orgUpdatesProvider);
+    ref.invalidate(answerListProvider);
+});

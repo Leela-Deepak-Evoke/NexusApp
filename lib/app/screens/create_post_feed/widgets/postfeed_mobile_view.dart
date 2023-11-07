@@ -107,6 +107,11 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     // }
     setState(() {
       contentTypeSelected = type.name;
+      //   if (widget.isEditFeed == true) {
+      // contentTypeSelected = widget.fe?.category ?? type.name;
+      //  }else{
+      //    contentTypeSelected =  type.name;
+      //  }
     });
     switch (type) {
       case ContentType.image:
@@ -398,10 +403,12 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
         : const Uuid().v4();
 
     if (widget.isEditFeed == true && !replaceImageTriggered) {
+      if (widget.feedItem?.hasImage == true){
       return AspectRatio(
         aspectRatio: 16 / 9,
         child: FeedMediaView(item: widget.feedItem!),
-      );
+      );}
+      return Container();
     } else {
       return SizedBox(
           height: size.height - 600,

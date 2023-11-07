@@ -51,19 +51,15 @@ final postlikeDislikeProvider = FutureProvider.autoDispose
   return likeStatus;
 });
 
-
 final refresFeedsProvider =
     FutureProvider.autoDispose.family<bool, String>((ref, user) async {
   ref.invalidate(feedsProvider);
-return true;
+  return true;
 });
-
 
 //Need to use
 final pagginationFeedsProvider =
     FutureProvider.autoDispose.family<bool, String>((ref, user) async {
   ref.invalidate(feedsProvider);
-return true;
+  return true;
 });
-
-

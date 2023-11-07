@@ -444,20 +444,11 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
 
 // Edit an item
   void _editItem(Feed item) {
-    // Implement your edit logic here, e.g., navigate to the edit screen
-// var result = await Navigator.of(context).push(
-//             MaterialPageRoute(builder: (context) => CreatePostFeedScreen(feedItem: item, isEditFeed: true)));
-//         // if (result != null) {
-//           setState(() {
-//             _onRefresh();
-//           })
-
     setState(() {
       Navigator.push(
         context,
         MaterialPageRoute(
           fullscreenDialog: true,
-          // builder: (context) => CreatePostFeedScreen(feedItem: item),
           builder: (context) => CreatePostFeedScreen(feedItem: item, isEditFeed: true),
         ),
       );

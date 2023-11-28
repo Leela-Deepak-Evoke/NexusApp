@@ -315,8 +315,8 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                       ),
                     ),
                     style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all(Colors.grey.shade100),
+                      backgroundColor: MaterialStateProperty.all(Colors.grey.shade100),
+                      
                     ),
                   )),
 

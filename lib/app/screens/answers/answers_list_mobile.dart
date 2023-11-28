@@ -261,14 +261,14 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
           const SizedBox(
             width: 5,
           ),
-          Text("Asked by",
+          Text("Replied by ",
               style: TextStyle(
                 color: Color(0xff676A79),
                 fontSize: 12.0,
                 fontFamily: GoogleFonts.notoSans().fontFamily,
                 fontWeight: FontWeight.normal,
               )),
-          Text(item.author ?? "",
+          Text(isCurrentUser ? "me" : item.author ?? "",
               style: TextStyle(
                 color: Color(0xff676A79),
                 fontSize: 12.0,

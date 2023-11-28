@@ -175,7 +175,7 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
               fontFamily: GoogleFonts.notoSans().fontFamily,
               fontWeight: FontWeight.normal,
             )),
-        Text(item.author ?? "",
+        Text(isCurrentUser ? "me" : item.author ?? "",
             style: TextStyle(
               color: Color(0xff676A79),
               fontSize: 12.0,

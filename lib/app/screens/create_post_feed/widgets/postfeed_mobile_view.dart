@@ -16,6 +16,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import 'package:video_player/video_player.dart';
+import 'package:path_provider/path_provider.dart';
 
 enum ContentType {
   image,
@@ -333,10 +334,10 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                       : false,
                   child: TextButton.icon(
                     onPressed: () {
-                      // isVisible = false;
-                      // _selectFile(ContentType.video);
+                      isVisible = false;
+                      _selectFile(ContentType.video);
 
-                      _showToast(context);
+                      // _showToast(context);
                     },
                     icon: Image.asset(
                       'assets/images/Vector.png',
@@ -461,12 +462,12 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   }
 
   // VIDEO Content
-  Widget videoPickerContent(Size size) {
+  Widget videoPickerContent_OLD(Size size) {
     return Container(
       padding: const EdgeInsets.all(10.0),
-      // color: Colors.red,
-      // height: 200,
-      // width: 200,
+      color: Colors.red,
+      height: 200,
+      width: 200,
       //color: Colors.blue,
       child: Row(
         children: <Widget>[
@@ -475,16 +476,26 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                 ? Expanded(
                     child: Stack(
                       children: <Widget>[
-                        SizedBox(
-                          //  height: size.height - 600,
-                          // height: 200,
-                          // width: 200,
+                         Container(
+                          height: 100,
+                          width: 100,
                           child: AspectRatio(
                             aspectRatio:
                                 _videoPlayerController!.value.aspectRatio,
                             child: VideoPlayer(_videoPlayerController!),
                           ),
                         ),
+
+                        // SizedBox(
+                        //   //  height: size.height - 600,
+                        //   // height: 200,
+                        //   // width: 200,
+                        //   child: AspectRatio(
+                        //     aspectRatio:
+                        //         _videoPlayerController!.value.aspectRatio,
+                        //     child: VideoPlayer(_videoPlayerController!),
+                        //   ),
+                        // ),
                         Positioned(
                           top: -15,
                           right: -15,
@@ -514,6 +525,42 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     );
   }
 
+  Widget videoPickerContent(Size size) {
+  return Container(
+    padding: const EdgeInsets.all(10.0),
+    color: Colors.red,
+    height: 200,
+    width: 200,
+    child: (_videoPlayerController != null &&
+            _videoPlayerController!.value.isInitialized)
+        ? Stack(
+            children: <Widget>[
+              AspectRatio(
+                aspectRatio: _videoPlayerController!.value.aspectRatio,
+                child: VideoPlayer(_videoPlayerController!),
+              ),
+              Positioned(
+                top: -15,
+                right: -15,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(6.0),
+                  child: IconButton(
+                    hoverColor: Colors.red,
+                    icon: const Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                      size: 23,
+                    ),
+                    onPressed: () => _removeVideo(),
+                  ),
+                ),
+              ),
+            ],
+          )
+        : Container(),
+  );
+}
+
 //IMAGE ATTACHMENT
   imageAttachment() async {
     final feedId = const Uuid().v4();
@@ -529,9 +576,10 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
         uploadedFileName = resultFileName["mediaPath"];
       });
       fileList.add(uploadedFilePath.toString());
-    }
-    ;
+    };
   }
+
+
 
   videoAttachment() async {
     final feedId = const Uuid().v4();
@@ -547,16 +595,73 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
       });
       initializeVideo(uploadedFilePath.toString());
     }
+    else{
+      _showFileSizeExceedDialog();
+    }
   }
 
-  void initializeVideo(String url) {
-    _videoPlayerController = VideoPlayerController.file(File(url))
-      ..initialize().then((_) {
-        _videoPlayerController!.setVolume(0);
-        _videoPlayerController!.play();
-        setState(() {});
-      });
+
+void _showFileSizeExceedDialog() {
+  showDialog(
+    context: context, // Make sure to have a reference to the BuildContext
+    builder: (context) {
+      return AlertDialog(
+        title: Text('File Size Exceeded'),
+        content: Text('Please select a video file that is 5MB or smaller.'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+  // void initializeVideo(String url) {
+  //   _videoPlayerController = VideoPlayerController.file(File(url))
+  //     ..initialize().then((_) {
+  //       _videoPlayerController!.setVolume(0);
+  //       _videoPlayerController!.play();
+  //       setState(() {});
+  //     });
+  // }
+
+
+Future<void> initializeVideo(String url) async {
+    print("Video URL: $url");
+
+    if (!File(url).existsSync()) {
+      print("Video file does not exist at $url");
+      return;
+    }
+
+    // Create a directory to store the video file in a more permanent location
+    final appDirectory = await getApplicationDocumentsDirectory();
+    final newFilePath = '${appDirectory.path}/video.mp4';
+
+    // Copy the video file to the new location
+    final File newFile = await File(url).copy(newFilePath);
+    print("Copied video file to: ${newFile.path}");
+
+    // Initialize the VideoPlayer with the new file path
+    _videoPlayerController = VideoPlayerController.file(newFile);
+    
+    // Listen for when the initialization is complete
+    await _videoPlayerController!.initialize();
+
+    // Set up a listener to rebuild the UI when the playback state changes
+    _videoPlayerController!.addListener(() {
+      setState(() {});
+    });
+
+    // Start playing the video
+    _videoPlayerController!.play();
   }
+
 
   Widget returnFileContainer(int index) {
     if (!fileList[index].contains('mp4')) {
@@ -577,7 +682,6 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
 
   void _removeVideo() {
     _resetValues();
-
     _videoPlayerController = null;
   }
 

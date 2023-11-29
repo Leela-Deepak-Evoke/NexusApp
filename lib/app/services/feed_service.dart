@@ -4,6 +4,7 @@ import 'package:evoke_nexus_app/app/models/delete.dart';
 import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/models/post_feed_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -138,6 +139,13 @@ safePrint(jsonResponse);
         return null;
       }
       final platformFile = fileResult.files.single;
+
+       // Check if the file size is within the limit (5MB)
+    if (platformFile.size > 5 * 1024 * 1024) {
+      safePrint('File size exceeds the limit (5MB)');
+      return null;
+    }
+
       const options = StorageUploadFileOptions(
         accessLevel: StorageAccessLevel.guest,
       );

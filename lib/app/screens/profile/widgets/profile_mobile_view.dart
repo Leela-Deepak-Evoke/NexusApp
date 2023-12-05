@@ -3,24 +3,23 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/profile_service_provider.dart';
-import 'package:evoke_nexus_app/app/screens/login/login_screen.dart';
-import 'package:evoke_nexus_app/app/screens/timeline/timeline_screen.dart';
-import 'package:evoke_nexus_app/app/utils/app_routes.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileMobileView extends ConsumerStatefulWidget {
   final User user;
-  final BuildContext context; // Add this line
+  final BuildContext context;
+  final bool isEditing;
+  // Add this line
   Function() onPostClicked;
 
   ProfileMobileView({
     Key? key,
     required this.user,
     required this.context,
+    required this.isEditing,
     required this.onPostClicked,
   }) : super(key: key);
 
@@ -31,9 +30,11 @@ class ProfileMobileView extends ConsumerStatefulWidget {
 class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
   File? _image; // Variable to store the selected image
 
+  // String _aboutMe = "Flutter Developer";
+  // String _socialNetworkLink = "https://github.com/johndoe";
+
   @override
   Widget build(BuildContext context) {
-    // Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -45,11 +46,17 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
               onPressed: () {
                 ref.read(uploadProfileImageProvider(widget.user.userId));
               },
-              child: const Text('Change Profile Picture',
-                  style: TextStyle(
-                    fontSize: 8,
-                    fontWeight: FontWeight.bold,
-                  )),
+               child: Text(
+                    widget.user.profilePicture != null &&
+                            widget.user.profilePicture!.isNotEmpty
+                        ? 'Change Profile Picture'
+                        : 'Add Profile Picture',
+                    style: const TextStyle(
+                      fontSize: 8,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+            
             ),
 
             const SizedBox(height: 10),
@@ -75,13 +82,44 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
             const SizedBox(height: 10),
           ],
         ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: VerticalCardList(),
-        ),
-        const SizedBox(height: 20),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: _buildViewProfile(), 
+        ), // Align(
+        //   alignment: Alignment.centerLeft,
+        //   child: VerticalCardList(),
+        // ),
+        // const SizedBox(height: 20),
         // LogoutButton(),
         _logout(),
+      ],
+    );
+  }
+
+  Widget _buildViewProfile() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'About Me: ${widget.user.about}',
+          style: TextStyle(
+            color: Color(0xff676A79),
+            fontSize: 16.0,
+            fontFamily: GoogleFonts.notoSans().fontFamily,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          'Social Link: ${widget.user.socialLinks}',
+          style: TextStyle(
+            color: Color(0xff676A79),
+            fontSize: 16.0,
+            fontFamily: GoogleFonts.notoSans().fontFamily,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        // _logout(),
       ],
     );
   }
@@ -191,8 +229,8 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
       await prefs.remove('authToken');
 
       // widget.context.replaceNamed(AppRoute.login.name);
-              // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-        //                         builder: (context) => const LoginScreen()), (route) => false);
+      // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+      //                         builder: (context) => const LoginScreen()), (route) => false);
 
 //  showDialog(
 //                     context: context,
@@ -218,17 +256,18 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
     }
   }
 
-void _showToast(BuildContext context) {
+  void _showToast(BuildContext context) {
     final scaffold = ScaffoldMessenger.of(context);
 
     scaffold.showSnackBar(
       SnackBar(
         // content: const Text('Added to favorite'),
         content: const SizedBox(
-              height:70,
-              child: Text('Added to favorite'),
+          height: 70,
+          child: Text('Added to favorite'),
         ),
-        action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+        action: SnackBarAction(
+            label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
       ),
     );
   }
@@ -280,13 +319,14 @@ class VerticalCard extends StatelessWidget {
           children: [
             GestureDetector(
                 onTap: () {
-                  if (title == "TimeLine" || title == "Notifications" || title == "Settings") {
+                  if (title == "TimeLine" ||
+                      title == "Notifications" ||
+                      title == "Settings") {
                     // Navigator.push(
                     //     context,
                     //     MaterialPageRoute(
                     //         fullscreenDialog: false,
                     //         builder: (context) => const TimelineScreen()));
-
 
                     _showToast(context);
                   }
@@ -318,10 +358,11 @@ class VerticalCard extends StatelessWidget {
       SnackBar(
         // content: const Text('Added to favorite'),
         content: const SizedBox(
-              height:70,
-              child: Text('In Progress'),
+          height: 70,
+          child: Text('In Progress'),
         ),
-        action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+        action: SnackBarAction(
+            label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
       ),
     );
   }

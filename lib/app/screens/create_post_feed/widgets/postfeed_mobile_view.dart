@@ -334,10 +334,10 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                       : false,
                   child: TextButton.icon(
                     onPressed: () {
-                      isVisible = false;
-                      _selectFile(ContentType.video);
+                      // isVisible = false;
+                      // _selectFile(ContentType.video);
 
-                      // _showToast(context);
+                      _showToast(context);
                     },
                     icon: Image.asset(
                       'assets/images/Vector.png',
@@ -465,7 +465,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   Widget videoPickerContent_OLD(Size size) {
     return Container(
       padding: const EdgeInsets.all(10.0),
-      color: Colors.red,
+      // color: Colors.red,
       height: 200,
       width: 200,
       //color: Colors.blue,
@@ -621,46 +621,46 @@ void _showFileSizeExceedDialog() {
   );
 }
 
-  // void initializeVideo(String url) {
-  //   _videoPlayerController = VideoPlayerController.file(File(url))
-  //     ..initialize().then((_) {
-  //       _videoPlayerController!.setVolume(0);
-  //       _videoPlayerController!.play();
-  //       setState(() {});
-  //     });
-  // }
-
-
-Future<void> initializeVideo(String url) async {
-    print("Video URL: $url");
-
-    if (!File(url).existsSync()) {
-      print("Video file does not exist at $url");
-      return;
-    }
-
-    // Create a directory to store the video file in a more permanent location
-    final appDirectory = await getApplicationDocumentsDirectory();
-    final newFilePath = '${appDirectory.path}/video.mp4';
-
-    // Copy the video file to the new location
-    final File newFile = await File(url).copy(newFilePath);
-    print("Copied video file to: ${newFile.path}");
-
-    // Initialize the VideoPlayer with the new file path
-    _videoPlayerController = VideoPlayerController.file(newFile);
-    
-    // Listen for when the initialization is complete
-    await _videoPlayerController!.initialize();
-
-    // Set up a listener to rebuild the UI when the playback state changes
-    _videoPlayerController!.addListener(() {
-      setState(() {});
-    });
-
-    // Start playing the video
-    _videoPlayerController!.play();
+  void initializeVideo(String url) {
+    _videoPlayerController = VideoPlayerController.file(File(url))
+      ..initialize().then((_) {
+        _videoPlayerController!.setVolume(0);
+        _videoPlayerController!.play();
+        setState(() {});
+      });
   }
+
+
+// Future<void> initializeVideo(String url) async {
+//     print("Video URL: $url");
+
+//     if (!File(url).existsSync()) {
+//       print("Video file does not exist at $url");
+//       return;
+//     }
+
+//     // Create a directory to store the video file in a more permanent location
+//     final appDirectory = await getApplicationDocumentsDirectory();
+//     final newFilePath = '${appDirectory.path}/video.mp4';
+
+//     // Copy the video file to the new location
+//     final File newFile = await File(url).copy(newFilePath);
+//     print("Copied video file to: ${newFile.path}");
+
+//     // Initialize the VideoPlayer with the new file path
+//     _videoPlayerController = VideoPlayerController.file(newFile);
+    
+//     // Listen for when the initialization is complete
+//     await _videoPlayerController!.initialize();
+
+//     // Set up a listener to rebuild the UI when the playback state changes
+//     _videoPlayerController!.addListener(() {
+//       setState(() {});
+//     });
+
+//     // Start playing the video
+//     _videoPlayerController!.play();
+//   }
 
 
   Widget returnFileContainer(int index) {

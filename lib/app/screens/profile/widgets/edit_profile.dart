@@ -1,3 +1,5 @@
+import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
+import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
@@ -73,6 +75,8 @@ class _UserFormState extends ConsumerState<UserForm> {
     } else {
       print("No changes detected.");
     }
+           Navigator.pop(context);
+
   }
 
   void _handleCancel() {
@@ -93,78 +97,210 @@ class _UserFormState extends ConsumerState<UserForm> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      child: Card(
-        margin: const EdgeInsets.all(8.0),
-        clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+    final userAsyncValue = ref.watch(fetchUserProvider);
+    return userAsyncValue.when(
+      data: (data) {
+        return MobileLayout(
+            title: 'Edit Profile',
+            user: data,
+            hasBackAction: true,
+            hasRightAction: false,
+            topBarButtonAction: () {},
+            backButtonAction: () {
+              Navigator.pop(context);
+            },
+            child: _editDetails(widget.user, context));
+      },
+      loading: () => const Center(
+        child: SizedBox(
+          height: 50.0,
+          width: 50.0,
+          child: CircularProgressIndicator(),
         ),
-        elevation: 5,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextButton(
-                  onPressed: () =>
-                      ref.read(uploadProfileImageProvider(widget.user.userId)),
-                  child: Text(
-                    widget.user.profilePicture != null &&
-                            widget.user.profilePicture!.isNotEmpty
-                        ? 'Change Profile Picture'
-                        : 'Add Profile Picture',
-                    style: const TextStyle(
-                      fontSize: 8,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+      ),
+      error: (error, stack) {
+        // Handle the error case if needed
+        return Text('An error occurred: $error');
+      },
+    );
+
+    // return SizedBox(
+    //   height: MediaQuery.of(context).size.height,
+    //   width: MediaQuery.of(context).size.width,
+    //   child: Card(
+    //     margin: const EdgeInsets.all(8.0),
+    //     clipBehavior: Clip.antiAlias,
+    //     shape: RoundedRectangleBorder(
+    //       borderRadius: BorderRadius.circular(16),
+    //     ),
+    //     elevation: 5,
+    //     child: Padding(
+    //       padding: const EdgeInsets.all(8.0),
+    //       child: SingleChildScrollView(
+    //         child: Column(
+    //           crossAxisAlignment: CrossAxisAlignment.start,
+    //           children: [
+    //             TextButton(
+    //               onPressed: () =>
+    //                   ref.read(uploadProfileImageProvider(widget.user.userId)),
+    //               child: Text(
+    //                 widget.user.profilePicture != null &&
+    //                         widget.user.profilePicture!.isNotEmpty
+    //                     ? 'Change Profile Picture'
+    //                     : 'Add Profile Picture',
+    //                 style: const TextStyle(
+    //                   fontSize: 8,
+    //                   fontWeight: FontWeight.bold,
+    //                 ),
+    //               ),
+    //             ),
+    //             Row(
+    //               mainAxisAlignment: MainAxisAlignment.start,
+    //               crossAxisAlignment: CrossAxisAlignment.start,
+    //               children: [
+    //                 const SizedBox(width: 15),
+    //                 _buildReadOnlyField("Email", widget.user.email),
+    //                 const SizedBox(width: 30),
+    //                 _buildReadOnlyField("Role", widget.user.role),
+    //                 const SizedBox(width: 150),
+    //                 _buildReadOnlyField(
+    //                     "Created At", widget.user.createdAt.toIso8601String()),
+    //                 const SizedBox(width: 30),
+    //                 _buildReadOnlyField("Status", widget.user.status),
+    //                 const SizedBox(width: 15)
+    //               ],
+    //             ),
+    //             const SizedBox(height: 20),
+    //             Column(
+    //               children: [
+    //                 TextField(
+    //                   controller: _aboutController,
+    //                   decoration: const InputDecoration(
+    //                       labelText: "About",
+    //                       border: OutlineInputBorder(),
+    //                       contentPadding: EdgeInsets.all(8)),
+    //                 ),
+    //                 const SizedBox(height: 20),
+    //                 ..._buildSocialLinksFields()
+    //               ],
+    //             ),
+    //             const SizedBox(height: 5),
+    //             Row(
+    //               mainAxisAlignment: MainAxisAlignment.end,
+    //               children: [
+    //                 ElevatedButton(
+    //                     onPressed: _handleSubmit, child: const Text("Submit")),
+    //                 const SizedBox(width: 10),
+    //                 TextButton(
+    //                     onPressed: _handleCancel, child: const Text("Cancel")),
+    //               ],
+    //             ),
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
+  }
+
+  Widget _editDetails(User user, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 0),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(0),
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          alignment: AlignmentDirectional.center,
+          padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Card(
+              margin: const EdgeInsets.all(8.0),
+              clipBehavior: Clip.antiAlias,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              elevation: 5,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(width: 15),
-                    _buildReadOnlyField("Email", widget.user.email),
-                    const SizedBox(width: 30),
-                    _buildReadOnlyField("Role", widget.user.role),
-                    const SizedBox(width: 150),
-                    _buildReadOnlyField(
-                        "Created At", widget.user.createdAt.toIso8601String()),
-                    const SizedBox(width: 30),
-                    _buildReadOnlyField("Status", widget.user.status),
-                    const SizedBox(width: 15)
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Column(
-                  children: [
-                    TextField(
-                      controller: _aboutController,
-                      decoration: const InputDecoration(
-                          labelText: "About",
-                          border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.all(8)),
+                    const SizedBox(height: 10),
+                    _profilePicWidget(widget.user, ref),
+                    TextButton(
+                      onPressed: () => ref
+                          .read(uploadProfileImageProvider(widget.user.userId)),
+                      child: Center(
+                        child: Text(
+                          widget.user.profilePicture != null &&
+                                  widget.user.profilePicture!.isNotEmpty
+                              ? 'Change Profile Picture'
+                              : 'Add Profile Picture',
+                          style: const TextStyle(
+                            fontSize: 8,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(width: 15),
+                        _buildReadOnlyField("Email", widget.user.email),
+                        const SizedBox(width: 30),
+                        Row(
+                          children: [
+                            _buildReadOnlyField("Role", widget.user.role),
+                            const SizedBox(width: 150),
+                            _buildReadOnlyField("Status", widget.user.status),
+                          ],
+                        ),
+                        const SizedBox(width: 30),
+                        _buildReadOnlyField("Created At",
+                            widget.user.createdAt.toIso8601String()),
+                        const SizedBox(width: 15),
+                      ],
                     ),
                     const SizedBox(height: 20),
-                    ..._buildSocialLinksFields()
+                    Column(
+                      children: [
+                        TextField(
+                          controller: _aboutController,
+                          maxLines: 3, // Increase this number for more lines
+                          decoration: const InputDecoration(
+                              labelText: "About",
+                              border: OutlineInputBorder(),
+                              contentPadding: EdgeInsets.all(8)),
+
+                          // maxLength: 3000,
+                        ),
+                        const SizedBox(height: 20),
+                        ..._buildSocialLinksFields()
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ElevatedButton(
+                           onPressed: () async {
+  await _handleSubmit();
+},
+                            child: const Text("Submit")),
+                        const SizedBox(width: 10),
+                        TextButton(
+                            onPressed: _handleCancel,
+                            child: const Text("Cancel")),
+                      ],
+                    ),
                   ],
                 ),
-                const SizedBox(height: 5),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    ElevatedButton(
-                        onPressed: _handleSubmit, child: const Text("Submit")),
-                    const SizedBox(width: 10),
-                    TextButton(
-                        onPressed: _handleCancel, child: const Text("Cancel")),
-                  ],
-                ),
-              ],
+                // ),
+              ),
             ),
           ),
         ),
@@ -226,4 +362,90 @@ class _UserFormState extends ConsumerState<UserForm> {
     }
     super.dispose();
   }
+
+  Widget _profilePicWidget(User user, WidgetRef ref) {
+    final avatarText = getAvatarText(user.name);
+
+    final profileThumbnailAsyncValue =
+        ref.watch(profileThumbnailProvider(user.profilePicture ?? ""));
+
+    return profileThumbnailAsyncValue.when(
+      data: (data) {
+        if (data != null) {
+          return Center(
+              child: CircleAvatar(
+            backgroundImage: NetworkImage(data),
+            radius: 80.0,
+          ));
+        } else {
+          // Render a placeholder or an error image
+          return CircleAvatar(radius: 80.0, child: Text(avatarText));
+        }
+      },
+      loading: () => const Center(
+        child: SizedBox(
+          height: 80.0,
+          width: 80.0,
+          child: CircularProgressIndicator(),
+        ),
+      ),
+      error: (error, stack) {
+        // Handle the error case if needed
+        return CircleAvatar(radius: 80.0, child: Text(avatarText));
+      },
+    );
+  }
+
+  String getAvatarText(String name) {
+    final nameParts = name.split(' ');
+    if (nameParts.length >= 2) {
+      return nameParts[0][0].toUpperCase() + nameParts[1][0].toUpperCase();
+    } else if (nameParts.isNotEmpty) {
+      return nameParts[0][0].toUpperCase();
+    }
+    return '';
+  }
+
+  // Widget _profilePicWidget(User user, WidgetRef ref) {
+  //   final avatarText = getAvatarText(user.name);
+
+  //   final profileThumbnailAsyncValue =
+  //       ref.watch(profileThumbnailProvider(user.profilePicture ?? ""));
+
+  //   return profileThumbnailAsyncValue.when(
+  //     data: (data) {
+  //       if (data != null) {
+  //         return Center(
+  //             child: CircleAvatar(
+  //           backgroundImage: NetworkImage(data),
+  //           radius: 80.0,
+  //         ));
+  //       } else {
+  //         // Render a placeholder or an error image
+  //         return CircleAvatar(radius: 80.0, child: Text(avatarText));
+  //       }
+  //     },
+  //     loading: () => const Center(
+  //       child: SizedBox(
+  //         height: 80.0,
+  //         width: 80.0,
+  //         child: CircularProgressIndicator(),
+  //       ),
+  //     ),
+  //     error: (error, stack) {
+  //       // Handle the error case if needed
+  //       return CircleAvatar(radius: 80.0, child: Text(avatarText));
+  //     },
+  //   );
+  // }
+
+  // String getAvatarText(String name) {
+  //   final nameParts = name.split(' ');
+  //   if (nameParts.length >= 2) {
+  //     return nameParts[0][0].toUpperCase() + nameParts[1][0].toUpperCase();
+  //   } else if (nameParts.isNotEmpty) {
+  //     return nameParts[0][0].toUpperCase();
+  //   }
+  //   return '';
+  // }
 }

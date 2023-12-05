@@ -1,10 +1,10 @@
+import 'package:evoke_nexus_app/app/screens/welcome/welcome_screen.dart';
 import 'package:evoke_nexus_app/app/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:evoke_nexus_app/app/provider/authentication_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 
 class LoginScreenSmall extends ConsumerStatefulWidget {
   const LoginScreenSmall({super.key});
@@ -15,16 +15,15 @@ class LoginScreenSmall extends ConsumerStatefulWidget {
 
 class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
     with TickerProviderStateMixin {
+  AnimationController? _animationController;
+  double _opacity = 0.0;
 
- AnimationController? _animationController;
- double _opacity = 0.0;
- 
   //Slider Page
   int _index = 0;
   final PageController _pageController = PageController(viewportFraction: 1);
   int _activePage = 0;
 
- @override
+  @override
   void initState() {
     super.initState();
     _animationController = AnimationController(
@@ -50,8 +49,7 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
     final authService = ref.watch(authenticationServiceProvider);
     final size = MediaQuery.of(context).size;
     return Scaffold(
-        body:
-            Stack(
+        body: Stack(
       children: [
         SizedBox(
           width: size.width,
@@ -68,12 +66,11 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
         ),
         Container(
           // padding: EdgeInsets.zero,
-          child:
-          Padding(
+          child: Padding(
             padding: const EdgeInsets.only(top: 120),
-          child:  MyPageView(),
+            child: MyPageView(),
           ),
-         
+
           // Row(
           //   crossAxisAlignment: CrossAxisAlignment.stretch,
           //   children: [
@@ -231,17 +228,16 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
                   height: 24,
                 ),
                 onPressed: () => {
-                  authService.login((isSucess) 
-                  {
-
-                    if(isSucess)
-                    {
-                        GoRouter.of(context).goNamed('${AppRoute.rootNavigation.name}');
+                  authService.login((isSucess) {
+                    if (isSucess) {
+                      // GoRouter.of(context).goNamed('${AppRoute.rootNavigation.name}');
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const WelcomeScreen()));
                     }
-
                   }, context)
-              
-                  },
+                },
                 label: Text('Login with Evoke ID',
                     style: TextStyle(
                       color: Color(0xFF292F69),
@@ -256,16 +252,7 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
       ],
     ));
   }
-
-
 }
-
-
-
-
-
-
-
 
 class MyPageView extends StatefulWidget {
   @override

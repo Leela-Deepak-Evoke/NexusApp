@@ -160,8 +160,27 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
                                       ),
                                     ),
                                   btnCommentsLayout(context, index, item, ref),
+          //                          TextButton.icon(
+          //   onPressed: () {
+          //   },
+          //   icon: Image.asset(
+          //     'assets/images/Vector-2.png',
+          //     width: 20,
+          //     height: 20,
+          //   ),
+          //   label: Text(
+          //     'Report',
+          //     style: TextStyle(
+          //       color: Color(0xff393E41),
+          //       fontFamily: GoogleFonts.inter().fontFamily,
+          //       fontWeight: FontWeight.normal,
+          //       fontSize: 14,
+          //     ),
+          //   ),
+          // ),
                                 ],
                               ),
+                              
                             ),
                             if (isCommentsVisibleList == index)
                               Visibility(

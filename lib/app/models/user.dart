@@ -10,6 +10,9 @@ class User {
   final String? about;
   final String? profilePicture;
   final String? socialLinks;
+  
+  final DateTime? currentLoginAt;
+  final DateTime? lastLoginAt;
 
   User(
       {required this.userId,
@@ -22,7 +25,10 @@ class User {
       required this.status,
       this.about,
       this.profilePicture,
-      this.socialLinks});
+      this.socialLinks,
+       this.currentLoginAt,
+        this.lastLoginAt,
+      });
 
   Map<String, dynamic> toJson() => {
         'userId': userId,
@@ -35,7 +41,9 @@ class User {
         'status': status,
         'about': about,
         'profilePicture': profilePicture,
-        'socialLinks': socialLinks
+        'socialLinks': socialLinks,
+         'currentLoginAt': currentLoginAt,
+          'lastLoginAt': lastLoginAt
       };
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -50,6 +58,9 @@ class User {
         status: json['status'],
         about: json['about'],
         profilePicture: json['profilePicture'],
-        socialLinks: json['socialLinks']);
+        socialLinks: json['socialLinks'],
+        currentLoginAt: DateTime.parse(json['currentLoginAt']),
+        lastLoginAt: DateTime.parse(json['lastLoginAt'])
+        );
   }
 }

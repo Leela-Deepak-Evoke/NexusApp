@@ -1,4 +1,5 @@
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
+import 'package:evoke_nexus_app/app/screens/profile/widgets/edit_profile.dart';
 import 'package:evoke_nexus_app/app/screens/profile/widgets/profile_mobile_view.dart';
 import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 import 'package:flutter/material.dart';
@@ -31,13 +32,16 @@ class _ProfileScreenSmallState extends ConsumerState<ProfileScreenSmall> {
         return MobileLayout(
           title: 'Profile',
           user: data,
-          child:ProfileMobileView(user: data, context: widget.context, onPostClicked: () {
+          child:ProfileMobileView(user: data, context: widget.context, isEditing: true, onPostClicked: () {
             
           },),
           hasBackAction: false,
-          hasRightAction: false,
+          hasRightAction: true,
           topBarButtonAction: () {
-            
+              Navigator.push(
+              context,
+              MaterialPageRoute(fullscreenDialog: true,
+                  builder: (context) => UserForm(user: data)));
           },
           backButtonAction: () {
             Navigator.pop(context);

@@ -24,6 +24,8 @@ class _OrgUpdatesScreenSmall extends ConsumerState<OrgUpdatesScreenSmall> {
           user: data,
           child: OrgUpdateMobileView(user: data, onPostClicked: () {  },),
           hasBackAction: false,
+                    showSearchIcon: true,
+
           hasRightAction: (data.role == 'Group' || data.role == 'Leader') ? true : false,
           topBarButtonAction: () {
              
@@ -31,6 +33,9 @@ class _OrgUpdatesScreenSmall extends ConsumerState<OrgUpdatesScreenSmall> {
               context,
               MaterialPageRoute(fullscreenDialog: true,
                   builder: (context) => CreatePostOrgUpdatesScreen()));
+          },
+          topBarSearchButtonAction: () { 
+            _showToast(context);
           },
           backButtonAction: () {
             Navigator.pop(context);
@@ -49,6 +54,22 @@ class _OrgUpdatesScreenSmall extends ConsumerState<OrgUpdatesScreenSmall> {
         // Handle the error case if needed
         return Text('An error occurred: $error');
       },
+    );
+  }
+
+   void _showToast(BuildContext context) {
+    final scaffold = ScaffoldMessenger.of(context);
+
+    scaffold.showSnackBar(
+      SnackBar(
+        // content: const Text('Added to favorite'),
+        content: const SizedBox(
+          height: 70,
+          child: Text('In Progress'),
+        ),
+        action: SnackBarAction(
+            label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+      ),
     );
   }
 }

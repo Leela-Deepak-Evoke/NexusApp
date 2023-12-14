@@ -41,9 +41,7 @@ class MobileCustomAppbar extends StatelessWidget {
                   onPressed: () {},
                 ),
                 InkWell(
-                  onTap: () {
-          
-                  },
+                  onTap: () {},
                   child: Container(
                     width: 24,
                     height: 24,
@@ -76,18 +74,22 @@ class CustomAppbar extends StatelessWidget {
   final bool hasBackAction;
   final bool hasRightAction;
   final Widget? rightChildWiget;
+  final bool showSearchIcon; // Add this flag
   final Function() topBarButtonAction;
   final Function() backButtonAction;
-   CustomAppbar(
-    {
-    super.key, 
+  final Function() topBarSearchButtonAction;
+
+  CustomAppbar({
+    super.key,
     required this.title,
     required this.hasBackAction,
     required this.hasRightAction,
+    required this.showSearchIcon, // Add this line
     required this.topBarButtonAction,
-     required this.backButtonAction,
-     required this.rightChildWiget,
-    });
+    required this.backButtonAction,
+    required this.rightChildWiget,
+    required this.topBarSearchButtonAction,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -101,28 +103,25 @@ class CustomAppbar extends StatelessWidget {
           builder: (context, value, child) {
             return AppBar(
               backgroundColor: Colors.transparent,
-              leading:
-               hasBackAction ? 
-               IconButton(
-                icon: Image.asset(
-                  'assets/images/back.png',
-                  width: 24,
-                  height: 24,
-                ),
-                onPressed: () {
-                   backButtonAction();
-                },
-              ) : 
-              IconButton(
-                icon: Image.asset(
-                  'assets/images/Nexus.png',
-                  width: 35,
-                  height: 35,
-                ),
-                onPressed: () {
-                  
-                },
-              ),
+              leading: hasBackAction
+                  ? IconButton(
+                      icon: Image.asset(
+                        'assets/images/back.png',
+                        width: 24,
+                        height: 24,
+                      ),
+                      onPressed: () {
+                        backButtonAction();
+                      },
+                    )
+                  : IconButton(
+                      icon: Image.asset(
+                        'assets/images/Nexus.png',
+                        width: 35,
+                        height: 35,
+                      ),
+                      onPressed: () {},
+                    ),
 
               titleSpacing: 0,
               centerTitle: false,
@@ -137,25 +136,58 @@ class CustomAppbar extends StatelessWidget {
                 textAlign: TextAlign.left,
               ),
               actions: [
-              
-                  hasRightAction ? 
-                 ((rightChildWiget != null) ?
-                  SizedBox(
-                    height: 30,
-                    width: 150,
-                    child: rightChildWiget!) :  
-                 IconButton(
-                icon: Image.asset(
-                  'assets/images/create-post.png',
-                  width: 24,
-                  height: 24,
-                ),
-                onPressed: () {
-                  topBarButtonAction();
-                },
-              ) )
-              : SizedBox()
+                hasRightAction
+                    ? ((rightChildWiget != null)
+                        ? SizedBox(
+                            height: 30,
+                            width: 150,
+                            child: rightChildWiget!,
+                          )
+                        : Row(
+                            children: [
+                              if (showSearchIcon) 
+                                IconButton(
+                                  icon: Icon(Icons
+                                      .search, color: Colors.white,), // Add your search icon here
+                                  onPressed: () {
+                                   topBarSearchButtonAction();
+                                  },
+                                ),
+
+                              IconButton(
+                                icon: Image.asset(
+                                  'assets/images/create-post.png',
+                                  width: 24,
+                                  height: 24,
+                                ),
+                                onPressed: () {
+                                  topBarButtonAction();
+                                },
+                              ),
+                            ],
+                          ))
+                    : SizedBox(),
               ],
+              // actions: [
+
+              //     hasRightAction ?
+              //    ((rightChildWiget != null) ?
+              //     SizedBox(
+              //       height: 30,
+              //       width: 150,
+              //       child: rightChildWiget!) :
+              //    IconButton(
+              //   icon: Image.asset(
+              //     'assets/images/create-post.png',
+              //     width: 24,
+              //     height: 24,
+              //   ),
+              //   onPressed: () {
+              //     topBarButtonAction();
+              //   },
+              // ) )
+              // : SizedBox()
+              // ],
               elevation: value ? 2.0 : 0.0,
             );
           }),

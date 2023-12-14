@@ -2,11 +2,13 @@ import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/models/user_like.dart';
 import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
+import 'package:evoke_nexus_app/app/screens/profile/profile_screen.dart';
+import 'package:evoke_nexus_app/app/screens/profile/widgets/profile_mobile_view.dart';
+import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 
 class LikesWidget extends ConsumerStatefulWidget {
   final User user;
@@ -32,7 +34,7 @@ class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
     final likesAsyncValue = ref.watch(likesProvider(widget.params));
     if (likesAsyncValue is AsyncData) {
       final items = likesAsyncValue.value!;
-      return _buildLikesDialog(items);
+      return _buildLikesDialog(items, context);
     }
 
     if (likesAsyncValue is AsyncLoading) {
@@ -82,7 +84,7 @@ class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
     );
   }
 
-  Widget _buildLikesDialog(List<UserLike> items) {
+  Widget _buildLikesDialog(List<UserLike> items, BuildContext context) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -122,13 +124,42 @@ class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
                       return FutureBuilder<Widget>(
                         future: _userProfilePicWidget(userLike, ref),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
                             return ListTile(
-                              leading: snapshot.data,
-                              minLeadingWidth: 0,
-                              minVerticalPadding: 15,
-                              title: Text(userLike.userName),
-                            );
+                                leading: snapshot.data,
+                                minLeadingWidth: 0,
+                                minVerticalPadding: 15,
+                                title: Text(userLike.userName),
+                                onTap: () {
+                                  //     Navigator.push(
+                                  // context,
+                                  // MaterialPageRoute(
+                                  //   builder: (context) => ProfileScreen(),
+                                  // ));
+
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MobileLayout(
+                                              title: 'User Profile',
+                                              user: widget.user,
+                                              hasBackAction: true,
+                                              hasRightAction: false,
+                                              topBarButtonAction: () {},
+                                              backButtonAction: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: ProfileMobileView(
+                                                user: widget.user,
+                                                context: context,
+                                                otherUser: userLike,
+                                                isFromOtherUser: true,
+                                                onPostClicked: () {},
+                                              ),
+                                            )),
+                                  );
+                                });
                           } else {
                             // Return a placeholder while loading
                             return ListTile(
@@ -186,4 +217,3 @@ class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
     return '';
   }
 }
-

@@ -20,7 +20,9 @@ class _ForumMobileViewCardState extends State<ForumMobileView> {
      final Size size = MediaQuery.of(context).size;
     return Column(children: [
 
-      SearchHeaderView(name: "Forum", searchController: _searchController, size: size ,onSearchClicked: onSearchClicked),
+      // SearchHeaderView(name: "Forum", searchController: _searchController, size: size ,onSearchClicked: onSearchClicked),
+            // SearchHeaderView(onIconClicked: onSearchClicked),
+
         Expanded(
           child: Padding(
           padding: const EdgeInsets.only(left: 5, right: 5, top: 10), 

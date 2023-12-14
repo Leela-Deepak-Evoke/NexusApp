@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/feeds_tab_menu.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/forums_tab_menu.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/orgupdates_tab_menu.dart';
@@ -8,6 +9,7 @@ import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_menu.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_utils.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_menu_item.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../app_router.dart';
 
@@ -15,13 +17,11 @@ final TabBarNotifier _tabBarNotifier = TabBarNotifier();
 
 class TabBarHandler extends StatefulWidget {
   Function() logoutAction;
-  // final BuildContext? context;
   final BuildContext? rootScreenMobileContext; // Add this parameter
-TabBarHandler({Key? key, required this.logoutAction, this.rootScreenMobileContext})
-      : super(key: key);
 
-  // TabBarHandler({Key? key, required this.logoutAction, this.context})
-  //     : super(key: key);
+  TabBarHandler(
+      {Key? key, required this.logoutAction, this.rootScreenMobileContext})
+      : super(key: key);
 
   static const String route = '/';
 
@@ -30,10 +30,12 @@ TabBarHandler({Key? key, required this.logoutAction, this.rootScreenMobileContex
 }
 
 class _TabBarHandlerState extends State<TabBarHandler> {
-  @override
+
+    @override
   void initState() {
     super.initState();
-  }
+      }
+
 
   @override
   void dispose() {
@@ -42,6 +44,7 @@ class _TabBarHandlerState extends State<TabBarHandler> {
 
   @override
   Widget build(BuildContext context) {
+
     final menuItemlist = <TabMenuItem>[
       TabMenuItem(
           Icons.rss_feed,
@@ -62,14 +65,15 @@ class _TabBarHandlerState extends State<TabBarHandler> {
           ProfileTabMenu(
               logoutAction: widget.logoutAction,
               rootScreenMobileContext: widget.rootScreenMobileContext,
-              router: profileRouter)
-          ),
+              router: profileRouter)),
     ];
 
     return Material(
       child: AnimatedBuilder(
           animation: _tabBarNotifier,
           builder: (context, snapshot) {
+                    // _tabBarNotifier.setInitialIndexBasedOnLastLogin();
+
             return Stack(
               children: [
                 IndexedStack(
@@ -99,6 +103,7 @@ class _TabBarHandlerState extends State<TabBarHandler> {
             );
           }),
     );
+    
   }
 
   logoutAction() {
@@ -107,6 +112,9 @@ class _TabBarHandlerState extends State<TabBarHandler> {
 }
 
 class TabBarNotifier extends ChangeNotifier {
+    User? user;
+  bool fromWelcomeScreen = false;
+
   int _index = 0;
   int get index => _index;
   bool _hideBottomTabBar = false;
@@ -117,6 +125,17 @@ class TabBarNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+// HANDLING INDEX 0 and 3 --> user?.lastLoginAt
+
+  // void setInitialIndexBasedOnLastLogin() {
+  //   if (user?.lastLoginAt != null) {
+  //     _index = 0;
+  //   } else {
+  //     _index = 3;
+  //   }
+  //   notifyListeners();
+  // }
+
   bool get hideBottomTabBar => _hideBottomTabBar;
   set hideBottomTabBar(bool x) {
     _hideBottomTabBar = x;
@@ -125,7 +144,8 @@ class TabBarNotifier extends ChangeNotifier {
 
   FutureOr<bool> onBackButtonPressed() async {
     bool exitingApp = true;
-    switch (_tabBarNotifier.index) {
+    //_tabBarNotifier.index //// Use _index instead of _tabBarNotifier.index
+    switch (_index) { 
       case -1:
         if (homeKey.currentState != null && homeKey.currentState!.canPop()) {
           homeKey.currentState!.pop();

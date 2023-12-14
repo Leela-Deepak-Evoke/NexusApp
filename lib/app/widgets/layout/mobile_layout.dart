@@ -9,22 +9,24 @@ class MobileLayout extends StatefulWidget {
   final User user;
   final bool hasBackAction;
   final bool hasRightAction;
+  final bool? showSearchIcon;
   final Widget? rightChildWiget;
   final Function() topBarButtonAction;
   final Function() backButtonAction;
-   const MobileLayout({
+  final void Function()? topBarSearchButtonAction;
+  const MobileLayout({
     super.key,
     required this.child,
     required this.title,
-     required this.user,
-     required this.hasBackAction,
-     required this.hasRightAction,
-     required this.topBarButtonAction,
-     required this.backButtonAction,
-     this.rightChildWiget
-
-
-      });
+    required this.user,
+    required this.hasBackAction,
+    required this.hasRightAction,
+    this.showSearchIcon,
+    required this.topBarButtonAction,
+    required this.backButtonAction,
+    this.rightChildWiget,
+    this.topBarSearchButtonAction,
+  });
   @override
   State<MobileLayout> createState() => _MobileLayoutState();
 }
@@ -39,17 +41,23 @@ class _MobileLayoutState extends State<MobileLayout> {
 
     return Scaffold(
       drawer: const Drawer(),
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: <Widget>[
           _buildHeader(size, headerNegativeOffset),
           Container(
               padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 120),
               child: widget.child),
-           CustomAppbar(title: widget.title,hasBackAction: widget.hasBackAction,
-            hasRightAction: widget.hasRightAction, 
-            topBarButtonAction:() => widget.topBarButtonAction(),
-            backButtonAction: () => widget.backButtonAction(), 
-            rightChildWiget: widget.rightChildWiget),
+          CustomAppbar(
+              title: widget.title,
+              hasBackAction: widget.hasBackAction,
+              hasRightAction: widget.hasRightAction,
+              showSearchIcon: widget.showSearchIcon ?? false,
+              topBarButtonAction: () => widget.topBarButtonAction(),
+              backButtonAction: () => widget.backButtonAction(),
+              rightChildWiget: widget.rightChildWiget,
+              topBarSearchButtonAction: () =>
+                  widget.topBarSearchButtonAction!()),
         ],
       ),
     );

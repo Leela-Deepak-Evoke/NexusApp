@@ -75,6 +75,8 @@ class _S3TestState extends State<S3Test> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+              resizeToAvoidBottomInset:false,
+
         appBar: AppBar(
           title: const Text('Amplify Flutter Storage Application'),
         ),

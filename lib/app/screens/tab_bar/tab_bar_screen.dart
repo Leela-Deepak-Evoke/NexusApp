@@ -3,15 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TabbarScreen extends ConsumerWidget {
-  // final BuildContext? context; // Add this line
-  
    TabbarScreen({super.key, required this.logoutAction});
   Function() logoutAction;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-  
-        //  return TabBarHandler(logoutAction: logoutAction);
-        return TabBarHandler(logoutAction: logoutAction);
+          return TabBarHandler(logoutAction: logoutAction);
   }
 }

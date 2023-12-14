@@ -32,7 +32,7 @@ class _ProfileScreenSmallState extends ConsumerState<ProfileScreenSmall> {
         return MobileLayout(
           title: 'Profile',
           user: data,
-          child:ProfileMobileView(user: data, context: widget.context, isEditing: true, onPostClicked: () {
+          child:ProfileMobileView(user: data, context: widget.context, isFromOtherUser: false, onPostClicked: () {
             
           },),
           hasBackAction: false,

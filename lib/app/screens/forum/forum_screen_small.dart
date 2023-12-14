@@ -32,6 +32,8 @@ class _ForumScreenSmallState extends ConsumerState<ForumScreenSmall> {
         ), 
          hasBackAction: false,
           hasRightAction: true,
+                    showSearchIcon: false,
+
           topBarButtonAction: () {
             
              Navigator.push(

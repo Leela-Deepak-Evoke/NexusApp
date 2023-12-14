@@ -10,12 +10,12 @@ import 'package:go_router/go_router.dart';
 import '../../utils/app_routes.dart';
 
 class RootScreenMobile extends ConsumerWidget {
-
   const RootScreenMobile({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final checkUserAsyncValue = ref.watch(checkUserProvider);
+    // final fetchUserAsyncValue = ref.watch(fetchUserProvider);
 
     void onRetryPressed() {
       ref.read(refresUserProvider(""));

@@ -18,27 +18,39 @@ class _FeedsScreenSmallState extends ConsumerState<FeedsScreenSmall> {
     final userAsyncValue = ref.watch(fetchUserProvider);
     return userAsyncValue.when(
       data: (data) {
-        return 
-        MobileLayout(
+        return MobileLayout(
           title: 'Feeds',
           user: data,
-          child: FeedsMobileView(user: data),
           hasBackAction: false,
           hasRightAction: true,
+          showSearchIcon: true,
           topBarButtonAction: () {
-            
-               Navigator.push(
-              context,
-              MaterialPageRoute(fullscreenDialog: true,
-                  builder: (context) => CreatePostFeedScreen()));
-            
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    fullscreenDialog: true,
+                    builder: (context) => CreatePostFeedScreen()));
+          },
+         topBarSearchButtonAction: () {
+                    //  FeedsMobileView.onSearchClickedStatic();
+                    _showToast(context);
+
           },
           backButtonAction: () {
             Navigator.pop(context);
           },
+          // child: FeedsMobileView(user: data),
+          child: FeedsMobileView(
+            user: data,
+            onSearchClicked: () {
+              // FeedsMobileView mobileView =
+              //     context.findAncestorWidgetOfExactType<FeedsMobileView>()!;
+              // mobileView.onSearchClicked();
+            },
+          ),
         );
-  }, 
-    loading: () => const Center(
+      },
+      loading: () => const Center(
         child: SizedBox(
           height: 50.0,
           width: 50.0,
@@ -49,8 +61,21 @@ class _FeedsScreenSmallState extends ConsumerState<FeedsScreenSmall> {
         // Handle the error case if needed
         return Text('An error occurred: $error');
       },
-  );
-      
+    );
   }
+ void _showToast(BuildContext context) {
+    final scaffold = ScaffoldMessenger.of(context);
 
+    scaffold.showSnackBar(
+      SnackBar(
+        // content: const Text('Added to favorite'),
+        content: const SizedBox(
+          height: 70,
+          child: Text('In Progress'),
+        ),
+        action: SnackBarAction(
+            label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+      ),
+    );
   }
+}

@@ -23,17 +23,21 @@ import 'package:intl/intl.dart';
 
 class FeedListMobile extends ConsumerStatefulWidget {
   final User user;
-  const FeedListMobile({super.key, required this.user});
+  String? searchQuery;
+
+  FeedListMobile({super.key, required this.user, this.searchQuery});
 
   @override
   _FeedListMobileViewState createState() => _FeedListMobileViewState();
 }
 
 class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
-  
+  // String? searchQuery;
+
   //  @override
   // void initState() {
   //   super.initState();
+  //       searchQuery = widget.searchQuery;
   // }
 
   void _onCommentsPressed(Feed item) {
@@ -48,7 +52,6 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
                 )));
   }
 
-
   @override
   Widget build(BuildContext context) {
     final feedsAsyncValue = ref.watch(feedsProvider(widget.user));
@@ -59,6 +62,14 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
         // Handle the case where there is no data found
         return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
       } else {
+        // Filter the items based on the search query
+
+        final filteredItems = items.where((item) {
+          return item.author?.contains(widget.searchQuery ?? '') == true ||
+              item.name.contains(widget.searchQuery ?? '') == true;
+        }).toList();
+        print('filtered Items Total Items: ${filteredItems.length}');
+
         return Container(
             alignment: AlignmentDirectional.topStart,
             padding:
@@ -72,9 +83,9 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
                   padding: const EdgeInsets.only(
                       left: 0, right: 0, top: 0, bottom: 0),
                   shrinkWrap: true,
-                  itemCount: items.length,
+                  itemCount: filteredItems.length,
                   itemBuilder: (context, index) {
-                    final item = items[index];
+                    final item = filteredItems[index];
                     final author = item.author;
 
                     final formattedDate = DateFormat('MMM d HH:mm').format(
@@ -92,7 +103,6 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
                           children: [
                             ListTile(
                               leading: _profilePicWidget(item, ref),
-
                               minLeadingWidth: 0,
                               minVerticalPadding: 15,
                               title: Text(author!,
@@ -360,9 +370,9 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
               ),
             ),
           ),
-            TextButton.icon(
+          TextButton.icon(
             onPressed: () {
-              
+              _showToast(context);
             },
             icon: Image.asset(
               'assets/images/Vector-2.png',
@@ -452,9 +462,8 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
     );
   }
 
-
   Future<void> _onRefresh() async {
-      ref.read(refresUserProvider(""));
+    ref.read(refresUserProvider(""));
     ref.watch(refresFeedsProvider(""));
   }
 
@@ -463,7 +472,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
   }
 
 // Edit an item
-  void _editItem(Feed item) async{
+  void _editItem(Feed item) async {
     // setState(() {
     //   Navigator.push(
     //     context,
@@ -475,15 +484,16 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
     // });
 
 // setState(() {
-    var result =   Navigator.push(
-        context,
-        MaterialPageRoute(
-          fullscreenDialog: true,
-          builder: (context) => CreatePostFeedScreen(feedItem: item, isEditFeed: true),
-        ),
-      );
-      await ref.read(feedsProvider(widget.user).future);
-       await _onRefresh();
+    var result = Navigator.push(
+      context,
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (context) =>
+            CreatePostFeedScreen(feedItem: item, isEditFeed: true),
+      ),
+    );
+    await ref.read(feedsProvider(widget.user).future);
+    await _onRefresh();
 //  });
   }
 
@@ -522,6 +532,22 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
           ],
         );
       },
+    );
+  }
+
+  void _showToast(BuildContext context) {
+    final scaffold = ScaffoldMessenger.of(context);
+
+    scaffold.showSnackBar(
+      SnackBar(
+        // content: const Text('Added to favorite'),
+        content: const SizedBox(
+          height: 70,
+          child: Text('In Progress'),
+        ),
+        action: SnackBarAction(
+            label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+      ),
     );
   }
 }

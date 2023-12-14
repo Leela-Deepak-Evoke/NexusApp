@@ -15,6 +15,7 @@ class UserService {
       String name = '';
       String email = '';
       String title = 'Test User';
+      DateTime? lastLoginAt;
 
       if (result.isSignedIn) {
         final userAttributes = await Amplify.Auth.fetchUserAttributes();
@@ -28,6 +29,9 @@ class UserService {
           if (element.userAttributeKey.key == "custom:jobtitle") {
             title = element.value;
           }
+          if (element.userAttributeKey.key == "lastLoginAt") {
+            lastLoginAt = DateTime.parse(element.value);
+          }
         }
       }
 
@@ -37,7 +41,9 @@ class UserService {
           "identityId": identityId,
           "name": name,
           "email": email,
-          "title": title
+          "title": title,
+          "lastLoginAt": lastLoginAt
+              ?.toIso8601String(), // Convert DateTime to ISO 8601 string
         }
       };
 

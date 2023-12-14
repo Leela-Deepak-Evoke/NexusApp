@@ -462,12 +462,12 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   }
 
   // VIDEO Content
-  Widget videoPickerContent_OLD(Size size) {
+  Widget videoPickerContent(Size size) {
     return Container(
       padding: const EdgeInsets.all(10.0),
       // color: Colors.red,
-      height: 200,
-      width: 200,
+      // height: 200,
+      // width: 200,
       //color: Colors.blue,
       child: Row(
         children: <Widget>[
@@ -525,41 +525,41 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     );
   }
 
-  Widget videoPickerContent(Size size) {
-  return Container(
-    padding: const EdgeInsets.all(10.0),
-    color: Colors.red,
-    height: 200,
-    width: 200,
-    child: (_videoPlayerController != null &&
-            _videoPlayerController!.value.isInitialized)
-        ? Stack(
-            children: <Widget>[
-              AspectRatio(
-                aspectRatio: _videoPlayerController!.value.aspectRatio,
-                child: VideoPlayer(_videoPlayerController!),
-              ),
-              Positioned(
-                top: -15,
-                right: -15,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(6.0),
-                  child: IconButton(
-                    hoverColor: Colors.red,
-                    icon: const Icon(
-                      Icons.delete,
-                      color: Colors.red,
-                      size: 23,
-                    ),
-                    onPressed: () => _removeVideo(),
-                  ),
-                ),
-              ),
-            ],
-          )
-        : Container(),
-  );
-}
+//   Widget videoPickerContent_new(Size size) {
+//   return Container(
+//     padding: const EdgeInsets.all(10.0),
+//     // color: Colors.red,
+//     height: 200,
+//     width: 200,
+//     child: (_videoPlayerController != null &&
+//             _videoPlayerController!.value.isInitialized)
+//         ? Stack(
+//             children: <Widget>[
+//               AspectRatio(
+//                 aspectRatio: _videoPlayerController!.value.aspectRatio,
+//                 child: VideoPlayer(_videoPlayerController!),
+//               ),
+//               Positioned(
+//                 top: -15,
+//                 right: -15,
+//                 child: ClipRRect(
+//                   borderRadius: BorderRadius.circular(6.0),
+//                   child: IconButton(
+//                     hoverColor: Colors.red,
+//                     icon: const Icon(
+//                       Icons.delete,
+//                       color: Colors.red,
+//                       size: 23,
+//                     ),
+//                     onPressed: () => _removeVideo(),
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           )
+//         : Container(),
+//   );
+// }
 
 //IMAGE ATTACHMENT
   imageAttachment() async {

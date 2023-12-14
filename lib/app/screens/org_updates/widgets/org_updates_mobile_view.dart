@@ -20,9 +20,10 @@ class _OrgUpdateMobileViewCardState extends State<OrgUpdateMobileView> {
      final Size size = MediaQuery.of(context).size;
     return Column(children: [
 
-      SearchHeaderView(name: "OrgUpdates", searchController: _searchController, size: size ,onSearchClicked: () {
+      // SearchHeaderView(name: "OrgUpdates", searchController: _searchController, size: size ,onSearchClicked: () {
         
-      },),
+      // },),
+      // SearchHeaderView(onIconClicked: onSearchClicked),
 
         Expanded(
           child: Padding(

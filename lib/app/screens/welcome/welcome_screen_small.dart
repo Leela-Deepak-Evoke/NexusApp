@@ -15,6 +15,8 @@ class _WelcomeScreenSmallState extends ConsumerState<WelcomeScreenSmall> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+            resizeToAvoidBottomInset:false,
+
       // appBar: AppBar(
       //   title: Text('Welcome Screen'),
       // ),

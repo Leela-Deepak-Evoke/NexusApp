@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:evoke_nexus_app/app/models/user_like.dart';
 import 'package:evoke_nexus_app/app/provider/profile_service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,15 +12,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ProfileMobileView extends ConsumerStatefulWidget {
   final User user;
   final BuildContext context;
-  final bool isEditing;
-  // Add this line
+  final bool isFromOtherUser;
+  UserLike? otherUser;
   Function() onPostClicked;
 
   ProfileMobileView({
     Key? key,
     required this.user,
     required this.context,
-    required this.isEditing,
+    required this.isFromOtherUser,
+    this.otherUser,
     required this.onPostClicked,
   }) : super(key: key);
 
@@ -29,9 +31,6 @@ class ProfileMobileView extends ConsumerStatefulWidget {
 
 class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
   File? _image; // Variable to store the selected image
-
-  // String _aboutMe = "Flutter Developer";
-  // String _socialNetworkLink = "https://github.com/johndoe";
 
   @override
   Widget build(BuildContext context) {
@@ -46,22 +45,35 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
               onPressed: () {
                 ref.read(uploadProfileImageProvider(widget.user.userId));
               },
-               child: Text(
-                    widget.user.profilePicture != null &&
-                            widget.user.profilePicture!.isNotEmpty
-                        ? 'Change Profile Picture'
-                        : 'Add Profile Picture',
-                    style: const TextStyle(
-                      fontSize: 8,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-            
+              child: widget.isFromOtherUser == false
+                  ? Text(
+                      widget.user.profilePicture != null &&
+                              widget.user.profilePicture!.isNotEmpty
+                          ? 'Change Profile Picture'
+                          : 'Add Profile Picture',
+                      style: const TextStyle(
+                        fontSize: 8,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ) : widget.user.identityId == widget.otherUser!.identityId
+                ? Text(
+                      widget.user.profilePicture != null &&
+                              widget.user.profilePicture!.isNotEmpty
+                          ? 'Change Profile Picture'
+                          : 'Add Profile Picture',
+                      style: const TextStyle(
+                        fontSize: 8,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                  : Container(),
             ),
 
             const SizedBox(height: 10),
             Text(
-              widget.user.name,
+              widget.isFromOtherUser == false
+                  ? widget.user.name
+                  : widget.otherUser!.userName,
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 16.0,
@@ -71,7 +83,7 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
             ),
             const SizedBox(height: 8),
             Text(
-              widget.user.role,
+              widget.isFromOtherUser == false ? widget.user.role : widget.otherUser!.title,
               style: TextStyle(
                 color: Color(0xff676A79),
                 fontSize: 14.0,
@@ -82,16 +94,26 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
             const SizedBox(height: 10),
           ],
         ),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: _buildViewProfile(), 
-        ), // Align(
+
+        widget.isFromOtherUser == false
+            ? Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: _buildViewProfile(),
+              )
+            : widget.user.identityId == widget.otherUser!.identityId
+                ? Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: _buildViewProfile(),
+                  )
+                : Container(),
+      
+        // Align(
         //   alignment: Alignment.centerLeft,
         //   child: VerticalCardList(),
         // ),
         // const SizedBox(height: 20),
         // LogoutButton(),
-        _logout(),
+        // _logout(),
       ],
     );
   }
@@ -119,7 +141,7 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        // _logout(),
+        _logout(),
       ],
     );
   }
@@ -127,8 +149,10 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
   Widget _profilePicWidget(User user, WidgetRef ref) {
     final avatarText = getAvatarText(user.name);
 
-    final profileThumbnailAsyncValue =
-        ref.watch(profileThumbnailProvider(user.profilePicture ?? ""));
+    final profileThumbnailAsyncValue = ref.watch(profileThumbnailProvider(
+        widget.isFromOtherUser == false
+            ? user.profilePicture ?? ""
+            : widget.otherUser!.profilePicture ?? ""));
 
     return profileThumbnailAsyncValue.when(
       data: (data) {
@@ -200,7 +224,9 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
             // The user's choice will be available in the 'value' variable
             if (value == true) {
               // User clicked "Yes," proceed with the logout
-              doLogout();
+              // doLogout();
+                                  _showToast(context);
+
             }
           });
         },
@@ -264,7 +290,7 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
         // content: const Text('Added to favorite'),
         content: const SizedBox(
           height: 70,
-          child: Text('Added to favorite'),
+          child: Text('In Progress'),
         ),
         action: SnackBarAction(
             label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),

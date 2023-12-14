@@ -13,6 +13,8 @@ class CommonLayout extends StatelessWidget {
     print(currentPath);
 
     return Scaffold(
+            resizeToAvoidBottomInset:false,
+
       appBar: AppBar(
         toolbarHeight: 80.0,
         toolbarOpacity: 1.0,

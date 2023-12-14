@@ -32,8 +32,12 @@ class _ForumScreenSmallState extends ConsumerState<ForumScreenSmall> {
         ), 
          hasBackAction: false,
           hasRightAction: true,
-                    showSearchIcon: false,
+                    showSearchIcon: true,
+ topBarSearchButtonAction: () {
+                    //  FeedsMobileView.onSearchClickedStatic();
+                    _showToast(context);
 
+          },
           topBarButtonAction: () {
             
              Navigator.push(
@@ -61,6 +65,22 @@ class _ForumScreenSmallState extends ConsumerState<ForumScreenSmall> {
         // Handle the error case if needed
         return Text('An error occurred: $error');
       },
+    );
+  }
+
+   void _showToast(BuildContext context) {
+    final scaffold = ScaffoldMessenger.of(context);
+
+    scaffold.showSnackBar(
+      SnackBar(
+        // content: const Text('Added to favorite'),
+        content: const SizedBox(
+          height: 70,
+          child: Text('In Progress'),
+        ),
+        action: SnackBarAction(
+            label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+      ),
     );
   }
 }

@@ -8,7 +8,9 @@ import 'package:evoke_nexus_app/app/provider/profile_service_provider.dart';
 
 class UserForm extends ConsumerStatefulWidget {
   final User user;
-  const UserForm({super.key, required this.user});
+ final bool isFromWelcomeScreen;
+  const UserForm(
+      {super.key, required this.user, required this.isFromWelcomeScreen});
 
   @override
   ConsumerState<UserForm> createState() => _UserFormState();
@@ -75,8 +77,7 @@ class _UserFormState extends ConsumerState<UserForm> {
     } else {
       print("No changes detected.");
     }
-           Navigator.pop(context);
-
+    Navigator.pop(context);
   }
 
   void _handleCancel() {
@@ -98,109 +99,35 @@ class _UserFormState extends ConsumerState<UserForm> {
   @override
   Widget build(BuildContext context) {
     final userAsyncValue = ref.watch(fetchUserProvider);
-    return userAsyncValue.when(
-      data: (data) {
-        return MobileLayout(
-            title: 'Edit Profile',
-            user: data,
-            hasBackAction: true,
-            hasRightAction: false,
-            topBarButtonAction: () {},
-            backButtonAction: () {
-              Navigator.pop(context);
-            },
-            child: _editDetails(widget.user, context));
-      },
-      loading: () => const Center(
-        child: SizedBox(
-          height: 50.0,
-          width: 50.0,
-          child: CircularProgressIndicator(),
+    if (widget.isFromWelcomeScreen == true) {
+      return _editDetails(widget.user, context);
+    } else {
+      return userAsyncValue.when(
+        data: (data) {
+          return MobileLayout(
+              title: 'Edit Profile',
+              user: data,
+              hasBackAction: true,
+              hasRightAction: false,
+              topBarButtonAction: () {},
+              backButtonAction: () {
+                Navigator.pop(context);
+              },
+              child: _editDetails(widget.user, context));
+        },
+        loading: () => const Center(
+          child: SizedBox(
+            height: 50.0,
+            width: 50.0,
+            child: CircularProgressIndicator(),
+          ),
         ),
-      ),
-      error: (error, stack) {
-        // Handle the error case if needed
-        return Text('An error occurred: $error');
-      },
-    );
-
-    // return SizedBox(
-    //   height: MediaQuery.of(context).size.height,
-    //   width: MediaQuery.of(context).size.width,
-    //   child: Card(
-    //     margin: const EdgeInsets.all(8.0),
-    //     clipBehavior: Clip.antiAlias,
-    //     shape: RoundedRectangleBorder(
-    //       borderRadius: BorderRadius.circular(16),
-    //     ),
-    //     elevation: 5,
-    //     child: Padding(
-    //       padding: const EdgeInsets.all(8.0),
-    //       child: SingleChildScrollView(
-    //         child: Column(
-    //           crossAxisAlignment: CrossAxisAlignment.start,
-    //           children: [
-    //             TextButton(
-    //               onPressed: () =>
-    //                   ref.read(uploadProfileImageProvider(widget.user.userId)),
-    //               child: Text(
-    //                 widget.user.profilePicture != null &&
-    //                         widget.user.profilePicture!.isNotEmpty
-    //                     ? 'Change Profile Picture'
-    //                     : 'Add Profile Picture',
-    //                 style: const TextStyle(
-    //                   fontSize: 8,
-    //                   fontWeight: FontWeight.bold,
-    //                 ),
-    //               ),
-    //             ),
-    //             Row(
-    //               mainAxisAlignment: MainAxisAlignment.start,
-    //               crossAxisAlignment: CrossAxisAlignment.start,
-    //               children: [
-    //                 const SizedBox(width: 15),
-    //                 _buildReadOnlyField("Email", widget.user.email),
-    //                 const SizedBox(width: 30),
-    //                 _buildReadOnlyField("Role", widget.user.role),
-    //                 const SizedBox(width: 150),
-    //                 _buildReadOnlyField(
-    //                     "Created At", widget.user.createdAt.toIso8601String()),
-    //                 const SizedBox(width: 30),
-    //                 _buildReadOnlyField("Status", widget.user.status),
-    //                 const SizedBox(width: 15)
-    //               ],
-    //             ),
-    //             const SizedBox(height: 20),
-    //             Column(
-    //               children: [
-    //                 TextField(
-    //                   controller: _aboutController,
-    //                   decoration: const InputDecoration(
-    //                       labelText: "About",
-    //                       border: OutlineInputBorder(),
-    //                       contentPadding: EdgeInsets.all(8)),
-    //                 ),
-    //                 const SizedBox(height: 20),
-    //                 ..._buildSocialLinksFields()
-    //               ],
-    //             ),
-    //             const SizedBox(height: 5),
-    //             Row(
-    //               mainAxisAlignment: MainAxisAlignment.end,
-    //               children: [
-    //                 ElevatedButton(
-    //                     onPressed: _handleSubmit, child: const Text("Submit")),
-    //                 const SizedBox(width: 10),
-    //                 TextButton(
-    //                     onPressed: _handleCancel, child: const Text("Cancel")),
-    //               ],
-    //             ),
-    //           ],
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // );
+        error: (error, stack) {
+          // Handle the error case if needed
+          return Text('An error occurred: $error');
+        },
+      );
+    }
   }
 
   Widget _editDetails(User user, BuildContext context) {
@@ -287,9 +214,9 @@ class _UserFormState extends ConsumerState<UserForm> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         ElevatedButton(
-                           onPressed: () async {
-  await _handleSubmit();
-},
+                            onPressed: () async {
+                              await _handleSubmit();
+                            },
                             child: const Text("Submit")),
                         const SizedBox(width: 10),
                         TextButton(

@@ -46,7 +46,7 @@ class _TabBarMenuState extends State<TabBarMenu> {
         widget.onItemTapped(x);
       },
       showUnselectedLabels: true,
-      backgroundColor: const Color(0XFF4776E6),
+      backgroundColor: const Color(0XFF0707b5),  //Color(0XFF4776E6),
       // unselectedItemColor: Colors.white,
       // selectedItemColor: Color(0XFFF2722B),
 

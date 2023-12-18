@@ -15,7 +15,7 @@ class UserService {
       String name = '';
       String email = '';
       String title = 'Test User';
-      DateTime? lastLoginAt;
+      // DateTime? lastLoginAt; //recently added by mounika
 
       if (result.isSignedIn) {
         final userAttributes = await Amplify.Auth.fetchUserAttributes();
@@ -29,9 +29,9 @@ class UserService {
           if (element.userAttributeKey.key == "custom:jobtitle") {
             title = element.value;
           }
-          if (element.userAttributeKey.key == "lastLoginAt") {
-            lastLoginAt = DateTime.parse(element.value);
-          }
+          // if (element.userAttributeKey.key == "lastLoginAt") {  // in userAttributeKey lastLoginAt is not coming
+          //   lastLoginAt = DateTime.parse(element.value);
+          // }
         }
       }
 
@@ -42,8 +42,8 @@ class UserService {
           "name": name,
           "email": email,
           "title": title,
-          "lastLoginAt": lastLoginAt
-              ?.toIso8601String(), // Convert DateTime to ISO 8601 string
+          // "lastLoginAt": lastLoginAt
+          //     ?.toIso8601String(), // Convert DateTime to ISO 8601 string
         }
       };
 

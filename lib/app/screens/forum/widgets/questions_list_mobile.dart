@@ -155,6 +155,7 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
             )),
              TextButton.icon(
             onPressed: () {
+              _showToast(context);
             },
             icon: Image.asset(
               'assets/images/Vector-2.png',
@@ -542,6 +543,22 @@ Widget categoryHearViewWidget(Question item) {
           ],
         );
       },
+    );
+  }
+
+  void _showToast(BuildContext context) {
+    final scaffold = ScaffoldMessenger.of(context);
+
+    scaffold.showSnackBar(
+      SnackBar(
+        // content: const Text('Added to favorite'),
+        content: const SizedBox(
+          height: 70,
+          child: Text('In Progress'),
+        ),
+        action: SnackBarAction(
+            label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+      ),
     );
   }
 }

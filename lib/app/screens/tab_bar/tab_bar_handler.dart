@@ -17,10 +17,15 @@ final TabBarNotifier _tabBarNotifier = TabBarNotifier();
 
 class TabBarHandler extends StatefulWidget {
   Function() logoutAction;
+  User? user;
+
   final BuildContext? rootScreenMobileContext; // Add this parameter
 
   TabBarHandler(
-      {Key? key, required this.logoutAction, this.rootScreenMobileContext})
+      {Key? key,
+      required this.logoutAction,
+      this.rootScreenMobileContext,
+      required this.user})
       : super(key: key);
 
   static const String route = '/';
@@ -30,12 +35,21 @@ class TabBarHandler extends StatefulWidget {
 }
 
 class _TabBarHandlerState extends State<TabBarHandler> {
+  //   @override
+  // void initState() {
+  //   super.initState();
 
-    @override
+  //     }
+  @override
   void initState() {
     super.initState();
-      }
 
+    if (widget.user!.lastLoginAt != null || widget.user!.status != "NEW") {
+      _tabBarNotifier.index = 0; //0 orginal
+    } else {
+      _tabBarNotifier.index = 3; //3
+    }
+  }
 
   @override
   void dispose() {
@@ -44,7 +58,6 @@ class _TabBarHandlerState extends State<TabBarHandler> {
 
   @override
   Widget build(BuildContext context) {
-
     final menuItemlist = <TabMenuItem>[
       TabMenuItem(
           Icons.rss_feed,
@@ -72,8 +85,6 @@ class _TabBarHandlerState extends State<TabBarHandler> {
       child: AnimatedBuilder(
           animation: _tabBarNotifier,
           builder: (context, snapshot) {
-                    // _tabBarNotifier.setInitialIndexBasedOnLastLogin();
-
             return Stack(
               children: [
                 IndexedStack(
@@ -103,7 +114,6 @@ class _TabBarHandlerState extends State<TabBarHandler> {
             );
           }),
     );
-    
   }
 
   logoutAction() {
@@ -112,7 +122,7 @@ class _TabBarHandlerState extends State<TabBarHandler> {
 }
 
 class TabBarNotifier extends ChangeNotifier {
-    User? user;
+  User? user;
   bool fromWelcomeScreen = false;
 
   int _index = 0;
@@ -125,17 +135,6 @@ class TabBarNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-// HANDLING INDEX 0 and 3 --> user?.lastLoginAt
-
-  // void setInitialIndexBasedOnLastLogin() {
-  //   if (user?.lastLoginAt != null) {
-  //     _index = 0;
-  //   } else {
-  //     _index = 3;
-  //   }
-  //   notifyListeners();
-  // }
-
   bool get hideBottomTabBar => _hideBottomTabBar;
   set hideBottomTabBar(bool x) {
     _hideBottomTabBar = x;
@@ -144,8 +143,8 @@ class TabBarNotifier extends ChangeNotifier {
 
   FutureOr<bool> onBackButtonPressed() async {
     bool exitingApp = true;
-    //_tabBarNotifier.index //// Use _index instead of _tabBarNotifier.index
-    switch (_index) { 
+    _tabBarNotifier.index; //// Use _index instead of _tabBarNotifier.index
+    switch (_index) {
       case -1:
         if (homeKey.currentState != null && homeKey.currentState!.canPop()) {
           homeKey.currentState!.pop();

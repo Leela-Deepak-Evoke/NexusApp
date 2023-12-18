@@ -18,7 +18,7 @@ class _ProfileWebView extends State<ProfileWebView> {
       children: [
         SizedBox(
           width: MediaQuery.of(context).size.width - 600,
-          child: UserForm(user: widget.user),
+          child: UserForm(user: widget.user, isFromWelcomeScreen: false),
         ),
         const SizedBox(
           width: 275,

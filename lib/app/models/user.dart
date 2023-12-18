@@ -47,6 +47,12 @@ class User {
       };
 
   factory User.fromJson(Map<String, dynamic> json) {
+    DateTime? lastLogin;
+    if (json['lastLoginAt'] != null) {
+        lastLogin =  DateTime.parse(json['lastLoginAt']);
+      
+    }
+
     return User(
         userId: json['userId'],
         identityId: json['identityId'],
@@ -60,7 +66,7 @@ class User {
         profilePicture: json['profilePicture'],
         socialLinks: json['socialLinks'],
         currentLoginAt: DateTime.parse(json['currentLoginAt']),
-        lastLoginAt: DateTime.parse(json['lastLoginAt'])
+        lastLoginAt: lastLogin
         );
   }
 }

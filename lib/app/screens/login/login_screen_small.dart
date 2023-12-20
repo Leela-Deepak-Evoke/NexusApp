@@ -47,6 +47,7 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
   @override
   Widget build(BuildContext context) {
     final authService = ref.watch(authenticationServiceProvider);
+    print(authService);
     final size = MediaQuery.of(context).size;
     return Scaffold(
         body: Stack(

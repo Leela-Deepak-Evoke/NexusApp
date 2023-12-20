@@ -16,11 +16,6 @@ class RootScreenMobile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final checkUserAsyncValue = ref.watch(checkUserProvider);
-    print(checkUserAsyncValue);
-        print("USER DATA: $checkUserAsyncValue.value");
-
-    // final fetchUserAsyncValue = ref.watch(fetchUserProvider);
-
     void onRetryPressed() {
       ref.read(refresUserProvider(""));
     }
@@ -60,39 +55,39 @@ class RootScreenMobile extends ConsumerWidget {
 
     if (checkUserAsyncValue is AsyncError) {
       context.replaceNamed(AppRoute.login.name);
-    // return ErrorScreen(showErrorMessage: true, onRetryPressed: onRetryPressed);
+    return ErrorScreen(showErrorMessage: true, onRetryPressed: onRetryPressed);
 
-      return Container(
-        color: Colors.white, // Set your desired background color
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('An error occurred. Please try again. ${checkUserAsyncValue.error.hashCode}',
-                style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                )),
-            const SizedBox(height: 20.0), // Adjust spacing as needed
-            ElevatedButton(
-              onPressed: onRetryPressed,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red[700],
-              ),
-              child: Text(
-                "Try Again",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.0,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
+      // return Container(
+      //   color: Colors.white, // Set your desired background color
+      //   child: Column(
+      //     mainAxisAlignment: MainAxisAlignment.center,
+      //     children: [
+      //       Text('An error occurred. Please try again. ${checkUserAsyncValue.error.hashCode}',
+      //           style: TextStyle(
+      //             color: Colors.black87,
+      //             fontSize: 16.0,
+      //             fontWeight: FontWeight.bold,
+      //             fontFamily: GoogleFonts.poppins().fontFamily,
+      //           )),
+      //       const SizedBox(height: 20.0), // Adjust spacing as needed
+      //       ElevatedButton(
+      //         onPressed: onRetryPressed,
+      //         style: ElevatedButton.styleFrom(
+      //           backgroundColor: Colors.red[700],
+      //         ),
+      //         child: Text(
+      //           "Try Again",
+      //           style: TextStyle(
+      //             color: Colors.white,
+      //             fontSize: 16.0,
+      //             fontFamily: GoogleFonts.poppins().fontFamily,
+      //             fontWeight: FontWeight.normal,
+      //           ),
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // );
     }
 
     // This should ideally never be reached, but it's here as a fallback.

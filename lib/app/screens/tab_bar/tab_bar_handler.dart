@@ -45,9 +45,9 @@ class _TabBarHandlerState extends State<TabBarHandler> {
     super.initState();
 
     if (widget.user!.lastLoginAt != null || widget.user!.status != "NEW") {
-      _tabBarNotifier.index = 0; //0 orginal
+      _tabBarNotifier.index = 0; 
     } else {
-      _tabBarNotifier.index = 3; //3
+      _tabBarNotifier.index = 3; 
     }
   }
 

@@ -1,5 +1,6 @@
 import 'package:evoke_nexus_app/app/models/delete.dart';
 import 'package:evoke_nexus_app/app/models/feed.dart';
+import 'package:evoke_nexus_app/app/models/filter_feed.dart';
 import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
 import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
@@ -24,21 +25,44 @@ import 'package:intl/intl.dart';
 class FeedListMobile extends ConsumerStatefulWidget {
   final User user;
   String? searchQuery;
+  bool? isFilter;
+  String? selectedCategory;
+  // AsyncValue<List<Feed>>? filterfeedsList;
 
-  FeedListMobile({super.key, required this.user, this.searchQuery});
+  FeedListMobile(
+      {super.key,
+      required this.user,
+      this.searchQuery,
+      this.isFilter,
+      this.selectedCategory
+      // this.filterfeedsList
+      });
 
   @override
   _FeedListMobileViewState createState() => _FeedListMobileViewState();
 }
 
 class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
-  // String? searchQuery;
+  // AsyncValue<List<Feed>>? filterFeeds;
+  late Future<AsyncValue<List<Feed>>> filterFeedsFuture;
 
-  //  @override
-  // void initState() {
-  //   super.initState();
-  //       searchQuery = widget.searchQuery;
-  // }
+  @override
+  void initState() {
+    super.initState();
+
+    // if (widget.isFilter == true) {
+    //   filterFeedsFuture = Future.value(AsyncValue.loading());
+
+    //   // Initiate the asynchronous call in initState
+    //   filterFeedsFuture = ref.read(filterFeedsProvider(
+    //     FilterFeedsParams(
+    //       userId: widget.user.userId,
+    //       categories: [widget.selectedCategory ?? ""],
+    //       sortType: 'top',
+    //     ),
+    //   ) as ProviderListenable<Future<AsyncValue<List<Feed>>>>);
+    // }
+  }
 
   void _onCommentsPressed(Feed item) {
     Navigator.push(
@@ -54,6 +78,39 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
 
   @override
   Widget build(BuildContext context) {
+// final feedsAsyncValue1 = ref.watch(filterFeedsProvider(FilterFeedsParams(userId: widget.user.userId, categories: [widget.selectedCategory ?? ""], sortType: 'top')));
+// print('filtered Feeds : ${feedsAsyncValue1.runtimeType}');
+// print(widget.filterfeedsList);
+
+    // if (widget.isFilter == true) {
+
+    //   AsyncValue<List<Feed>> filterFeedsAsyncValue = ref.watch(
+    //       filterFeedsProvider(FilterFeedsParams(
+    //           userId: widget.user.userId,
+    //           categories: [widget.selectedCategory ?? ""])));
+    //   // print("Async value state: ${filterFeedsAsyncValue.runtimeType}");
+
+    //   if (filterFeedsAsyncValue is AsyncData) {
+    //     final feedsList = filterFeedsAsyncValue.value;
+    //     print("----- Filter Feeds Data -----: $feedsList");
+    //   }
+
+    //   if (filterFeedsAsyncValue is AsyncLoading) {
+    //     const Center(
+    //       child: SizedBox(
+    //         height: 50.0,
+    //         width: 50.0,
+    //         child: CircularProgressIndicator(),
+    //       ),
+    //     );
+    //   }
+
+    //   if (filterFeedsAsyncValue is AsyncError) {
+    //     return ErrorScreen(showErrorMessage: true, onRetryPressed: retry);
+    //   }
+    // } else {
+    //GENEREAL FEEDS LIST
+
     final feedsAsyncValue = ref.watch(feedsProvider(widget.user));
 
     if (feedsAsyncValue is AsyncData) {
@@ -63,12 +120,19 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
         return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
       } else {
         // Filter the items based on the search query
-
-        final filteredItems = items.where((item) {
-          return item.author?.contains(widget.searchQuery ?? '') == true ||
-              item.name.contains(widget.searchQuery ?? '') == true;
-        }).toList();
-        print('filtered Items Total Items: ${filteredItems.length}');
+        List<Feed> filteredItems = [];
+        if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
+          filteredItems = items.where((item) {
+            return item.author?.contains(widget.searchQuery ?? '') == true ||
+                item.name.contains(widget.searchQuery ?? '') == true ||
+                item.authorTitle?.contains(widget.searchQuery ?? '') == true ||
+                item.content?.contains(widget.searchQuery ?? '') == true ||
+                item.status.contains(widget.searchQuery ?? '') == true;
+          }).toList();
+        } else if (widget.selectedCategory == "All" || widget.searchQuery == "All") {
+          // If selectedCategory is "All", consider all items
+          filteredItems = List.from(items);
+        }
 
         return Container(
             alignment: AlignmentDirectional.topStart,
@@ -228,7 +292,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
     if (feedsAsyncValue is AsyncError) {
       return ErrorScreen(showErrorMessage: true, onRetryPressed: retry);
     }
-
+    // }
     // This should ideally never be reached, but it's here as a fallback.
     return const SizedBox.shrink();
   }

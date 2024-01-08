@@ -22,7 +22,13 @@ import 'package:intl/intl.dart';
 
 class OrgUpdateListMobile extends ConsumerStatefulWidget {
   final User user;
-  const OrgUpdateListMobile({super.key, required this.user});
+  String? searchQuery;
+  bool? isFilter;
+  String? selectedCategory;
+
+   OrgUpdateListMobile({super.key, required this.user, this.searchQuery,
+      this.isFilter,
+      this.selectedCategory});
 
   @override
   _OrgUpdateListMobileViewState createState() =>
@@ -40,6 +46,21 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
         // Handle the case where there is no data found
         return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
       } else {
+         List<OrgUpdate> filteredItems = [];
+        if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
+          filteredItems = items.where((item) {
+            return item.author?.contains(widget.searchQuery ?? '') == true ||
+                item.name.contains(widget.searchQuery ?? '') == true ||
+                item.authorTitle?.contains(widget.searchQuery ?? '') == true ||
+                item.content?.contains(widget.searchQuery ?? '') == true ||
+                item.status.contains(widget.searchQuery ?? '') == true;
+          }).toList();
+        } else if (widget.selectedCategory == "All" || widget.searchQuery == "All") {
+          // If selectedCategory is "All", consider all items
+          filteredItems = List.from(items);
+        }
+
+
         return Container(
             alignment: AlignmentDirectional.topStart,
             padding:
@@ -52,9 +73,9 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
                   padding: const EdgeInsets.only(
                       left: 0, right: 0, top: 0, bottom: 0),
                   shrinkWrap: true,
-                  itemCount: items.length,
+                  itemCount: filteredItems.length,
                   itemBuilder: (context, index) {
-                    final item = items[index];
+                    final item = filteredItems[index];
                     final author = item.author;
 
                     final formattedDate = DateFormat('MMM d HH:mm').format(

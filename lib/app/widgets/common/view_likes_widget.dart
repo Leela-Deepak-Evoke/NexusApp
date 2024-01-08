@@ -145,7 +145,7 @@ class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
                                               title: 'User Profile',
                                               user: widget.user,
                                               hasBackAction: true,
-                                              hasRightAction: false,
+                                              hasRightAction: userLike.userId == widget.user.userId ? true : false,
                                               topBarButtonAction: () {},
                                               backButtonAction: () {
                                                 Navigator.pop(context);

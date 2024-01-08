@@ -166,7 +166,14 @@ class CustomAppbar extends StatelessWidget {
                               ),
                             ],
                           ))
-                    : SizedBox(),
+                    :  showSearchIcon ?
+                                IconButton(
+                                  icon: Icon(Icons
+                                      .search, color: Colors.white,), // Add your search icon here
+                                  onPressed: () {
+                                   topBarSearchButtonAction();
+                                  },
+                                ) : SizedBox(),    //,
               ],
               // actions: [
 

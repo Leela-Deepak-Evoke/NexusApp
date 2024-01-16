@@ -25,7 +25,7 @@ class FeedService {
         if (response.statusCode == 200) {
           final jsonResponse = json.decode(response.decodeBody());
           print(jsonResponse);
-safePrint(jsonResponse);
+          safePrint(jsonResponse);
           if (jsonResponse is List) {
             return jsonResponse
                 .map((feedJson) => Feed.fromJson(feedJson, user.userId))
@@ -82,43 +82,6 @@ safePrint(jsonResponse);
     }
   }
 
-// Future<Map<String, dynamic>?> uploadMedia(String rootId, String mediaType) async {
-//   try {
-//     safePrint('In upload');
-//     // ... Rest of your code ...
-
-//     final platformFile = fileResult.files.single;
-//     const options = StorageUploadFileOptions(
-//       accessLevel: StorageAccessLevel.guest,
-//     );
-
-//     final String mediaPath = 'feed/$rootId/${platformFile.name}';
-
-//     final result = await Amplify.Storage.uploadFile(
-//       localFile: AWSFile.fromStream(
-//         platformFile.readStream!,
-//         size: platformFile.size,
-//       ),
-//       key: mediaPath,
-//       options: options,
-//       onProgress: (progress) {
-//         safePrint('Fraction completed: ${progress.fractionCompleted}');
-//       },
-//     ).result;
-//     safePrint('Successfully uploaded file: ${result.uploadedItem.key}');
-
-//     return {
-//       'platformFilePath': platformFile.path,
-//       'uploadedKey': result.uploadedItem.key,
-//     };
-//   } catch (e) {
-//     safePrint('UploadFile Err: $e');
-//     return null;
-//   }
-// }
-
-  ///
-
   Future<Map<String, dynamic>?> uploadMedia(
       String rootId, String mediaType) async {
     try {
@@ -139,12 +102,12 @@ safePrint(jsonResponse);
       }
       final platformFile = fileResult.files.single;
 
-       // Check if the file size is within the limit (5MB)
-    if (platformFile.size > 5 * 1024 * 1024) {
-      safePrint('File size exceeds the limit (5MB)');
-      return null;
-    }
-    
+      // Check if the file size is within the limit (5MB)
+      if (platformFile.size > 5 * 1024 * 1024) {
+        safePrint('File size exceeds the limit (5MB)');
+        return null;
+      }
+
       const options = StorageUploadFileOptions(
         accessLevel: StorageAccessLevel.guest,
       );
@@ -220,7 +183,6 @@ safePrint(jsonResponse);
     }
   }
 
-
   Future<void> editFeed(PostFeedParams params) async {
     try {
       safePrint('Inside edit feed');
@@ -245,7 +207,7 @@ safePrint(jsonResponse);
       if (authToken != null) {
         safePrint('authToken: $authToken');
         final restOperation = Amplify.API.post(
-          'editfeed', //  /postfeed  and /editfeed 
+          'editfeed', //  /postfeed  and /editfeed
           body: HttpPayload.json(payload),
           headers: {'Authorization': authToken},
         );
@@ -313,4 +275,52 @@ safePrint(jsonResponse);
       return false; //rethrow;
     }
   }
+
+  
+  Future<List<Feed>> filterFeeds(String user, {List<String>? categories, String? sortType}) async {
+  try {
+    final userPayload = {
+      "user": {"userId": user},
+      "categories": categories,  // optional
+      "sortType": sortType,   // optional
+    };
+    
+    final prefs = await SharedPreferences.getInstance();
+    final authToken = prefs.getString('authToken');
+    
+    if (authToken != null) {
+      final restOperation = Amplify.API.post(
+        'filterfeeds',
+        body: HttpPayload.json(userPayload),
+        headers: {'Authorization': authToken},
+      );
+      
+      final response = await restOperation.response;
+      
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.decodeBody());
+        print(jsonResponse);  
+         safePrint(jsonResponse);      
+        if (jsonResponse is List) {
+          return jsonResponse
+              .map((feedJson) => Feed.fromJson(feedJson, user))
+              .toList();
+        } else {
+          throw Exception('Unexpected data format');
+        }
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } else {
+      throw Exception('Failed to load token');
+    }
+  } on AuthException catch (e) {
+    safePrint('Error retrieving auth session: ${e.message}');
+    rethrow;
+  } on ApiException catch (e) {
+    safePrint('POST call failed: $e');
+    rethrow;
+  }
+}
+
 }

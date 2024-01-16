@@ -57,6 +57,7 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
           Flexible(
             child: ListView.builder(
               padding: const EdgeInsets.all(0),
+
               itemCount: items.length,
               itemBuilder: (context, index) {
                 final item = items[index];
@@ -73,7 +74,7 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
                 return Column(
                   children: [
                     Card(
-                      margin: const EdgeInsets.all(8),
+                      margin: const EdgeInsets.all(5),
                       clipBehavior: Clip.antiAlias,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(0),

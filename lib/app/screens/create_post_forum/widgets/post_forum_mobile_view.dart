@@ -92,6 +92,8 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
     super.initState();
     if (widget.isEditQuestion == true) {
       feedController.text = widget.questionItem?.content ?? feedController.text;
+        selectedCategory = widget.questionItem?.category ?? selectedCategory;
+
     }
   }
 

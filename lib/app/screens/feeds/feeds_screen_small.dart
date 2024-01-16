@@ -1,11 +1,12 @@
+import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:evoke_nexus_app/app/provider/get_categories_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feeds_mobile_view.dart';
 import 'package:evoke_nexus_app/app/screens/create_post_feed/create_post_feed_screen.dart';
-
-import 'package:evoke_nexus_app/app/models/feed.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class FeedsScreenSmall extends ConsumerStatefulWidget {
   const FeedsScreenSmall({super.key});
@@ -14,6 +15,15 @@ class FeedsScreenSmall extends ConsumerStatefulWidget {
 }
 
 class _FeedsScreenSmallState extends ConsumerState<FeedsScreenSmall> {
+  final TextEditingController _searchController = TextEditingController();
+  String? searchQuery = '';
+  int? selectedIndex;
+  List<String> checkListItems = [];
+  String selectedCategory = '';
+  bool isFilter = false;
+  // Feed? filterfeedsList;
+  // late AsyncValue<List<Feed>> filterfeedsList;
+
   Widget build(BuildContext context) {
     final userAsyncValue = ref.watch(fetchUserProvider);
     return userAsyncValue.when(
@@ -31,23 +41,19 @@ class _FeedsScreenSmallState extends ConsumerState<FeedsScreenSmall> {
                     fullscreenDialog: true,
                     builder: (context) => CreatePostFeedScreen()));
           },
-         topBarSearchButtonAction: () {
-                    //  FeedsMobileView.onSearchClickedStatic();
-                    _showToast(context);
-
+          topBarSearchButtonAction: () {
+            onSearchClicked(data);
           },
           backButtonAction: () {
             Navigator.pop(context);
           },
-          // child: FeedsMobileView(user: data),
           child: FeedsMobileView(
-            user: data,
-            onSearchClicked: () {
-              // FeedsMobileView mobileView =
-              //     context.findAncestorWidgetOfExactType<FeedsMobileView>()!;
-              // mobileView.onSearchClicked();
-            },
-          ),
+              user: data,
+              searchQuery: searchQuery ?? "",
+              isFilter: isFilter,
+              selectedCategory: selectedCategory
+              // filterfeedsList: isFilter == true ? null : null
+              ),
         );
       },
       loading: () => const Center(
@@ -63,19 +69,195 @@ class _FeedsScreenSmallState extends ConsumerState<FeedsScreenSmall> {
       },
     );
   }
- void _showToast(BuildContext context) {
-    final scaffold = ScaffoldMessenger.of(context);
 
-    scaffold.showSnackBar(
-      SnackBar(
-        // content: const Text('Added to favorite'),
-        content: const SizedBox(
-          height: 70,
-          child: Text('In Progress'),
+  void onSearchClicked(User data) {
+    // setState(() {});
+    final categoryAsyncValue = ref.watch(categoriesProviderFeed);
+    if (categoryAsyncValue is AsyncData<List<String>>) {
+      final feedsCategoryList = categoryAsyncValue;
+      checkListItems = feedsCategoryList.value;
+      _showBottomSheet(context, data);
+    }
+    if (categoryAsyncValue is AsyncLoading) {
+      const Center(
+        child: SizedBox(
+          height: 50.0,
+          width: 50.0,
+          child: CircularProgressIndicator(),
         ),
-        action: SnackBarAction(
-            label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+      );
+    }
+  }
+
+  void _showBottomSheet(BuildContext context, User data) {
+    final Size size = MediaQuery.of(context).size;
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Container(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Center(
+                    child: Text(
+                      'Search And Filter',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16.0),
+                  TextField(
+                    controller: _searchController,
+                    decoration: const InputDecoration(
+                      hintText: 'Search Feeds',
+                    ),
+                    onEditingComplete: () {
+                      _onSearchEditingComplete(data);
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        searchQuery = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 16.0),
+                  const Text(
+                    'Category',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16.0),
+                  Wrap(
+                    spacing: 8.0,
+                    children: [
+                      _buildCategoryButton(
+                          'All', selectedCategory == 'All', setState, data),
+                      ...checkListItems.map((category) => _buildCategoryButton(
+                          category,
+                          selectedCategory == category,
+                          setState,
+                          data)),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _onSearchEditingComplete(User data) {
+    Navigator.of(context).pop();
+    isFilter = false;
+    setState(() {
+      Expanded(
+        child: Padding(
+            padding: const EdgeInsets.only(left: 0, right: 0, top: 10),
+            child: FeedsMobileView(
+                user: data,
+                searchQuery: searchQuery ?? "",
+                isFilter: isFilter,
+                selectedCategory: selectedCategory)),
+      );
+    });
+  }
+
+  Widget _buildCategoryButton(
+      String category, bool isSelected, StateSetter setState, User data) {
+    return OutlinedButton(
+      onPressed: () {
+        setState(() {
+          selectedCategory = category;
+          _onCategorySelected(selectedCategory, data);
+
+          // Implement category filter logic here
+        });
+      },
+      style: OutlinedButton.styleFrom(
+        side: BorderSide(
+          color: isSelected ? Color(0xffFFA500) : Colors.grey,
+          width: 1.0,
+        ),
+      ),
+      child: Text(
+        category,
+        style: TextStyle(
+          color: Color(0xff676A79),
+          fontSize: 14.0,
+          fontFamily: GoogleFonts.notoSans().fontFamily,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
+  }
+
+// API
+
+  void _onCategorySelected(String selectedCategory, User data) async {
+    try {
+      //       AsyncValue<List<Feed>> filterFeedsAsyncValue = ref.watch(filterFeedsProvider(FilterFeedsParams(userId: data.userId, categories: [selectedCategory])));
+      // print("Async value state: ${filterFeedsAsyncValue.runtimeType}");
+
+      // if (filterFeedsAsyncValue is AsyncData<List<String>>) {
+      //   final feedsList = filterFeedsAsyncValue.value;
+      //     print("----- Filter Feeds Data -----: $feedsList");
+
+      // }
+
+      // if (filterFeedsAsyncValue is AsyncLoading) {
+      //   const Center(
+      //     child: SizedBox(
+      //       height: 50.0,
+      //       width: 50.0,
+      //       child: CircularProgressIndicator(),
+      //     ),
+      //   );
+      // }
+
+      // AsyncValue<List<Feed>> filterfeedsAsyncValue =
+      //     ref.watch(filterFeedsProvider(FilterFeedsParams(
+      //   userId: data.userId,
+      //   categories: [selectedCategory],
+      // )));
+      // if (filterfeedsAsyncValue is AsyncData) {
+      //   final items = filterfeedsAsyncValue.value!;
+      //             print("----- Filter Feeds Data -----: $items");
+
+      // }
+      // if (filterfeedsAsyncValue is AsyncLoading) {
+      //   const Center(
+      //     child: SizedBox(
+      //       height: 50.0,
+      //       width: 50.0,
+      //       child: CircularProgressIndicator(),
+      //     ),
+      //   );
+      // }
+
+      isFilter = true;
+      selectedCategory = selectedCategory;
+      searchQuery = selectedCategory;
+
+      Navigator.of(context).pop();
+      setState(() {});
+    } catch (error) {
+      // Handle errors if necessary
+      print('Error filtering feeds: $error');
+    }
   }
 }

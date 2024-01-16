@@ -41,7 +41,7 @@ class _MobileLayoutState extends State<MobileLayout> {
 
     return Scaffold(
       drawer: const Drawer(),
-      resizeToAvoidBottomInset: false,
+      // resizeToAvoidBottomInset: false,
       body: Stack(
         children: <Widget>[
           _buildHeader(size, headerNegativeOffset),

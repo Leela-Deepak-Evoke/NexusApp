@@ -1,4 +1,5 @@
 import 'package:evoke_nexus_app/app/models/delete.dart';
+import 'package:evoke_nexus_app/app/models/forum.dart';
 import 'package:evoke_nexus_app/app/models/question.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/delete_service_provider.dart';
@@ -19,7 +20,16 @@ import 'package:google_fonts/google_fonts.dart';
 
 class QuestionsListMobile extends ConsumerStatefulWidget {
   final User user;
-  const QuestionsListMobile({super.key, required this.user});
+  String? searchQuery;
+  bool? isFilter;
+  String? selectedCategory;
+
+  QuestionsListMobile(
+      {super.key,
+      required this.user,
+      this.searchQuery,
+      this.isFilter,
+      this.selectedCategory});
 
   @override
   _QuestionsListMobileViewState createState() =>
@@ -29,7 +39,6 @@ class QuestionsListMobile extends ConsumerStatefulWidget {
 class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _searchController = TextEditingController();
     final Size size = MediaQuery.of(context).size;
     final questionsAsyncValue = ref.watch(questionsProvider(widget.user));
     if (questionsAsyncValue is AsyncData) {
@@ -38,6 +47,21 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
         // Handle the case where there is no data found
         return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
       } else {
+       List<Question> filteredItems = [];
+        if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
+          filteredItems = items.where((item) {
+            return item.author?.contains(widget.searchQuery ?? '') == true ||
+                item.name.contains(widget.searchQuery ?? '') == true ||
+                item.authorTitle?.contains(widget.searchQuery ?? '') == true ||
+                item.content?.contains(widget.searchQuery ?? '') == true ||
+                item.status.contains(widget.searchQuery ?? '') == true ||
+                item.category?.contains(widget.searchQuery ?? '') == true;
+          }).toList();
+        } else if (widget.selectedCategory == "All" || widget.searchQuery == "All") {
+          // If selectedCategory is "All", consider all items
+          filteredItems = List.from(items);
+        }
+
         return Container(
             alignment: AlignmentDirectional.topStart,
             padding:
@@ -50,9 +74,9 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
                     padding: const EdgeInsets.only(
                         left: 0, right: 0, top: 0, bottom: 0),
                     shrinkWrap: true,
-                    itemCount: items.length,
+                    itemCount: filteredItems.length,
                     itemBuilder: (context, index) {
-                      final item = items[index];
+                      final item = filteredItems[index];
                       final formattedDate = DateFormat('MMM d HH:mm').format(
                           DateTime.parse(item.postedAt.toString()).toLocal());
 
@@ -153,25 +177,25 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
                 fontWeight: FontWeight.normal,
               ),
             )),
-             TextButton.icon(
-            onPressed: () {
-              _showToast(context);
-            },
-            icon: Image.asset(
-              'assets/images/Vector-2.png',
-              width: 20,
-              height: 20,
-            ),
-            label: Text(
-              'Report',
-              style: TextStyle(
-                color: Color(0xff393E41),
-                fontFamily: GoogleFonts.inter().fontFamily,
-                fontWeight: FontWeight.normal,
-                fontSize: 14,
-              ),
+        TextButton.icon(
+          onPressed: () {
+            _showToast(context);
+          },
+          icon: Image.asset(
+            'assets/images/Vector-2.png',
+            width: 20,
+            height: 20,
+          ),
+          label: Text(
+            'Report',
+            style: TextStyle(
+              color: Color(0xff393E41),
+              fontFamily: GoogleFonts.inter().fontFamily,
+              fontWeight: FontWeight.normal,
+              fontSize: 14,
             ),
           ),
+        ),
       ],
     );
   }
@@ -205,162 +229,157 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
     );
   }
 
+  Widget categoryHearViewWidget(Question item) {
+    bool isCurrentUser = item.authorId == widget.user.userId;
 
-Widget categoryHearViewWidget(Question item) {
-  bool isCurrentUser = item.authorId == widget.user.userId;
-
-  return Container(
-    child: Row(
-      children: [
-        Wrap(
-          spacing: 5,
-          direction: Axis.horizontal,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            const CircleAvatar(
-              radius: 3,
-              backgroundColor: Color(0xffB54242),
-            ),
-            Text(
-              item.category ?? "General",
-              style: TextStyle(
-                color: Color(0xffB54242),
-                fontSize: 12.0,
-                fontFamily: GoogleFonts.poppins().fontFamily,
-                fontWeight: FontWeight.w500,
+    return Container(
+      child: Row(
+        children: [
+          Wrap(
+            spacing: 5,
+            direction: Axis.horizontal,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              const CircleAvatar(
+                radius: 3,
+                backgroundColor: Color(0xffB54242),
               ),
-            ),
-          ],
-        ),
-        Spacer(), // Add a Spacer widget to push the PopupMenuButton to the right.
-        if (isCurrentUser)
-          Container(
-            width: 30, // Adjust the width as needed
-            child: PopupMenuButton<String>(
-              icon: const Icon(
-                Icons.more_vert,
+              Text(
+                item.category ?? "General",
+                style: TextStyle(
+                  color: Color(0xffB54242),
+                  fontSize: 12.0,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-              onSelected: (String choice) {
-                // Handle button selection here
-                if (choice == 'Edit') {
-                  _editItem(item); // Call the edit function
-                } else if (choice == 'Delete') {
-                  _deleteItem(item); // Call the delete function
-                }
-              },
-              itemBuilder: (BuildContext context) {
-                return <PopupMenuEntry<String>>[
-                  PopupMenuItem<String>(
-                    value: 'Edit',
-                    child: EditButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        _editItem(item); // Call the edit function
-                      },
-                    ),
-                  ),
-                  PopupMenuItem<String>(
-                    value: 'Delete',
-                    child: DeleteButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        _deleteItem(item); // Call the delete function
-                      },
-                    ),
-                  ),
-                ];
-              },
-            ),
+            ],
           ),
-      ],
-    ),
-  );
-}
-
+          Spacer(), // Add a Spacer widget to push the PopupMenuButton to the right.
+          if (isCurrentUser)
+            Container(
+              width: 30, // Adjust the width as needed
+              child: PopupMenuButton<String>(
+                icon: const Icon(
+                  Icons.more_vert,
+                ),
+                onSelected: (String choice) {
+                  // Handle button selection here
+                  if (choice == 'Edit') {
+                    _editItem(item); // Call the edit function
+                  } else if (choice == 'Delete') {
+                    _deleteItem(item); // Call the delete function
+                  }
+                },
+                itemBuilder: (BuildContext context) {
+                  return <PopupMenuEntry<String>>[
+                    PopupMenuItem<String>(
+                      value: 'Edit',
+                      child: EditButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          _editItem(item); // Call the edit function
+                        },
+                      ),
+                    ),
+                    PopupMenuItem<String>(
+                      value: 'Delete',
+                      child: DeleteButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          _deleteItem(item); // Call the delete function
+                        },
+                      ),
+                    ),
+                  ];
+                },
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 
   Widget categoryHearViewWidget_old(Question item) {
     bool isCurrentUser = item.authorId == widget.user.userId;
 
     return Container(
-      child:  Row (
-      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-      Wrap(
-          spacing: 5,
-          direction: Axis.horizontal,
-          crossAxisAlignment: WrapCrossAlignment.center,
+      child: Row(
+          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-          
-            const CircleAvatar(
-              radius: 3,
-              backgroundColor: Color(0xffB54242),
-            ),
-            Text(
-              item.category ?? "General",
-              style: TextStyle(
-                color: Color(0xffB54242),
-                fontSize: 12.0,
-                fontFamily: GoogleFonts.poppins().fontFamily,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            Padding(
-              // padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-              padding: const EdgeInsets.only(right: 10),
-              child:
-               Row(
-                  mainAxisAlignment: MainAxisAlignment.end, //spaceBetween
-                  children: [
-                    if (isCurrentUser)
-                      Container(
-                        width: 30, // Adjust the width as needed
-                        child: PopupMenuButton<String>(
-                          //  padding: const EdgeInsets.only(left: 50, right: 0),
+            Wrap(
+                spacing: 5,
+                direction: Axis.horizontal,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  const CircleAvatar(
+                    radius: 3,
+                    backgroundColor: Color(0xffB54242),
+                  ),
+                  Text(
+                    item.category ?? "General",
+                    style: TextStyle(
+                      color: Color(0xffB54242),
+                      fontSize: 12.0,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Padding(
+                    // padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end, //spaceBetween
+                        children: [
+                          if (isCurrentUser)
+                            Container(
+                              width: 30, // Adjust the width as needed
+                              child: PopupMenuButton<String>(
+                                //  padding: const EdgeInsets.only(left: 50, right: 0),
 
-                          icon: const Icon(
-                            Icons.more_vert,
-                          ),
-                          onSelected: (String choice) {
-                            // Handle button selection here
-                            if (choice == 'Edit') {
-                              _editItem(item); // Call the edit function
-                            } else if (choice == 'Delete') {
-                              _deleteItem(item); // Call the delete function
-                            }
-                          },
-                          itemBuilder: (BuildContext context) {
-                            return <PopupMenuEntry<String>>[
-                              PopupMenuItem<String>(
-                                // padding: const EdgeInsets.only(left: 50, right: 0),
-
-                                value: 'Edit',
-                                child: EditButton(
-                                  onPressed: () {
-                                    _editItem(item); // Call the edit function
-                                  },
+                                icon: const Icon(
+                                  Icons.more_vert,
                                 ),
-                              ),
-                              PopupMenuItem<String>(
-                                // padding: const EdgeInsets.only(left: 50, right: 0),
-                                value: 'Delete',
-                                child: DeleteButton(
-                                  onPressed: () {
+                                onSelected: (String choice) {
+                                  // Handle button selection here
+                                  if (choice == 'Edit') {
+                                    _editItem(item); // Call the edit function
+                                  } else if (choice == 'Delete') {
                                     _deleteItem(
                                         item); // Call the delete function
-                                  },
-                                ),
+                                  }
+                                },
+                                itemBuilder: (BuildContext context) {
+                                  return <PopupMenuEntry<String>>[
+                                    PopupMenuItem<String>(
+                                      // padding: const EdgeInsets.only(left: 50, right: 0),
+
+                                      value: 'Edit',
+                                      child: EditButton(
+                                        onPressed: () {
+                                          _editItem(
+                                              item); // Call the edit function
+                                        },
+                                      ),
+                                    ),
+                                    PopupMenuItem<String>(
+                                      // padding: const EdgeInsets.only(left: 50, right: 0),
+                                      value: 'Delete',
+                                      child: DeleteButton(
+                                        onPressed: () {
+                                          _deleteItem(
+                                              item); // Call the delete function
+                                        },
+                                      ),
+                                    ),
+                                  ];
+                                },
                               ),
-                            ];
-                          },
-                        ),
-                      )
-                  ]
+                            )
+                        ]),
                   ),
-            ),
-    ] 
-    ) 
-    ]
-    ),
+                ])
+          ]),
     );
   }
 
@@ -454,7 +473,7 @@ Widget categoryHearViewWidget(Question item) {
   }
 
   Future<void> _onRefresh() async {
-          ref.read(refresUserProvider(""));
+    ref.read(refresUserProvider(""));
     ref.watch(refresForumProvider(""));
   }
 
@@ -502,8 +521,8 @@ Widget categoryHearViewWidget(Question item) {
         context,
         MaterialPageRoute(
             fullscreenDialog: true,
-                      builder: (context) => CreatePostForumScreen(questionItem: item, isEditQuestion: true)),
-
+            builder: (context) => CreatePostForumScreen(
+                questionItem: item, isEditQuestion: true)),
       );
     });
   }

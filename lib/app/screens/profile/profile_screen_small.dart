@@ -31,17 +31,19 @@ class _ProfileScreenSmallState extends ConsumerState<ProfileScreenSmall> {
       data: (data) {
         if (userAsyncValue.value?.lastLoginAt != null ||
             userAsyncValue.value?.status != "NEW") {
-        return MobileLayout(
+          return MobileLayout(
             title: 'Profile',
             user: data,
             hasBackAction: false,
             hasRightAction: true,
+            showSearchIcon: false,
             topBarButtonAction: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       fullscreenDialog: true,
-                      builder: (context) => UserForm(user: data, isFromWelcomeScreen: false)));
+                      builder: (context) =>
+                          UserForm(user: data, isFromWelcomeScreen: false)));
             },
             backButtonAction: () {
               Navigator.pop(context);
@@ -54,13 +56,13 @@ class _ProfileScreenSmallState extends ConsumerState<ProfileScreenSmall> {
             ),
           );
         } else {
-             return MobileLayout(
+          return MobileLayout(
             title: 'Profile',
             user: data,
             hasBackAction: false,
             hasRightAction: false,
-            topBarButtonAction: () {
-            },
+            showSearchIcon: false,
+            topBarButtonAction: () {},
             backButtonAction: () {
               Navigator.pop(context);
             },

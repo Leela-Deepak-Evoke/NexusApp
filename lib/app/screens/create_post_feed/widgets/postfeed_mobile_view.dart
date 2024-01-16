@@ -53,6 +53,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   bool isImageSelect = false;
   bool isVideoSelect = false;
   bool replaceImageTriggered = false; // Add this line
+  bool updateEditCategories= false; // Add this line
 
   String? selectedCategory;
   final ImagePicker imagePicker = ImagePicker();
@@ -109,7 +110,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     setState(() {
       contentTypeSelected = type.name;
       //   if (widget.isEditFeed == true) {
-      // contentTypeSelected = widget.fe?.category ?? type.name;
+      // contentTypeSelected = widget.feedItem?.name ?? type.name;
       //  }else{
       //    contentTypeSelected =  type.name;
       //  }
@@ -784,9 +785,15 @@ void _showFileSizeExceedDialog() {
             : feedId,
         content: feedController
             .text, //widget.isEditFeed == true ? widget.feedItem?.content :
-        category: (selectedIndex != null)
-            ? checkListItems[selectedIndex ?? 0]
-            : "General Feed",
+        category:   (widget.isEditFeed == true && updateEditCategories == true)
+              ? (selectedIndex != null)
+                  ? checkListItems[selectedIndex ?? 0]
+                  : widget.feedItem?.name ?? "General Feed"
+              : (widget.isEditFeed == true && updateEditCategories == false)
+                  ? widget.feedItem?.name ?? "General Feed"
+                  : (selectedIndex != null)
+                      ? checkListItems[selectedIndex ?? 0]
+                      : "General Feed",
         media: false,
         hasImage: false,
         hasVideo: false);
@@ -807,9 +814,15 @@ void _showFileSizeExceedDialog() {
       mediaCaption: mediaCaptionController.text,
       // hashTag: hashTagController.text,
       hasVideo: isVideoSelect,
-      category: (selectedIndex != null)
-          ? checkListItems[selectedIndex ?? 0]
-          : "General Feed",
+      category: (widget.isEditFeed == true && updateEditCategories == true)
+              ? (selectedIndex != null)
+                  ? checkListItems[selectedIndex ?? 0]
+                  : widget.feedItem?.name ?? "General Feed"
+              : (widget.isEditFeed == true && updateEditCategories == false)
+                  ? widget.feedItem?.name ?? "General Feed"
+                  : (selectedIndex != null)
+                      ? checkListItems[selectedIndex ?? 0]
+                      : "General Feed",
     );
     _handleSubmit(params, ref);
     //_resetValues();
@@ -878,6 +891,9 @@ void _showFileSizeExceedDialog() {
         selectedIndex = categoryIndex;
         if (categoryIndex != null) {
           selectedIndex = categoryIndex;
+          if (widget.isEditFeed == true){
+            updateEditCategories = true;
+          }
           // selectedCategories.add(categories[index]);
         }
         // selectedIndex = categoryIndex;
@@ -935,7 +951,41 @@ void _showFileSizeExceedDialog() {
         ));
   }
 
-  Widget categoryHearViewWidget() {
+Widget categoryHearViewWidget() {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+    child: Wrap(
+      spacing: 5,
+      direction: Axis.horizontal,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        const CircleAvatar(
+          radius: 3,
+          backgroundColor: Color(0xffB54242),
+        ),
+        Text(
+          (widget.isEditFeed == true && updateEditCategories == true)
+              ? (selectedIndex != null)
+                  ? checkListItems[selectedIndex ?? 0]
+                  : widget.feedItem?.name ?? "General Feed"
+              : (widget.isEditFeed == true && updateEditCategories == false)
+                  ? widget.feedItem?.name ?? "General Feed"
+                  : (selectedIndex != null)
+                      ? checkListItems[selectedIndex ?? 0]
+                      : "General Feed",
+          style: TextStyle(
+            color: Color(0xffB54242),
+            fontSize: 12.0,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+  Widget categoryHearViewWidget_old() {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
         child: Wrap(
@@ -947,10 +997,9 @@ void _showFileSizeExceedDialog() {
                 radius: 3,
                 backgroundColor: Color(0xffB54242),
               ),
-              Text(
-                (selectedIndex != null)
-                    ? checkListItems[selectedIndex ?? 0]
-                    : "General Feed",
+              Text( widget.isEditFeed == true
+            ? widget.feedItem?.name ?? "General Feed"
+            :  (selectedIndex != null) ? checkListItems[selectedIndex ?? 0] : "General Feed",
                 style: TextStyle(
                   color: Color(0xffB54242),
                   fontSize: 12.0,

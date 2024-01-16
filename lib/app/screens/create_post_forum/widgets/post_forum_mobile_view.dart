@@ -53,6 +53,7 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
   bool isImageSelect = false;
   bool isVideoSelect = false;
   bool replaceImageTriggered = false; // Add this line
+  bool updateEditCategories= false; // Add this line
 
   final ImagePicker imagePicker = ImagePicker();
   List<String> fileList = [];
@@ -625,9 +626,18 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
       content: feedController.text,
       hasImage: false,
       subCategory: "",
-      category: (selectedIndex != null)
-          ? checkListItems[selectedIndex ?? 0]
-          : selectedCategory,
+      // category: (selectedIndex != null)
+      //     ? checkListItems[selectedIndex ?? 0]
+      //     : selectedCategory,
+      category: (widget.isEditQuestion == true && updateEditCategories == true)
+              ? (selectedIndex != null)
+                  ? checkListItems[selectedIndex ?? 0]
+                  : widget.questionItem?.category ?? selectedCategory
+              : (widget.isEditQuestion == true && updateEditCategories == false)
+                  ? widget.questionItem?.category ?? selectedCategory
+                  : (selectedIndex != null)
+                      ? checkListItems[selectedIndex ?? 0]
+                      : selectedCategory,
     );
     // final params = PostQuestionParams(
     //   userId: widget.user.userId,
@@ -711,6 +721,9 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
         selectedIndex = categoryIndex;
         if (categoryIndex != null) {
           selectedIndex = categoryIndex;
+           if (widget.isEditQuestion == true){
+            updateEditCategories = true;
+          }
           // selectedCategories.add(categories[index]);
         }
         // selectedIndex = categoryIndex;
@@ -783,9 +796,15 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
                 backgroundColor: Color(0xffB54242),
               ),
               Text(
-                (selectedIndex != null)
-                    ? checkListItems[selectedIndex ?? 0]
-                    : selectedCategory,
+                (widget.isEditQuestion == true && updateEditCategories == true)
+              ? (selectedIndex != null)
+                  ? checkListItems[selectedIndex ?? 0]
+                  : widget.questionItem?.category ?? selectedCategory
+              : (widget.isEditQuestion == true && updateEditCategories == false)
+                  ? widget.questionItem?.category ?? selectedCategory
+                  : (selectedIndex != null)
+                      ? checkListItems[selectedIndex ?? 0]
+                      : selectedCategory,
                 style: TextStyle(
                   color: Color(0xffB54242),
                   fontSize: 12.0,

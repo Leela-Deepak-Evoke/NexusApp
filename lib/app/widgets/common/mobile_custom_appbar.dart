@@ -75,9 +75,11 @@ class CustomAppbar extends StatelessWidget {
   final bool hasRightAction;
   final Widget? rightChildWiget;
   final bool showSearchIcon; // Add this flag
+  final bool showSortingIcon; // Add this flag
   final Function() topBarButtonAction;
   final Function() backButtonAction;
   final Function() topBarSearchButtonAction;
+  final Function() topBarSortingButtonAction;
 
   CustomAppbar({
     super.key,
@@ -85,10 +87,13 @@ class CustomAppbar extends StatelessWidget {
     required this.hasBackAction,
     required this.hasRightAction,
     required this.showSearchIcon, // Add this line
+        required this.showSortingIcon, // Add this line
     required this.topBarButtonAction,
     required this.backButtonAction,
     required this.rightChildWiget,
     required this.topBarSearchButtonAction,
+        required this.topBarSortingButtonAction,
+
   });
 
   @override
@@ -152,7 +157,15 @@ class CustomAppbar extends StatelessWidget {
                                   onPressed: () {
                                    topBarSearchButtonAction();
                                   },
-                                ),
+                                )
+                                ,
+                                //  IconButton(
+                                //   icon: Icon(Icons
+                                //       .sort, color: Colors.white,), // Add your search icon here
+                                //   onPressed: () {
+                                //    topBarSortingButtonAction();
+                                //   },
+                                // ),
 
                               IconButton(
                                 icon: Image.asset(
@@ -166,14 +179,23 @@ class CustomAppbar extends StatelessWidget {
                               ),
                             ],
                           ))
-                    :  showSearchIcon ?
+                    :  showSearchIcon ? Row(
+                            children: [
                                 IconButton(
                                   icon: Icon(Icons
                                       .search, color: Colors.white,), // Add your search icon here
                                   onPressed: () {
                                    topBarSearchButtonAction();
                                   },
-                                ) : SizedBox(),    //,
+                                ), 
+                                // IconButton(
+                                //   icon: Icon(Icons
+                                //       .sort, color: Colors.white,), // Add your search icon here
+                                //   onPressed: () {
+                                //    topBarSortingButtonAction();
+                                //   },
+                                // ),
+                                ]) : SizedBox(),    //,
               ],
               // actions: [
 

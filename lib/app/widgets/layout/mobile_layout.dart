@@ -10,10 +10,13 @@ class MobileLayout extends StatefulWidget {
   final bool hasBackAction;
   final bool hasRightAction;
   final bool? showSearchIcon;
+  final bool? showSortingIcon;
   final Widget? rightChildWiget;
   final Function() topBarButtonAction;
   final Function() backButtonAction;
   final void Function()? topBarSearchButtonAction;
+    final void Function()? topBarSortingButtonAction;
+
   const MobileLayout({
     super.key,
     required this.child,
@@ -22,10 +25,13 @@ class MobileLayout extends StatefulWidget {
     required this.hasBackAction,
     required this.hasRightAction,
     this.showSearchIcon,
+     this.showSortingIcon,
     required this.topBarButtonAction,
     required this.backButtonAction,
     this.rightChildWiget,
     this.topBarSearchButtonAction,
+      this.topBarSortingButtonAction,
+
   });
   @override
   State<MobileLayout> createState() => _MobileLayoutState();
@@ -53,11 +59,15 @@ class _MobileLayoutState extends State<MobileLayout> {
               hasBackAction: widget.hasBackAction,
               hasRightAction: widget.hasRightAction,
               showSearchIcon: widget.showSearchIcon ?? false,
+              showSortingIcon: widget.showSortingIcon ?? false,
               topBarButtonAction: () => widget.topBarButtonAction(),
               backButtonAction: () => widget.backButtonAction(),
               rightChildWiget: widget.rightChildWiget,
-              topBarSearchButtonAction: () =>
-                  widget.topBarSearchButtonAction!()),
+              topBarSearchButtonAction: () => widget.topBarSearchButtonAction!(),
+              topBarSortingButtonAction: () => widget.topBarSortingButtonAction!()
+
+              ),
+              
         ],
       ),
     );

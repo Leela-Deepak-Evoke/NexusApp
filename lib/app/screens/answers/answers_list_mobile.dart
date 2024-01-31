@@ -56,7 +56,7 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
         children: [
           Flexible(
             child: ListView.builder(
-              padding: const EdgeInsets.all(0),
+              padding:  const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 100),
 
               itemCount: items.length,
               itemBuilder: (context, index) {

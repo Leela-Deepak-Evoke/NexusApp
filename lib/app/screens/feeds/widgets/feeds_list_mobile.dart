@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:evoke_nexus_app/app/models/delete.dart';
 import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/models/filter_feed.dart';
@@ -43,25 +45,11 @@ class FeedListMobile extends ConsumerStatefulWidget {
 }
 
 class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
-  // AsyncValue<List<Feed>>? filterFeeds;
   late Future<AsyncValue<List<Feed>>> filterFeedsFuture;
 
   @override
   void initState() {
     super.initState();
-
-    // if (widget.isFilter == true) {
-    //   filterFeedsFuture = Future.value(AsyncValue.loading());
-
-    //   // Initiate the asynchronous call in initState
-    //   filterFeedsFuture = ref.read(filterFeedsProvider(
-    //     FilterFeedsParams(
-    //       userId: widget.user.userId,
-    //       categories: [widget.selectedCategory ?? ""],
-    //       sortType: 'top',
-    //     ),
-    //   ) as ProviderListenable<Future<AsyncValue<List<Feed>>>>);
-    // }
   }
 
   void _onCommentsPressed(Feed item) {
@@ -78,39 +66,6 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
 
   @override
   Widget build(BuildContext context) {
-// final feedsAsyncValue1 = ref.watch(filterFeedsProvider(FilterFeedsParams(userId: widget.user.userId, categories: [widget.selectedCategory ?? ""], sortType: 'top')));
-// print('filtered Feeds : ${feedsAsyncValue1.runtimeType}');
-// print(widget.filterfeedsList);
-
-    // if (widget.isFilter == true) {
-
-    //   AsyncValue<List<Feed>> filterFeedsAsyncValue = ref.watch(
-    //       filterFeedsProvider(FilterFeedsParams(
-    //           userId: widget.user.userId,
-    //           categories: [widget.selectedCategory ?? ""])));
-    //   // print("Async value state: ${filterFeedsAsyncValue.runtimeType}");
-
-    //   if (filterFeedsAsyncValue is AsyncData) {
-    //     final feedsList = filterFeedsAsyncValue.value;
-    //     print("----- Filter Feeds Data -----: $feedsList");
-    //   }
-
-    //   if (filterFeedsAsyncValue is AsyncLoading) {
-    //     const Center(
-    //       child: SizedBox(
-    //         height: 50.0,
-    //         width: 50.0,
-    //         child: CircularProgressIndicator(),
-    //       ),
-    //     );
-    //   }
-
-    //   if (filterFeedsAsyncValue is AsyncError) {
-    //     return ErrorScreen(showErrorMessage: true, onRetryPressed: retry);
-    //   }
-    // } else {
-    //GENEREAL FEEDS LIST
-
     final feedsAsyncValue = ref.watch(feedsProvider(widget.user));
 
     if (feedsAsyncValue is AsyncData) {
@@ -129,15 +84,20 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
                 item.content?.contains(widget.searchQuery ?? '') == true ||
                 item.status.contains(widget.searchQuery ?? '') == true;
           }).toList();
-        } else if (widget.selectedCategory == "All" || widget.searchQuery == "All") {
+        } else if (widget.selectedCategory == "All" ||
+            widget.searchQuery == "All") {
           // If selectedCategory is "All", consider all items
           filteredItems = List.from(items);
         }
 
+        if (filteredItems.isEmpty) {
+          // Handle the case where there is no data found
+          return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
+        } else {
         return Container(
-            alignment: AlignmentDirectional.topStart,
+            // alignment: AlignmentDirectional.topStart,
             padding:
-                const EdgeInsets.only(left: 0, right: 0, top: 10, bottom: 0),
+                const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
             child: RefreshIndicator(
               onRefresh: _onRefresh,
               child: Column(children: [
@@ -272,11 +232,18 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
                     return const Divider();
                   },
                 )),
-                const SizedBox(
-                  height: 100,
-                )
+                if (Platform.isAndroid)
+                  const SizedBox(
+                    height: 60,
+                  ),
+                if (Platform.isIOS)
+                  const SizedBox(
+                    height: 100,
+                  ),
               ]),
-            ));
+            )
+            );
+      }
       }
     }
     if (feedsAsyncValue is AsyncLoading) {

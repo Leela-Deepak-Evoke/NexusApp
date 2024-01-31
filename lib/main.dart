@@ -1,5 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:evoke_nexus_app/app/screens/login/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:evoke_nexus_app/nexus_app.dart';
 import 'package:evoke_nexus_app/app_router.dart';
@@ -9,6 +12,7 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+ import 'dart:io';
 
 Future<void> main() async {
   setPathUrlStrategy();
@@ -20,6 +24,11 @@ Future<void> main() async {
   } on AmplifyAlreadyConfiguredException {
     safePrint('Amplify configuration failed.');
   }
+//  WidgetsFlutterBinding.ensureInitialized();
+
+//   ByteData data = await PlatformAssetBundle().load('assets/ca/lets-encrypt-r3.pem');
+//   SecurityContext.defaultContext.setTrustedCertificatesBytes(data.buffer.asUint8List());
+
   runApp(
     ProviderScope(
       child: NexusApp(
@@ -42,4 +51,3 @@ Future<void> _configureAmplify() async {
     safePrint('An error occurred while configuring Amplify: $e');
   }
 }
-

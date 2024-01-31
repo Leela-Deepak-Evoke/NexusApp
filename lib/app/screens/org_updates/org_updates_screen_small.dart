@@ -26,6 +26,7 @@ class _OrgUpdatesScreenSmall extends ConsumerState<OrgUpdatesScreenSmall> {
   @override
   Widget build(BuildContext context) {
     final userAsyncValue = ref.watch(fetchUserProvider);
+    final categoryAsyncValue = ref.watch(categoriesProviderorgUpdates);
     return userAsyncValue.when(
       data: (data) {
         return MobileLayout(
@@ -43,7 +44,7 @@ class _OrgUpdatesScreenSmall extends ConsumerState<OrgUpdatesScreenSmall> {
                     builder: (context) => CreatePostOrgUpdatesScreen()));
           },
           topBarSearchButtonAction: () {
-            onSearchClicked(data);
+            onSearchClicked(data, categoryAsyncValue);
           },
           backButtonAction: () {
             Navigator.pop(context);
@@ -71,8 +72,7 @@ class _OrgUpdatesScreenSmall extends ConsumerState<OrgUpdatesScreenSmall> {
     );
   }
 
-  void onSearchClicked(User data) {
-    final categoryAsyncValue = ref.watch(categoriesProviderorgUpdates);
+  void onSearchClicked(User data, AsyncValue<List<String>> categoryAsyncValue) {
     if (categoryAsyncValue is AsyncData<List<String>>) {
       final orgUpdatesCategoryList = categoryAsyncValue;
       checkListItems = orgUpdatesCategoryList.value;

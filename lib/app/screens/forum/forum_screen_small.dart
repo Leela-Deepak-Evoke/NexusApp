@@ -31,6 +31,7 @@ class _ForumScreenSmallState extends ConsumerState<ForumScreenSmall> {
   @override
   Widget build(BuildContext context) {
     final userAsyncValue = ref.watch(fetchUserProvider);
+    final categoryAsyncValue = ref.watch(categoriesProviderQuestion);
     return userAsyncValue.when(
       data: (data) {
         return MobileLayout(
@@ -40,7 +41,7 @@ class _ForumScreenSmallState extends ConsumerState<ForumScreenSmall> {
           hasRightAction: true,
           showSearchIcon: true,
           topBarSearchButtonAction: () {
-             onSearchClicked(data);
+             onSearchClicked(data, categoryAsyncValue);
           },
           topBarButtonAction: () {
             Navigator.push(
@@ -77,8 +78,7 @@ class _ForumScreenSmallState extends ConsumerState<ForumScreenSmall> {
     );
   }
 
-  void onSearchClicked(User data) {
-    final categoryAsyncValue = ref.watch(categoriesProviderQuestion);
+  void onSearchClicked(User data, AsyncValue<List<String>> categoryAsyncValue) {
     if (categoryAsyncValue is AsyncData<List<String>>) {
       final forumCategoryList = categoryAsyncValue;
       checkListItems = forumCategoryList.value;

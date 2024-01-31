@@ -59,12 +59,14 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
           // If selectedCategory is "All", consider all items
           filteredItems = List.from(items);
         }
-
+if (filteredItems.isEmpty) {
+        return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
+      } else { 
 
         return Container(
             alignment: AlignmentDirectional.topStart,
             padding:
-                const EdgeInsets.only(left: 0, right: 0, top: 10, bottom: 0),
+                const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
             child: RefreshIndicator(
               onRefresh: _onRefresh,
               child: Column(children: [
@@ -203,6 +205,7 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
                 )
               ]),
             ));
+      }
       }
     }
     if (orgUpdatesAsyncValue is AsyncLoading) {

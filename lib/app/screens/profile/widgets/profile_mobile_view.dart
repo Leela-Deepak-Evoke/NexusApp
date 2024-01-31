@@ -1,10 +1,16 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/models/user_like.dart';
 import 'package:evoke_nexus_app/app/provider/profile_service_provider.dart';
+import 'package:evoke_nexus_app/app/screens/login/login_screen.dart';
+import 'package:evoke_nexus_app/app/screens/not_found/not_found_screen.dart';
+import 'package:evoke_nexus_app/app/utils/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -55,18 +61,19 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
                         fontSize: 8,
                         fontWeight: FontWeight.bold,
                       ),
-                    ) : widget.user.identityId == widget.otherUser!.identityId
-                ? Text(
-                      widget.user.profilePicture != null &&
-                              widget.user.profilePicture!.isNotEmpty
-                          ? 'Change Profile Picture'
-                          : 'Add Profile Picture',
-                      style: const TextStyle(
-                        fontSize: 8,
-                        fontWeight: FontWeight.bold,
-                      ),
                     )
-                  : Container(),
+                  : widget.user.identityId == widget.otherUser!.identityId
+                      ? Text(
+                          widget.user.profilePicture != null &&
+                                  widget.user.profilePicture!.isNotEmpty
+                              ? 'Change Profile Picture'
+                              : 'Add Profile Picture',
+                          style: const TextStyle(
+                            fontSize: 8,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      : Container(),
             ),
 
             const SizedBox(height: 10),
@@ -83,7 +90,9 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
             ),
             const SizedBox(height: 8),
             Text(
-              widget.isFromOtherUser == false ? widget.user.role : widget.otherUser!.title,
+              widget.isFromOtherUser == false
+                  ? widget.user.role
+                  : widget.otherUser!.title,
               style: TextStyle(
                 color: Color(0xff676A79),
                 fontSize: 14.0,
@@ -106,7 +115,7 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
                     child: _buildViewProfile(),
                   )
                 : Container(),
-      
+
         // Align(
         //   alignment: Alignment.centerLeft,
         //   child: VerticalCardList(),
@@ -225,8 +234,7 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
             if (value == true) {
               // User clicked "Yes," proceed with the logout
               // doLogout();
-                                  _showToast(context);
-
+              _showToast(context);
             }
           });
         },
@@ -247,12 +255,53 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
     );
   }
 
-  doLogout() async {
+  void doLogout() async {
+    await signOutCurrentUser();
+  }
+
+  Future<void> signOutCurrentUser() async {
+    final SignOutResult result = await Amplify.Auth.signOut(
+      options: const SignOutOptions(globalSignOut: true),
+    );
+    safePrint('result: ${result}');
+
+    // final result = await Amplify.Auth.signOut();
+    if (result is CognitoCompleteSignOut) {
+      safePrint('Sign out completed successfully');
+      // Navigator.popUntil(context, ModalRoute.withName("/${AppRoute.login.name}"));
+      // GoRouter.of(context).goNamed('/${AppRoute.login.name}');
+
+      setState(() {
+        GoRouter.of(context).goNamed('/');
+        
+        Navigator.pushNamedAndRemoveUntil(context, '/', (Route<dynamic> route) => false);
+
+        // Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+        //   MaterialPageRoute(
+        //     builder: (context) {
+        //       return const LoginScreen();
+        //     },
+        //   ),
+        //   (_) => false,
+        // );
+      });
+    } else if (result is CognitoFailedSignOut) {
+      safePrint('Error signing user out: ${result.exception.message}');
+    }
+  }
+
+  doLogout_old() async {
     final result = await Amplify.Auth.signOut();
     if (result is CognitoCompleteSignOut) {
       safePrint('Sign out completed successfully');
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.remove('authToken');
+
+      // GoRouter.of(context).goNamed('/${AppRoute.login.name}');
+
+      Navigator.popUntil(context, ModalRoute.withName("/"));
+
+// Navigator.pushNamedAndRemoveUntil(context, '/${AppRoute.login.name}', (Route<dynamic> route) => false);
 
       // widget.context.replaceNamed(AppRoute.login.name);
       // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
@@ -393,3 +442,5 @@ class VerticalCard extends StatelessWidget {
     );
   }
 }
+
+//Remove browser redirection after signOut() in app using social sign in #401 Closed /https://github.com/aws-amplify/amplify-flutter/issues/401

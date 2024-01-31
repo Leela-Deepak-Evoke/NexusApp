@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/app_routes.dart';
 
@@ -55,39 +56,60 @@ class RootScreenMobile extends ConsumerWidget {
 
     if (checkUserAsyncValue is AsyncError) {
       context.replaceNamed(AppRoute.login.name);
-    // return ErrorScreen(showErrorMessage: true, onRetryPressed: onRetryPressed);
+      // GoRouter.of(context).goNamed('/${AppRoute.login.name}');
+// Router.neglect(context, () {
+//             context
+//                 .goNamed('/${AppRoute.login.name}');
+//           });
+//  GoRoute(
+//         name: AppRoute.login.name,
+//         path: '/${AppRoute.login.name}',
+//         redirect: (context, state) async {
+//           final prefs = await SharedPreferences.getInstance();
+//           final authToken = prefs.getString('authToken');
+//           if (authToken == null) {
+//             return null;
+//           } else {
+//             return '/${AppRoute.rootNavigation.name}';
+//           }
+//         });
+// context.pop();
+//  context.push('/${AppRoute.login.name}');
 
-      return Container(
-        color: Colors.white, // Set your desired background color
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('An error occurred. Please try again. ${checkUserAsyncValue.error.hashCode}',
-                style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                )),
-            const SizedBox(height: 20.0), // Adjust spacing as needed
-            ElevatedButton(
-              onPressed: onRetryPressed,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red[700],
-              ),
-              child: Text(
-                "Try Again",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.0,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
+
+    return ErrorScreen(showErrorMessage: true, onRetryPressed: onRetryPressed);
+
+      // return Container(
+      //   color: Colors.white, // Set your desired background color
+      //   child: Column(
+      //     mainAxisAlignment: MainAxisAlignment.center,
+      //     children: [
+      //       Text('An error occurred. Please try again. ${checkUserAsyncValue.error.hashCode}',
+      //           style: TextStyle(
+      //             color: Colors.black87,
+      //             fontSize: 16.0,
+      //             fontWeight: FontWeight.bold,
+      //             fontFamily: GoogleFonts.poppins().fontFamily,
+      //           )),
+      //       const SizedBox(height: 20.0), // Adjust spacing as needed
+      //       ElevatedButton(
+      //         onPressed: onRetryPressed,
+      //         style: ElevatedButton.styleFrom(
+      //           backgroundColor: Colors.red[700],
+      //         ),
+      //         child: Text(
+      //           "Try Again",
+      //           style: TextStyle(
+      //             color: Colors.white,
+      //             fontSize: 16.0,
+      //             fontFamily: GoogleFonts.poppins().fontFamily,
+      //             fontWeight: FontWeight.normal,
+      //           ),
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // );
     }
 
     // This should ideally never be reached, but it's here as a fallback.

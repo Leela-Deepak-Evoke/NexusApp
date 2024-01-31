@@ -47,7 +47,7 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
         // Handle the case where there is no data found
         return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
       } else {
-       List<Question> filteredItems = [];
+        List<Question> filteredItems = [];
         if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
           filteredItems = items.where((item) {
             return item.author?.contains(widget.searchQuery ?? '') == true ||
@@ -57,73 +57,79 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
                 item.status.contains(widget.searchQuery ?? '') == true ||
                 item.category?.contains(widget.searchQuery ?? '') == true;
           }).toList();
-        } else if (widget.selectedCategory == "All" || widget.searchQuery == "All") {
+        } else if (widget.selectedCategory == "All" ||
+            widget.searchQuery == "All") {
           // If selectedCategory is "All", consider all items
           filteredItems = List.from(items);
         }
 
-        return Container(
-            alignment: AlignmentDirectional.topStart,
-            padding:
-                const EdgeInsets.only(left: 0, right: 0, top: 10, bottom: 0),
-            child: RefreshIndicator(
-              onRefresh: _onRefresh,
-              child: Column(children: [
-                Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.only(
-                        left: 0, right: 0, top: 0, bottom: 0),
-                    shrinkWrap: true,
-                    itemCount: filteredItems.length,
-                    itemBuilder: (context, index) {
-                      final item = filteredItems[index];
-                      final formattedDate = DateFormat('MMM d HH:mm').format(
-                          DateTime.parse(item.postedAt.toString()).toLocal());
+        if (filteredItems.isEmpty) {
+          return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
+        } else {
+          return Container(
+              alignment: AlignmentDirectional.topStart,
+              padding:
+                  const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
+              child: RefreshIndicator(
+                onRefresh: _onRefresh,
+                child: Column(children: [
+                  Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.only(
+                          left: 0, right: 0, top: 0, bottom: 0),
+                      shrinkWrap: true,
+                      itemCount: filteredItems.length,
+                      itemBuilder: (context, index) {
+                        final item = filteredItems[index];
+                        final formattedDate = DateFormat('MMM d HH:mm').format(
+                            DateTime.parse(item.postedAt.toString()).toLocal());
 
-                      return InkWell(
-                          onTap: () {
-                            context.goNamed(
-                              AppRoute.answersforum.name,
-                              extra: item,
-                            );
-                          },
-                          child: Card(
-                            // margin: const EdgeInsets.all(0),
-                            // clipBehavior: Clip.antiAlias,
-                            //  shape: RoundedRectangleBorder(
-                            //          borderRadius: BorderRadius.circular(0)),
-                            child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0, vertical: 8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    categoryHearViewWidget(item),
+                        return InkWell(
+                            onTap: () {
+                              context.goNamed(
+                                AppRoute.answersforum.name,
+                                extra: item,
+                              );
+                            },
+                            child: Card(
+                              // margin: const EdgeInsets.all(0),
+                              // clipBehavior: Clip.antiAlias,
+                              //  shape: RoundedRectangleBorder(
+                              //          borderRadius: BorderRadius.circular(0)),
+                              child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0, vertical: 8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      categoryHearViewWidget(item),
 
-                                    //
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    contentViewWidget(item),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    askedbyViewHeader(item, ref),
-                                    footerVIewWidget(formattedDate, item)
-                                  ],
-                                )),
-                          ));
-                    },
-                    // separatorBuilder: (BuildContext context, int index) {
-                    //   return const Divider();
-                    // },
+                                      //
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      contentViewWidget(item),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      askedbyViewHeader(item, ref),
+                                      footerVIewWidget(formattedDate, item)
+                                    ],
+                                  )),
+                            ));
+                      },
+                      // separatorBuilder: (BuildContext context, int index) {
+                      //   return const Divider();
+                      // },
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 100,
-                )
-              ]),
-            ));
+                  const SizedBox(
+                    height: 100,
+                  )
+                ]),
+              ));
+        }
       }
     }
     if (questionsAsyncValue is AsyncLoading) {

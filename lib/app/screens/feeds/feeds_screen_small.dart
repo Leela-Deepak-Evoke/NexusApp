@@ -21,11 +21,11 @@ class _FeedsScreenSmallState extends ConsumerState<FeedsScreenSmall> {
   List<String> checkListItems = [];
   String selectedCategory = '';
   bool isFilter = false;
-  // Feed? filterfeedsList;
-  // late AsyncValue<List<Feed>> filterfeedsList;
 
   Widget build(BuildContext context) {
     final userAsyncValue = ref.watch(fetchUserProvider);
+    final categoryAsyncValue = ref.watch(categoriesProviderFeed);
+
     return userAsyncValue.when(
       data: (data) {
         return MobileLayout(
@@ -42,7 +42,16 @@ class _FeedsScreenSmallState extends ConsumerState<FeedsScreenSmall> {
                     builder: (context) => CreatePostFeedScreen()));
           },
           topBarSearchButtonAction: () {
-            onSearchClicked(data);
+            onSearchClicked(data, categoryAsyncValue);
+            if (categoryAsyncValue is AsyncLoading) {
+              const Center(
+                child: SizedBox(
+                  height: 50.0,
+                  width: 50.0,
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
           },
           backButtonAction: () {
             Navigator.pop(context);
@@ -70,9 +79,7 @@ class _FeedsScreenSmallState extends ConsumerState<FeedsScreenSmall> {
     );
   }
 
-  void onSearchClicked(User data) {
-    // setState(() {});
-    final categoryAsyncValue = ref.watch(categoriesProviderFeed);
+  void onSearchClicked(User data, AsyncValue<List<String>> categoryAsyncValue) {
     if (categoryAsyncValue is AsyncData<List<String>>) {
       final feedsCategoryList = categoryAsyncValue;
       checkListItems = feedsCategoryList.value;
@@ -87,10 +94,12 @@ class _FeedsScreenSmallState extends ConsumerState<FeedsScreenSmall> {
         ),
       );
     }
+    if (categoryAsyncValue is AsyncError) {
+      Text('An error occurred: ${categoryAsyncValue.error}');
+    }
   }
 
   void _showBottomSheet(BuildContext context, User data) {
-    final Size size = MediaQuery.of(context).size;
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -210,45 +219,6 @@ class _FeedsScreenSmallState extends ConsumerState<FeedsScreenSmall> {
 
   void _onCategorySelected(String selectedCategory, User data) async {
     try {
-      //       AsyncValue<List<Feed>> filterFeedsAsyncValue = ref.watch(filterFeedsProvider(FilterFeedsParams(userId: data.userId, categories: [selectedCategory])));
-      // print("Async value state: ${filterFeedsAsyncValue.runtimeType}");
-
-      // if (filterFeedsAsyncValue is AsyncData<List<String>>) {
-      //   final feedsList = filterFeedsAsyncValue.value;
-      //     print("----- Filter Feeds Data -----: $feedsList");
-
-      // }
-
-      // if (filterFeedsAsyncValue is AsyncLoading) {
-      //   const Center(
-      //     child: SizedBox(
-      //       height: 50.0,
-      //       width: 50.0,
-      //       child: CircularProgressIndicator(),
-      //     ),
-      //   );
-      // }
-
-      // AsyncValue<List<Feed>> filterfeedsAsyncValue =
-      //     ref.watch(filterFeedsProvider(FilterFeedsParams(
-      //   userId: data.userId,
-      //   categories: [selectedCategory],
-      // )));
-      // if (filterfeedsAsyncValue is AsyncData) {
-      //   final items = filterfeedsAsyncValue.value!;
-      //             print("----- Filter Feeds Data -----: $items");
-
-      // }
-      // if (filterfeedsAsyncValue is AsyncLoading) {
-      //   const Center(
-      //     child: SizedBox(
-      //       height: 50.0,
-      //       width: 50.0,
-      //       child: CircularProgressIndicator(),
-      //     ),
-      //   );
-      // }
-
       isFilter = true;
       selectedCategory = selectedCategory;
       searchQuery = selectedCategory;

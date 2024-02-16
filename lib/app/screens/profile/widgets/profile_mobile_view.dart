@@ -265,16 +265,18 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
     );
     safePrint('result: ${result}');
 
-    // final result = await Amplify.Auth.signOut();
     if (result is CognitoCompleteSignOut) {
       safePrint('Sign out completed successfully');
       // Navigator.popUntil(context, ModalRoute.withName("/${AppRoute.login.name}"));
       // GoRouter.of(context).goNamed('/${AppRoute.login.name}');
 
       setState(() {
+        safePrint('Inside setState');
+
         GoRouter.of(context).goNamed('/');
-        
-        Navigator.pushNamedAndRemoveUntil(context, '/', (Route<dynamic> route) => false);
+        safePrint('After /login');
+
+        // Navigator.pushNamedAndRemoveUntil(context, '/', (Route<dynamic> route) => false);
 
         // Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
         //   MaterialPageRoute(
@@ -285,6 +287,7 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
         //   (_) => false,
         // );
       });
+      safePrint('Outside setState');
     } else if (result is CognitoFailedSignOut) {
       safePrint('Error signing user out: ${result.exception.message}');
     }

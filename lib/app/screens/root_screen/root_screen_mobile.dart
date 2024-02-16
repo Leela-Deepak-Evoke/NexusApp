@@ -1,5 +1,7 @@
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
+import 'package:evoke_nexus_app/app/screens/login/login_screen.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_handler.dart';
+import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_screen.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/error_screen.dart';
 import 'package:flutter/material.dart';
@@ -55,27 +57,8 @@ class RootScreenMobile extends ConsumerWidget {
     }
 
     if (checkUserAsyncValue is AsyncError) {
-      context.replaceNamed(AppRoute.login.name);
-      // GoRouter.of(context).goNamed('/${AppRoute.login.name}');
-// Router.neglect(context, () {
-//             context
-//                 .goNamed('/${AppRoute.login.name}');
-//           });
-//  GoRoute(
-//         name: AppRoute.login.name,
-//         path: '/${AppRoute.login.name}',
-//         redirect: (context, state) async {
-//           final prefs = await SharedPreferences.getInstance();
-//           final authToken = prefs.getString('authToken');
-//           if (authToken == null) {
-//             return null;
-//           } else {
-//             return '/${AppRoute.rootNavigation.name}';
-//           }
-//         });
-// context.pop();
-//  context.push('/${AppRoute.login.name}');
-
+            // context.replaceNamed(AppRoute.login.name);
+  GoRouter.of(context).goNamed('/${AppRoute.login.name}');
 
     return ErrorScreen(showErrorMessage: true, onRetryPressed: onRetryPressed);
 

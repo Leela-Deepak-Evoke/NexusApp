@@ -24,11 +24,6 @@ Future<void> main() async {
   } on AmplifyAlreadyConfiguredException {
     safePrint('Amplify configuration failed.');
   }
-//  WidgetsFlutterBinding.ensureInitialized();
-
-//   ByteData data = await PlatformAssetBundle().load('assets/ca/lets-encrypt-r3.pem');
-//   SecurityContext.defaultContext.setTrustedCertificatesBytes(data.buffer.asUint8List());
-
   runApp(
     ProviderScope(
       child: NexusApp(
@@ -46,7 +41,7 @@ Future<void> _configureAmplify() async {
     final storage = AmplifyStorageS3();
     await Amplify.addPlugins([authPlugin, api, storage]);
 
-    await Amplify.configure(amplifyconfig);
+    await Amplify.configure(amplifyconfig); 
   } on Exception catch (e) {
     safePrint('An error occurred while configuring Amplify: $e');
   }

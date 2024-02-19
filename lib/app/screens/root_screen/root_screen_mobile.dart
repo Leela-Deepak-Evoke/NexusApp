@@ -57,8 +57,8 @@ class RootScreenMobile extends ConsumerWidget {
     }
 
     if (checkUserAsyncValue is AsyncError) {
-            // context.replaceNamed(AppRoute.login.name);
-  GoRouter.of(context).goNamed('/${AppRoute.login.name}');
+            context.replaceNamed(AppRoute.login.name);
+  // GoRouter.of(context).goNamed('/${AppRoute.login.name}');
 
     return ErrorScreen(showErrorMessage: true, onRetryPressed: onRetryPressed);
 

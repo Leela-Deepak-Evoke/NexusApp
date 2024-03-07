@@ -131,7 +131,9 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        if(widget.user.about != null || (widget.user.about != null && widget.user.about != " " || widget.user.about != ",," || widget.user.about != '"' ) ) 
+
+           Text(
           'About Me: ${widget.user.about}',
           style: TextStyle(
             color: Color(0xff676A79),
@@ -141,6 +143,8 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
           ),
         ),
         const SizedBox(height: 10),
+     
+     if(widget.user.socialLinks != null && widget.user.socialLinks != ",,")
         Text(
           'Social Link: ${widget.user.socialLinks}',
           style: TextStyle(

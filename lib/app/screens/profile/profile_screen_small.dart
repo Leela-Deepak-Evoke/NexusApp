@@ -8,11 +8,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class ProfileScreenSmall extends ConsumerStatefulWidget {
-  final BuildContext context;
+  // final BuildContext context;
 
   const ProfileScreenSmall({
     super.key,
-    required this.context,
+    // required this.context,
   });
 
   //  const ProfileScreenSmall({super.key});
@@ -34,7 +34,7 @@ class _ProfileScreenSmallState extends ConsumerState<ProfileScreenSmall> {
           return MobileLayout(
             title: 'Profile',
             user: data,
-            hasBackAction: false,
+            hasBackAction: true,
             hasRightAction: true,
             showSearchIcon: false,
             topBarButtonAction: () {
@@ -50,7 +50,7 @@ class _ProfileScreenSmallState extends ConsumerState<ProfileScreenSmall> {
             },
             child: ProfileMobileView(
               user: data,
-              context: widget.context,
+              context: context, //widget.context,
               isFromOtherUser: false,
               onPostClicked: () {},
             ),

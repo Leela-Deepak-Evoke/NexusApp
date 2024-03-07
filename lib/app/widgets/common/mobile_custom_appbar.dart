@@ -1,3 +1,4 @@
+import 'package:evoke_nexus_app/app/screens/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -16,13 +17,43 @@ class MobileCustomAppbar extends StatelessWidget {
           builder: (context, value, child) {
             return AppBar(
               backgroundColor: Colors.transparent,
-              leading: Image.asset(
-                'assets/images/evoke-icon.png',
-              ),
-              titleSpacing: 0,
+              // leading: Image.asset(
+              //   'assets/images/Nexus_logo-artwork.png',
+              //    width: 24,
+              //       height: 24,
+              // ),
+              // titleSpacing: 0,
+              // centerTitle: false,
+              // title: Text(
+              //   "NEXUS",  //EVOKE NEXUS
+              //   style: TextStyle(
+              //     color: Colors.white,
+              //     fontSize: 16.0,
+              //     fontFamily: GoogleFonts.poppins().fontFamily,
+              //     fontWeight: FontWeight.w600,
+              //   ),
+              //   textAlign: TextAlign.left,
+              // ), 
+              // leading:   IconButton(
+              //     icon: Image.asset(
+              //       'assets/images/Nexus_logo-artwork.png',
+              //       // width: 24,
+              //       // height: 24,
+              //     ),
+              //     onPressed: () {},
+              //   ),   
+               leading: IconButton(
+                      icon: Image.asset(
+                        'assets/images/Nexus_logo-artwork.png',
+                        width: 35,
+                        height: 35,
+                      ),
+                      onPressed: () {},
+                    ),  
+                    titleSpacing: 0,
               centerTitle: false,
               title: Text(
-                "EVOKE NEXUS",
+                "NEXUS",  //EVOKE NEXUS
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16.0,
@@ -30,7 +61,7 @@ class MobileCustomAppbar extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
                 textAlign: TextAlign.left,
-              ),
+              ),    
               actions: [
                 IconButton(
                   icon: Image.asset(
@@ -41,7 +72,22 @@ class MobileCustomAppbar extends StatelessWidget {
                   onPressed: () {},
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                      Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                  );
+
+  // Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         fullscreenDialog: true,
+  //         // builder: (context) => CreatePostFeedScreen(feedItem: item, isEditFeed: true),
+  //         builder: (context) => ProfileScreen(),
+  //       ),
+  //     );
+
+                  },
                   child: Container(
                     width: 24,
                     height: 24,
@@ -121,7 +167,7 @@ class CustomAppbar extends StatelessWidget {
                     )
                   : IconButton(
                       icon: Image.asset(
-                        'assets/images/Nexus.png',
+                        'assets/images/Nexus_logo-artwork.png',
                         width: 35,
                         height: 35,
                       ),

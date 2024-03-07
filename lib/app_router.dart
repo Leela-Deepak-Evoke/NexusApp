@@ -5,6 +5,7 @@ import 'package:evoke_nexus_app/app/screens/create_post_feed/create_post_feed_sc
 import 'package:evoke_nexus_app/app/screens/feeds/feeds_screen.dart';
 import 'package:evoke_nexus_app/app/screens/forum/forum_screen.dart';
 import 'package:evoke_nexus_app/app/screens/forum/widgets/post_forum_fab.dart';
+import 'package:evoke_nexus_app/app/screens/home/home_screen.dart';
 import 'package:evoke_nexus_app/app/screens/login/login_screen.dart';
 import 'package:evoke_nexus_app/app/screens/not_found/not_found_screen.dart';
 import 'package:evoke_nexus_app/app/screens/org_updates/org_updates_screen.dart';
@@ -37,7 +38,7 @@ final router = GoRouter(
           path: "feeds",
           pageBuilder: (context, state) => MaterialPage<void>(
             key: state.pageKey,
-            child: const FeedsScreen(),
+            child:  FeedsScreen(),
           ),
         ),
         GoRoute(
@@ -61,7 +62,7 @@ final router = GoRouter(
           path: "forum",
           pageBuilder: (context, state) => MaterialPage<void>(
             key: state.pageKey,
-            child: const ForumScreen(),
+            child: ForumScreen(),
           ),
         ),
         GoRoute(
@@ -126,12 +127,20 @@ final mobileappRouter = GoRouter(
           child: const LoginScreen(),
         ),
         routes: [
+           GoRoute(
+            name: AppRoute.home.name,
+            path: "home",
+            pageBuilder: (context, state) => MaterialPage<void>(
+              key: state.pageKey,
+              child:  const HomeScreen(),
+            ),
+          ),
           GoRoute(
             name: AppRoute.feeds.name,
             path: "feeds",
             pageBuilder: (context, state) => MaterialPage<void>(
               key: state.pageKey,
-              child: const FeedsScreen(),
+              child:  FeedsScreen(),
             ),
           ),
           GoRoute(
@@ -163,7 +172,7 @@ final mobileappRouter = GoRouter(
             path: "forum",
             pageBuilder: (context, state) => MaterialPage<void>(
               key: state.pageKey,
-              child: const ForumScreen(),
+              child: ForumScreen(),
             ),
           ),
           GoRoute(
@@ -209,6 +218,30 @@ final mobileappRouter = GoRouter(
       return const NotFoundScreen();
     });
 
+
+final homeRouter = GoRouter(
+    initialLocation: '/${AppRoute.home.name}',
+    debugLogDiagnostics: false,
+    routes: [
+      GoRoute(
+          name: AppRoute.home.name,
+          path: '/${AppRoute.home.name}',
+          pageBuilder: (context, state) => NoTransitionPage<void>(
+                key: state.pageKey,
+                child: const HomeScreen(),
+              ),
+          routes: [
+            GoRoute(
+              name: AppRoute.feeds.name,
+              path: AppRoute.feeds.name,
+              pageBuilder: (context, state) => NoTransitionPage<void>(
+                key: state.pageKey,
+                child: FeedsScreen(),
+              ),
+            )
+          ])
+    ]);
+
 final feedsRouter = GoRouter(
     initialLocation: '/${AppRoute.feeds.name}',
     debugLogDiagnostics: false,
@@ -218,7 +251,7 @@ final feedsRouter = GoRouter(
           path: '/${AppRoute.feeds.name}',
           pageBuilder: (context, state) => NoTransitionPage<void>(
                 key: state.pageKey,
-                child: const FeedsScreen(),
+                child:  FeedsScreen(),
               ),
           routes: [
             GoRoute(
@@ -241,7 +274,7 @@ final forumsRouter = GoRouter(
           path: '/${AppRoute.forum.name}',
           pageBuilder: (context, state) => MaterialPage<void>(
                 key: state.pageKey,
-                child: const ForumScreen(),
+                child: ForumScreen(),
               ),
           routes: [
             GoRoute(
@@ -298,7 +331,8 @@ final profileRouter = GoRouter(
           path: '/${AppRoute.profile.name}',
           pageBuilder: (context, state) => NoTransitionPage<void>(
                 key: state.pageKey,
-                child: ProfileScreen(rootScreenMobileContext: context),
+                // child: ProfileScreen(rootScreenMobileContext: context),
+                 child: ProfileScreen(),
               ),
           routes: [
             GoRoute(

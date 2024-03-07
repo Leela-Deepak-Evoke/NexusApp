@@ -9,7 +9,9 @@ import 'package:evoke_nexus_app/app/screens/create_post_feed/create_post_feed_sc
 import 'package:google_fonts/google_fonts.dart';
 
 class FeedsScreenSmall extends ConsumerStatefulWidget {
-  const FeedsScreenSmall({super.key});
+   bool? isFromHomePage;
+
+   FeedsScreenSmall({super.key, this.isFromHomePage});
   @override
   ConsumerState<FeedsScreenSmall> createState() => _FeedsScreenSmallState();
 }
@@ -31,7 +33,7 @@ class _FeedsScreenSmallState extends ConsumerState<FeedsScreenSmall> {
         return MobileLayout(
           title: 'Feeds',
           user: data,
-          hasBackAction: false,
+          hasBackAction: widget.isFromHomePage == true ? true : false,
           hasRightAction: true,
           showSearchIcon: true,
           topBarButtonAction: () {

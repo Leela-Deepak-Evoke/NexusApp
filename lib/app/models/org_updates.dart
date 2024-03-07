@@ -73,6 +73,14 @@ class OrgUpdate {
       }
     }
 
+    //  if (json['user']['profilePicture'] != null) {
+    //   if (json['user']['userId'] == currentUserId) {
+    //     authorThumbnail = json['user']['profilePicture'];
+    //   } else {
+    //     authorThumbnail = json['orgUpdate']['imagePath'];
+    //   }
+    // }
+
     return OrgUpdate(
         orgUpdateId: json['orgUpdate']['orgUpdateId'],
         media: json['orgUpdate']['media'],

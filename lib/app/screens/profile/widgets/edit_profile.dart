@@ -205,8 +205,11 @@ class _UserFormState extends ConsumerState<UserForm> {
 
                           // maxLength: 3000,
                         ),
+                                            // ExpandCollapseDemo(),
+
                         const SizedBox(height: 20),
                         ..._buildSocialLinksFields()
+                        
                       ],
                     ),
                     const SizedBox(height: 5),
@@ -333,46 +336,73 @@ class _UserFormState extends ConsumerState<UserForm> {
     return '';
   }
 
-  // Widget _profilePicWidget(User user, WidgetRef ref) {
-  //   final avatarText = getAvatarText(user.name);
+}
 
-  //   final profileThumbnailAsyncValue =
-  //       ref.watch(profileThumbnailProvider(user.profilePicture ?? ""));
 
-  //   return profileThumbnailAsyncValue.when(
-  //     data: (data) {
-  //       if (data != null) {
-  //         return Center(
-  //             child: CircleAvatar(
-  //           backgroundImage: NetworkImage(data),
-  //           radius: 80.0,
-  //         ));
-  //       } else {
-  //         // Render a placeholder or an error image
-  //         return CircleAvatar(radius: 80.0, child: Text(avatarText));
-  //       }
-  //     },
-  //     loading: () => const Center(
-  //       child: SizedBox(
-  //         height: 80.0,
-  //         width: 80.0,
-  //         child: CircularProgressIndicator(),
-  //       ),
-  //     ),
-  //     error: (error, stack) {
-  //       // Handle the error case if needed
-  //       return CircleAvatar(radius: 80.0, child: Text(avatarText));
-  //     },
-  //   );
-  // }
 
-  // String getAvatarText(String name) {
-  //   final nameParts = name.split(' ');
-  //   if (nameParts.length >= 2) {
-  //     return nameParts[0][0].toUpperCase() + nameParts[1][0].toUpperCase();
-  //   } else if (nameParts.isNotEmpty) {
-  //     return nameParts[0][0].toUpperCase();
-  //   }
-  //   return '';
-  // }
+class ExpandCollapseDemo extends StatefulWidget {
+  @override
+  _ExpandCollapseDemoState createState() => _ExpandCollapseDemoState();
+}
+
+class _ExpandCollapseDemoState extends State<ExpandCollapseDemo> {
+  List<Item> _data = generateItems(2);
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: ExpansionPanelList(
+        expansionCallback: (int index, bool isExpanded) {
+          setState(() {
+            _data[index].isExpanded = !isExpanded;
+          });
+        },
+        children: _data.map<ExpansionPanel>((Item item) {
+          return ExpansionPanel(
+            headerBuilder: (BuildContext context, bool isExpanded) {
+              return ListTile(
+                title: Text(item.headerValue),
+                trailing: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      item.isExpanded = !item.isExpanded;
+                    });
+                  },
+                  child: Icon(
+                    item.isExpanded ? Icons.expand_less : Icons.expand_more,
+                  ),
+                ),
+              );
+            },
+            body: ListTile(
+              title: Text(item.expandedValue),
+              subtitle: Text('Details about this item'),
+            ),
+            isExpanded: item.isExpanded,
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+class Item {
+  String expandedValue;
+  String headerValue;
+  bool isExpanded;
+
+  Item({
+    required this.expandedValue,
+    required this.headerValue,
+    this.isExpanded = false,
+  });
+}
+
+List<Item> generateItems(int numberOfItems) {
+  return List<Item>.generate(numberOfItems, (int index) {
+    return Item(
+      headerValue: 'Panel $index',
+      expandedValue: 'This is item number $index',
+    );
+  });
 }

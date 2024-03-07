@@ -35,7 +35,6 @@ class QuestionsListMobile extends ConsumerStatefulWidget {
   _QuestionsListMobileViewState createState() =>
       _QuestionsListMobileViewState();
 }
-
 class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
   @override
   Widget build(BuildContext context) {

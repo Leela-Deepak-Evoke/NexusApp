@@ -9,11 +9,13 @@ import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class OrgUpdatesScreenSmall extends ConsumerStatefulWidget {
-  const OrgUpdatesScreenSmall({super.key});
+     bool? isFromHomePage;
+
+   OrgUpdatesScreenSmall({super.key, this.isFromHomePage});
   @override
-  ConsumerState<OrgUpdatesScreenSmall> createState() =>
-      _OrgUpdatesScreenSmall();
+  ConsumerState<OrgUpdatesScreenSmall> createState() => _OrgUpdatesScreenSmall();
 }
+
 
 class _OrgUpdatesScreenSmall extends ConsumerState<OrgUpdatesScreenSmall> {
     final TextEditingController _searchController = TextEditingController();
@@ -32,7 +34,7 @@ class _OrgUpdatesScreenSmall extends ConsumerState<OrgUpdatesScreenSmall> {
         return MobileLayout(
           title: 'Organization Updates',
           user: data,
-          hasBackAction: false,
+          hasBackAction: widget.isFromHomePage == true ? true : false,
           showSearchIcon: true,
           hasRightAction:
               (data.role == 'Group' || data.role == 'Leader') ? true : false,

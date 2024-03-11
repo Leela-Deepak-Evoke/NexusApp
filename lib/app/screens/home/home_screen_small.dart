@@ -246,7 +246,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     );
   }
 
-  Widget _latestUpdatesListView(BuildContext context,
+  Widget _latestUpdatesListView_OLD(BuildContext context,
       AsyncValue<UserHome>? userHomeAsyncValue, Size size) {
     return Container(
       width: size.width,
@@ -272,11 +272,10 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
               child: RefreshIndicator(
                 onRefresh: _onRefresh,
                 child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  
                   Expanded(
                     child: ListView.builder(
                       shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
+                      scrollDirection: Axis.horizontal,
                       itemExtent: 380, // Set horizontal scrolling
                       itemCount: latestUpdates.length,
                       itemBuilder: (context, index) {
@@ -295,8 +294,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               borderRadius: BorderRadius.circular(12)),
                           child: Padding(
                             // padding: const EdgeInsets.all(8.0),
-                             padding: const EdgeInsets.symmetric(
-                                        horizontal: 16.0, vertical: 8.0),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 8.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -410,8 +409,6 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
       ),
     );
   }
-
-  
 
   Widget _latestQuestionsListView(BuildContext context,
       AsyncValue<UserHome>? userHomeAsyncValue, Size size) {
@@ -547,7 +544,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
         children: [
           //Calender
           TextButton.icon(
-            onPressed: () async {},
+              onPressed: null, // Disable user interaction
             icon: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -588,7 +585,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
           // UTILIOZ
 
           TextButton.icon(
-            onPressed: () async {},
+              onPressed: null, // Disable user interaction
             icon: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -628,7 +625,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
 
           // BADGES
           TextButton.icon(
-            onPressed: () async {},
+              onPressed: null, // Disable user interaction
             icon: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -777,17 +774,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           TextButton.icon(
-            onPressed: () async {
-              print("Click on Like");
-              // // Perform the like/dislike action
-              // final likeDislikeResult =
-              //     ref.read(genricPostlikeDislikeProvider(PostLikeDislikeParams(
-              //   userId: user!.userId,
-              //   action: item.currentUserLiked ? "DISLIKE" : "LIKE",
-              //   postlabel: "OrgUpdate",
-              //   postIdPropValue: item.orgUpdate.orgUpdateId,
-              // )));
-            },
+              onPressed: null, // Disable user interaction
+
             icon: (item.currentUserLiked
                 ? Icon(Icons.thumb_up)
                 : Image.asset(
@@ -806,9 +794,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
             ),
           ),
           TextButton.icon(
-            onPressed: () {
-              // _onCommentsPressed(context, item, ref);
-            },
+                         onPressed: null, // Disable user interaction
+
             icon: Image.asset(
               'assets/images/chat_bubble_outline.png',
               width: 20,
@@ -872,7 +859,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
             children: [
               TextButton.icon(
                 // <-- TextButton
-                onPressed: () {},
+              onPressed: null, // Disable user interaction
                 icon: SizedBox(
                   height: 15,
                   width: 15,
@@ -1188,7 +1175,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
           ),
         ),
         TextButton.icon(
-            onPressed: () {},
+                         onPressed: null, // Disable user interaction
+
             icon: Image.asset('assets/images/response.png'),
             label: Text(
               '${item.answers}',
@@ -1481,32 +1469,33 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                 fontFamily: GoogleFonts.poppins().fontFamily,
                 fontWeight: FontWeight.w600,
               )),
-          // Container(
-          //   height: 26,
-          //   padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.0),
-          //   child: OutlinedButton(
-          //     style: OutlinedButton.styleFrom(
-          //       shape: RoundedRectangleBorder(
-          //         borderRadius: BorderRadius.circular(30.0),
-          //       ),
-          //       backgroundColor: Color(0xffF2722B),
-          //       side: const BorderSide(width: 1, color: Color(0xffF2722B)),
-          //     ),
-          //     onPressed: () {
-          //       //  Navigator.push(
-          //       //               context,
-          //       //               MaterialPageRoute(
-          //       //                   builder: (context) => FeedsScreen()));
-          //     },
-          //     child: Text('View All',
-          //         style: TextStyle(
-          //           color: Colors.white,
-          //           fontSize: 12.0,
-          //           fontFamily: GoogleFonts.poppins().fontFamily,
-          //           fontWeight: FontWeight.normal,
-          //         )),
-          //   ),
-          // ),
+          Container(
+            height: 26,
+            padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.0),
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                backgroundColor: Color(0xffF2722B),
+                side: const BorderSide(width: 1, color: Color(0xffF2722B)),
+              ),
+              onPressed: () {
+                  Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  OrgUpdatesScreen(isFromHomePage: true)));
+              },
+              child: Text('View All',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12.0,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.normal,
+                  )),
+            ),
+          ),
         ],
       ),
     );
@@ -1527,6 +1516,33 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                 fontFamily: GoogleFonts.poppins().fontFamily,
                 fontWeight: FontWeight.w600,
               )),
+                Container(
+            height: 26,
+            padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.0),
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                backgroundColor: Color(0xffF2722B),
+                side: const BorderSide(width: 1, color: Color(0xffF2722B)),
+              ),
+              onPressed: () {
+                  Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ForumScreen(isFromHomePage: true)));
+              },
+              child: Text('View All',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12.0,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.normal,
+                  )),
+            ),
+          ),
         ],
       ),
     );
@@ -1548,158 +1564,176 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     );
   }
 
-  Widget _latestUpdatesListView_OLD(BuildContext context,
+  Widget _latestUpdatesListView(BuildContext context,
       AsyncValue<UserHome>? userHomeAsyncValue, Size size) {
     return Container(
       width: size.width,
       height: calculateContainerHeight(userHomeAsyncValue,
-          userHomeAsyncValue?.value?.latestUpdates ?? [], 455),
+          userHomeAsyncValue?.value?.latestUpdates ?? [], 455), //455
       alignment: AlignmentDirectional.topStart,
       // color: Colors.grey,
       child: userHomeAsyncValue!.when(
         data: (userHome) {
           final latestUpdates = userHome.latestUpdates;
           if (latestUpdates.isEmpty) {
-            return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
-          } else {
-            return Container(
-              alignment: AlignmentDirectional.topStart,
-              padding: const EdgeInsets.all(0),
-              child: RefreshIndicator(
-                onRefresh: _onRefresh,
-                child: ListView.builder(
-                  // physics: NeverScrollableScrollPhysics(), // Stop scrolling
-//  scrollDirection: Axis.horizontal, // Set scroll direction to horizontal
-//                     physics: const BouncingScrollPhysics(),
-
-                  // scrollDirection: Axis.horizontal,
-                  // Set itemExtent to ensure fixed height for each child
-                  // itemExtent: 380, // Adjust the value as needed
-
-                  // Set horizontal scrolling
-                  scrollDirection: Axis.horizontal,
-                  // Set itemExtent to ensure fixed height for each child
-                  itemExtent: 380, // Adjust the value as needed
-
-                  // padding: const EdgeInsets.all(0),
-                  itemCount: latestUpdates.length,
-                  itemBuilder: (context, index) {
-                    final item = latestUpdates[index];
-                    final author = item.user.name;
-                    final formattedDate = DateFormat('MMM d HH:mm').format(
-                        DateTime.parse(item.orgUpdate.postedAt.toString())
-                            .toLocal());
-
-                    bool isCurrentUser = item.user.identityId == user!.userId;
-                    return Card(
-                      margin: const EdgeInsets.all(16),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                      clipBehavior: Clip.antiAlias,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            ListTile(
-                              leading: _profilePicWidget(
-                                  item, ref), // Implement this function
-                              title: Text(author,
-                                  style: const TextStyle(fontSize: 16)),
-                              subtitle: Text(
-                                "${item.orgUpdate.content} | ${formattedDate}",
-                                style: TextStyle(
-                                  color: Color(0xff676A79),
-                                  fontSize: 12.0,
-                                  fontFamily: GoogleFonts.notoSans().fontFamily,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              ),
-                              trailing: isCurrentUser &&
-                                      (user!.role != 'Group' ||
-                                          user!.role != 'Leader')
-                                  ? Container(
-                                      width: 30, // Adjust the width as needed
-                                      child: PopupMenuButton<String>(
-                                        icon: const Icon(Icons.more_vert),
-                                        onSelected: (String choice) {
-                                          if (choice == 'Edit') {
-                                            _editItem(item);
-                                          } else if (choice == 'Delete') {
-                                            _deleteItem(item, 'OrgUpdate',
-                                                item.orgUpdate.orgUpdateId);
-                                          }
-                                        },
-                                        itemBuilder: (BuildContext context) {
-                                          return <PopupMenuEntry<String>>[
-                                            PopupMenuItem<String>(
-                                              value: 'Edit',
-                                              child: EditButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                  _editItem(item);
-                                                },
-                                              ),
-                                            ),
-                                            PopupMenuItem<String>(
-                                              value: 'Delete',
-                                              child: DeleteButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                  _deleteItem(
-                                                      item,
-                                                      'OrgUpdate',
-                                                      item.orgUpdate
-                                                          .orgUpdateId);
-                                                },
-                                              ),
-                                            ),
-                                          ];
-                                        },
-                                      ),
-                                    )
-                                  : null,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(height: 4.0),
-                                Padding(
-                                  padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                                  child: contentViewWidget(
-                                      item), // Implement this function
-                                ),
-                                const SizedBox(height: 15.0),
-                                item.orgUpdate.media
-                                    ? AspectRatio(
-                                        aspectRatio: 16 / 9,
-                                        child: HomeLatestUpdateMediaView(
-                                            item: item
-                                                .orgUpdate), // Implement this widget
-                                      )
-                                    : const SizedBox(height: 2.0),
-                                const SizedBox(height: 4.0),
-                                getInfoOFViewsComments(context, ref, index,
-                                    item), // Implement this function
-                                const Divider(
-                                  thickness: 1.0,
-                                  height: 1.0,
-                                ),
-                                btnSharingInfoLayout(context, index, item,
-                                    ref), // Implement this function
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                  // separatorBuilder: (BuildContext context, int index) {
-                  //   // Custom separator logic can be implemented here if needed
-                  //   return const Divider();
-                  // },
-                ),
+            return const Center(
+              child: Text(
+                'No data available',
+                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
               ),
             );
+          } else {
+            return Container(
+                alignment: AlignmentDirectional.topStart,
+                padding:
+                    const EdgeInsets.only(left: 12, right: 12, top: 0, bottom: 0),
+                child: RefreshIndicator(
+                  onRefresh: _onRefresh,
+                  child: Column(children: [
+                    Expanded(
+                        child: ListView.separated(
+                      padding: const EdgeInsets.only(
+                          left: 0, right: 0, top: 0, bottom: 0),
+                      shrinkWrap: true,
+                      physics:
+                          NeverScrollableScrollPhysics(), // Set the physics property
+
+                      //               scrollDirection: Axis.horizontal,
+                      // itemExtent: 380, // Set horizontal scrolling
+
+                      itemCount: latestUpdates.length,
+                      itemBuilder: (context, index) {
+                        final item = latestUpdates[index];
+                        final author = item.user.name;
+
+                        final formattedDate = DateFormat('MMM d HH:mm').format(
+                            DateTime.parse(item.orgUpdate.postedAt.toString())
+                                .toLocal());
+
+                        bool isCurrentUser =
+                            item.user.identityId == user!.userId;
+                        return Card(
+                          margin: const EdgeInsets.all(12),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          clipBehavior: Clip.antiAlias,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  leading: _profilePicWidget(item, ref),
+                                  title: Text(author!,
+                                      style: const TextStyle(fontSize: 16)),
+                                  subtitle: Text(
+                                    "${item.orgUpdate.content!} | ${formattedDate}",
+                                    style: TextStyle(
+                                      color: Color(0xff676A79),
+                                      fontSize: 12.0,
+                                      fontFamily:
+                                          GoogleFonts.notoSans().fontFamily,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  ),
+                                  trailing: isCurrentUser &&
+                                          (user!.role != 'Group' ||
+                                              user!.role != 'Leader')
+                                      ? Container(
+                                          width:
+                                              30, // Adjust the width as needed
+                                          child: PopupMenuButton<String>(
+                                            icon: const Icon(Icons.more_vert),
+                                            onSelected: (String choice) {
+                                              if (choice == 'Edit') {
+                                                _editItem(item);
+                                              } else if (choice == 'Delete') {
+                                                _deleteItem(item, 'OrgUpdate',
+                                                    item.orgUpdate.orgUpdateId);
+                                              }
+                                            },
+                                            itemBuilder:
+                                                (BuildContext context) {
+                                              return <PopupMenuEntry<String>>[
+                                                PopupMenuItem<String>(
+                                                  value: 'Edit',
+                                                  child: EditButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                      _editItem(item);
+                                                    },
+                                                  ),
+                                                ),
+                                                PopupMenuItem<String>(
+                                                  value: 'Delete',
+                                                  child: DeleteButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                      _deleteItem(
+                                                          item,
+                                                          'OrgUpdate',
+                                                          item.orgUpdate
+                                                              .orgUpdateId);
+                                                    },
+                                                  ),
+                                                ),
+                                              ];
+                                            },
+                                          ),
+                                        )
+                                      : null,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 4.0),
+                                    Padding(
+                                        padding:
+                                            EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                        child: contentViewWidget(item)),
+                                    // Padding(
+                                    //     padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                    //     child: hasTagViewWidget(item)),
+
+                                    //const SizedBox(height: 4.0),
+                                    item.orgUpdate.media
+                                        ? AspectRatio(
+                                            aspectRatio: 16 / 9,
+                                            child: HomeLatestUpdateMediaView(
+                                                item: item
+                                                    .orgUpdate), // Implement this widget
+                                          )
+                                        : const SizedBox(height: 2.0),
+                                    const SizedBox(height: 4.0),
+                                    // const Divider(
+                                    //   thickness: 1.0,
+                                    //   height: 1.0,
+                                    // ),
+
+                                    //LikesWidget comment
+                                    getInfoOFViewsComments(
+                                        context, ref, index, item),
+                                    const Divider(
+                                      thickness: 1.0,
+                                      height: 1.0,
+                                    ),
+                                    btnSharingInfoLayout(
+                                        context, index, item, ref)
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return const Divider();
+                      },
+                    )),
+                    // const SizedBox(
+                    //   height: 100,
+                    // )
+                  ]),
+                ));
           }
         },
         loading: () => const Center(

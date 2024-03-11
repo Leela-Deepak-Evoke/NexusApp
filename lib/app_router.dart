@@ -46,7 +46,7 @@ final router = GoRouter(
           path: "orgUpdates",
           pageBuilder: (context, state) => MaterialPage<void>(
             key: state.pageKey,
-            child: const OrgUpdatesScreen(),
+            child:  OrgUpdatesScreen(),
           ),
         ),
         // GoRoute(
@@ -156,7 +156,7 @@ final mobileappRouter = GoRouter(
             path: "orgUpdates",
             pageBuilder: (context, state) => MaterialPage<void>(
               key: state.pageKey,
-              child: const OrgUpdatesScreen(),
+              child: OrgUpdatesScreen(),
             ),
           ),
           GoRoute(
@@ -317,7 +317,7 @@ final orgupdatesRouter = GoRouter(
         path: '/${AppRoute.orgUpdates.name}',
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
-          child: const OrgUpdatesScreen(),
+          child:  OrgUpdatesScreen(),
         ),
       )
     ]);

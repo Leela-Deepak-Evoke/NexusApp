@@ -69,7 +69,7 @@ class MobileCustomAppbar extends StatelessWidget {
                     width: 24,
                     height: 24,
                   ),
-                  onPressed: () {},
+                  onPressed: () {_showToast(context);},
                 ),
                 InkWell(
                   onTap: () {
@@ -111,6 +111,22 @@ class MobileCustomAppbar extends StatelessWidget {
               elevation: value ? 2.0 : 0.0,
             );
           }),
+    );
+  }
+
+  void _showToast(BuildContext context) {
+    final scaffold = ScaffoldMessenger.of(context);
+
+    scaffold.showSnackBar(
+      SnackBar(
+        // content: const Text('Added to favorite'),
+        content: const SizedBox(
+          height: 70,
+          child: Text('In Progress Evita'),
+        ),
+        action: SnackBarAction(
+            label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+      ),
     );
   }
 }

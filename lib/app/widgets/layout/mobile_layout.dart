@@ -46,8 +46,8 @@ class _MobileLayoutState extends State<MobileLayout> {
     final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      drawer: const Drawer(),
-      // resizeToAvoidBottomInset: false,
+      // drawer: const Drawer(),
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: <Widget>[
           _buildHeader(size, headerNegativeOffset),

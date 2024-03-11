@@ -4,13 +4,30 @@ import 'package:evoke_nexus_app/app/screens/org_updates/org_updates_screen_mediu
 import 'package:evoke_nexus_app/app/screens/org_updates/org_updates_screen_small.dart';
 import 'package:evoke_nexus_app/app/screens/responsive/responsive_layout.dart';
 
-class OrgUpdatesScreen extends StatelessWidget {
-  const OrgUpdatesScreen({Key? key}) : super(key: key);
+// class OrgUpdatesScreen extends StatelessWidget {
+//   const OrgUpdatesScreen({Key? key}) : super(key: key);
 
+//   @override
+//   Widget build(BuildContext context) {
+//     return const ResponsiveLayout(
+//       smallScreenLayout: OrgUpdatesScreenSmall(),
+//       mediumScreenLayout: OrgUpdatesScreenMedium(),
+//       largeScreenLayout: OrgUpdatesScreenLarge(),
+//     );
+//   }
+// }
+
+
+
+
+class OrgUpdatesScreen extends StatelessWidget {
+       bool? isFromHomePage;
+
+   OrgUpdatesScreen({Key? key, this.isFromHomePage}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return const ResponsiveLayout(
-      smallScreenLayout: OrgUpdatesScreenSmall(),
+    return  ResponsiveLayout(
+      smallScreenLayout: OrgUpdatesScreenSmall(isFromHomePage: isFromHomePage),
       mediumScreenLayout: OrgUpdatesScreenMedium(),
       largeScreenLayout: OrgUpdatesScreenLarge(),
     );

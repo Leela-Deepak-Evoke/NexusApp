@@ -246,170 +246,6 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     );
   }
 
-  Widget _latestUpdatesListView_OLD(BuildContext context,
-      AsyncValue<UserHome>? userHomeAsyncValue, Size size) {
-    return Container(
-      width: size.width,
-      height: calculateContainerHeight(userHomeAsyncValue,
-          userHomeAsyncValue?.value?.latestUpdates ?? [], 455),
-      alignment: AlignmentDirectional.topStart,
-      child: userHomeAsyncValue!.when(
-        data: (userHome) {
-          final latestUpdates = userHome.latestUpdates;
-          if (latestUpdates.isEmpty) {
-            // return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
-            return const Center(
-              child: Text(
-                'No data available',
-                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-              ),
-            );
-          } else {
-            return Container(
-              alignment: AlignmentDirectional.topStart,
-              padding:
-                  const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
-              child: RefreshIndicator(
-                onRefresh: _onRefresh,
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Expanded(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemExtent: 380, // Set horizontal scrolling
-                      itemCount: latestUpdates.length,
-                      itemBuilder: (context, index) {
-                        final item = latestUpdates[index];
-                        final author = item.user.name;
-                        final formattedDate = DateFormat('MMM d HH:mm').format(
-                            DateTime.parse(item.orgUpdate.postedAt.toString())
-                                .toLocal());
-
-                        bool isCurrentUser =
-                            item.user.identityId == user!.userId;
-                        return Card(
-                          margin: const EdgeInsets.all(12),
-                          clipBehavior: Clip.antiAlias,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                          child: Padding(
-                            // padding: const EdgeInsets.all(8.0),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0, vertical: 8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ListTile(
-                                  leading: _profilePicWidget(
-                                      item, ref), // Implement this function
-                                  title: Text(author,
-                                      style: const TextStyle(fontSize: 16)),
-                                  subtitle: Text(
-                                    "${item.orgUpdate.content} | ${formattedDate}",
-                                    style: TextStyle(
-                                      color: Color(0xff676A79),
-                                      fontSize: 12.0,
-                                      fontFamily:
-                                          GoogleFonts.notoSans().fontFamily,
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                                  ),
-                                  trailing: isCurrentUser &&
-                                          (user!.role != 'Group' ||
-                                              user!.role != 'Leader')
-                                      ? Container(
-                                          width:
-                                              30, // Adjust the width as needed
-                                          child: PopupMenuButton<String>(
-                                            icon: const Icon(Icons.more_vert),
-                                            onSelected: (String choice) {
-                                              if (choice == 'Edit') {
-                                                _editItem(item);
-                                              } else if (choice == 'Delete') {
-                                                _deleteItem(item, 'OrgUpdate',
-                                                    item.orgUpdate.orgUpdateId);
-                                              }
-                                            },
-                                            itemBuilder:
-                                                (BuildContext context) {
-                                              return <PopupMenuEntry<String>>[
-                                                PopupMenuItem<String>(
-                                                  value: 'Edit',
-                                                  child: EditButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                      _editItem(item);
-                                                    },
-                                                  ),
-                                                ),
-                                                PopupMenuItem<String>(
-                                                  value: 'Delete',
-                                                  child: DeleteButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                      _deleteItem(
-                                                          item,
-                                                          'OrgUpdate',
-                                                          item.orgUpdate
-                                                              .orgUpdateId);
-                                                    },
-                                                  ),
-                                                ),
-                                              ];
-                                            },
-                                          ),
-                                        )
-                                      : null,
-                                ),
-                                const SizedBox(height: 8.0),
-                                contentViewWidget(item),
-                                const SizedBox(height: 8.0),
-                                item.orgUpdate.media
-                                    ? AspectRatio(
-                                        aspectRatio: 16 / 9,
-                                        child: HomeLatestUpdateMediaView(
-                                            item: item
-                                                .orgUpdate), // Implement this widget
-                                      )
-                                    : const SizedBox(height: 2.0),
-                                const SizedBox(height: 8.0),
-                                getInfoOFViewsComments(context, ref, index,
-                                    item), // Implement this function
-                                const SizedBox(height: 8.0),
-                                const Divider(
-                                  thickness: 1.0,
-                                  height: 1.0,
-                                ),
-                                btnSharingInfoLayout(context, index, item,
-                                    ref), // Implement this function
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  )
-                ]),
-              ),
-            );
-          }
-        },
-        loading: () => const Center(
-          child: SizedBox(
-            height: 50.0,
-            width: 50.0,
-            child: CircularProgressIndicator(),
-          ),
-        ),
-        error: (_, __) =>
-            ErrorScreen(showErrorMessage: true, onRetryPressed: retry),
-      ),
-    );
-  }
-
   Widget _latestQuestionsListView(BuildContext context,
       AsyncValue<UserHome>? userHomeAsyncValue, Size size) {
     return Container(
@@ -421,7 +257,6 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
         data: (userHome) {
           final latestQuestion = userHome.latestQuestions;
           if (latestQuestion.isEmpty) {
-            // return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
             return const Center(
               child: Text(
                 'No data available',
@@ -438,10 +273,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                   child: Column(children: [
                     Expanded(
                       child: ListView.builder(
-                        // Set horizontal scrolling
                         scrollDirection: Axis.horizontal,
-                        // Set itemExtent to ensure fixed height for each child
-                        itemExtent: 320, // Adjust the value as needed
+                        itemExtent: 320,
                         itemCount: latestQuestion.length,
                         itemBuilder: (context, index) {
                           final item = latestQuestion[index];
@@ -451,37 +284,40 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                   .toLocal());
 
                           return InkWell(
-                              onTap: () {
-                                // context.goNamed(
-                                //   AppRoute.answersforum.name,
-                                //   extra: item,
-                                // );
-                              },
-                              child: Card(
-                                margin: const EdgeInsets.all(12),
-                                clipBehavior: Clip.antiAlias,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)),
-                                child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16.0, vertical: 8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        categoryHearViewWidget(item),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        contentViewWidgetQuestion(item),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        askedbyViewHeader(item, ref),
-                                        footerVIewWidget(formattedDate, item)
-                                      ],
-                                    )),
-                              ));
+                            onTap: () {
+
+                               Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ForumScreen(isFromHomePage: true)));
+                            },
+                            child: Card(
+                              margin: const EdgeInsets.all(12),
+                              clipBehavior: Clip.antiAlias,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0, vertical: 8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      categoryHearViewWidget(item),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      contentViewWidgetQuestion(item),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      askedbyViewHeader(item, ref),
+                                      footerVIewWidget(formattedDate, item)
+                                    ],
+                                  )),
+                            ),
+                          );
                         },
                       ),
                     ),
@@ -505,6 +341,184 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     );
   }
 
+  Widget _latestUpdatesListView(BuildContext context,
+      AsyncValue<UserHome>? userHomeAsyncValue, Size size) {
+    return Container(
+      width: size.width,
+      height: calculateContainerHeight(userHomeAsyncValue,
+          userHomeAsyncValue?.value?.latestUpdates ?? [], 400), //455
+      alignment: AlignmentDirectional.topStart,
+      child: userHomeAsyncValue!.when(
+        data: (userHome) {
+          final latestUpdates = userHome.latestUpdates;
+          if (latestUpdates.isEmpty) {
+            return const Center(
+              child: Text(
+                'No data available',
+                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+              ),
+            );
+          } else {
+            return Container(
+              alignment: AlignmentDirectional.topStart,
+              padding:
+                  const EdgeInsets.only(left: 12, right: 12, top: 0, bottom: 0),
+              child: RefreshIndicator(
+                onRefresh: _onRefresh,
+                child: ListView.separated(
+                  padding: const EdgeInsets.only(
+                      left: 0, right: 0, top: 0, bottom: 0),
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: latestUpdates.length,
+                  itemBuilder: (context, index) {
+                    final item = latestUpdates[index];
+                    final author = item.user.name;
+                    bool isCurrentUser = item.user.identityId == user!.userId;
+                    final formattedDate = DateFormat('MMM d HH:mm').format(
+                      DateTime.parse(item.orgUpdate.postedAt.toString())
+                          .toLocal(),
+                    );
+
+                    return InkWell(
+                      onTap: () {
+                        // Navigate to the detail screen here
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    OrgUpdatesScreen(isFromHomePage: true)));
+                      },
+                      child: Card(
+                        margin: const EdgeInsets.all(12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              ListTile(
+                                leading: _profilePicWidget(item, ref),
+                                title: Text(
+                                  author!,
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                                subtitle: Text(
+                                  "${item.orgUpdate.content!} | ${formattedDate}",
+                                  style: TextStyle(
+                                    color: Color(0xff676A79),
+                                    fontSize: 12.0,
+                                    fontFamily:
+                                        GoogleFonts.notoSans().fontFamily,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                ),
+                                trailing: isCurrentUser &&
+                                        (user!.role != 'Group' ||
+                                            user!.role != 'Leader')
+                                    ? Container(
+                                        width: 30,
+                                        child: PopupMenuButton<String>(
+                                          icon: const Icon(Icons.more_vert),
+                                          onSelected: (String choice) {
+                                            if (choice == 'Edit') {
+                                              _editItem(item);
+                                            } else if (choice == 'Delete') {
+                                              _deleteItem(
+                                                item,
+                                                'OrgUpdate',
+                                                item.orgUpdate.orgUpdateId,
+                                              );
+                                            }
+                                          },
+                                          itemBuilder: (BuildContext context) {
+                                            return <PopupMenuEntry<String>>[
+                                              PopupMenuItem<String>(
+                                                value: 'Edit',
+                                                child: EditButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                    _editItem(item);
+                                                  },
+                                                ),
+                                              ),
+                                              PopupMenuItem<String>(
+                                                value: 'Delete',
+                                                child: DeleteButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                    _deleteItem(
+                                                      item,
+                                                      'OrgUpdate',
+                                                      item.orgUpdate
+                                                          .orgUpdateId,
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                            ];
+                                          },
+                                        ),
+                                      )
+                                    : null,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 4.0),
+                                  Padding(
+                                    padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                    child: contentViewWidget(item),
+                                  ),
+                                  item.orgUpdate.media
+                                      ? AspectRatio(
+                                          aspectRatio: 16 / 9,
+                                          child: HomeLatestUpdateMediaView(
+                                            item: item.orgUpdate,
+                                          ),
+                                        )
+                                      : const SizedBox(height: 2.0),
+                                  const SizedBox(height: 4.0),
+                                  getInfoOFViewsComments(
+                                      context, ref, index, item),
+                                  // const Divider(
+                                  //   thickness: 1.0,
+                                  //   height: 1.0,
+                                  // ),
+                                  // btnSharingInfoLayout(
+                                  //     context, index, item, ref),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return const Divider();
+                  },
+                ),
+              ),
+            );
+          }
+        },
+        loading: () => const Center(
+          child: SizedBox(
+            height: 50.0,
+            width: 50.0,
+            child: CircularProgressIndicator(),
+          ),
+        ),
+        error: (_, __) =>
+            ErrorScreen(showErrorMessage: true, onRetryPressed: retry),
+      ),
+    );
+  }
+
+// HEIGHT OF BOTH LISTS
   double calculateContainerHeight(AsyncValue<UserHome>? userHomeAsyncValue,
       List<dynamic> data, double itemHeight) {
     if (userHomeAsyncValue is AsyncData<UserHome>) {
@@ -514,6 +528,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     }
   }
 
+//REFRESH OF BOTH LISTS
   void retry() {
     _onRefresh();
   }
@@ -536,7 +551,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     );
   }
 
-// 3 Labels
+// TOP HEADER 3 Labels
   Widget viewUsersInformation() {
     return Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -544,7 +559,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
         children: [
           //Calender
           TextButton.icon(
-              onPressed: null, // Disable user interaction
+            onPressed: null, // Disable user interaction
             icon: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -585,7 +600,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
           // UTILIOZ
 
           TextButton.icon(
-              onPressed: null, // Disable user interaction
+            onPressed: null, // Disable user interaction
             icon: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -625,7 +640,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
 
           // BADGES
           TextButton.icon(
-              onPressed: null, // Disable user interaction
+            onPressed: null, // Disable user interaction
             icon: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -665,6 +680,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
         ]);
   }
 
+//GRID OF CHANNELS
   Widget viewHorizontalGridView() {
     return GridView.builder(
       scrollDirection: Axis.horizontal,
@@ -774,7 +790,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           TextButton.icon(
-              onPressed: null, // Disable user interaction
+            onPressed: null, // Disable user interaction
 
             icon: (item.currentUserLiked
                 ? Icon(Icons.thumb_up)
@@ -794,7 +810,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
             ),
           ),
           TextButton.icon(
-                         onPressed: null, // Disable user interaction
+            onPressed: null, // Disable user interaction
 
             icon: Image.asset(
               'assets/images/chat_bubble_outline.png',
@@ -814,8 +830,48 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
         ]);
   }
 
-  // NUMBER OF VIEWS AND COMMENTS
-  Widget getInfoOFViewsComments(
+  // UPDATES NUMBER OF VIEWS AND COMMENTS
+   Widget getInfoOFViewsComments(
+  BuildContext context, WidgetRef ref, int index, LatestUpdate item) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.end, // Align items to the end
+      children: [
+        Spacer(), // Add a spacer to push the button to the right
+        Column(
+          children: [
+            TextButton.icon(
+              onPressed: null, // Disable user interaction
+              icon: const SizedBox(
+                // height: 15,
+                // width: 15,
+                child: Center(
+                  child:    Icon(
+                                          Icons.more_horiz,
+                                          color: Color(0XFF0707b5),
+                                        ),
+                ),
+              ),
+              label: Text(
+                'More',
+                style: TextStyle(
+                  color: Color(0XFF0707b5),
+                  fontSize: 12.0,
+                  fontFamily: GoogleFonts.notoSans().fontFamily,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+
+  Widget getInfoOFViewsComments_OLDCode_numberof_comments_like(
       BuildContext context, WidgetRef ref, int index, LatestUpdate item) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
@@ -859,7 +915,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
             children: [
               TextButton.icon(
                 // <-- TextButton
-              onPressed: null, // Disable user interaction
+                onPressed: null, // Disable user interaction
                 icon: SizedBox(
                   height: 15,
                   width: 15,
@@ -900,31 +956,15 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     }
   }
 
+//EDIT AND DELETE OF Updates
   void _editItem(LatestUpdate item) async {
-    // var result = Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     fullscreenDialog: true,
-    //     builder: (context) =>
-    //         CreatePostFeedScreen(feedItem: item, isEditFeed: true),
-    //   ),
-    // );
-    // await ref.read(feedsProvider(user).future);
-    // await _onRefresh();
   }
 
   void _onCommentsPressed(LatestUpdate item) {
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //         fullscreenDialog: true,
-    //         builder: (context) => CommentScreen(
-    //               headerCard: FeedHeaderCardView(item: item, ref: ref),
-    //               postId: item.feedId,
-    //               posttype: "Feed",
-    //             )));
   }
 
+
+//COMMON PROFILE PIC METHODS
   Widget _profilePicWidget(dynamic item, WidgetRef ref) {
     final bool isQuestion = item is LatestQuestion;
     final String name = isQuestion ? item.question.name! : item.orgUpdate.name!;
@@ -982,7 +1022,147 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     return '';
   }
 
-//QUESTION LIST
+ 
+//HEADER AND FOOTER OF LATEST QUESTIONS 
+  Wrap askedbyViewHeader(LatestQuestion item, WidgetRef ref) {
+    bool isCurrentUser = item.user.userId == user!.userId;
+
+    return Wrap(
+      direction: Axis.horizontal,
+      spacing: 2,
+      children: [
+        _profilePicWidget(item, ref),
+        const SizedBox(
+          width: 5,
+        ),
+        Text("Asked by",
+            style: TextStyle(
+              color: Color(0xff676A79),
+              fontSize: 12.0,
+              fontFamily: GoogleFonts.notoSans().fontFamily,
+              fontWeight: FontWeight.normal,
+            )),
+        Text(isCurrentUser ? "me" : item.user.name ?? "",
+            style: TextStyle(
+              color: Color(0xff676A79),
+              fontSize: 12.0,
+              fontFamily: GoogleFonts.notoSans().fontFamily,
+              fontWeight: FontWeight.normal,
+            )),
+      ],
+    );
+  }
+
+  Widget footerVIewWidget(String formattedDate, LatestQuestion item) {
+    return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.end, // Align items to the end
+      children: [
+        Spacer(), // Add a spacer to push the button to the right
+        Column(
+          children: [
+            TextButton.icon(
+              onPressed: null, // Disable user interaction
+              icon: const SizedBox(
+                // height: 15,
+                // width: 15,
+                child: Center(
+                  child:    Icon(
+                                          Icons.more_horiz,
+                                          color: Color(0XFF0707b5),
+                                        ),
+                ),
+              ),
+              label: Text(
+                'More',
+                style: TextStyle(
+                  color: Color(0XFF0707b5),
+                  fontSize: 12.0,
+                  fontFamily: GoogleFonts.notoSans().fontFamily,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+    // return Row(
+    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //   children: [
+    //     Text(
+    //       Global.calculateTimeDifferenceBetween(
+    //           Global.getDateTimeFromStringForPosts(
+    //               item.question.postedAt.toString())),
+    //       style: TextStyle(
+    //         color: Color(0xff676A79),
+    //         fontSize: 12.0,
+    //         fontFamily: GoogleFonts.notoSans().fontFamily,
+    //         fontWeight: FontWeight.normal,
+    //       ),
+    //     ),
+    //     TextButton.icon(
+    //         onPressed: null, // Disable user interaction
+
+    //         icon: Image.asset('assets/images/response.png'),
+    //         label: Text(
+    //           '${item.answers}',
+    //           style: TextStyle(
+    //             color: Color(0xff676A79),
+    //             fontSize: 12.0,
+    //             fontFamily: GoogleFonts.inter().fontFamily,
+    //             fontWeight: FontWeight.normal,
+    //           ),
+    //         )),
+    //     TextButton.icon(
+    //       onPressed: () {
+    //         _showToast(context);
+    //       },
+    //       icon: Image.asset(
+    //         'assets/images/Vector-2.png',
+    //         width: 20,
+    //         height: 20,
+    //       ),
+    //       label: Text(
+    //         'Report',
+    //         style: TextStyle(
+    //           color: Color(0xff393E41),
+    //           fontFamily: GoogleFonts.inter().fontFamily,
+    //           fontWeight: FontWeight.normal,
+    //           fontSize: 14,
+    //         ),
+    //       ),
+    //     ),
+    //   ],
+    // );
+  }
+
+//CATEGORIES AND CONTENT OF QUESTION LIST
+
+ Widget contentViewWidgetQuestion(LatestQuestion item) {
+    if (item.question.content != null) {
+      var content = '';
+      if (item.question.content!.length > 32) {
+        content = '${item.question.content!.substring(0, 32)}...';
+      } else {
+        content = item.question.content!;
+      }
+      return Text(content,
+          maxLines: 3, // Limiting to 3 lines, adjust as needed
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 16.0,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+            fontWeight: FontWeight.w500,
+          ));
+    } else {
+      return const SizedBox(height: 5.0);
+    }
+  }
+ 
   Widget categoryHearViewWidget(LatestQuestion item) {
     bool isCurrentUser = item.question.questionId == user!.userId;
 
@@ -1055,406 +1235,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     );
   }
 
-  Widget contentViewWidgetQuestion(LatestQuestion item) {
-    if (item.question.content != null) {
-      var content = '';
-      if (item.question.content!.length > 32) {
-        content = '${item.question.content!.substring(0, 32)}...';
-      } else {
-        content = item.question.content!;
-      }
-      return Text(content,
-          maxLines: 3, // Limiting to 3 lines, adjust as needed
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 16.0,
-            fontFamily: GoogleFonts.poppins().fontFamily,
-            fontWeight: FontWeight.w500,
-          ));
-    } else {
-      return const SizedBox(height: 5.0);
-    }
-  }
-
-// Edit an item
-  void _editItemQuestion(LatestQuestion item) {
-    // Implement your edit logic here, e.g., navigate to the edit screen
-
-    // setState(() {
-    //   Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //         fullscreenDialog: true,
-    //         builder: (context) => CreatePostForumScreen(
-    //             questionItem: item, isEditQuestion: true)),
-    //   );
-    // });
-  }
-
-// Delete an item
-  void _deleteItem(dynamic item, String label, String idPropValue) async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Confirm Delete"),
-          content: Text("Are you sure you want to delete this item?"),
-          actions: [
-            TextButton(
-              child: Text("Cancel"),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-            ),
-            TextButton(
-              child: Text("Delete"),
-              onPressed: () async {
-                try {
-                  final deleteParams = Delete(
-                    label: label,
-                    idPropValue: idPropValue,
-                    userId: user!.userId,
-                  );
-                  await ref.read(deleteProvider(deleteParams).future);
-                  await _onRefresh();
-                } catch (error) {
-                  print("Error deleting item: $error");
-                }
-                Navigator.of(context).pop(); // Close the dialog
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Wrap askedbyViewHeader(LatestQuestion item, WidgetRef ref) {
-    bool isCurrentUser = item.user.userId == user!.userId;
-
-    return Wrap(
-      direction: Axis.horizontal,
-      spacing: 2,
-      children: [
-        _profilePicWidget(item, ref),
-        const SizedBox(
-          width: 5,
-        ),
-        Text("Asked by",
-            style: TextStyle(
-              color: Color(0xff676A79),
-              fontSize: 12.0,
-              fontFamily: GoogleFonts.notoSans().fontFamily,
-              fontWeight: FontWeight.normal,
-            )),
-        Text(isCurrentUser ? "me" : item.user.name ?? "",
-            style: TextStyle(
-              color: Color(0xff676A79),
-              fontSize: 12.0,
-              fontFamily: GoogleFonts.notoSans().fontFamily,
-              fontWeight: FontWeight.normal,
-            )),
-      ],
-    );
-  }
-
-  Widget footerVIewWidget(String formattedDate, LatestQuestion item) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          Global.calculateTimeDifferenceBetween(
-              Global.getDateTimeFromStringForPosts(
-                  item.question.postedAt.toString())),
-          style: TextStyle(
-            color: Color(0xff676A79),
-            fontSize: 12.0,
-            fontFamily: GoogleFonts.notoSans().fontFamily,
-            fontWeight: FontWeight.normal,
-          ),
-        ),
-        TextButton.icon(
-                         onPressed: null, // Disable user interaction
-
-            icon: Image.asset('assets/images/response.png'),
-            label: Text(
-              '${item.answers}',
-              style: TextStyle(
-                color: Color(0xff676A79),
-                fontSize: 12.0,
-                fontFamily: GoogleFonts.inter().fontFamily,
-                fontWeight: FontWeight.normal,
-              ),
-            )),
-        TextButton.icon(
-          onPressed: () {
-            _showToast(context);
-          },
-          icon: Image.asset(
-            'assets/images/Vector-2.png',
-            width: 20,
-            height: 20,
-          ),
-          label: Text(
-            'Report',
-            style: TextStyle(
-              color: Color(0xff393E41),
-              fontFamily: GoogleFonts.inter().fontFamily,
-              fontWeight: FontWeight.normal,
-              fontSize: 14,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  //Previ
-  // Card - BUTTONS CREATE PRODUCTS
-  Widget buttonComponentsSetupLayout(Size size) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        elevation: 4, // the size of the shadow
-        shadowColor: Colors.black,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: size.width / 25, vertical: 0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                    icon: Image.asset(
-                      'assets/images/feed.png',
-                      width: 24,
-                      height: 24,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  FeedsScreen(isFromHomePage: true)));
-                    },
-                  ),
-                  Text('Feed',
-                      style: TextStyle(
-                        color: Color(0xff292929),
-                        fontSize: 12.0,
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w500,
-                      )),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  IconButton(
-                    icon: Image.asset(
-                      'assets/images/events.png',
-                      width: 24,
-                      height: 24,
-                    ),
-                    onPressed: () {
-                      _showToast(context);
-                    },
-                  ),
-                  Text('Events',
-                      style: TextStyle(
-                        color: Color(0xff292929),
-                        fontSize: 12.0,
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w500,
-                      )),
-                  const SizedBox(
-                    height: 10,
-                  )
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: Image.asset(
-                      'assets/images/forum.png',
-                      width: 24,
-                      height: 24,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  ForumScreen(isFromHomePage: true)));
-                    },
-                  ),
-                  Text('Forum',
-                      style: TextStyle(
-                        color: Color(0xff292929),
-                        fontSize: 12.0,
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w500,
-                      )),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  IconButton(
-                    icon: Image.asset(
-                      'assets/images/ideas.png',
-                      width: 24,
-                      height: 24,
-                    ),
-                    onPressed: () {
-                      _showToast(context);
-                    },
-                  ),
-                  Text('Ideas',
-                      style: TextStyle(
-                        color: Color(0xff292929),
-                        fontSize: 12.0,
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w500,
-                      )),
-                  const SizedBox(
-                    height: 10,
-                  )
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: Image.asset(
-                      'assets/images/carpool2.png',
-                      width: 24,
-                      height: 24,
-                    ),
-                    onPressed: () {
-                      _showToast(context);
-                    },
-                  ),
-                  Text('Car Pool',
-                      style: TextStyle(
-                        color: const Color(0xff292929),
-                        fontSize: 12.0,
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w500,
-                      )),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  IconButton(
-                    icon: Image.asset(
-                      'assets/images/classifields.png',
-                      width: 24,
-                      height: 24,
-                    ),
-                    onPressed: () {
-                      _showToast(context);
-                    },
-                  ),
-                  Text('Classifields',
-                      style: TextStyle(
-                        color: Color(0xff292929),
-                        fontSize: 12.0,
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w500,
-                      )),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: Image.asset(
-                      'assets/images/updates.png',
-                      width: 24,
-                      height: 24,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => OrgUpdatesScreen()));
-                    },
-                  ),
-                  Text('Updates',
-                      style: TextStyle(
-                        color: Color(0xff292929),
-                        fontSize: 12.0,
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w500,
-                      )),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  IconButton(
-                    icon: Image.asset(
-                      'assets/images/referrals.png',
-                      width: 24,
-                      height: 24,
-                    ),
-                    onPressed: () {
-                      _showToast(context);
-                      //  Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) =>
-                      //             Referrals()));
-                    },
-                  ),
-                  Text('Referrals',
-                      style: TextStyle(
-                        color: Color(0xff292929),
-                        fontSize: 12.0,
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w500,
-                      )),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // TITLE $ BUTTON - LATESTUPDATES,VIEWALL
+  // TITLE $ BUTTON - LATEST UPDATES AND QUESTIONS,VIEWALL
   Widget lblLatestUpdates() {
     return Padding(
       // padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
@@ -1481,11 +1262,11 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                 side: const BorderSide(width: 1, color: Color(0xffF2722B)),
               ),
               onPressed: () {
-                  Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  OrgUpdatesScreen(isFromHomePage: true)));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            OrgUpdatesScreen(isFromHomePage: true)));
               },
               child: Text('View All',
                   style: TextStyle(
@@ -1516,7 +1297,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                 fontFamily: GoogleFonts.poppins().fontFamily,
                 fontWeight: FontWeight.w600,
               )),
-                Container(
+          Container(
             height: 26,
             padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.0),
             child: OutlinedButton(
@@ -1528,11 +1309,11 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                 side: const BorderSide(width: 1, color: Color(0xffF2722B)),
               ),
               onPressed: () {
-                  Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  ForumScreen(isFromHomePage: true)));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ForumScreen(isFromHomePage: true)));
               },
               child: Text('View All',
                   style: TextStyle(
@@ -1548,6 +1329,15 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     );
   }
 
+  
+// EDIT AND DELETE METHODS
+  void _editItemQuestion(LatestQuestion item) {
+  }
+
+// Delete an item
+  void _deleteItem(dynamic item, String label, String idPropValue) async {
+  }
+  
   void _showToast(BuildContext context) {
     final scaffold = ScaffoldMessenger.of(context);
 
@@ -1563,189 +1353,255 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
       ),
     );
   }
-
-  Widget _latestUpdatesListView(BuildContext context,
-      AsyncValue<UserHome>? userHomeAsyncValue, Size size) {
-    return Container(
-      width: size.width,
-      height: calculateContainerHeight(userHomeAsyncValue,
-          userHomeAsyncValue?.value?.latestUpdates ?? [], 455), //455
-      alignment: AlignmentDirectional.topStart,
-      // color: Colors.grey,
-      child: userHomeAsyncValue!.when(
-        data: (userHome) {
-          final latestUpdates = userHome.latestUpdates;
-          if (latestUpdates.isEmpty) {
-            return const Center(
-              child: Text(
-                'No data available',
-                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-              ),
-            );
-          } else {
-            return Container(
-                alignment: AlignmentDirectional.topStart,
-                padding:
-                    const EdgeInsets.only(left: 12, right: 12, top: 0, bottom: 0),
-                child: RefreshIndicator(
-                  onRefresh: _onRefresh,
-                  child: Column(children: [
-                    Expanded(
-                        child: ListView.separated(
-                      padding: const EdgeInsets.only(
-                          left: 0, right: 0, top: 0, bottom: 0),
-                      shrinkWrap: true,
-                      physics:
-                          NeverScrollableScrollPhysics(), // Set the physics property
-
-                      //               scrollDirection: Axis.horizontal,
-                      // itemExtent: 380, // Set horizontal scrolling
-
-                      itemCount: latestUpdates.length,
-                      itemBuilder: (context, index) {
-                        final item = latestUpdates[index];
-                        final author = item.user.name;
-
-                        final formattedDate = DateFormat('MMM d HH:mm').format(
-                            DateTime.parse(item.orgUpdate.postedAt.toString())
-                                .toLocal());
-
-                        bool isCurrentUser =
-                            item.user.identityId == user!.userId;
-                        return Card(
-                          margin: const EdgeInsets.all(12),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                          clipBehavior: Clip.antiAlias,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                ListTile(
-                                  leading: _profilePicWidget(item, ref),
-                                  title: Text(author!,
-                                      style: const TextStyle(fontSize: 16)),
-                                  subtitle: Text(
-                                    "${item.orgUpdate.content!} | ${formattedDate}",
-                                    style: TextStyle(
-                                      color: Color(0xff676A79),
-                                      fontSize: 12.0,
-                                      fontFamily:
-                                          GoogleFonts.notoSans().fontFamily,
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                                  ),
-                                  trailing: isCurrentUser &&
-                                          (user!.role != 'Group' ||
-                                              user!.role != 'Leader')
-                                      ? Container(
-                                          width:
-                                              30, // Adjust the width as needed
-                                          child: PopupMenuButton<String>(
-                                            icon: const Icon(Icons.more_vert),
-                                            onSelected: (String choice) {
-                                              if (choice == 'Edit') {
-                                                _editItem(item);
-                                              } else if (choice == 'Delete') {
-                                                _deleteItem(item, 'OrgUpdate',
-                                                    item.orgUpdate.orgUpdateId);
-                                              }
-                                            },
-                                            itemBuilder:
-                                                (BuildContext context) {
-                                              return <PopupMenuEntry<String>>[
-                                                PopupMenuItem<String>(
-                                                  value: 'Edit',
-                                                  child: EditButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                      _editItem(item);
-                                                    },
-                                                  ),
-                                                ),
-                                                PopupMenuItem<String>(
-                                                  value: 'Delete',
-                                                  child: DeleteButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                      _deleteItem(
-                                                          item,
-                                                          'OrgUpdate',
-                                                          item.orgUpdate
-                                                              .orgUpdateId);
-                                                    },
-                                                  ),
-                                                ),
-                                              ];
-                                            },
-                                          ),
-                                        )
-                                      : null,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(height: 4.0),
-                                    Padding(
-                                        padding:
-                                            EdgeInsets.fromLTRB(20, 10, 20, 0),
-                                        child: contentViewWidget(item)),
-                                    // Padding(
-                                    //     padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                                    //     child: hasTagViewWidget(item)),
-
-                                    //const SizedBox(height: 4.0),
-                                    item.orgUpdate.media
-                                        ? AspectRatio(
-                                            aspectRatio: 16 / 9,
-                                            child: HomeLatestUpdateMediaView(
-                                                item: item
-                                                    .orgUpdate), // Implement this widget
-                                          )
-                                        : const SizedBox(height: 2.0),
-                                    const SizedBox(height: 4.0),
-                                    // const Divider(
-                                    //   thickness: 1.0,
-                                    //   height: 1.0,
-                                    // ),
-
-                                    //LikesWidget comment
-                                    getInfoOFViewsComments(
-                                        context, ref, index, item),
-                                    const Divider(
-                                      thickness: 1.0,
-                                      height: 1.0,
-                                    ),
-                                    btnSharingInfoLayout(
-                                        context, index, item, ref)
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const Divider();
-                      },
-                    )),
-                    // const SizedBox(
-                    //   height: 100,
-                    // )
-                  ]),
-                ));
-          }
-        },
-        loading: () => const Center(
-          child: SizedBox(
-            height: 50.0,
-            width: 50.0,
-            child: CircularProgressIndicator(),
-          ),
-        ),
-        error: (_, __) =>
-            ErrorScreen(showErrorMessage: true, onRetryPressed: retry),
-      ),
-    );
-  }
 }
+
+
+
+
+
+
+
+//PREVIOUS CODE FOR ALL SCREEN NAVIGATIONS - DONT DELETE BELOW CODE FOR NOW
+
+  // Card - BUTTONS CREATE PRODUCTS
+  // Widget buttonComponentsSetupLayout(Size size) {
+  //   return Padding(
+  //     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+  //     child: Card(
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.circular(10.0),
+  //       ),
+  //       elevation: 4, // the size of the shadow
+  //       shadowColor: Colors.black,
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //         children: [
+  //           Padding(
+  //             padding: EdgeInsets.symmetric(
+  //                 horizontal: size.width / 25, vertical: 0),
+  //             child: Column(
+  //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //               children: [
+  //                 IconButton(
+  //                   icon: Image.asset(
+  //                     'assets/images/feed.png',
+  //                     width: 24,
+  //                     height: 24,
+  //                   ),
+  //                   onPressed: () {
+  //                     Navigator.push(
+  //                         context,
+  //                         MaterialPageRoute(
+  //                             builder: (context) =>
+  //                                 FeedsScreen(isFromHomePage: true)));
+  //                   },
+  //                 ),
+  //                 Text('Feed',
+  //                     style: TextStyle(
+  //                       color: Color(0xff292929),
+  //                       fontSize: 12.0,
+  //                       fontFamily: GoogleFonts.poppins().fontFamily,
+  //                       fontWeight: FontWeight.w500,
+  //                     )),
+  //                 const SizedBox(
+  //                   height: 10,
+  //                 ),
+  //                 IconButton(
+  //                   icon: Image.asset(
+  //                     'assets/images/events.png',
+  //                     width: 24,
+  //                     height: 24,
+  //                   ),
+  //                   onPressed: () {
+  //                     _showToast(context);
+  //                   },
+  //                 ),
+  //                 Text('Events',
+  //                     style: TextStyle(
+  //                       color: Color(0xff292929),
+  //                       fontSize: 12.0,
+  //                       fontFamily: GoogleFonts.poppins().fontFamily,
+  //                       fontWeight: FontWeight.w500,
+  //                     )),
+  //                 const SizedBox(
+  //                   height: 10,
+  //                 )
+  //               ],
+  //             ),
+  //           ),
+  //           const SizedBox(
+  //             height: 50,
+  //           ),
+  //           Padding(
+  //             padding:
+  //                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+  //             child: Column(
+  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //               children: [
+  //                 IconButton(
+  //                   icon: Image.asset(
+  //                     'assets/images/forum.png',
+  //                     width: 24,
+  //                     height: 24,
+  //                   ),
+  //                   onPressed: () {
+  //                     Navigator.push(
+  //                         context,
+  //                         MaterialPageRoute(
+  //                             builder: (context) =>
+  //                                 ForumScreen(isFromHomePage: true)));
+  //                   },
+  //                 ),
+  //                 Text('Forum',
+  //                     style: TextStyle(
+  //                       color: Color(0xff292929),
+  //                       fontSize: 12.0,
+  //                       fontFamily: GoogleFonts.poppins().fontFamily,
+  //                       fontWeight: FontWeight.w500,
+  //                     )),
+  //                 const SizedBox(
+  //                   height: 10,
+  //                 ),
+  //                 IconButton(
+  //                   icon: Image.asset(
+  //                     'assets/images/ideas.png',
+  //                     width: 24,
+  //                     height: 24,
+  //                   ),
+  //                   onPressed: () {
+  //                     _showToast(context);
+  //                   },
+  //                 ),
+  //                 Text('Ideas',
+  //                     style: TextStyle(
+  //                       color: Color(0xff292929),
+  //                       fontSize: 12.0,
+  //                       fontFamily: GoogleFonts.poppins().fontFamily,
+  //                       fontWeight: FontWeight.w500,
+  //                     )),
+  //                 const SizedBox(
+  //                   height: 10,
+  //                 )
+  //               ],
+  //             ),
+  //           ),
+  //           const SizedBox(
+  //             height: 50,
+  //           ),
+  //           Padding(
+  //             padding:
+  //                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+  //             child: Column(
+  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //               children: [
+  //                 IconButton(
+  //                   icon: Image.asset(
+  //                     'assets/images/carpool2.png',
+  //                     width: 24,
+  //                     height: 24,
+  //                   ),
+  //                   onPressed: () {
+  //                     _showToast(context);
+  //                   },
+  //                 ),
+  //                 Text('Car Pool',
+  //                     style: TextStyle(
+  //                       color: const Color(0xff292929),
+  //                       fontSize: 12.0,
+  //                       fontFamily: GoogleFonts.poppins().fontFamily,
+  //                       fontWeight: FontWeight.w500,
+  //                     )),
+  //                 const SizedBox(
+  //                   height: 10,
+  //                 ),
+  //                 IconButton(
+  //                   icon: Image.asset(
+  //                     'assets/images/classifields.png',
+  //                     width: 24,
+  //                     height: 24,
+  //                   ),
+  //                   onPressed: () {
+  //                     _showToast(context);
+  //                   },
+  //                 ),
+  //                 Text('Classifields',
+  //                     style: TextStyle(
+  //                       color: Color(0xff292929),
+  //                       fontSize: 12.0,
+  //                       fontFamily: GoogleFonts.poppins().fontFamily,
+  //                       fontWeight: FontWeight.w500,
+  //                     )),
+  //                 const SizedBox(
+  //                   height: 10,
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //           const SizedBox(
+  //             height: 50,
+  //           ),
+  //           Padding(
+  //             padding:
+  //                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+  //             child: Column(
+  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //               children: [
+  //                 IconButton(
+  //                   icon: Image.asset(
+  //                     'assets/images/updates.png',
+  //                     width: 24,
+  //                     height: 24,
+  //                   ),
+  //                   onPressed: () {
+  //                     Navigator.push(
+  //                         context,
+  //                         MaterialPageRoute(
+  //                             builder: (context) => OrgUpdatesScreen()));
+  //                   },
+  //                 ),
+  //                 Text('Updates',
+  //                     style: TextStyle(
+  //                       color: Color(0xff292929),
+  //                       fontSize: 12.0,
+  //                       fontFamily: GoogleFonts.poppins().fontFamily,
+  //                       fontWeight: FontWeight.w500,
+  //                     )),
+  //                 const SizedBox(
+  //                   height: 10,
+  //                 ),
+  //                 IconButton(
+  //                   icon: Image.asset(
+  //                     'assets/images/referrals.png',
+  //                     width: 24,
+  //                     height: 24,
+  //                   ),
+  //                   onPressed: () {
+  //                     _showToast(context);
+  //                     //  Navigator.push(
+  //                     //     context,
+  //                     //     MaterialPageRoute(
+  //                     //         builder: (context) =>
+  //                     //             Referrals()));
+  //                   },
+  //                 ),
+  //                 Text('Referrals',
+  //                     style: TextStyle(
+  //                       color: Color(0xff292929),
+  //                       fontSize: 12.0,
+  //                       fontFamily: GoogleFonts.poppins().fontFamily,
+  //                       fontWeight: FontWeight.w500,
+  //                     )),
+  //                 const SizedBox(
+  //                   height: 10,
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //           const SizedBox(
+  //             height: 50,
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }

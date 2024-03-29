@@ -90,8 +90,10 @@ class _WelcomeScreenSmallState extends ConsumerState<WelcomeScreenSmall> {
                         // Navigate to the next screen
                         // Navigator.push(
                         //   context,
-                        //   MaterialPageRoute(builder: (context) => const ProfileScreen()),
-                        // );
+                        //   MaterialPageRoute(builder: (context) => const TestScreen()),
+                        // ),
+
+
 //                     Navigator.push(
 //                     context,
 //                     MaterialPageRoute(builder: (context) => const HomeScreen()),
@@ -100,7 +102,7 @@ class _WelcomeScreenSmallState extends ConsumerState<WelcomeScreenSmall> {
                         GoRouter.of(context)
                             .goNamed('${AppRoute.rootNavigation.name}')
                       },
-                      label: Text('About Me',
+                      label: Text('Get Started',
                           style: TextStyle(
                             color: Color(0xFF292F69),
                             fontSize: 16.0,

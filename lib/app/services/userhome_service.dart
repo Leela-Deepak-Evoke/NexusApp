@@ -25,13 +25,14 @@ class UserHomeService {
           print(jsonResponse);
           safePrint(jsonResponse);
           final userDetails = UserDetails.fromJson(jsonResponse['user_details']);
+                    final postsCount = PostsCount.fromJson(jsonResponse['posts_count']); 
           final latestQuestions = (jsonResponse['latest_questions'] as List)
               .map((questionJson) => LatestQuestion.fromJson(questionJson))
               .toList();
           final latestUpdates = (jsonResponse['latest_updates'] as List)
               .map((updateJson) => LatestUpdate.fromJson(updateJson))
               .toList();
-          return UserHome(userDetails: userDetails, latestQuestions: latestQuestions, latestUpdates: latestUpdates);
+          return UserHome(userDetails: userDetails, postsCount: postsCount, latestQuestions: latestQuestions, latestUpdates: latestUpdates);
         } else {
           throw Exception('Failed to load data');
         }

@@ -17,14 +17,15 @@ class CommentsListMobileView extends ConsumerStatefulWidget {
   final String posttype;
   final String postId;
   final GetCommentsParams params;
-    final Function(String, bool, UserComment)? onCommentEdited;
+  final Function(String, bool, UserComment)? onCommentEdited;
 
   const CommentsListMobileView(
       {super.key,
       required this.user,
       required this.posttype,
       required this.postId,
-      required this.params, this.onCommentEdited});
+      required this.params,
+      this.onCommentEdited});
 
   @override
   ConsumerState<CommentsListMobileView> createState() =>
@@ -33,6 +34,30 @@ class CommentsListMobileView extends ConsumerStatefulWidget {
 
 class _CommentsListMobileViewState
     extends ConsumerState<CommentsListMobileView> {
+final List<Color> cardColors = [
+                      Color(0xffE6E3FB),
+                      Color(0xffBFE9EF),
+                      Color(0xffF6E2E1),
+                      Color(0xffE8CDEE),
+                      Color(0xffF7E1C1),
+                      // Add more colors as needed
+                    ]; 
+
+                     // Map to store color associations for identity IDs
+  late Map<String, Color> identityIdColorMap = {};
+
+   @override
+  void initState() {
+    super.initState();
+    // Initialize the identityId-color map
+    identityIdColorMap = {};
+  }
+  
+   // Generate a color for the given index
+  Color getColorForIndex(int index) {
+    return cardColors[index % cardColors.length];
+  }
+
   String getAvatarText(String name) {
     final nameParts = name.split(' ');
     if (nameParts.length >= 2) {
@@ -91,11 +116,37 @@ class _CommentsListMobileViewState
     if (commentsAsyncValue is AsyncData) {
       final items = commentsAsyncValue.value!;
       final Size size = MediaQuery.of(context).size;
+
+          // Index counter to keep track of usernames encountered
+    int indexCounter = 0;
+
+
       return SliverList.builder(
           itemCount: items.length,
           itemBuilder: (context, index) {
             var item = items[index];
             bool isCurrentUser = item.userId == widget.user.userId;
+            // bool isUsersIDs = item.identityId == widget.user.userId;
+
+
+  // Retrieve color for the current identityId
+        Color identityIdColor;
+        if (identityIdColorMap.containsKey(item.identityId)) {
+          // Use the color associated with the identityId if it exists
+          identityIdColor = identityIdColorMap[item.identityId]!;
+        } else {
+          // Generate a new color for the identityId if it doesn't exist
+          identityIdColor = getColorForIndex(indexCounter);
+          // Store the generated color for the identityId
+          identityIdColorMap[item.identityId] = identityIdColor;
+          // Increment index counter for the next identityId
+          indexCounter++;
+        }
+
+        // Retrieve color for the current username
+        Color usernameColor = getColorForIndex(indexCounter);
+  // Increment index counter for the next username
+        indexCounter++;
 
             return Padding(
               padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
@@ -169,7 +220,7 @@ class _CommentsListMobileViewState
                           padding:
                               EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                           decoration: BoxDecoration(
-                              color: Colors.grey[100],
+                              color: identityIdColor, // Use color based on username, //Colors.grey[100]
                               borderRadius: BorderRadius.circular(12)),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -298,11 +349,9 @@ class _CommentsListMobileViewState
   }
 
   void _editItem(UserComment item) {
-   final TextEditingController editController = TextEditingController();
+    final TextEditingController editController = TextEditingController();
     editController.text = item.comment;
-                  widget.onCommentEdited!(editController.text, true, item);
-
-
+    widget.onCommentEdited!(editController.text, true, item);
 
     // showDialog(
     //   context: context,

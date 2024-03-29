@@ -41,7 +41,7 @@ class _ProfileScreenSmallState extends ConsumerState<ProfileScreenSmall> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      fullscreenDialog: true,
+                      fullscreenDialog: false,
                       builder: (context) =>
                           UserForm(user: data, isFromWelcomeScreen: false)));
             },

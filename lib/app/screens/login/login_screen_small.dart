@@ -17,6 +17,7 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
     with TickerProviderStateMixin {
   AnimationController? _animationController;
   double _opacity = 0.0;
+  bool _loading = false;
 
   //Slider Page
   int _index = 0;
@@ -208,50 +209,108 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
           bottom: 20,
           left: 0,
           right: 0,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 0, 24, 75),
-            child: Container(
-              height: 52,
-              width: 250,
-              child: ElevatedButton.icon(
-                style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Color(0xffE9AD64)),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(26.0),
-                            side: BorderSide(
-                              color: Color(0xffE9AD64),
-                            )))),
-                icon: Image.asset(
-                  'assets/images/evoke-icon.png',
-                  width: 24,
-                  height: 24,
+          child: _loading // Conditionally show CircularProgressIndicator
+              ? const Center(
+                  child: SizedBox(
+                    height: 30.0,
+                    width: 30.0,
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+              : Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 75),
+                  child: Container(
+                    height: 52,
+                    width: 250,
+                    child: ElevatedButton.icon(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Color(0xffE9AD64)),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(26.0),
+                                      side: BorderSide(
+                                        color: Color(0xffE9AD64),
+                                      )))),
+                      icon: Image.asset(
+                        'assets/images/evoke-icon.png',
+                        width: 24,
+                        height: 24,
+                      ),
+                      // onPressed: () => {
+                      //   authService.login((isSucess) {
+                      //     if (isSucess) {
+                      //       // GoRouter.of(context).goNamed('${AppRoute.rootNavigation.name}');
+                      //       Navigator.push(
+                      //           context,
+                      //           MaterialPageRoute(
+                      //               builder: (context) => const WelcomeScreen()));
+                      //     }
+                      //   }, context)
+                      // },
+                      onPressed: () => _performLogin(context),
+
+                      label: Text('Login with Evoke ID',
+                          style: TextStyle(
+                            color: Color(0xFF292F69),
+                            fontSize: 16.0,
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                            fontWeight: FontWeight.w600,
+                          )),
+                    ),
+                  ),
                 ),
-                onPressed: () => {
-                  authService.login((isSucess) {
-                    if (isSucess) {
-                      // GoRouter.of(context).goNamed('${AppRoute.rootNavigation.name}');
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const WelcomeScreen()));
-                    }
-                  }, context)
-                },
-                label: Text('Login with Evoke ID',
-                    style: TextStyle(
-                      color: Color(0xFF292F69),
-                      fontSize: 16.0,
-                      fontFamily: GoogleFonts.poppins().fontFamily,
-                      fontWeight: FontWeight.w600,
-                    )),
-              ),
-            ),
-          ),
         ),
       ],
     ));
+  }
+
+  Future<void> _performLogin(BuildContext context) async {
+  setState(() {
+    _loading = true; // Set loading to true when login starts
+  });
+
+  final authService = ref.read(authenticationServiceProvider);
+  
+  try {
+    await authService.login((isSuccess) {
+      if (isSuccess) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+        );
+      }
+      setState(() {
+        _loading = false; // Set loading to false when login completes
+      });
+    }, context);
+  } catch (e) {
+    print("Authentication canceled or failed: $e");
+    setState(() {
+      _loading = false; // Set loading to false if authentication is canceled or fails
+    });
+  }
+}
+
+
+  Future<void> _performLogin_OLD(BuildContext context) async {
+    setState(() {
+      _loading = true; // Set loading to true when login starts
+    });
+
+    final authService = ref.read(authenticationServiceProvider);
+    await authService.login((isSuccess) {
+      if (isSuccess) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+        );
+      }
+      setState(() {
+        _loading = false; // Set loading to false when login completes
+      });
+    }, context);
   }
 }
 

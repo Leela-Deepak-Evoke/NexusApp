@@ -1,14 +1,13 @@
-import 'package:evoke_nexus_app/app/models/delete.dart';
+import 'dart:async';
+
 import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
-import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/models/userhome.dart';
-import 'package:evoke_nexus_app/app/provider/delete_service_provider.dart';
-import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/org_update_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/user_home_provider.dart';
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/home/home_latestupdate_mediaview.dart';
+import 'package:evoke_nexus_app/app/services/StringConstants.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/edit_delete_button.dart';
 import 'package:evoke_nexus_app/app/widgets/common/error_screen.dart';
@@ -16,7 +15,6 @@ import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:evoke_nexus_app/app/screens/feeds/feeds_screen.dart';
 import 'package:evoke_nexus_app/app/widgets/common/mobile_custom_appbar.dart';
 import 'package:evoke_nexus_app/app/screens/forum/forum_screen.dart';
 import 'package:evoke_nexus_app/app/screens/org_updates/org_updates_screen.dart';
@@ -67,7 +65,10 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
       backgroundColor: Colors.grey.shade100,
       body: Stack(
         children: <Widget>[
-          _buildHeader(offset: headerNegativeOffset, size: size),
+          _buildHeader(
+              offset: headerNegativeOffset,
+              size: size,
+              userHomeAsyncValue: userHomeAsyncValue),
           _buildBody(
             userHomeAsyncValue: userHomeAsyncValue,
             size: size,
@@ -87,8 +88,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
               backgroundColor: const Color(0XFF0707b5),
               child: Image.asset(
                 'assets/images/evita.png',
-                width: 48,
-                height: 48,
+                width: 50,
+                height: 50,
               ),
             ),
           ),
@@ -97,8 +98,13 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     );
   }
 
-  Widget _buildHeader(
-      {required ValueNotifier<double> offset, required Size size}) {
+  Widget _buildHeader_OLD(
+      {required ValueNotifier<double> offset,
+      required Size size,
+      required AsyncValue userHomeAsyncValue}) {
+    // final UserDetails? userDetails = userHomeAsyncValue!.value?.userDetails;
+final UserDetails? userDetails = userHomeAsyncValue.value?.userDetails;
+
     return Stack(
       children: [
         ValueListenableBuilder<double>(
@@ -118,34 +124,153 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
           },
         ),
         Container(
-          padding: EdgeInsets.only(left: 0, right: 0, top: 115),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 16), // Add padding only to the left
-                child: Text(
-                  "Welcome to Evoke Network!",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14.0,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-              ),
-              SizedBox(
-                  height:
-                      16), // Add some space between the text and viewUsersInformation
-              viewUsersInformation(), // Place viewUsersInformation here
-            ],
-          ),
+          padding: const EdgeInsets.only(left: 16, right: 0, top: 115),
+          child: Wrap(direction: Axis.horizontal, spacing: 2, children: [
+            _userProfilePic(userHomeAsyncValue as AsyncValue<UserHome>, ref),
+            const SizedBox(
+              width: 5,
+            ),
+            Padding(
+                padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
+                child: Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start, // Align text to the start
+                    children: [
+                      Text(
+                        "Hi, ${userDetails!.name}!",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.0,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      Text(
+                        "Welcome to Evoke Network!",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.0,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ])),
+            const SizedBox(height: 16),
+            // viewUsersInformation(userHomeAsyncValue),
+          ]),
         )
+
+        // Container(
+        //   padding: EdgeInsets.only(left: 0, right: 0, top: 115),
+        //   child: Column(
+        //     crossAxisAlignment: CrossAxisAlignment.start,
+        //     children: [
+
+        //       Padding(
+        //         padding: const EdgeInsets.only(
+        //             left: 16), // Add padding only to the left
+        //         child: Text(
+        //           "Welcome to Evoke Network!",
+        //           style: TextStyle(
+        //             color: Colors.white,
+        //             fontSize: 14.0,
+        //             fontFamily: GoogleFonts.poppins().fontFamily,
+        //             fontWeight: FontWeight.w500,
+        //           ),
+        //           textAlign: TextAlign.left,
+        //         ),
+        //       ),
+        //       const SizedBox(
+        //           height:
+        //               16), // Add some space between the text and viewUsersInformation
+        //       // viewUsersInformation(userHomeAsyncValue),
+        //       //     viewPostInformation(userHomeAsyncValue)
+        //     ],
+        //   ),
+        // )
       ],
     );
   }
+
+
+Widget _buildHeader(
+  {required ValueNotifier<double> offset,
+  required Size size,
+  required AsyncValue userHomeAsyncValue}) {
+  // final UserDetails? userDetails = userHomeAsyncValue.value?.userDetails; // Use null-aware operator ?. to access userDetails
+
+UserDetails? userDetails;
+
+  if (userHomeAsyncValue is AsyncValue<UserHome>) {
+    // Check if userHomeAsyncValue is of type AsyncValue<UserHome>
+    final userHome = userHomeAsyncValue.value; // Access data property directly
+
+    if (userHome != null) {
+      userDetails = userHome.userDetails;
+    }
+  }
+  return Stack(
+    children: [
+      ValueListenableBuilder<double>(
+        valueListenable: offset,
+        builder: (context, offset, child) {
+          return Transform.translate(
+            offset: Offset(0, offset * -1),
+            child: SizedBox(
+              height: 250 + 50,
+              width: size.width,
+              child: Image(
+                image: AssetImage('assets/images/navBarRect.png'),
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
+        },
+      ),
+      if (userDetails != null) // Check if userDetails is not null before accessing its properties
+        Container(
+          padding: const EdgeInsets.only(left: 16, right: 0, top: 115),
+          child: Wrap(direction: Axis.horizontal, spacing: 2, children: [
+            _userProfilePic(userHomeAsyncValue as AsyncValue<UserHome>, ref),
+            const SizedBox(
+              width: 5,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Hi, ${userDetails.name}!", // Access userDetails.name safely
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14.0,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  Text(
+                    "Welcome to Evoke Network!",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14.0,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+          ]),
+        ),
+    ],
+  );
+}
 
   Widget _buildBody({
     required AsyncValue userHomeAsyncValue,
@@ -163,7 +288,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
             builder: (BuildContext context, ScrollController scrollController) {
               return Padding(
                 padding: const EdgeInsets.only(
-                    top: 50.0), // Add padding above the Container
+                    top: 10.0), // 50 Add padding above the Container
                 child: Container(
                   // color: Colors.amber,
                   child: Stack(
@@ -171,6 +296,9 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                       SingleChildScrollView(
                         child: Column(
                           children: [
+                            // ExpandCollapseDemo(),
+                            buttonComponentsSetupLayout(size),
+
                             Container(
                               width: size.width,
                               color: Color(0xffF2F2F2),
@@ -231,6 +359,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
+                    // color: Colors.white,
                     height: 140,
                     child: viewHorizontalGridView(),
                   ),
@@ -250,8 +379,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
       AsyncValue<UserHome>? userHomeAsyncValue, Size size) {
     return Container(
       width: size.width,
-      height: calculateContainerHeight(userHomeAsyncValue,
-          userHomeAsyncValue?.value?.latestQuestions ?? [], 140),
+      // height: calculateContainerHeight(userHomeAsyncValue,
+      //     userHomeAsyncValue?.value?.latestQuestions ?? [], 140),
       alignment: AlignmentDirectional.topStart,
       child: userHomeAsyncValue!.when(
         data: (userHome) {
@@ -271,7 +400,9 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                 child: RefreshIndicator(
                   onRefresh: _onRefresh,
                   child: Column(children: [
-                    Expanded(
+                    SizedBox(
+                      //  margin: const EdgeInsets.symmetric(vertical: 20),
+                      height: 180,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemExtent: 320,
@@ -285,12 +416,11 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
 
                           return InkWell(
                             onTap: () {
-
-                               Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    ForumScreen(isFromHomePage: true)));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ForumScreen(isFromHomePage: true)));
                             },
                             child: Card(
                               margin: const EdgeInsets.all(12),
@@ -329,12 +459,12 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
           }
         },
         loading: () => const Center(
-          child: SizedBox(
-            height: 50.0,
-            width: 50.0,
-            child: CircularProgressIndicator(),
-          ),
-        ),
+            child: SizedBox(
+              height: 50.0,
+              width: 50.0,
+              child: CircularProgressIndicator(),
+            ),
+            ),
         error: (_, __) =>
             ErrorScreen(showErrorMessage: true, onRetryPressed: retry),
       ),
@@ -346,7 +476,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     return Container(
       width: size.width,
       height: calculateContainerHeight(userHomeAsyncValue,
-          userHomeAsyncValue?.value?.latestUpdates ?? [], 400), //455
+          userHomeAsyncValue?.value?.latestUpdates ?? [], 430), //455
       alignment: AlignmentDirectional.topStart,
       child: userHomeAsyncValue!.when(
         data: (userHome) {
@@ -506,15 +636,16 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
           }
         },
         loading: () => const Center(
-          child: SizedBox(
-            height: 50.0,
-            width: 50.0,
-            child: CircularProgressIndicator(),
-          ),
-        ),
+            // child: SizedBox(
+            //   height: 50.0,
+            //   width: 50.0,
+            //   child: CircularProgressIndicator(),
+            // ),
+            ),
         error: (_, __) =>
             ErrorScreen(showErrorMessage: true, onRetryPressed: retry),
       ),
+      
     );
   }
 
@@ -552,132 +683,975 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
   }
 
 // TOP HEADER 3 Labels
-  Widget viewUsersInformation() {
-    return Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          //Calender
-          TextButton.icon(
-            onPressed: null, // Disable user interaction
-            icon: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  'assets/images/icons8-calendar-plus-48.png',
-                  width: 38,
-                  height: 38,
+  Widget viewUsersInformation(AsyncValue<UserHome>? userHomeAsyncValue) {
+    return userHomeAsyncValue!.when(
+      data: (userHome) {
+        DateTime startDate = DateTime.parse(userHome.userDetails.createdAt);
+        DateTime currentDate = DateTime.now();
+        int differenceInDays = currentDate.difference(startDate).inDays;
+        final lastLoginDate = DateFormat('MMM d').format(
+          DateTime.parse(userHome.userDetails.lastLoginAt.toString()).toLocal(),
+        );
+
+        return Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              //Calender
+              TextButton.icon(
+                onPressed: null, // Disable user interaction
+                icon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/images/icons8-calendar-plus-48.png',
+                      width: 24,
+                      height: 24,
+                    ),
+                    SizedBox(width: 4), // Adjust spacing between icon and text
+                  ],
                 ),
-                SizedBox(width: 4), // Adjust spacing between icon and text
-              ],
+                label: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Align text to the start
+                  children: [
+                    //"User Created At: ${user!.createdAt}",
+                    Text(
+                      '${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(userHome.userDetails.createdAt.toString()))}', // Show the difference in days
+                      style: TextStyle(
+                        color: Color(0xff292929),
+                        fontSize: 12.0,
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      'Usage Duration',
+                      style: TextStyle(
+                        color: Color(0xff292929),
+                        fontSize: 12.0,
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Last Login
+
+              TextButton.icon(
+                onPressed: null, // Disable user interaction
+                icon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/images/last-login-48.png',
+                      width: 24,
+                      height: 24,
+                    ),
+                    SizedBox(width: 4), // Adjust spacing between icon and text
+                  ],
+                ),
+                label: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Align text to the start
+                  children: [
+                    Text('${lastLoginDate}', // Show the difference in days
+                        style: TextStyle(
+                          color: Color(0xff292929),
+                          fontSize: 12.0,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
+                          fontWeight: FontWeight.w500,
+                        )),
+                    Text(
+                      'Last Login',
+                      style: TextStyle(
+                        color: Color(0xff292929),
+                        fontSize: 12.0,
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Status
+              TextButton.icon(
+                onPressed: null, // Disable user interaction
+                icon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/images/status-48.png',
+                      width: 24,
+                      height: 24,
+                    ),
+                    SizedBox(width: 4), // Adjust spacing between icon and text
+                  ],
+                ),
+                label: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Align text to the start
+                  children: [
+                    Text('${userHome.userDetails.status}',
+                        style: TextStyle(
+                          color: Color(0xff292929),
+                          fontSize: 12.0,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
+                          fontWeight: FontWeight.w500,
+                        )),
+                    Text(
+                      'Status',
+                      style: TextStyle(
+                        color: Color(0xff292929),
+                        fontSize: 12.0,
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ]);
+      },
+      loading: () {
+        return const Center(
+        );
+        //  CircularProgressIndicator();
+      },
+      error: (error, stackTrace) {
+        return Text('Error: $error');
+      },
+    );
+  }
+
+  Widget viewPostInformation(AsyncValue<UserHome>? userHomeAsyncValue) {
+    return userHomeAsyncValue!.when(
+      data: (userHome) {
+        return Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              //Feed
+              TextButton.icon(
+                onPressed: null, // Disable user interaction
+                icon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/images/icons8-calendar-plus-48.png',
+                      width: 38,
+                      height: 38,
+                    ),
+                    SizedBox(width: 4), // Adjust spacing between icon and text
+                  ],
+                ),
+                label: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Align text to the start
+                  children: [
+                    //"User Created At: ${user!.createdAt}",
+                    Text(
+                      '${userHome.postsCount.feeds}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: GoogleFonts.inter().fontFamily,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                    Text(
+                      'Feed',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: GoogleFonts.inter().fontFamily,
+                        fontWeight: FontWeight.normal,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Feed Like Count
+
+              TextButton.icon(
+                onPressed: null, // Disable user interaction
+                icon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/images/icons8-heart-64.png',
+                      width: 38,
+                      height: 38,
+                    ),
+                    SizedBox(width: 4), // Adjust spacing between icon and text
+                  ],
+                ),
+                label: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Align text to the start
+                  children: [
+                    Text(
+                      '${userHome.postsCount.feedLikeCount}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: GoogleFonts.inter().fontFamily,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                    Text(
+                      'FeedLike Count',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: GoogleFonts.inter().fontFamily,
+                        fontWeight: FontWeight.normal,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Status
+              TextButton.icon(
+                onPressed: null, // Disable user interaction
+                icon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/images/icons8-hashtag-activity-grid-96.png',
+                      width: 38,
+                      height: 38,
+                    ),
+                    SizedBox(width: 4), // Adjust spacing between icon and text
+                  ],
+                ),
+                label: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Align text to the start
+                  children: [
+                    Text(
+                      '${userHome.postsCount.feedCommentCount}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: GoogleFonts.inter().fontFamily,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                    Text(
+                      'FeedComment Count',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: GoogleFonts.inter().fontFamily,
+                        fontWeight: FontWeight.normal,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ]);
+      },
+      loading: () {
+        return const Center(
+        );
+        //  CircularProgressIndicator();
+      },
+      error: (error, stackTrace) {
+        return Text('Error: $error');
+      },
+    );
+  }
+
+  Widget buttonComponentsSetupLayout(Size size) {
+    return userHomeAsyncValue!.when(
+      data: (userHome) {
+        return Padding(
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            label: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start, // Align text to the start
+            elevation: 4, // the size of the shadow
+            shadowColor: Colors.black,
+            child: Column(
               children: [
-                Text(
-                  '4,368',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: GoogleFonts.inter().fontFamily,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Activites',
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 16.0,
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                            fontWeight: FontWeight.w600,
+                          )),
+                    ],
                   ),
                 ),
-                Text(
-                  'Days with Evoke',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: GoogleFonts.inter().fontFamily,
-                    fontWeight: FontWeight.normal,
-                    fontSize: 12,
-                  ),
+                viewUsersInformation(userHomeAsyncValue),
+                Row(
+                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: size.width / 25, vertical: 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Image.asset(
+                                'assets/images/feed.png',
+                                width: 18,
+                                height: 14,
+                              ),
+                              SizedBox(
+                                  width:
+                                      8), // Add some space between the image and text
+                              Text(
+                                'Feed',
+                                style: TextStyle(
+                                  color: Color(0xff292929),
+                                  fontSize: 12.0,
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              Image.asset(
+                                'assets/images/forum.png',
+                                width: 18,
+                                height: 14,
+                              ),
+                              SizedBox(
+                                  width:
+                                      8), // Add some space between the image and text
+                              Text(
+                                'Forum',
+                                style: TextStyle(
+                                  color: Color(0xff292929),
+                                  fontSize: 12.0,
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              Image.asset(
+                                'assets/images/updates.png',
+                                width: 18,
+                                height: 14,
+                              ),
+                              const SizedBox(
+                                  width:
+                                      8), // Add some space between the image and text
+                              Text(
+                                'Answer',
+                                style: TextStyle(
+                                  color: Color(0xff292929),
+                                  fontSize: 12.0,
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: size.width / 25, vertical: 0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+            '${userHome.postsCount.feeds} ${userHome.postsCount.feeds == 1 ? 'Post' : 'Posts'}',
+                                style: TextStyle(
+                                  color: Color(0xff292929),
+                                  fontSize: 12.0,
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          // Forum Count
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment
+                                .start, // Set mainAxisAlignment to start
+                            children: [
+                              Text(             '${userHome.postsCount.questions} ${userHome.postsCount.questions == 1 ? 'Post' : 'Posts'}', // Conditional expression to display 'Post' or 'Posts'
+                                style: TextStyle(
+                                  color: Color(0xff292929),
+                                  fontSize: 12.0,
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          // Answer Count
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment
+                                .start, // Set mainAxisAlignment to start
+                            children: [
+                              Text('${userHome.postsCount.answers} ${userHome.postsCount.answers == 1 ? 'Post' : 'Posts'}',
+                                style: TextStyle(
+                                  color: Color(0xff292929),
+                                  fontSize: 12.0,
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          )
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: size.width / 25, vertical: 0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text('${userHome.postsCount.feedLikeCount} ${userHome.postsCount.feedLikeCount == 1 ? 'Like' : 'Likes'}',
+                                style: TextStyle(
+                                  color: const Color(0xff292929),
+                                  fontSize: 12.0,
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          // Forum Like Count
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment
+                                .start, // Set mainAxisAlignment to start
+                            children: [
+                              Text(
+                                '-----',
+                                style: TextStyle(
+                                  color: Color(0xff292929),
+                                  fontSize: 12.0,
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          // Answer Like Count
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment
+                                .start, // Set mainAxisAlignment to start
+                            children: [
+                              Text('${userHome.postsCount.answerLikeCount} ${userHome.postsCount.answerLikeCount == 1 ? 'Like' : 'Likes'}',
+                                style: TextStyle(
+                                  color: Color(0xff292929),
+                                  fontSize: 12.0,
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: size.width / 25, vertical: 0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text('${userHome.postsCount.feedCommentCount} ${userHome.postsCount.feedCommentCount == 1 ? 'Comment' : 'Comments'}',
+                                style: TextStyle(
+                                  color: Color(0xff292929),
+                                  fontSize: 12.0,
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          // Forum Comment Count
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment
+                                .start, // Set mainAxisAlignment to start
+                            children: [
+                              Text('${userHome.postsCount.questionAnswerCount} ${userHome.postsCount.questionAnswerCount == 1 ? 'Comment' : 'Comments'}',
+                                style: TextStyle(
+                                  color: Color(0xff292929),
+                                  fontSize: 12.0,
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          // Answer Comment Count
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment
+                                .start, // Set mainAxisAlignment to start
+                            children: [
+                              Text('${userHome.postsCount.answerCommentCount} ${userHome.postsCount.answerCommentCount == 1 ? 'Comment' : 'Comments'}',
+                                style: TextStyle(
+                                  color: Color(0xff292929),
+                                  fontSize: 12.0,
+                                  fontFamily: GoogleFonts.poppins().fontFamily,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
+        );
+      },
+      loading: () {
+        return const Center(
+        );
+        // return CircularProgressIndicator();
+      },
+      error: (error, stackTrace) {
+        return Text('Error: $error');
+      },
+    );
+  }
 
-          // UTILIOZ
-
-          TextButton.icon(
-            onPressed: null, // Disable user interaction
-            icon: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  'assets/images/icons8-heart-64.png',
-                  width: 38,
-                  height: 38,
-                ),
-                SizedBox(width: 4), // Adjust spacing between icon and text
-              ],
+  Widget buttonComponentsSetupLayout_OLD(Size size) {
+    return userHomeAsyncValue!.when(
+      data: (userHome) {
+        return Padding(
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            label: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start, // Align text to the start
+            elevation: 4, // the size of the shadow
+            shadowColor: Colors.black,
+            child: Column(
               children: [
-                Text(
-                  '70',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: GoogleFonts.inter().fontFamily,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Activites',
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 16.0,
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                            fontWeight: FontWeight.w600,
+                          )),
+                    ],
                   ),
                 ),
-                Text(
-                  'Likes',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: GoogleFonts.inter().fontFamily,
-                    fontWeight: FontWeight.normal,
-                    fontSize: 12,
-                  ),
+                viewUsersInformation(userHomeAsyncValue),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: size.width / 25, vertical: 0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          //FEED
+                          IconButton(
+                              icon: Image.asset(
+                                'assets/images/feed.png',
+                                width: 24,
+                                height: 24,
+                              ),
+                              onPressed: null),
+                          Text('Feed',
+                              style: TextStyle(
+                                color: Color(0xff292929),
+                                fontSize: 12.0,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontWeight: FontWeight.w500,
+                              )),
+                          const SizedBox(
+                            height: 10,
+                          ),
+
+                          //QUESTION
+                          IconButton(
+                              icon: Image.asset(
+                                'assets/images/forum.png',
+                                width: 24,
+                                height: 24,
+                              ),
+                              onPressed: null),
+                          Text('Forum',
+                              style: TextStyle(
+                                color: Color(0xff292929),
+                                fontSize: 12.0,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontWeight: FontWeight.w500,
+                              )),
+                          const SizedBox(
+                            height: 10,
+                          ),
+
+                          //Answer
+                          IconButton(
+                              icon: Image.asset(
+                                'assets/images/updates.png',
+                                width: 24,
+                                height: 24,
+                              ),
+                              onPressed: null),
+                          Text('Answer',
+                              style: TextStyle(
+                                color: Color(0xff292929),
+                                fontSize: 12.0,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontWeight: FontWeight.w500,
+                              )),
+                          const SizedBox(
+                            height: 10,
+                          )
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          //Feed Count
+                          TextButton(
+                              onPressed: null,
+                              child: Text("${userHome.postsCount.feeds}",
+                                  style: TextStyle(
+                                    color: Color(0xff292929),
+                                    fontSize: 12.0,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily,
+                                    fontWeight: FontWeight.w500,
+                                  ))),
+
+                          Text('Count',
+                              style: TextStyle(
+                                color: Color(0xff292929),
+                                fontSize: 12.0,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontWeight: FontWeight.w500,
+                              )),
+                          const SizedBox(
+                            height: 10,
+                          ),
+
+                          //Fourm Count
+                          TextButton(
+                              onPressed: null,
+                              child: Text("${userHome.postsCount.questions}",
+                                  style: TextStyle(
+                                    color: Color(0xff292929),
+                                    fontSize: 12.0,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily,
+                                    fontWeight: FontWeight.w500,
+                                  ))),
+                          Text('Count',
+                              style: TextStyle(
+                                color: Color(0xff292929),
+                                fontSize: 12.0,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontWeight: FontWeight.w500,
+                              )),
+                          const SizedBox(
+                            height: 10,
+                          ),
+
+                          //Answer Count
+                          TextButton(
+                              onPressed: null,
+                              child: Text("${userHome.postsCount.answers}",
+                                  style: TextStyle(
+                                    color: Color(0xff292929),
+                                    fontSize: 12.0,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily,
+                                    fontWeight: FontWeight.w500,
+                                  ))),
+                          Text('Count',
+                              style: TextStyle(
+                                color: Color(0xff292929),
+                                fontSize: 12.0,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontWeight: FontWeight.w500,
+                              )),
+                          const SizedBox(
+                            height: 10,
+                          )
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          //Feed Like Count
+                          TextButton(
+                              onPressed: null,
+                              child:
+                                  Text("${userHome.postsCount.feedLikeCount}",
+                                      style: TextStyle(
+                                        color: Color(0xff292929),
+                                        fontSize: 12.0,
+                                        fontFamily:
+                                            GoogleFonts.poppins().fontFamily,
+                                        fontWeight: FontWeight.w500,
+                                      ))),
+                          Text('Like',
+                              style: TextStyle(
+                                color: const Color(0xff292929),
+                                fontSize: 12.0,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontWeight: FontWeight.w500,
+                              )),
+                          const SizedBox(
+                            height: 10,
+                          ),
+
+                          //Fourm Like Count
+                          TextButton(
+                              onPressed: null,
+                              child: Text('0', //NEED PARAM
+                                  style: TextStyle(
+                                    color: Color(0xff292929),
+                                    fontSize: 12.0,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily,
+                                    fontWeight: FontWeight.w500,
+                                  ))),
+                          Text('Like',
+                              style: TextStyle(
+                                color: Color(0xff292929),
+                                fontSize: 12.0,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontWeight: FontWeight.w500,
+                              )),
+                          const SizedBox(
+                            height: 10,
+                          ),
+
+                          //Answer Like Count
+                          TextButton(
+                              onPressed: null,
+                              child:
+                                  Text("${userHome.postsCount.answerLikeCount}",
+                                      style: TextStyle(
+                                        color: Color(0xff292929),
+                                        fontSize: 12.0,
+                                        fontFamily:
+                                            GoogleFonts.poppins().fontFamily,
+                                        fontWeight: FontWeight.w500,
+                                      ))),
+                          Text('Like',
+                              style: TextStyle(
+                                color: Color(0xff292929),
+                                fontSize: 12.0,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontWeight: FontWeight.w500,
+                              )),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10.0, vertical: 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          //Feed Comment Count
+                          TextButton(
+                              onPressed: null,
+                              child: Text(
+                                  "${userHome.postsCount.feedCommentCount}",
+                                  style: TextStyle(
+                                    color: Color(0xff292929),
+                                    fontSize: 12.0,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily,
+                                    fontWeight: FontWeight.w500,
+                                  ))),
+                          Text('Comment',
+                              style: TextStyle(
+                                color: Color(0xff292929),
+                                fontSize: 12.0,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontWeight: FontWeight.w500,
+                              )),
+                          const SizedBox(
+                            height: 10,
+                          ),
+
+                          //Fourm Comment Count
+                          TextButton(
+                              onPressed: null,
+                              child: Text(
+                                  "${userHome.postsCount.questionAnswerCount}",
+                                  style: TextStyle(
+                                    color: Color(0xff292929),
+                                    fontSize: 12.0,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily,
+                                    fontWeight: FontWeight.w500,
+                                  ))),
+                          Text('Comment',
+                              style: TextStyle(
+                                color: Color(0xff292929),
+                                fontSize: 12.0,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontWeight: FontWeight.w500,
+                              )),
+                          const SizedBox(
+                            height: 10,
+                          ),
+
+                          //Answer Comment Count
+                          TextButton(
+                              onPressed: null,
+                              child: Text(
+                                  "${userHome.postsCount.answerCommentCount}",
+                                  style: TextStyle(
+                                    color: Color(0xff292929),
+                                    fontSize: 12.0,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily,
+                                    fontWeight: FontWeight.w500,
+                                  ))),
+                          Text('Comment',
+                              style: TextStyle(
+                                color: Color(0xff292929),
+                                fontSize: 12.0,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontWeight: FontWeight.w500,
+                              )),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-
-          // BADGES
-          TextButton.icon(
-            onPressed: null, // Disable user interaction
-            icon: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  'assets/images/icons8-hashtag-activity-grid-96.png',
-                  width: 38,
-                  height: 38,
-                ),
-                SizedBox(width: 4), // Adjust spacing between icon and text
-              ],
-            ),
-            label: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start, // Align text to the start
-              children: [
-                Text(
-                  '3',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: GoogleFonts.inter().fontFamily,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-                Text(
-                  'Post',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: GoogleFonts.inter().fontFamily,
-                    fontWeight: FontWeight.normal,
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ]);
+        );
+      },
+      loading: () {
+        return const Center(
+        );
+        // return CircularProgressIndicator();
+      },
+      error: (error, stackTrace) {
+        return Text('Error: $error');
+      },
+    );
   }
 
 //GRID OF CHANNELS
@@ -689,7 +1663,6 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
         crossAxisCount: 1,
         mainAxisSpacing: 0.99,
         crossAxisSpacing: 1,
-
         // width / height: fixed for *all* items
         childAspectRatio: 0.99,
       ),
@@ -730,8 +1703,12 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
       // width: 200,
       // height: 200,
       // margin: const EdgeInsets.symmetric(horizontal: 0),
+      // color: Colors.white,
+
       child: Padding(
-        padding: const EdgeInsets.all(0.0),
+        // padding: const EdgeInsets.all(0.0),
+        padding: const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
+
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -831,104 +1808,32 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
   }
 
   // UPDATES NUMBER OF VIEWS AND COMMENTS
-   Widget getInfoOFViewsComments(
-  BuildContext context, WidgetRef ref, int index, LatestUpdate item) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.end, // Align items to the end
-      children: [
-        Spacer(), // Add a spacer to push the button to the right
-        Column(
-          children: [
-            TextButton.icon(
-              onPressed: null, // Disable user interaction
-              icon: const SizedBox(
-                // height: 15,
-                // width: 15,
-                child: Center(
-                  child:    Icon(
-                                          Icons.more_horiz,
-                                          color: Color(0XFF0707b5),
-                                        ),
-                ),
-              ),
-              label: Text(
-                'More',
-                style: TextStyle(
-                  color: Color(0XFF0707b5),
-                  fontSize: 12.0,
-                  fontFamily: GoogleFonts.notoSans().fontFamily,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
-}
-
-
-  Widget getInfoOFViewsComments_OLDCode_numberof_comments_like(
+  Widget getInfoOFViewsComments(
       BuildContext context, WidgetRef ref, int index, LatestUpdate item) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.end, // Align items to the end
         children: [
-          TextButton.icon(
-            // <-- TextButton
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  var params = GetCommentsParams(
-                      userId: user!.userId,
-                      postId: item.orgUpdate.orgUpdateId,
-                      postType: "OrgUpdate");
-
-                  return LikesWidget(
-                      user: user!,
-                      spaceName: "OrgUpdate",
-                      spaceId: item.orgUpdate.orgUpdateId,
-                      params: params);
-                },
-              );
-            },
-            icon: Image.asset(
-              'assets/images/reactions.png',
-            ),
-            label: Text(
-              '${item.likes}',
-              style: TextStyle(
-                color: Color(0xff676A79),
-                fontSize: 12.0,
-                fontFamily: GoogleFonts.notoSans().fontFamily,
-                fontWeight: FontWeight.normal,
-              ),
-            ),
-          ),
+          Spacer(), // Add a spacer to push the button to the right
           Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               TextButton.icon(
-                // <-- TextButton
                 onPressed: null, // Disable user interaction
-                icon: SizedBox(
-                  height: 15,
-                  width: 15,
+                icon: const SizedBox(
+                  // height: 15,
+                  // width: 15,
                   child: Center(
-                    child: Image.asset(
-                      'assets/images/chat_bubble_outline.png',
+                    child: Icon(
+                      Icons.more_horiz,
+                      color: Color(0XFF0707b5),
                     ),
                   ),
                 ),
                 label: Text(
-                  '${item.comments} comments',
+                  'More',
                   style: TextStyle(
-                    color: Color(0xff676A79),
+                    color: Color(0XFF0707b5),
                     fontSize: 12.0,
                     fontFamily: GoogleFonts.notoSans().fontFamily,
                     fontWeight: FontWeight.normal,
@@ -957,16 +1862,14 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
   }
 
 //EDIT AND DELETE OF Updates
-  void _editItem(LatestUpdate item) async {
-  }
+  void _editItem(LatestUpdate item) async {}
 
-  void _onCommentsPressed(LatestUpdate item) {
-  }
-
+  void _onCommentsPressed(LatestUpdate item) {}
 
 //COMMON PROFILE PIC METHODS
   Widget _profilePicWidget(dynamic item, WidgetRef ref) {
     final bool isQuestion = item is LatestQuestion;
+
     final String name = isQuestion ? item.question.name! : item.orgUpdate.name!;
     final String avatarText = getAvatarText(name);
 
@@ -998,16 +1901,57 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
           }
         },
         loading: () => Center(
-          child: SizedBox(
-            height: isQuestion ? 30.0 : 20.0,
-            width: isQuestion ? 30.0 : 20.0,
-            child: CircularProgressIndicator(),
-          ),
-        ),
+            // child: SizedBox(
+            //   height: isQuestion ? 30.0 : 20.0,
+            //   width: isQuestion ? 30.0 : 20.0,
+            //   child: CircularProgressIndicator(),
+            // ),
+            ),
         error: (error, stackTrace) => CircleAvatar(
           radius: radius,
           child: Text(avatarText),
         ), // Handle error state appropriately
+      );
+    }
+  }
+
+  Widget _userProfilePic(
+      AsyncValue<UserHome>? userHomeAsyncValue, WidgetRef ref) {
+    // final UserDetails? userDetails = userHomeAsyncValue!.value?.userDetails;
+    final UserDetails? userDetails = userHomeAsyncValue?.value?.userDetails;
+
+    final String avatarText = userDetails != null
+        ? getAvatarText(userDetails.name)
+        : ""; // Provide a default value or handle the null case appropriately
+
+    if (userHomeAsyncValue?.value?.userDetails.profilePicture == null) {
+      return CircleAvatar(radius: 20.0, child: Text(avatarText));
+    } else {
+      final profilePicAsyncValue = ref.watch(authorThumbnailProvider(
+          userHomeAsyncValue!.value!.userDetails.profilePicture));
+      //print(profilePicAsyncValue);
+      return profilePicAsyncValue.when(
+        data: (imageUrl) {
+          if (imageUrl != null && imageUrl.isNotEmpty) {
+            return CircleAvatar(
+              backgroundImage: NetworkImage(imageUrl),
+              radius: 20.0,
+            );
+          } else {
+            // Render a placeholder or an error image
+            return CircleAvatar(radius: 20.0, child: Text(avatarText));
+          }
+        },
+        loading: () => const Center(
+            // child: SizedBox(
+            //   height: 20.0,
+            //   width: 20.0,
+            //   child: CircularProgressIndicator(),
+            // ),
+            ),
+        error: (error, stackTrace) => CircleAvatar(
+            radius: 20.0,
+            child: Text(avatarText)), // Handle error state appropriately
       );
     }
   }
@@ -1022,8 +1966,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     return '';
   }
 
- 
-//HEADER AND FOOTER OF LATEST QUESTIONS 
+//HEADER AND FOOTER OF LATEST QUESTIONS
   Wrap askedbyViewHeader(LatestQuestion item, WidgetRef ref) {
     bool isCurrentUser = item.user.userId == user!.userId;
 
@@ -1055,40 +1998,40 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
 
   Widget footerVIewWidget(String formattedDate, LatestQuestion item) {
     return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.end, // Align items to the end
-      children: [
-        Spacer(), // Add a spacer to push the button to the right
-        Column(
-          children: [
-            TextButton.icon(
-              onPressed: null, // Disable user interaction
-              icon: const SizedBox(
-                // height: 15,
-                // width: 15,
-                child: Center(
-                  child:    Icon(
-                                          Icons.more_horiz,
-                                          color: Color(0XFF0707b5),
-                                        ),
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end, // Align items to the end
+        children: [
+          Spacer(), // Add a spacer to push the button to the right
+          Column(
+            children: [
+              TextButton.icon(
+                onPressed: null, // Disable user interaction
+                icon: const SizedBox(
+                  // height: 15,
+                  // width: 15,
+                  child: Center(
+                    child: Icon(
+                      Icons.more_horiz,
+                      color: Color(0XFF0707b5),
+                    ),
+                  ),
+                ),
+                label: Text(
+                  'More',
+                  style: TextStyle(
+                    color: Color(0XFF0707b5),
+                    fontSize: 12.0,
+                    fontFamily: GoogleFonts.notoSans().fontFamily,
+                    fontWeight: FontWeight.normal,
+                  ),
                 ),
               ),
-              label: Text(
-                'More',
-                style: TextStyle(
-                  color: Color(0XFF0707b5),
-                  fontSize: 12.0,
-                  fontFamily: GoogleFonts.notoSans().fontFamily,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
+            ],
+          ),
+        ],
+      ),
+    );
     // return Row(
     //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
     //   children: [
@@ -1141,11 +2084,11 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
 
 //CATEGORIES AND CONTENT OF QUESTION LIST
 
- Widget contentViewWidgetQuestion(LatestQuestion item) {
+  Widget contentViewWidgetQuestion(LatestQuestion item) {
     if (item.question.content != null) {
       var content = '';
-      if (item.question.content!.length > 32) {
-        content = '${item.question.content!.substring(0, 32)}...';
+      if (item.question.content!.length > 30) {
+        content = '${item.question.content!.substring(0, 30)}...';
       } else {
         content = item.question.content!;
       }
@@ -1162,7 +2105,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
       return const SizedBox(height: 5.0);
     }
   }
- 
+
   Widget categoryHearViewWidget(LatestQuestion item) {
     bool isCurrentUser = item.question.questionId == user!.userId;
 
@@ -1329,15 +2272,12 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     );
   }
 
-  
 // EDIT AND DELETE METHODS
-  void _editItemQuestion(LatestQuestion item) {
-  }
+  void _editItemQuestion(LatestQuestion item) {}
 
 // Delete an item
-  void _deleteItem(dynamic item, String label, String idPropValue) async {
-  }
-  
+  void _deleteItem(dynamic item, String label, String idPropValue) async {}
+
   void _showToast(BuildContext context) {
     final scaffold = ScaffoldMessenger.of(context);
 
@@ -1346,7 +2286,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
         // content: const Text('Added to favorite'),
         content: const SizedBox(
           height: 70,
-          child: Text('In Progress Evita'),
+          child: Text('In Progress'),
         ),
         action: SnackBarAction(
             label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
@@ -1355,253 +2295,314 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
   }
 }
 
-
-
-
-
-
-
 //PREVIOUS CODE FOR ALL SCREEN NAVIGATIONS - DONT DELETE BELOW CODE FOR NOW
 
-  // Card - BUTTONS CREATE PRODUCTS
-  // Widget buttonComponentsSetupLayout(Size size) {
-  //   return Padding(
-  //     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-  //     child: Card(
-  //       shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.circular(10.0),
-  //       ),
-  //       elevation: 4, // the size of the shadow
-  //       shadowColor: Colors.black,
-  //       child: Row(
-  //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //         children: [
-  //           Padding(
-  //             padding: EdgeInsets.symmetric(
-  //                 horizontal: size.width / 25, vertical: 0),
-  //             child: Column(
-  //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //               children: [
-  //                 IconButton(
-  //                   icon: Image.asset(
-  //                     'assets/images/feed.png',
-  //                     width: 24,
-  //                     height: 24,
-  //                   ),
-  //                   onPressed: () {
-  //                     Navigator.push(
-  //                         context,
-  //                         MaterialPageRoute(
-  //                             builder: (context) =>
-  //                                 FeedsScreen(isFromHomePage: true)));
-  //                   },
-  //                 ),
-  //                 Text('Feed',
-  //                     style: TextStyle(
-  //                       color: Color(0xff292929),
-  //                       fontSize: 12.0,
-  //                       fontFamily: GoogleFonts.poppins().fontFamily,
-  //                       fontWeight: FontWeight.w500,
-  //                     )),
-  //                 const SizedBox(
-  //                   height: 10,
-  //                 ),
-  //                 IconButton(
-  //                   icon: Image.asset(
-  //                     'assets/images/events.png',
-  //                     width: 24,
-  //                     height: 24,
-  //                   ),
-  //                   onPressed: () {
-  //                     _showToast(context);
-  //                   },
-  //                 ),
-  //                 Text('Events',
-  //                     style: TextStyle(
-  //                       color: Color(0xff292929),
-  //                       fontSize: 12.0,
-  //                       fontFamily: GoogleFonts.poppins().fontFamily,
-  //                       fontWeight: FontWeight.w500,
-  //                     )),
-  //                 const SizedBox(
-  //                   height: 10,
-  //                 )
-  //               ],
-  //             ),
-  //           ),
-  //           const SizedBox(
-  //             height: 50,
-  //           ),
-  //           Padding(
-  //             padding:
-  //                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-  //             child: Column(
-  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //               children: [
-  //                 IconButton(
-  //                   icon: Image.asset(
-  //                     'assets/images/forum.png',
-  //                     width: 24,
-  //                     height: 24,
-  //                   ),
-  //                   onPressed: () {
-  //                     Navigator.push(
-  //                         context,
-  //                         MaterialPageRoute(
-  //                             builder: (context) =>
-  //                                 ForumScreen(isFromHomePage: true)));
-  //                   },
-  //                 ),
-  //                 Text('Forum',
-  //                     style: TextStyle(
-  //                       color: Color(0xff292929),
-  //                       fontSize: 12.0,
-  //                       fontFamily: GoogleFonts.poppins().fontFamily,
-  //                       fontWeight: FontWeight.w500,
-  //                     )),
-  //                 const SizedBox(
-  //                   height: 10,
-  //                 ),
-  //                 IconButton(
-  //                   icon: Image.asset(
-  //                     'assets/images/ideas.png',
-  //                     width: 24,
-  //                     height: 24,
-  //                   ),
-  //                   onPressed: () {
-  //                     _showToast(context);
-  //                   },
-  //                 ),
-  //                 Text('Ideas',
-  //                     style: TextStyle(
-  //                       color: Color(0xff292929),
-  //                       fontSize: 12.0,
-  //                       fontFamily: GoogleFonts.poppins().fontFamily,
-  //                       fontWeight: FontWeight.w500,
-  //                     )),
-  //                 const SizedBox(
-  //                   height: 10,
-  //                 )
-  //               ],
-  //             ),
-  //           ),
-  //           const SizedBox(
-  //             height: 50,
-  //           ),
-  //           Padding(
-  //             padding:
-  //                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-  //             child: Column(
-  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //               children: [
-  //                 IconButton(
-  //                   icon: Image.asset(
-  //                     'assets/images/carpool2.png',
-  //                     width: 24,
-  //                     height: 24,
-  //                   ),
-  //                   onPressed: () {
-  //                     _showToast(context);
-  //                   },
-  //                 ),
-  //                 Text('Car Pool',
-  //                     style: TextStyle(
-  //                       color: const Color(0xff292929),
-  //                       fontSize: 12.0,
-  //                       fontFamily: GoogleFonts.poppins().fontFamily,
-  //                       fontWeight: FontWeight.w500,
-  //                     )),
-  //                 const SizedBox(
-  //                   height: 10,
-  //                 ),
-  //                 IconButton(
-  //                   icon: Image.asset(
-  //                     'assets/images/classifields.png',
-  //                     width: 24,
-  //                     height: 24,
-  //                   ),
-  //                   onPressed: () {
-  //                     _showToast(context);
-  //                   },
-  //                 ),
-  //                 Text('Classifields',
-  //                     style: TextStyle(
-  //                       color: Color(0xff292929),
-  //                       fontSize: 12.0,
-  //                       fontFamily: GoogleFonts.poppins().fontFamily,
-  //                       fontWeight: FontWeight.w500,
-  //                     )),
-  //                 const SizedBox(
-  //                   height: 10,
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //           const SizedBox(
-  //             height: 50,
-  //           ),
-  //           Padding(
-  //             padding:
-  //                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-  //             child: Column(
-  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //               children: [
-  //                 IconButton(
-  //                   icon: Image.asset(
-  //                     'assets/images/updates.png',
-  //                     width: 24,
-  //                     height: 24,
-  //                   ),
-  //                   onPressed: () {
-  //                     Navigator.push(
-  //                         context,
-  //                         MaterialPageRoute(
-  //                             builder: (context) => OrgUpdatesScreen()));
-  //                   },
-  //                 ),
-  //                 Text('Updates',
-  //                     style: TextStyle(
-  //                       color: Color(0xff292929),
-  //                       fontSize: 12.0,
-  //                       fontFamily: GoogleFonts.poppins().fontFamily,
-  //                       fontWeight: FontWeight.w500,
-  //                     )),
-  //                 const SizedBox(
-  //                   height: 10,
-  //                 ),
-  //                 IconButton(
-  //                   icon: Image.asset(
-  //                     'assets/images/referrals.png',
-  //                     width: 24,
-  //                     height: 24,
-  //                   ),
-  //                   onPressed: () {
-  //                     _showToast(context);
-  //                     //  Navigator.push(
-  //                     //     context,
-  //                     //     MaterialPageRoute(
-  //                     //         builder: (context) =>
-  //                     //             Referrals()));
-  //                   },
-  //                 ),
-  //                 Text('Referrals',
-  //                     style: TextStyle(
-  //                       color: Color(0xff292929),
-  //                       fontSize: 12.0,
-  //                       fontFamily: GoogleFonts.poppins().fontFamily,
-  //                       fontWeight: FontWeight.w500,
-  //                     )),
-  //                 const SizedBox(
-  //                   height: 10,
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //           const SizedBox(
-  //             height: 50,
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
+// Card - BUTTONS CREATE PRODUCTS
+// Widget buttonComponentsSetupLayout(Size size) {
+//   return Padding(
+//     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+//     child: Card(
+//       shape: RoundedRectangleBorder(
+//         borderRadius: BorderRadius.circular(10.0),
+//       ),
+//       elevation: 4, // the size of the shadow
+//       shadowColor: Colors.black,
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//         children: [
+//           Padding(
+//             padding: EdgeInsets.symmetric(
+//                 horizontal: size.width / 25, vertical: 0),
+//             child: Column(
+//               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//               children: [
+//                 IconButton(
+//                   icon: Image.asset(
+//                     'assets/images/feed.png',
+//                     width: 24,
+//                     height: 24,
+//                   ),
+//                   onPressed: () {
+//                     Navigator.push(
+//                         context,
+//                         MaterialPageRoute(
+//                             builder: (context) =>
+//                                 FeedsScreen(isFromHomePage: true)));
+//                   },
+//                 ),
+//                 Text('Feed',
+//                     style: TextStyle(
+//                       color: Color(0xff292929),
+//                       fontSize: 12.0,
+//                       fontFamily: GoogleFonts.poppins().fontFamily,
+//                       fontWeight: FontWeight.w500,
+//                     )),
+//                 const SizedBox(
+//                   height: 10,
+//                 ),
+//                 IconButton(
+//                   icon: Image.asset(
+//                     'assets/images/events.png',
+//                     width: 24,
+//                     height: 24,
+//                   ),
+//                   onPressed: () {
+//                     _showToast(context);
+//                   },
+//                 ),
+//                 Text('Events',
+//                     style: TextStyle(
+//                       color: Color(0xff292929),
+//                       fontSize: 12.0,
+//                       fontFamily: GoogleFonts.poppins().fontFamily,
+//                       fontWeight: FontWeight.w500,
+//                     )),
+//                 const SizedBox(
+//                   height: 10,
+//                 )
+//               ],
+//             ),
+//           ),
+//           const SizedBox(
+//             height: 50,
+//           ),
+//           Padding(
+//             padding:
+//                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+//             child: Column(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 IconButton(
+//                   icon: Image.asset(
+//                     'assets/images/forum.png',
+//                     width: 24,
+//                     height: 24,
+//                   ),
+//                   onPressed: () {
+//                     Navigator.push(
+//                         context,
+//                         MaterialPageRoute(
+//                             builder: (context) =>
+//                                 ForumScreen(isFromHomePage: true)));
+//                   },
+//                 ),
+//                 Text('Forum',
+//                     style: TextStyle(
+//                       color: Color(0xff292929),
+//                       fontSize: 12.0,
+//                       fontFamily: GoogleFonts.poppins().fontFamily,
+//                       fontWeight: FontWeight.w500,
+//                     )),
+//                 const SizedBox(
+//                   height: 10,
+//                 ),
+//                 IconButton(
+//                   icon: Image.asset(
+//                     'assets/images/ideas.png',
+//                     width: 24,
+//                     height: 24,
+//                   ),
+//                   onPressed: () {
+//                     _showToast(context);
+//                   },
+//                 ),
+//                 Text('Ideas',
+//                     style: TextStyle(
+//                       color: Color(0xff292929),
+//                       fontSize: 12.0,
+//                       fontFamily: GoogleFonts.poppins().fontFamily,
+//                       fontWeight: FontWeight.w500,
+//                     )),
+//                 const SizedBox(
+//                   height: 10,
+//                 )
+//               ],
+//             ),
+//           ),
+//           const SizedBox(
+//             height: 50,
+//           ),
+//           Padding(
+//             padding:
+//                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+//             child: Column(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 IconButton(
+//                   icon: Image.asset(
+//                     'assets/images/carpool2.png',
+//                     width: 24,
+//                     height: 24,
+//                   ),
+//                   onPressed: () {
+//                     _showToast(context);
+//                   },
+//                 ),
+//                 Text('Car Pool',
+//                     style: TextStyle(
+//                       color: const Color(0xff292929),
+//                       fontSize: 12.0,
+//                       fontFamily: GoogleFonts.poppins().fontFamily,
+//                       fontWeight: FontWeight.w500,
+//                     )),
+//                 const SizedBox(
+//                   height: 10,
+//                 ),
+//                 IconButton(
+//                   icon: Image.asset(
+//                     'assets/images/classifields.png',
+//                     width: 24,
+//                     height: 24,
+//                   ),
+//                   onPressed: () {
+//                     _showToast(context);
+//                   },
+//                 ),
+//                 Text('Classifields',
+//                     style: TextStyle(
+//                       color: Color(0xff292929),
+//                       fontSize: 12.0,
+//                       fontFamily: GoogleFonts.poppins().fontFamily,
+//                       fontWeight: FontWeight.w500,
+//                     )),
+//                 const SizedBox(
+//                   height: 10,
+//                 ),
+//               ],
+//             ),
+//           ),
+//           const SizedBox(
+//             height: 50,
+//           ),
+//           Padding(
+//             padding:
+//                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+//             child: Column(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 IconButton(
+//                   icon: Image.asset(
+//                     'assets/images/updates.png',
+//                     width: 24,
+//                     height: 24,
+//                   ),
+//                   onPressed: () {
+//                     Navigator.push(
+//                         context,
+//                         MaterialPageRoute(
+//                             builder: (context) => OrgUpdatesScreen()));
+//                   },
+//                 ),
+//                 Text('Updates',
+//                     style: TextStyle(
+//                       color: Color(0xff292929),
+//                       fontSize: 12.0,
+//                       fontFamily: GoogleFonts.poppins().fontFamily,
+//                       fontWeight: FontWeight.w500,
+//                     )),
+//                 const SizedBox(
+//                   height: 10,
+//                 ),
+//                 IconButton(
+//                   icon: Image.asset(
+//                     'assets/images/referrals.png',
+//                     width: 24,
+//                     height: 24,
+//                   ),
+//                   onPressed: () {
+//                     _showToast(context);
+//                     //  Navigator.push(
+//                     //     context,
+//                     //     MaterialPageRoute(
+//                     //         builder: (context) =>
+//                     //             Referrals()));
+//                   },
+//                 ),
+//                 Text('Referrals',
+//                     style: TextStyle(
+//                       color: Color(0xff292929),
+//                       fontSize: 12.0,
+//                       fontFamily: GoogleFonts.poppins().fontFamily,
+//                       fontWeight: FontWeight.w500,
+//                     )),
+//                 const SizedBox(
+//                   height: 10,
+//                 ),
+//               ],
+//             ),
+//           ),
+//           const SizedBox(
+//             height: 50,
+//           ),
+//         ],
+//       ),
+//     ),
+//   );
+// }
+
+class ExpandCollapseDemo extends StatefulWidget {
+  @override
+  _ExpandCollapseDemoState createState() => _ExpandCollapseDemoState();
+}
+
+class _ExpandCollapseDemoState extends State<ExpandCollapseDemo> {
+  List<Item> _data = generateItems(2);
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: ExpansionPanelList(
+        expansionCallback: (int index, bool isExpanded) {
+          setState(() {
+            _data[index].isExpanded = !isExpanded;
+          });
+        },
+        children: _data.map<ExpansionPanel>((Item item) {
+          return ExpansionPanel(
+            headerBuilder: (BuildContext context, bool isExpanded) {
+              return ListTile(
+                title: Text(item.headerValue),
+                trailing: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      item.isExpanded = !item.isExpanded;
+                    });
+                  },
+                  child: Icon(
+                    item.isExpanded ? Icons.expand_less : Icons.expand_more,
+                  ),
+                ),
+              );
+            },
+            body: ListTile(
+              title: Text(item.expandedValue),
+              subtitle: Text('Details about this item'),
+            ),
+            isExpanded: item.isExpanded,
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+class Item {
+  String expandedValue;
+  String headerValue;
+  bool isExpanded;
+
+  Item({
+    required this.expandedValue,
+    required this.headerValue,
+    this.isExpanded = false,
+  });
+}
+
+List<Item> generateItems(int numberOfItems) {
+  return List<Item>.generate(numberOfItems, (int index) {
+    return Item(
+      headerValue: 'Panel $index',
+      expandedValue: 'This is item number $index',
+    );
+  });
+}

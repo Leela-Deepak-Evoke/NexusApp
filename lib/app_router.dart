@@ -14,7 +14,6 @@ import 'package:evoke_nexus_app/app/screens/root_screen/root_screen.dart';
 import 'package:evoke_nexus_app/app/screens/root_screen/root_screen_mobile.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/profile_tab_menu.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_screen.dart';
-import 'package:evoke_nexus_app/app/screens/test/test_screen.dart';
 import 'package:evoke_nexus_app/app/screens/timeline/timeline_screen.dart';
 import 'package:evoke_nexus_app/app/utils/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -83,14 +82,7 @@ final router = GoRouter(
                 child: PostForumFAB(user: user),
               );
             }),
-        GoRoute(
-          name: AppRoute.test.name,
-          path: 'test',
-          pageBuilder: (context, state) => MaterialPage<void>(
-            key: state.pageKey,
-            child: const TestScreen(),
-          ),
-        ),
+       
         GoRoute(
           name: AppRoute.timeline.name,
           path: 'timeline',
@@ -175,14 +167,7 @@ final mobileappRouter = GoRouter(
               child: ForumScreen(),
             ),
           ),
-          GoRoute(
-            name: AppRoute.test.name,
-            path: 'test',
-            pageBuilder: (context, state) => MaterialPage<void>(
-              key: state.pageKey,
-              child: const TestScreen(),
-            ),
-          ),
+       
           GoRoute(
             name: AppRoute.timeline.name,
             path: 'timeline',

@@ -33,7 +33,7 @@ class MobileCustomAppbar extends StatelessWidget {
               //     fontWeight: FontWeight.w600,
               //   ),
               //   textAlign: TextAlign.left,
-              // ), 
+              // ),
               // leading:   IconButton(
               //     icon: Image.asset(
               //       'assets/images/Nexus_logo-artwork.png',
@@ -41,19 +41,19 @@ class MobileCustomAppbar extends StatelessWidget {
               //       // height: 24,
               //     ),
               //     onPressed: () {},
-              //   ),   
-               leading: IconButton(
-                      icon: Image.asset(
-                        'assets/images/Nexus_logo-artwork.png',
-                        width: 35,
-                        height: 35,
-                      ),
-                      onPressed: () {},
-                    ),  
-                    titleSpacing: 0,
+              //   ),
+              leading: IconButton(
+                icon: Image.asset(
+                  'assets/images/Nexus_logo-artwork.png',
+                  width: 35,
+                  height: 35,
+                ),
+                onPressed: null, // Disable user interaction
+              ),
+              titleSpacing: 0,
               centerTitle: false,
               title: Text(
-                "NEXUS",  //EVOKE NEXUS
+                "NEXUS", //EVOKE NEXUS
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16.0,
@@ -61,7 +61,7 @@ class MobileCustomAppbar extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
                 textAlign: TextAlign.left,
-              ),    
+              ),
               actions: [
                 IconButton(
                   icon: Image.asset(
@@ -69,24 +69,26 @@ class MobileCustomAppbar extends StatelessWidget {
                     width: 24,
                     height: 24,
                   ),
-                  onPressed: () {_showToast(context);},
+                  onPressed: () {
+                    _showToast(context);
+                  },
                 ),
                 InkWell(
                   onTap: () {
-                      Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const ProfileScreen()),
-                  );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ProfileScreen()),
+                    );
 
-  // Navigator.push(
-  //       context,
-  //       MaterialPageRoute(
-  //         fullscreenDialog: true,
-  //         // builder: (context) => CreatePostFeedScreen(feedItem: item, isEditFeed: true),
-  //         builder: (context) => ProfileScreen(),
-  //       ),
-  //     );
-
+                    // Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         fullscreenDialog: true,
+                    //         // builder: (context) => CreatePostFeedScreen(feedItem: item, isEditFeed: true),
+                    //         builder: (context) => ProfileScreen(),
+                    //       ),
+                    //     );
                   },
                   child: Container(
                     width: 24,
@@ -149,13 +151,12 @@ class CustomAppbar extends StatelessWidget {
     required this.hasBackAction,
     required this.hasRightAction,
     required this.showSearchIcon, // Add this line
-        required this.showSortingIcon, // Add this line
+    required this.showSortingIcon, // Add this line
     required this.topBarButtonAction,
     required this.backButtonAction,
     required this.rightChildWiget,
     required this.topBarSearchButtonAction,
-        required this.topBarSortingButtonAction,
-
+    required this.topBarSortingButtonAction,
   });
 
   @override
@@ -187,7 +188,8 @@ class CustomAppbar extends StatelessWidget {
                         width: 35,
                         height: 35,
                       ),
-                      onPressed: () {},
+                      // onPressed: () {},
+                      onPressed: null, // Disable user interaction
                     ),
 
               titleSpacing: 0,
@@ -212,26 +214,40 @@ class CustomAppbar extends StatelessWidget {
                           )
                         : Row(
                             children: [
-                              if (showSearchIcon) 
+                              if (showSearchIcon)
                                 IconButton(
-                                  icon: Icon(Icons
-                                      .search, color: Colors.white,), // Add your search icon here
+                                  icon: Icon(
+                                    Icons.search,
+                                    color: Colors.white,
+                                  ), // Add your search icon here
                                   onPressed: () {
-                                   topBarSearchButtonAction();
+                                    topBarSearchButtonAction();
                                   },
-                                )
-                                ,
-                                //  IconButton(
-                                //   icon: Icon(Icons
-                                //       .sort, color: Colors.white,), // Add your search icon here
-                                //   onPressed: () {
-                                //    topBarSortingButtonAction();
-                                //   },
-                                // ),
+                                ),
+                              //  IconButton(
+                              //   icon: Icon(Icons
+                              //       .sort, color: Colors.white,), // Add your search icon here
+                              //   onPressed: () {
+                              //    topBarSortingButtonAction();
+                              //   },
+                              // ),
+
+                              // IconButton(
+                              //   icon: Image.asset(
+                              //     'assets/images/white_add-48.png',
+                              //     width: 24,
+                              //     height: 24,
+                              //   ),
+                              //   onPressed: () {
+                              //     topBarButtonAction();
+                              //   },
+                              // ),
 
                               IconButton(
                                 icon: Image.asset(
-                                  'assets/images/create-post.png',
+                                  title == 'Profile'
+                                      ? 'assets/images/create-post.png'
+                                      : 'assets/images/white_add-48.png',
                                   width: 24,
                                   height: 24,
                                 ),
@@ -241,23 +257,26 @@ class CustomAppbar extends StatelessWidget {
                               ),
                             ],
                           ))
-                    :  showSearchIcon ? Row(
-                            children: [
-                                IconButton(
-                                  icon: Icon(Icons
-                                      .search, color: Colors.white,), // Add your search icon here
-                                  onPressed: () {
-                                   topBarSearchButtonAction();
-                                  },
-                                ), 
-                                // IconButton(
-                                //   icon: Icon(Icons
-                                //       .sort, color: Colors.white,), // Add your search icon here
-                                //   onPressed: () {
-                                //    topBarSortingButtonAction();
-                                //   },
-                                // ),
-                                ]) : SizedBox(),    //,
+                    : showSearchIcon
+                        ? Row(children: [
+                            IconButton(
+                              icon: Icon(
+                                Icons.search,
+                                color: Colors.white,
+                              ), // Add your search icon here
+                              onPressed: () {
+                                topBarSearchButtonAction();
+                              },
+                            ),
+                            // IconButton(
+                            //   icon: Icon(Icons
+                            //       .sort, color: Colors.white,), // Add your search icon here
+                            //   onPressed: () {
+                            //    topBarSortingButtonAction();
+                            //   },
+                            // ),
+                          ])
+                        : SizedBox(), //,
               ],
               // actions: [
 

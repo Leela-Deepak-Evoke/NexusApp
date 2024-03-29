@@ -29,6 +29,7 @@ class AuthenticationService {
     } else {
       final result = await Amplify.Auth.signInWithWebUI(provider: const AuthProvider.saml("EvokeAzureAD"));
       safePrint('Result: $result');
+
       onloginComplition(true);
     }
   }

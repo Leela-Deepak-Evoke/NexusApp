@@ -8,7 +8,7 @@ import 'package:evoke_nexus_app/app/provider/profile_service_provider.dart';
 
 class UserForm extends ConsumerStatefulWidget {
   final User user;
- final bool isFromWelcomeScreen;
+  final bool isFromWelcomeScreen;
   const UserForm(
       {super.key, required this.user, required this.isFromWelcomeScreen});
 
@@ -48,7 +48,11 @@ class _UserFormState extends ConsumerState<UserForm> {
             (index < socialLinksList.length) ? socialLinksList[index] : "");
   }
 
-  Future<void> _handleSubmit() async {
+
+
+Future<void> _handleSubmit(BuildContext context) async {
+    FocusScope.of(context).unfocus();
+
     bool changed = initialAbout != _aboutController.text ||
         !_compareLists(initialSocialLinks,
             _socialLinksControllers.map((e) => e.text).toList());
@@ -70,14 +74,17 @@ class _UserFormState extends ConsumerState<UserForm> {
       );
       final currentUser =
           await ref.read(updateUserProvider(updatedUser).future);
+          Navigator.pop(context);
       setState(() {
         initialAbout = currentUser.about!;
         initialSocialLinks = currentUser.socialLinks! as List<String>;
+                
+
       });
     } else {
       print("No changes detected.");
     }
-    Navigator.pop(context);
+  Navigator.pop(context);
   }
 
   void _handleCancel() {
@@ -205,11 +212,10 @@ class _UserFormState extends ConsumerState<UserForm> {
 
                           // maxLength: 3000,
                         ),
-                                            // ExpandCollapseDemo(),
+                        // ExpandCollapseDemo(),
 
                         const SizedBox(height: 20),
                         ..._buildSocialLinksFields()
-                        
                       ],
                     ),
                     const SizedBox(height: 5),
@@ -218,7 +224,7 @@ class _UserFormState extends ConsumerState<UserForm> {
                       children: [
                         ElevatedButton(
                             onPressed: () async {
-                              await _handleSubmit();
+                                _handleSubmit(context);
                             },
                             child: const Text("Submit")),
                         const SizedBox(width: 10),
@@ -335,74 +341,4 @@ class _UserFormState extends ConsumerState<UserForm> {
     }
     return '';
   }
-
-}
-
-
-
-class ExpandCollapseDemo extends StatefulWidget {
-  @override
-  _ExpandCollapseDemoState createState() => _ExpandCollapseDemoState();
-}
-
-class _ExpandCollapseDemoState extends State<ExpandCollapseDemo> {
-  List<Item> _data = generateItems(2);
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: ExpansionPanelList(
-        expansionCallback: (int index, bool isExpanded) {
-          setState(() {
-            _data[index].isExpanded = !isExpanded;
-          });
-        },
-        children: _data.map<ExpansionPanel>((Item item) {
-          return ExpansionPanel(
-            headerBuilder: (BuildContext context, bool isExpanded) {
-              return ListTile(
-                title: Text(item.headerValue),
-                trailing: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      item.isExpanded = !item.isExpanded;
-                    });
-                  },
-                  child: Icon(
-                    item.isExpanded ? Icons.expand_less : Icons.expand_more,
-                  ),
-                ),
-              );
-            },
-            body: ListTile(
-              title: Text(item.expandedValue),
-              subtitle: Text('Details about this item'),
-            ),
-            isExpanded: item.isExpanded,
-          );
-        }).toList(),
-      ),
-    );
-  }
-}
-
-class Item {
-  String expandedValue;
-  String headerValue;
-  bool isExpanded;
-
-  Item({
-    required this.expandedValue,
-    required this.headerValue,
-    this.isExpanded = false,
-  });
-}
-
-List<Item> generateItems(int numberOfItems) {
-  return List<Item>.generate(numberOfItems, (int index) {
-    return Item(
-      headerValue: 'Panel $index',
-      expandedValue: 'This is item number $index',
-    );
-  });
 }

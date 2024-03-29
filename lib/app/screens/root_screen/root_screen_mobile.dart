@@ -29,7 +29,9 @@ class RootScreenMobile extends ConsumerWidget {
 
     if (checkUserAsyncValue is AsyncData) {
       return TabBarHandler(
-          logoutAction: logOutAction, rootScreenMobileContext: context, user: checkUserAsyncValue.value);
+          logoutAction: logOutAction,
+          rootScreenMobileContext: context,
+          user: checkUserAsyncValue.value);
       // return TabbarScreen(logoutAction: logOutAction);
       // GoRouter.of(context).goNamed('${AppRoute.tabbarscreen.name}}');
       // return const SizedBox.shrink();
@@ -57,42 +59,43 @@ class RootScreenMobile extends ConsumerWidget {
     }
 
     if (checkUserAsyncValue is AsyncError) {
-            context.replaceNamed(AppRoute.login.name);
-  // GoRouter.of(context).goNamed('/${AppRoute.login.name}');
+      context.replaceNamed(AppRoute.login.name);
+      GoRouter.of(context).goNamed('/${AppRoute.login.name}');
 
-     ErrorScreen(showErrorMessage: true, onRetryPressed: onRetryPressed);
+      return ErrorScreen(
+          showErrorMessage: true, onRetryPressed: onRetryPressed);
 
-      return Container(
-        color: Colors.white, // Set your desired background color
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('An error occurred. Please try again. ${checkUserAsyncValue.error.hashCode}',
-                style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                )),
-            const SizedBox(height: 20.0), // Adjust spacing as needed
-            ElevatedButton(
-              onPressed: onRetryPressed,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red[700],
-              ),
-              child: Text(
-                "Try Again",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.0,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
+      // return Container(
+      //   color: Colors.white, // Set your desired background color
+      //   child: Column(
+      //     mainAxisAlignment: MainAxisAlignment.center,
+      //     children: [
+      //       Text('An error occurred. Please try again. ${checkUserAsyncValue.error.hashCode}',
+      //           style: TextStyle(
+      //             color: Colors.black87,
+      //             fontSize: 16.0,
+      //             fontWeight: FontWeight.bold,
+      //             fontFamily: GoogleFonts.poppins().fontFamily,
+      //           )),
+      //       const SizedBox(height: 20.0), // Adjust spacing as needed
+      //       ElevatedButton(
+      //         onPressed: onRetryPressed,
+      //         style: ElevatedButton.styleFrom(
+      //           backgroundColor: Colors.red[700],
+      //         ),
+      //         child: Text(
+      //           "Try Again",
+      //           style: TextStyle(
+      //             color: Colors.white,
+      //             fontSize: 16.0,
+      //             fontFamily: GoogleFonts.poppins().fontFamily,
+      //             fontWeight: FontWeight.normal,
+      //           ),
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // );
     }
 
     // This should ideally never be reached, but it's here as a fallback.

@@ -47,7 +47,8 @@ class _MobileLayoutState extends State<MobileLayout> {
 
     return Scaffold(
       // drawer: const Drawer(),
-      resizeToAvoidBottomInset: false,
+      // resizeToAvoidBottomInset: false, //false works for comments and true works for edit profile
+      resizeToAvoidBottomInset: widget.title == "Edit Profile", 
       body: Stack(
         children: <Widget>[
           _buildHeader(size, headerNegativeOffset),

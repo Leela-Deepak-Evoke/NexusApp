@@ -1,25 +1,57 @@
-// import 'package:evoke_nexus_app/app/models/user.dart';
-// import 'package:evoke_nexus_app/app/models/org_updates.dart';
 
 class UserHome {
   late UserDetails userDetails;
+  late PostsCount postsCount;
   late List<LatestQuestion> latestQuestions;
   late List<LatestUpdate> latestUpdates;
 
   UserHome({
     required this.userDetails,
+    required this.postsCount,
     required this.latestQuestions,
     required this.latestUpdates,
   });
 
   UserHome.fromJson(Map<String, dynamic> json) {
     userDetails = UserDetails.fromJson(json['user_details']);
+    postsCount = PostsCount.fromJson(json['posts_count']);
     latestQuestions = List<LatestQuestion>.from(json['latest_questions'].map((x) => LatestQuestion.fromJson(x)));
     latestUpdates = List<LatestUpdate>.from(json['latest_updates'].map((x) => LatestUpdate.fromJson(x)));
   }
 }
 
+class PostsCount {
+  late int feeds;
+  late int feedLikeCount;
+  late int feedCommentCount;
+  late int questions;
+  late int questionAnswerCount;
+  late int answers;
+  late int answerLikeCount;
+  late int answerCommentCount;
 
+  PostsCount({
+    required this.feeds,
+    required this.feedLikeCount,
+    required this.feedCommentCount,
+    required this.questions,
+    required this.questionAnswerCount,
+    required this.answers,
+    required this.answerLikeCount,
+    required this.answerCommentCount,
+  });
+
+  PostsCount.fromJson(Map<String, dynamic> json) {
+    feeds = json['feeds'];
+    feedLikeCount = json['feedLikeCount'];
+    feedCommentCount = json['feedCommentCount'];
+    questions = json['questions'];
+    questionAnswerCount = json['questionAnswerCount'];
+    answers = json['answers'];
+    answerLikeCount = json['answerLikeCount'];
+    answerCommentCount = json['answerCommentCount'];
+  }
+}
 
 class UserList {
   late String userId;
@@ -197,142 +229,4 @@ class OrgUpdateHome {
     status = json['status'];
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import 'package:evoke_nexus_app/app/models/user.dart';
-// import 'package:evoke_nexus_app/app/models/question.dart';
-// import 'package:evoke_nexus_app/app/models/org_updates.dart';
-
-// class UserHome {
-//   late UserDetails userDetails;
-//   late List<LatestQuestion> latestQuestions;
-//   late List<LatestUpdate> latestUpdates;
-
-//   UserHome({
-//     required this.userDetails,
-//     required this.latestQuestions,
-//     required this.latestUpdates,
-//   });
-
-//   UserHome.fromJson(Map<String, dynamic> json) {
-//     userDetails = UserDetails.fromJson(json['user_details']);
-//     latestQuestions = List<LatestQuestion>.from(
-//         json['latest_questions'].map((x) => LatestQuestion.fromJson(x)));
-//     latestUpdates = List<LatestUpdate>.from(
-//         json['latest_updates'].map((x) => LatestUpdate.fromJson(x)));
-//   }
-// }
-
-// class UserDetails {
-//   late String userId;
-//   late String name;
-//   late String profilePicture;
-//   late String lastLoginAt;
-//   late String createdAt;
-//   late String status;
-
-//   UserDetails({
-//     required this.userId,
-//     required this.name,
-//     required this.profilePicture,
-//     required this.lastLoginAt,
-//     required this.createdAt,
-//     required this.status,
-//   });
-
-//   UserDetails.fromJson(Map<String, dynamic> json) {
-//     userId = json['userId'];
-//     name = json['name'];
-//     profilePicture = json['profilePicture'];
-//     lastLoginAt = json['lastLoginAt'];
-//     createdAt = json['createdAt'];
-//     status = json['status'];
-//   }
-// }
-
-// class LatestQuestion {
-//   late User user;
-//   late Question question;
-//   late int answers;
-
-//   LatestQuestion({
-//     required this.user,
-//     required this.question,
-//     required this.answers,
-//   });
-
-//   LatestQuestion.fromJson(Map<String, dynamic> json) {
-//     user = User.fromJson(json['user']);
-//     question = Question.fromJson(json['question'], user.userId);
-//     answers = json['answers'];
-//   }
-// }
-
-
-// class LatestUpdate {
-//   late User user;
-//   late OrgUpdate orgUpdate;
-//   late int likes;
-//   late int comments;
-//   late bool currentUserLiked;
-
-//   LatestUpdate({
-//     required this.user,
-//     required this.orgUpdate,
-//     required this.likes,
-//     required this.comments,
-//     required this.currentUserLiked,
-//   });
-
-//   LatestUpdate.fromJson(Map<String, dynamic> json) {
-//     user = User.fromJson(json['user']);
-//     orgUpdate = OrgUpdate.fromJson(json['orgUpdate'], user.userId);
-//     likes = json['likes'];
-//     comments = json['comments'];
-//     currentUserLiked = json['currentUserLiked'];
-//   }
-// }
-
-
-
-
 

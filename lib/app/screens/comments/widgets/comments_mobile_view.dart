@@ -13,14 +13,15 @@ class CommentsMobileView extends ConsumerStatefulWidget {
   final Widget? headerCard;
   final String posttype;
   final String postId;
-final BuildContext? context; 
+  final BuildContext? context;
 
   const CommentsMobileView(
       {super.key,
       required this.user,
-       this.headerCard,
+      this.headerCard,
       required this.posttype,
-      required this.postId, this.context});
+      required this.postId,
+      this.context});
 
   @override
   ConsumerState<CommentsMobileView> createState() => _CommentsMobileViewState();
@@ -31,8 +32,8 @@ class _CommentsMobileViewState extends ConsumerState<CommentsMobileView> {
   final FocusNode _textFieldFocus = FocusNode();
   bool _isKeyboardVisible = false;
   bool isEditComment = false;
-   
-   UserComment? commentItem;
+
+  UserComment? commentItem;
 
   @override
   void initState() {
@@ -44,14 +45,15 @@ class _CommentsMobileViewState extends ConsumerState<CommentsMobileView> {
       });
     });
   }
-  void _handleSubmit(PostCommentsParams params, WidgetRef ref) async {
 
-if (commentItem?.commentStatus == "PUBLISHED"){
-    await ref.read(editCommentProvider(params).future);
-}else{
-    await ref.read(postCommentProvider(params).future);
-}
+  void _handleSubmit(PostCommentsParams params, WidgetRef ref) async {
+    if (commentItem?.commentStatus == "PUBLISHED") {
+      await ref.read(editCommentProvider(params).future);
+    } else {
+      await ref.read(postCommentProvider(params).future);
+    }
   }
+
   @override
   void dispose() {
     _textFieldFocus.dispose();
@@ -59,25 +61,27 @@ if (commentItem?.commentStatus == "PUBLISHED"){
   }
 
   void _sendComment() {
-    if(_commentController.text == null || _commentController.text == "")
-    {
+    if (_commentController.text == null || _commentController.text == "") {
       return;
     }
     final commentId = const Uuid().v4();
 
     var params = PostCommentsParams(
-                userId: widget.user.userId, 
-                content: _commentController.text, 
-                commentId: commentItem?.commentStatus == "PUBLISHED" ? commentItem?.commentId ?? commentId : commentId, 
-                postIdPropValue: widget.postId,
-                 postlabel: widget.posttype);
+        userId: widget.user.userId,
+        content: _commentController.text,
+        commentId: commentItem?.commentStatus == "PUBLISHED"
+            ? commentItem?.commentId ?? commentId
+            : commentId,
+        postIdPropValue: widget.postId,
+        postlabel: widget.posttype);
     _textFieldFocus.unfocus();
     _commentController.text = "";
     _handleSubmit(params, ref);
   }
 
- // Define a method to handle the edited comment content passed from CommentsListMobileView
-  void handleCommentEdited(String editedComment, bool isEditComment, UserComment item) {
+  // Define a method to handle the edited comment content passed from CommentsListMobileView
+  void handleCommentEdited(
+      String editedComment, bool isEditComment, UserComment item) {
     setState(() {
       _commentController.text = editedComment;
       isEditComment = isEditComment;
@@ -106,52 +110,48 @@ if (commentItem?.commentStatus == "PUBLISHED"){
                 return widget.headerCard;
               },
             ),
-             Builder(
-  builder: (context) {
-    return
-            CommentsListMobileView(
-              user: widget.user,
-              postId: widget.postId,
-              posttype: widget.posttype,
-              params: params,
-          onCommentEdited: handleCommentEdited,
-
-            );
- },
-)
-           
+            Builder(
+              builder: (context) {
+                return CommentsListMobileView(
+                  user: widget.user,
+                  postId: widget.postId,
+                  posttype: widget.posttype,
+                  params: params,
+                  onCommentEdited: handleCommentEdited,
+                );
+              },
+            )
           ],
         ),
       ),
-      Container(
-        child: Row(children: [
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(10.0),
-              child: TextField(
-                controller: _commentController,
-                focusNode: _textFieldFocus,
-                maxLines: null,
-                keyboardType: TextInputType.multiline,
-                decoration: const InputDecoration(
-                  labelText: "Add a comment...",
-                  border: OutlineInputBorder(),
-                ),
+      Row(children: [
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.all(10.0),
+            child: TextField(
+              controller: _commentController,
+              focusNode: _textFieldFocus,
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+                              textInputAction: TextInputAction.done,
+
+              decoration: const InputDecoration(
+                labelText: "Add a comment...",
+                border: OutlineInputBorder(),
               ),
             ),
           ),
-          ElevatedButton(
-            onPressed: _sendComment,
-            child: Text("Send"),
-          ),
-        ]),
-      ),
+        ),
+        ElevatedButton(
+          onPressed: _sendComment,
+          child: Text("Send"),
+        ),
+      ]),
       SizedBox(
-          height: _isKeyboardVisible ? 0 : 100,
+          height: _isKeyboardVisible ? 350 : 100,
           child: Container(
             color: Colors.white,
           ))
     ]);
-
   }
 }

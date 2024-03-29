@@ -80,7 +80,7 @@ class UserList {
 class UserDetails {
   late String userId;
   late String name;
-  late String profilePicture;
+  String? profilePicture; // Make it nullable
   late String lastLoginAt;
   late String createdAt;
   late String status;
@@ -88,7 +88,7 @@ class UserDetails {
   UserDetails({
     required this.userId,
     required this.name,
-    required this.profilePicture,
+    this.profilePicture, // Update here
     required this.lastLoginAt,
     required this.createdAt,
     required this.status,
@@ -97,7 +97,9 @@ class UserDetails {
   UserDetails.fromJson(Map<String, dynamic> json) {
     userId = json['userId'];
     name = json['name'];
-    profilePicture = json['profilePicture'];
+    // profilePicture = json['profilePicture'];
+        profilePicture = json['profilePicture']; // Update here
+
     lastLoginAt = json['lastLoginAt'];
     createdAt = json['createdAt'];
     status = json['status'];

@@ -1,17 +1,13 @@
 import 'dart:async';
-
-import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/models/userhome.dart';
 import 'package:evoke_nexus_app/app/provider/org_update_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/user_home_provider.dart';
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/home/home_latestupdate_mediaview.dart';
-import 'package:evoke_nexus_app/app/services/StringConstants.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/edit_delete_button.dart';
 import 'package:evoke_nexus_app/app/widgets/common/error_screen.dart';
-import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -22,15 +18,9 @@ import 'package:intl/intl.dart';
 
 class HomeScreenSmall extends ConsumerStatefulWidget {
   HomeScreenSmall({Key? key}) : super(key: key);
-
-  // @override
-  // _HomeScreenSmallState createState() => _HomeScreenSmallState();
-
   @override
   HomeScreenSmallState createState() => HomeScreenSmallState();
 }
-
-// class _HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
 
 class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
   User? user; // Nullable User
@@ -75,7 +65,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
             bodyContentRatioMin: bodyContentRatioMin,
             bodyContentRatioMax: bodyContentRatioMax,
           ),
-          const MobileCustomAppbar(),
+           MobileCustomAppbar(),
 
           // Floating action button
           Positioned(
@@ -98,13 +88,23 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     );
   }
 
-  Widget _buildHeader_OLD(
+  Widget _buildHeader(
       {required ValueNotifier<double> offset,
       required Size size,
       required AsyncValue userHomeAsyncValue}) {
-    // final UserDetails? userDetails = userHomeAsyncValue!.value?.userDetails;
-final UserDetails? userDetails = userHomeAsyncValue.value?.userDetails;
+    // final UserDetails? userDetails = userHomeAsyncValue.value?.userDetails; // Use null-aware operator ?. to access userDetails
 
+    UserDetails? userDetails;
+
+    if (userHomeAsyncValue is AsyncValue<UserHome>) {
+      // Check if userHomeAsyncValue is of type AsyncValue<UserHome>
+      final userHome =
+          userHomeAsyncValue.value; // Access data property directly
+
+      if (userHome != null) {
+        userDetails = userHome.userDetails;
+      }
+    }
     return Stack(
       children: [
         ValueListenableBuilder<double>(
@@ -123,154 +123,49 @@ final UserDetails? userDetails = userHomeAsyncValue.value?.userDetails;
             );
           },
         ),
-        Container(
-          padding: const EdgeInsets.only(left: 16, right: 0, top: 115),
-          child: Wrap(direction: Axis.horizontal, spacing: 2, children: [
-            _userProfilePic(userHomeAsyncValue as AsyncValue<UserHome>, ref),
-            const SizedBox(
-              width: 5,
-            ),
-            Padding(
+        if (userDetails !=
+            null) // Check if userDetails is not null before accessing its properties
+          Container(
+            padding: const EdgeInsets.only(left: 16, right: 0, top: 115),
+            child: Wrap(direction: Axis.horizontal, spacing: 2, children: [
+              _userProfilePic(userHomeAsyncValue as AsyncValue<UserHome>, ref),
+              const SizedBox(
+                width: 5,
+              ),
+              Padding(
                 padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
                 child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start, // Align text to the start
-                    children: [
-                      Text(
-                        "Hi, ${userDetails!.name}!",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14.0,
-                          fontFamily: GoogleFonts.poppins().fontFamily,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        textAlign: TextAlign.left,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      userDetails != null ? "Hi, ${userDetails.name}!" : "Hi!",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.0,
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        fontWeight: FontWeight.w500,
                       ),
-                      Text(
-                        "Welcome to Evoke Network!",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14.0,
-                          fontFamily: GoogleFonts.poppins().fontFamily,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        textAlign: TextAlign.left,
+                      textAlign: TextAlign.left,
+                    ),
+                    Text(
+                      "Welcome to Evoke Network!",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.0,
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        fontWeight: FontWeight.w500,
                       ),
-                    ])),
-            const SizedBox(height: 16),
-            // viewUsersInformation(userHomeAsyncValue),
-          ]),
-        )
-
-        // Container(
-        //   padding: EdgeInsets.only(left: 0, right: 0, top: 115),
-        //   child: Column(
-        //     crossAxisAlignment: CrossAxisAlignment.start,
-        //     children: [
-
-        //       Padding(
-        //         padding: const EdgeInsets.only(
-        //             left: 16), // Add padding only to the left
-        //         child: Text(
-        //           "Welcome to Evoke Network!",
-        //           style: TextStyle(
-        //             color: Colors.white,
-        //             fontSize: 14.0,
-        //             fontFamily: GoogleFonts.poppins().fontFamily,
-        //             fontWeight: FontWeight.w500,
-        //           ),
-        //           textAlign: TextAlign.left,
-        //         ),
-        //       ),
-        //       const SizedBox(
-        //           height:
-        //               16), // Add some space between the text and viewUsersInformation
-        //       // viewUsersInformation(userHomeAsyncValue),
-        //       //     viewPostInformation(userHomeAsyncValue)
-        //     ],
-        //   ),
-        // )
+                      textAlign: TextAlign.left,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+            ]),
+          ),
       ],
     );
   }
-
-
-Widget _buildHeader(
-  {required ValueNotifier<double> offset,
-  required Size size,
-  required AsyncValue userHomeAsyncValue}) {
-  // final UserDetails? userDetails = userHomeAsyncValue.value?.userDetails; // Use null-aware operator ?. to access userDetails
-
-UserDetails? userDetails;
-
-  if (userHomeAsyncValue is AsyncValue<UserHome>) {
-    // Check if userHomeAsyncValue is of type AsyncValue<UserHome>
-    final userHome = userHomeAsyncValue.value; // Access data property directly
-
-    if (userHome != null) {
-      userDetails = userHome.userDetails;
-    }
-  }
-  return Stack(
-    children: [
-      ValueListenableBuilder<double>(
-        valueListenable: offset,
-        builder: (context, offset, child) {
-          return Transform.translate(
-            offset: Offset(0, offset * -1),
-            child: SizedBox(
-              height: 250 + 50,
-              width: size.width,
-              child: Image(
-                image: AssetImage('assets/images/navBarRect.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          );
-        },
-      ),
-      if (userDetails != null) // Check if userDetails is not null before accessing its properties
-        Container(
-          padding: const EdgeInsets.only(left: 16, right: 0, top: 115),
-          child: Wrap(direction: Axis.horizontal, spacing: 2, children: [
-            _userProfilePic(userHomeAsyncValue as AsyncValue<UserHome>, ref),
-            const SizedBox(
-              width: 5,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Hi, ${userDetails.name}!", // Access userDetails.name safely
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14.0,
-                      fontFamily: GoogleFonts.poppins().fontFamily,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                  Text(
-                    "Welcome to Evoke Network!",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14.0,
-                      fontFamily: GoogleFonts.poppins().fontFamily,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-          ]),
-        ),
-    ],
-  );
-}
 
   Widget _buildBody({
     required AsyncValue userHomeAsyncValue,
@@ -459,12 +354,12 @@ UserDetails? userDetails;
           }
         },
         loading: () => const Center(
-            child: SizedBox(
-              height: 50.0,
-              width: 50.0,
-              child: CircularProgressIndicator(),
-            ),
-            ),
+          child: SizedBox(
+            height: 50.0,
+            width: 50.0,
+            child: CircularProgressIndicator(),
+          ),
+        ),
         error: (_, __) =>
             ErrorScreen(showErrorMessage: true, onRetryPressed: retry),
       ),
@@ -645,7 +540,6 @@ UserDetails? userDetails;
         error: (_, __) =>
             ErrorScreen(showErrorMessage: true, onRetryPressed: retry),
       ),
-      
     );
   }
 
@@ -817,8 +711,7 @@ UserDetails? userDetails;
             ]);
       },
       loading: () {
-        return const Center(
-        );
+        return const Center();
         //  CircularProgressIndicator();
       },
       error: (error, stackTrace) {
@@ -958,8 +851,7 @@ UserDetails? userDetails;
             ]);
       },
       loading: () {
-        return const Center(
-        );
+        return const Center();
         //  CircularProgressIndicator();
       },
       error: (error, stackTrace) {
@@ -1096,7 +988,7 @@ UserDetails? userDetails;
                           Row(
                             children: [
                               Text(
-            '${userHome.postsCount.feeds} ${userHome.postsCount.feeds == 1 ? 'Post' : 'Posts'}',
+                                '${userHome.postsCount.feeds} ${userHome.postsCount.feeds == 1 ? 'Post' : 'Posts'}',
                                 style: TextStyle(
                                   color: Color(0xff292929),
                                   fontSize: 12.0,
@@ -1114,7 +1006,8 @@ UserDetails? userDetails;
                             mainAxisAlignment: MainAxisAlignment
                                 .start, // Set mainAxisAlignment to start
                             children: [
-                              Text(             '${userHome.postsCount.questions} ${userHome.postsCount.questions == 1 ? 'Post' : 'Posts'}', // Conditional expression to display 'Post' or 'Posts'
+                              Text(
+                                '${userHome.postsCount.questions} ${userHome.postsCount.questions == 1 ? 'Post' : 'Posts'}', // Conditional expression to display 'Post' or 'Posts'
                                 style: TextStyle(
                                   color: Color(0xff292929),
                                   fontSize: 12.0,
@@ -1132,7 +1025,8 @@ UserDetails? userDetails;
                             mainAxisAlignment: MainAxisAlignment
                                 .start, // Set mainAxisAlignment to start
                             children: [
-                              Text('${userHome.postsCount.answers} ${userHome.postsCount.answers == 1 ? 'Post' : 'Posts'}',
+                              Text(
+                                '${userHome.postsCount.answers} ${userHome.postsCount.answers == 1 ? 'Post' : 'Posts'}',
                                 style: TextStyle(
                                   color: Color(0xff292929),
                                   fontSize: 12.0,
@@ -1160,7 +1054,8 @@ UserDetails? userDetails;
                         children: [
                           Row(
                             children: [
-                              Text('${userHome.postsCount.feedLikeCount} ${userHome.postsCount.feedLikeCount == 1 ? 'Like' : 'Likes'}',
+                              Text(
+                                '${userHome.postsCount.feedLikeCount} ${userHome.postsCount.feedLikeCount == 1 ? 'Like' : 'Likes'}',
                                 style: TextStyle(
                                   color: const Color(0xff292929),
                                   fontSize: 12.0,
@@ -1197,7 +1092,8 @@ UserDetails? userDetails;
                             mainAxisAlignment: MainAxisAlignment
                                 .start, // Set mainAxisAlignment to start
                             children: [
-                              Text('${userHome.postsCount.answerLikeCount} ${userHome.postsCount.answerLikeCount == 1 ? 'Like' : 'Likes'}',
+                              Text(
+                                '${userHome.postsCount.answerLikeCount} ${userHome.postsCount.answerLikeCount == 1 ? 'Like' : 'Likes'}',
                                 style: TextStyle(
                                   color: Color(0xff292929),
                                   fontSize: 12.0,
@@ -1225,7 +1121,8 @@ UserDetails? userDetails;
                         children: [
                           Row(
                             children: [
-                              Text('${userHome.postsCount.feedCommentCount} ${userHome.postsCount.feedCommentCount == 1 ? 'Comment' : 'Comments'}',
+                              Text(
+                                '${userHome.postsCount.feedCommentCount} ${userHome.postsCount.feedCommentCount == 1 ? 'Comment' : 'Comments'}',
                                 style: TextStyle(
                                   color: Color(0xff292929),
                                   fontSize: 12.0,
@@ -1243,7 +1140,8 @@ UserDetails? userDetails;
                             mainAxisAlignment: MainAxisAlignment
                                 .start, // Set mainAxisAlignment to start
                             children: [
-                              Text('${userHome.postsCount.questionAnswerCount} ${userHome.postsCount.questionAnswerCount == 1 ? 'Comment' : 'Comments'}',
+                              Text(
+                                '${userHome.postsCount.questionAnswerCount} ${userHome.postsCount.questionAnswerCount == 1 ? 'Comment' : 'Comments'}',
                                 style: TextStyle(
                                   color: Color(0xff292929),
                                   fontSize: 12.0,
@@ -1261,7 +1159,8 @@ UserDetails? userDetails;
                             mainAxisAlignment: MainAxisAlignment
                                 .start, // Set mainAxisAlignment to start
                             children: [
-                              Text('${userHome.postsCount.answerCommentCount} ${userHome.postsCount.answerCommentCount == 1 ? 'Comment' : 'Comments'}',
+                              Text(
+                                '${userHome.postsCount.answerCommentCount} ${userHome.postsCount.answerCommentCount == 1 ? 'Comment' : 'Comments'}',
                                 style: TextStyle(
                                   color: Color(0xff292929),
                                   fontSize: 12.0,
@@ -1288,8 +1187,7 @@ UserDetails? userDetails;
         );
       },
       loading: () {
-        return const Center(
-        );
+        return const Center();
         // return CircularProgressIndicator();
       },
       error: (error, stackTrace) {
@@ -1644,8 +1542,7 @@ UserDetails? userDetails;
         );
       },
       loading: () {
-        return const Center(
-        );
+        return const Center();
         // return CircularProgressIndicator();
       },
       error: (error, stackTrace) {
@@ -1927,8 +1824,13 @@ UserDetails? userDetails;
     if (userHomeAsyncValue?.value?.userDetails.profilePicture == null) {
       return CircleAvatar(radius: 20.0, child: Text(avatarText));
     } else {
-      final profilePicAsyncValue = ref.watch(authorThumbnailProvider(
-          userHomeAsyncValue!.value!.userDetails.profilePicture));
+      // final profilePicAsyncValue = ref.watch(authorThumbnailProvider(
+      //     userHomeAsyncValue!.value!.userDetails.profilePicture));
+
+     final profilePicAsyncValue = ref.watch(authorThumbnailProvider(
+  userHomeAsyncValue?.value?.userDetails.profilePicture ?? ""));
+
+
       //print(profilePicAsyncValue);
       return profilePicAsyncValue.when(
         data: (imageUrl) {
@@ -2606,3 +2508,107 @@ List<Item> generateItems(int numberOfItems) {
     );
   });
 }
+
+
+
+
+
+
+
+
+
+//   Widget _buildHeader_OLD(
+//       {required ValueNotifier<double> offset,
+//       required Size size,
+//       required AsyncValue userHomeAsyncValue}) {
+//     // final UserDetails? userDetails = userHomeAsyncValue!.value?.userDetails;
+// final UserDetails? userDetails = userHomeAsyncValue.value?.userDetails;
+
+//     return Stack(
+//       children: [
+//         ValueListenableBuilder<double>(
+//           valueListenable: offset,
+//           builder: (context, offset, child) {
+//             return Transform.translate(
+//               offset: Offset(0, offset * -1),
+//               child: SizedBox(
+//                 height: 250 + 50,
+//                 width: size.width,
+//                 child: Image(
+//                   image: AssetImage('assets/images/navBarRect.png'),
+//                   fit: BoxFit.cover,
+//                 ),
+//               ),
+//             );
+//           },
+//         ),
+//         Container(
+//           padding: const EdgeInsets.only(left: 16, right: 0, top: 115),
+//           child: Wrap(direction: Axis.horizontal, spacing: 2, children: [
+//             _userProfilePic(userHomeAsyncValue as AsyncValue<UserHome>, ref),
+//             const SizedBox(
+//               width: 5,
+//             ),
+//             Padding(
+//                 padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
+//                 child: Column(
+//                     crossAxisAlignment:
+//                         CrossAxisAlignment.start, // Align text to the start
+//                     children: [
+//                       Text(
+//                         "Hi, ${userDetails!.name}!",
+//                         style: TextStyle(
+//                           color: Colors.white,
+//                           fontSize: 14.0,
+//                           fontFamily: GoogleFonts.poppins().fontFamily,
+//                           fontWeight: FontWeight.w500,
+//                         ),
+//                         textAlign: TextAlign.left,
+//                       ),
+//                       Text(
+//                         "Welcome to Evoke Network!",
+//                         style: TextStyle(
+//                           color: Colors.white,
+//                           fontSize: 14.0,
+//                           fontFamily: GoogleFonts.poppins().fontFamily,
+//                           fontWeight: FontWeight.w500,
+//                         ),
+//                         textAlign: TextAlign.left,
+//                       ),
+//                     ])),
+//             const SizedBox(height: 16),
+//             // viewUsersInformation(userHomeAsyncValue),
+//           ]),
+//         )
+
+//         // Container(
+//         //   padding: EdgeInsets.only(left: 0, right: 0, top: 115),
+//         //   child: Column(
+//         //     crossAxisAlignment: CrossAxisAlignment.start,
+//         //     children: [
+
+//         //       Padding(
+//         //         padding: const EdgeInsets.only(
+//         //             left: 16), // Add padding only to the left
+//         //         child: Text(
+//         //           "Welcome to Evoke Network!",
+//         //           style: TextStyle(
+//         //             color: Colors.white,
+//         //             fontSize: 14.0,
+//         //             fontFamily: GoogleFonts.poppins().fontFamily,
+//         //             fontWeight: FontWeight.w500,
+//         //           ),
+//         //           textAlign: TextAlign.left,
+//         //         ),
+//         //       ),
+//         //       const SizedBox(
+//         //           height:
+//         //               16), // Add some space between the text and viewUsersInformation
+//         //       // viewUsersInformation(userHomeAsyncValue),
+//         //       //     viewPostInformation(userHomeAsyncValue)
+//         //     ],
+//         //   ),
+//         // )
+//       ],
+//     );
+//   }

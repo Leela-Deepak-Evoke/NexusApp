@@ -1,12 +1,49 @@
+import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class MobileCustomAppbar extends StatelessWidget {
-  const MobileCustomAppbar({super.key});
+class MobileCustomAppbar extends ConsumerStatefulWidget {
+  MobileCustomAppbar({Key? key}) : super(key: key);
+  @override
+  MobileCustomAppbarState createState() => MobileCustomAppbarState();
+}
+
+class MobileCustomAppbarState extends ConsumerState<MobileCustomAppbar> {
+// class MobileCustomAppbar extends StatelessWidget {
+//   const MobileCustomAppbar({super.key});
+  String getAvatarText(String name) {
+    final nameParts = name.split(' ');
+    if (nameParts.length >= 2) {
+      return nameParts[0][0].toUpperCase() + nameParts[1][0].toUpperCase();
+    } else if (nameParts.isNotEmpty) {
+      return nameParts[0][0].toUpperCase();
+    }
+    return '';
+  }
 
   @override
   Widget build(BuildContext context) {
+    User? user; // Nullable User
+    final userAsyncValue =
+        ref.watch(fetchUserProvider); 
+       String avatarText = "";
+
+    userAsyncValue.when(
+      data: (data) {
+        user = data;
+        final String name = user!.name;
+         avatarText = getAvatarText(name);
+
+      },
+      loading: () {
+        return CircularProgressIndicator();
+      },
+      error: (error, stackTrace) {},
+    );
+
     final ValueNotifier<bool> appbarShadow = ValueNotifier<bool>(false);
     return Positioned(
       left: 0.0,
@@ -99,7 +136,7 @@ class MobileCustomAppbar extends StatelessWidget {
                     child: CircleAvatar(
                       radius: 30,
                       backgroundColor: Color(0xffF2722B),
-                      child: Text('SM',
+                      child: Text(avatarText,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 10.0,

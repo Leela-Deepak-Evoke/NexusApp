@@ -30,16 +30,15 @@ class ErrorScreen extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-
         Positioned(
           bottom: showErrorMessage ?? false
               ? MediaQuery.of(context).size.height * 0.12
               : MediaQuery.of(context).size.height * 0.10,
 
-right: 70,
-left: 70,
-              // width: double.infinity, //MediaQuery.of(context).size.width - 230,
-              height: 50,
+          right: 70,
+          left: 70,
+          // width: double.infinity, //MediaQuery.of(context).size.width - 230,
+          height: 50,
           // left: MediaQuery.of(context).size.width * 0.3,
           // right: MediaQuery.of(context).size.width * 0.3,
           child: ElevatedButton(

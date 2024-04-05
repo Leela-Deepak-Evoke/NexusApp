@@ -5,17 +5,15 @@ import 'package:evoke_nexus_app/app/screens/feeds/feeds_screen_small.dart';
 import 'package:evoke_nexus_app/app/screens/responsive/responsive_layout.dart';
 
 class FeedsScreen extends StatelessWidget {
-       bool? isFromHomePage;
+  bool? isFromHomePage;
 
-   FeedsScreen({Key? key, this.isFromHomePage}) : super(key: key);
+  FeedsScreen({Key? key, this.isFromHomePage}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return  ResponsiveLayout(
+    return ResponsiveLayout(
       smallScreenLayout: FeedsScreenSmall(isFromHomePage: isFromHomePage),
       mediumScreenLayout: FeedsScreenMedium(),
       largeScreenLayout: FeedsScreenLarge(),
     );
   }
 }
-
-

@@ -1112,7 +1112,10 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                     const SizedBox(
                       height: 50,
                     ),
-                    Padding(
+
+                    Flexible(
+  child: 
+  Padding(
                       padding: EdgeInsets.symmetric(
                           horizontal: size.width / 25, vertical: 0),
                       child: Column(
@@ -1175,6 +1178,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                           ),
                         ],
                       ),
+                    ),
+                   
                     ),
                     const SizedBox(
                       height: 50,

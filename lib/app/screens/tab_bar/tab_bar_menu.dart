@@ -1,8 +1,6 @@
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_handler.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_menu_item.dart';
 import 'package:flutter/material.dart';
-import 'package:evoke_nexus_app/app/utils/app_routes.dart';
-import 'package:go_router/go_router.dart';
 
 class TabBarMenu extends StatefulWidget {
   final BuildContext? rootScreenMobileContext; // Add this parameter
@@ -51,7 +49,7 @@ class _TabBarMenuState extends State<TabBarMenu> {
       // selectedItemColor: Color(0XFFF2722B),
 
       unselectedItemColor: Colors.white,
-      selectedItemColor: Color(0xffFFA500),
+      selectedItemColor: const Color(0xffFFA500),
 
       items: widget.menuItems
           .map((TabMenuItem menuItem) => BottomNavigationBarItem(

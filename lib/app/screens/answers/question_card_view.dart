@@ -50,7 +50,7 @@ class QuestionCardView extends ConsumerWidget {
         Text(
             Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString())),
           style: TextStyle(
-            color: Color(0xff676A79),
+            color: const Color(0xff676A79),
             fontSize: 12.0,
             fontFamily: GoogleFonts.notoSans().fontFamily,
             fontWeight: FontWeight.normal,
@@ -64,7 +64,7 @@ class QuestionCardView extends ConsumerWidget {
                 label: Text(
                   '${item.answers}',
                   style: TextStyle(
-                    color: Color(0xff676A79),
+                    color: const Color(0xff676A79),
                     fontSize: 12.0,
                     fontFamily: GoogleFonts.inter().fontFamily,
                     fontWeight: FontWeight.normal,
@@ -72,14 +72,14 @@ class QuestionCardView extends ConsumerWidget {
                 )),
             Container(
               height: 26,
-              padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0.0),
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0.0),
               child: OutlinedButton(
                 style: OutlinedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0),
                   ),
-                  backgroundColor: Color(0xffF2722B),
-                  side: BorderSide(width: 1, color: Color(0xffF2722B)),
+                  backgroundColor: const Color(0xffF2722B),
+                  side: const BorderSide(width: 1, color: Color(0xffF2722B)),
                 ),
                 // <-- OutlinedButton
                 onPressed: () {
@@ -118,14 +118,14 @@ class QuestionCardView extends ConsumerWidget {
         ),
         Text("Asked by",
             style: TextStyle(
-              color: Color(0xff676A79),
+              color: const Color(0xff676A79),
               fontSize: 12.0,
               fontFamily: GoogleFonts.notoSans().fontFamily,
               fontWeight: FontWeight.normal,
             )),
         Text(isCurrentUser ? "me" : item.author ?? "",
             style: TextStyle(
-              color: Color(0xff676A79),
+              color: const Color(0xff676A79),
               fontSize: 12.0,
               fontFamily: GoogleFonts.notoSans().fontFamily,
               fontWeight: FontWeight.normal,
@@ -148,7 +148,7 @@ class QuestionCardView extends ConsumerWidget {
             Text(
               item.category ?? "General",
               style: TextStyle(
-                color: Color(0xffB54242),
+                color: const Color(0xffB54242),
                 fontSize: 12.0,
                 fontFamily: GoogleFonts.poppins().fontFamily,
                 fontWeight: FontWeight.w500,

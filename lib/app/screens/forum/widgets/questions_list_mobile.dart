@@ -1,5 +1,4 @@
 import 'package:evoke_nexus_app/app/models/delete.dart';
-import 'package:evoke_nexus_app/app/models/forum.dart';
 import 'package:evoke_nexus_app/app/models/question.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/delete_service_provider.dart';
@@ -11,7 +10,6 @@ import 'package:evoke_nexus_app/app/utils/app_routes.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/edit_delete_button.dart';
 import 'package:evoke_nexus_app/app/widgets/common/error_screen.dart';
-import 'package:evoke_nexus_app/app/widgets/common/search_header_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -164,7 +162,7 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
           Global.calculateTimeDifferenceBetween(
               Global.getDateTimeFromStringForPosts(item.postedAt.toString())),
           style: TextStyle(
-            color: Color(0xff676A79),
+            color: const Color(0xff676A79),
             fontSize: 12.0,
             fontFamily: GoogleFonts.notoSans().fontFamily,
             fontWeight: FontWeight.normal,
@@ -176,7 +174,7 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
             label: Text(
               '${item.answers}',
               style: TextStyle(
-                color: Color(0xff676A79),
+                color: const Color(0xff676A79),
                 fontSize: 12.0,
                 fontFamily: GoogleFonts.inter().fontFamily,
                 fontWeight: FontWeight.normal,
@@ -194,7 +192,7 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
           label: Text(
             'Report',
             style: TextStyle(
-              color: Color(0xff393E41),
+              color: const Color(0xff393E41),
               fontFamily: GoogleFonts.inter().fontFamily,
               fontWeight: FontWeight.normal,
               fontSize: 14,
@@ -218,14 +216,14 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
         ),
         Text("Asked by",
             style: TextStyle(
-              color: Color(0xff676A79),
+              color: const Color(0xff676A79),
               fontSize: 12.0,
               fontFamily: GoogleFonts.notoSans().fontFamily,
               fontWeight: FontWeight.normal,
             )),
         Text(isCurrentUser ? "me" : item.author ?? "",
             style: TextStyle(
-              color: Color(0xff676A79),
+              color: const Color(0xff676A79),
               fontSize: 12.0,
               fontFamily: GoogleFonts.notoSans().fontFamily,
               fontWeight: FontWeight.normal,
@@ -252,7 +250,7 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
               Text(
                 item.category ?? "General",
                 style: TextStyle(
-                  color: Color(0xffB54242),
+                  color: const Color(0xffB54242),
                   fontSize: 12.0,
                   fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.w500,
@@ -260,9 +258,9 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
               ),
             ],
           ),
-          Spacer(), // Add a Spacer widget to push the PopupMenuButton to the right.
+          const Spacer(), // Add a Spacer widget to push the PopupMenuButton to the right.
           if (isCurrentUser)
-            Container(
+            SizedBox(
               width: 30, // Adjust the width as needed
               child: PopupMenuButton<String>(
                 icon: const Icon(
@@ -324,7 +322,7 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
                   Text(
                     item.category ?? "General",
                     style: TextStyle(
-                      color: Color(0xffB54242),
+                      color: const Color(0xffB54242),
                       fontSize: 12.0,
                       fontFamily: GoogleFonts.poppins().fontFamily,
                       fontWeight: FontWeight.w500,
@@ -337,7 +335,7 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
                         mainAxisAlignment: MainAxisAlignment.end, //spaceBetween
                         children: [
                           if (isCurrentUser)
-                            Container(
+                            SizedBox(
                               width: 30, // Adjust the width as needed
                               child: PopupMenuButton<String>(
                                 //  padding: const EdgeInsets.only(left: 50, right: 0),
@@ -538,17 +536,17 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Confirm Delete"),
-          content: Text("Are you sure you want to delete this item?"),
+          title: const Text("Confirm Delete"),
+          content: const Text("Are you sure you want to delete this item?"),
           actions: [
             TextButton(
-              child: Text("Cancel"),
+              child: const Text("Cancel"),
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
             ),
             TextButton(
-              child: Text("Delete"),
+              child: const Text("Delete"),
               onPressed: () async {
                 try {
                   final deleteParams = Delete(

@@ -6,9 +6,6 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/models/user_like.dart';
 import 'package:evoke_nexus_app/app/provider/profile_service_provider.dart';
-import 'package:evoke_nexus_app/app/screens/login/login_screen.dart';
-import 'package:evoke_nexus_app/app/screens/not_found/not_found_screen.dart';
-import 'package:evoke_nexus_app/app/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -94,7 +91,7 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
                   ? widget.user.role
                   : widget.otherUser!.title,
               style: TextStyle(
-                color: Color(0xff676A79),
+                color: const Color(0xff676A79),
                 fontSize: 14.0,
                 fontFamily: GoogleFonts.notoSans().fontFamily,
                 fontWeight: FontWeight.w600,
@@ -136,7 +133,7 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
            Text(
           'About Me: ${widget.user.about}',
           style: TextStyle(
-            color: Color(0xff676A79),
+            color: const Color(0xff676A79),
             fontSize: 16.0,
             fontFamily: GoogleFonts.notoSans().fontFamily,
             fontWeight: FontWeight.w600,
@@ -148,7 +145,7 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
         Text(
           'Social Link: ${widget.user.socialLinks}',
           style: TextStyle(
-            color: Color(0xff676A79),
+            color: const Color(0xff676A79),
             fontSize: 16.0,
             fontFamily: GoogleFonts.notoSans().fontFamily,
             fontWeight: FontWeight.w600,
@@ -215,8 +212,8 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
             context: context,
             builder: (BuildContext dialogContext) {
               return AlertDialog(
-                title: Text("Confirmation"),
-                content: Text("Are you sure you want to logout?"),
+                title: const Text("Confirmation"),
+                content: const Text("Are you sure you want to logout?"),
                 actions: <Widget>[
                   TextButton(
                     onPressed: () {
@@ -249,7 +246,7 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
         child: Text(
           'Logout',
           style: TextStyle(
-            color: Color(0xffB54242),
+            color: const Color(0xffB54242),
             fontSize: 20.0,
             fontFamily: GoogleFonts.poppins().fontFamily,
             fontWeight: FontWeight.bold,
@@ -267,7 +264,7 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
     final SignOutResult result = await Amplify.Auth.signOut(
       options: const SignOutOptions(globalSignOut: true),
     );
-    safePrint('result: ${result}');
+    safePrint('result: $result');
 
     if (result is CognitoCompleteSignOut) {
       safePrint('Sign out completed successfully');
@@ -369,6 +366,8 @@ class VerticalCardList extends StatelessWidget {
     Icons.settings,
   ];
 
+   VerticalCardList({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -387,7 +386,7 @@ class VerticalCard extends StatelessWidget {
   final String title;
   final IconData icon;
 
-  const VerticalCard({required this.title, required this.icon});
+  const VerticalCard({super.key, required this.title, required this.icon});
 
   @override
   Widget build(BuildContext context) {

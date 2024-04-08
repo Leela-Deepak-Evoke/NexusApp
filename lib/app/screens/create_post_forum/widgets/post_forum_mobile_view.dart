@@ -1,11 +1,9 @@
 import 'dart:io';
-import 'package:evoke_nexus_app/app/models/categories.dart';
 import 'package:evoke_nexus_app/app/models/post_question_params.dart';
 import 'package:evoke_nexus_app/app/models/question.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/get_categories_provider.dart';
-import 'package:evoke_nexus_app/app/widgets/common/error_screen.dart';
 import 'package:evoke_nexus_app/app/widgets/common/generic_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -500,7 +498,6 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
       });
       fileList.add(uploadedFilePath.toString());
     }
-    ;
   }
 
   videoAttachment() async {
@@ -583,19 +580,19 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
     return Container(
       height: 48,
       width: size.width - 30,
-      padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
+      padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30.0),
           ),
-          backgroundColor: Color(0xffF2722B),
-          side: BorderSide(width: 1, color: Color(0xffF2722B)),
+          backgroundColor: const Color(0xffF2722B),
+          side: const BorderSide(width: 1, color: Color(0xffF2722B)),
         ),
         // <-- OutlinedButton
 
         onPressed: () {
-          if (feedController == null || feedController.value.text.isEmpty) {
+          if (feedController.value.text.isEmpty) {
             showMessage('Question field should not be empty.');
           }
           // else if (hashTagController == null ||
@@ -721,14 +718,12 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
 
       setState(() {
         selectedIndex = categoryIndex;
-        if (categoryIndex != null) {
-          selectedIndex = categoryIndex;
-           if (widget.isEditQuestion == true){
-            updateEditCategories = true;
-          }
-          // selectedCategories.add(categories[index]);
+        selectedIndex = categoryIndex;
+         if (widget.isEditQuestion == true){
+          updateEditCategories = true;
         }
-        // selectedIndex = categoryIndex;
+        // selectedCategories.add(categories[index]);
+              // selectedIndex = categoryIndex;
       });
     }
   }
@@ -754,7 +749,7 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
   // LIST VIEW
   Widget categoryListView() {
     return Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: ListView.builder(
           itemCount: checkListItems.length,
           itemBuilder: (context, index) {
@@ -808,7 +803,7 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
                       ? checkListItems[selectedIndex ?? 0]
                       : selectedCategory,
                 style: TextStyle(
-                  color: Color(0xffB54242),
+                  color: const Color(0xffB54242),
                   fontSize: 12.0,
                   fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.w500,

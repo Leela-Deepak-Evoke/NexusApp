@@ -71,7 +71,7 @@ class _SearchBarSmallState extends State<SearchBarSmall> {
                   hintStyle:const TextStyle(color:Colors.white,fontSize:12),
                   contentPadding:const EdgeInsets.only(bottom:5),
                    suffixIcon: IconButton(
-                icon: Icon(Icons.clear, color: Colors.white),
+                icon: const Icon(Icons.clear, color: Colors.white),
                 //onPressed: () => widget.searchController.clear(),
                       onPressed: () {
                       widget.searchController.clear();

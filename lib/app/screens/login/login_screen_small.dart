@@ -1,9 +1,7 @@
 import 'package:evoke_nexus_app/app/screens/welcome/welcome_screen.dart';
-import 'package:evoke_nexus_app/app/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:evoke_nexus_app/app/provider/authentication_provider.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginScreenSmall extends ConsumerStatefulWidget {
@@ -20,9 +18,9 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
   bool _loading = false;
 
   //Slider Page
-  int _index = 0;
+  final int _index = 0;
   final PageController _pageController = PageController(viewportFraction: 1);
-  int _activePage = 0;
+  final int _activePage = 0;
 
   @override
   void initState() {
@@ -68,8 +66,8 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
         ),
         Container(
           // padding: EdgeInsets.zero,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 120),
+          child: const Padding(
+            padding: EdgeInsets.only(top: 120),
             child: MyPageView(),
           ),
 
@@ -219,18 +217,18 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
                 )
               : Padding(
                   padding: const EdgeInsets.fromLTRB(24, 0, 24, 75),
-                  child: Container(
+                  child: SizedBox(
                     height: 52,
                     width: 250,
                     child: ElevatedButton.icon(
                       style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
-                              Color(0xffE9AD64)),
+                              const Color(0xffE9AD64)),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(26.0),
-                                      side: BorderSide(
+                                      side: const BorderSide(
                                         color: Color(0xffE9AD64),
                                       )))),
                       icon: Image.asset(
@@ -253,7 +251,7 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
 
                       label: Text('Login with Evoke ID',
                           style: TextStyle(
-                            color: Color(0xFF292F69),
+                            color: const Color(0xFF292F69),
                             fontSize: 16.0,
                             fontFamily: GoogleFonts.poppins().fontFamily,
                             fontWeight: FontWeight.w600,
@@ -315,12 +313,14 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
 }
 
 class MyPageView extends StatefulWidget {
+  const MyPageView({super.key});
+
   @override
   _MyPageViewState createState() => _MyPageViewState();
 }
 
 class _MyPageViewState extends State<MyPageView> {
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   int _activePage = 0;
 
   @override
@@ -356,7 +356,7 @@ class _MyPageViewState extends State<MyPageView> {
                 child: InkWell(
                   onTap: () {
                     _pageController.animateToPage(index,
-                        duration: Duration(milliseconds: 300),
+                        duration: const Duration(milliseconds: 300),
                         curve: Curves.easeIn);
                   },
                   child: SizedBox(
@@ -365,7 +365,7 @@ class _MyPageViewState extends State<MyPageView> {
                     child: Container(
                       color: _activePage == index
                           ? Colors.white
-                          : Color.fromRGBO(255, 255, 255, 0.25),
+                          : const Color.fromRGBO(255, 255, 255, 0.25),
                     ),
                   ),
                 ),
@@ -397,14 +397,14 @@ class _MyPageViewState extends State<MyPageView> {
         Text(
           text,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 26.0,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w600,
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 50,
         ),
         Image.asset(imageAsset),

@@ -32,7 +32,7 @@ class _HomeLatestUpdateMediaView extends ConsumerState<HomeLatestUpdateMediaView
   }
 
   void updateMedia() {
-    if (widget.item.hasImage && widget.item.imagePath != null) {
+    if (widget.item.hasImage) {
       mediaURL = widget.item.imagePath;
       _controller?.dispose();
       _controller = null;

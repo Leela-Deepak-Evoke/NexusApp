@@ -1,12 +1,8 @@
 import 'dart:io';
 
-import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/models/org_updates.dart';
-import 'package:evoke_nexus_app/app/models/post_feed_params.dart';
 import 'package:evoke_nexus_app/app/models/post_org_update_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
-import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
-import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/get_categories_provider.dart';
 import 'package:evoke_nexus_app/app/provider/org_update_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/org_updates/widgets/org_updates_media_view.dart';
@@ -525,7 +521,6 @@ class OrgUpdatesMobileViewMobileViewState
       });
       fileList.add(uploadedFilePath.toString());
     }
-    ;
   }
 
   videoAttachment() async {
@@ -622,19 +617,19 @@ class OrgUpdatesMobileViewMobileViewState
     return Container(
       height: 48,
       width: size.width - 30,
-      padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
+      padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30.0),
           ),
-          backgroundColor: Color(0xffF2722B),
-          side: BorderSide(width: 1, color: Color(0xffF2722B)),
+          backgroundColor: const Color(0xffF2722B),
+          side: const BorderSide(width: 1, color: Color(0xffF2722B)),
         ),
         // <-- OutlinedButton
 
         onPressed: () {
-          if (feedController == null || feedController.value.text.isEmpty) {
+          if (feedController.value.text.isEmpty) {
             showMessage('Please share your thoughts');
           }
           // else if (hashTagController == null ||
@@ -765,11 +760,9 @@ class OrgUpdatesMobileViewMobileViewState
 
       setState(() {
         selectedIndex = categoryIndex;
-        if (categoryIndex != null) {
-          selectedIndex = categoryIndex;
-          // selectedCategories.add(categories[index]);
-        }
-        // selectedIndex = categoryIndex;
+        selectedIndex = categoryIndex;
+        // selectedCategories.add(categories[index]);
+              // selectedIndex = categoryIndex;
       });
     }
   }
@@ -793,7 +786,7 @@ class OrgUpdatesMobileViewMobileViewState
   // LIST VIEW
   Widget categoryListView() {
     return Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: ListView.builder(
           itemCount: checkListItems.length,
           itemBuilder: (context, index) {
@@ -841,7 +834,7 @@ class OrgUpdatesMobileViewMobileViewState
                     ? checkListItems[selectedIndex ?? 0]
                     : "General",
                 style: TextStyle(
-                  color: Color(0xffB54242),
+                  color: const Color(0xffB54242),
                   fontSize: 12.0,
                   fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.w500,

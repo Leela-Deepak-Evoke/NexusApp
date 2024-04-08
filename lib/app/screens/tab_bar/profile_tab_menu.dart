@@ -16,7 +16,7 @@ class ProfileTabMenu extends StatelessWidget {
   final GoRouter router;
 
   void openProfileScreen() {
-  GoRouter.of(rootScreenMobileContext!).go('${AppRoute.profile.name}', extra: rootScreenMobileContext);
+  GoRouter.of(rootScreenMobileContext!).go(AppRoute.profile.name, extra: rootScreenMobileContext);
 }
   @override
   Widget build(BuildContext context) {

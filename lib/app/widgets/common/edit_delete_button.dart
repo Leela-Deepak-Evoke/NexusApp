@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 class EditButton extends StatelessWidget {
   final VoidCallback onPressed; // Change the type to VoidCallback
 
-  EditButton({required this.onPressed});
+  const EditButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: Icon(Icons.edit),
+      icon: const Icon(Icons.edit),
       onPressed: onPressed,
     );
   }
@@ -17,12 +17,12 @@ class EditButton extends StatelessWidget {
 class DeleteButton extends StatelessWidget {
   final VoidCallback onPressed; // Change the type to VoidCallback
 
-  DeleteButton({required this.onPressed});
+  const DeleteButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: Icon(Icons.delete),
+      icon: const Icon(Icons.delete),
       onPressed: onPressed,
     );
   }

@@ -28,8 +28,8 @@ class OrgUpdatesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return  ResponsiveLayout(
       smallScreenLayout: OrgUpdatesScreenSmall(isFromHomePage: isFromHomePage),
-      mediumScreenLayout: OrgUpdatesScreenMedium(),
-      largeScreenLayout: OrgUpdatesScreenLarge(),
+      mediumScreenLayout: const OrgUpdatesScreenMedium(),
+      largeScreenLayout: const OrgUpdatesScreenLarge(),
     );
   }
 }

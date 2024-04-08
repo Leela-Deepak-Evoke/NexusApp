@@ -13,8 +13,8 @@ class ForumScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ResponsiveLayout(
       smallScreenLayout: ForumScreenSmall(isFromHomePage: isFromHomePage),
-      mediumScreenLayout: ForumScreenMedium(),
-      largeScreenLayout: ForumScreenLarge(),
+      mediumScreenLayout: const ForumScreenMedium(),
+      largeScreenLayout: const ForumScreenLarge(),
     );
   }
 }

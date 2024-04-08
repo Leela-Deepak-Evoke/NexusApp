@@ -1,5 +1,3 @@
-import 'package:evoke_nexus_app/app/screens/home/home_screen.dart';
-import 'package:evoke_nexus_app/app/screens/profile/profile_screen.dart';
 import 'package:evoke_nexus_app/app/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -69,16 +67,16 @@ class _WelcomeScreenSmallState extends ConsumerState<WelcomeScreenSmall> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton.icon(
                       style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
-                              Color(0xffE9AD64)),
+                              const Color(0xffE9AD64)),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(26.0),
-                                      side: BorderSide(
+                                      side: const BorderSide(
                                         color: Color(0xffE9AD64),
                                       )))),
                       icon: Image.asset(
@@ -100,11 +98,11 @@ class _WelcomeScreenSmallState extends ConsumerState<WelcomeScreenSmall> {
 //                   )
 // //DONT REMOVE THIS CODE
                         GoRouter.of(context)
-                            .goNamed('${AppRoute.rootNavigation.name}')
+                            .goNamed(AppRoute.rootNavigation.name)
                       },
                       label: Text('Get Started',
                           style: TextStyle(
-                            color: Color(0xFF292F69),
+                            color: const Color(0xFF292F69),
                             fontSize: 16.0,
                             fontFamily: GoogleFonts.poppins().fontFamily,
                             fontWeight: FontWeight.w600,

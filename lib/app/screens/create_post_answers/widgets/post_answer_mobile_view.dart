@@ -466,7 +466,7 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
       });
        fileList.add(uploadedFilePath.toString());
 
-    };
+    }
   }
 
   videoAttachment() async {
@@ -552,19 +552,19 @@ void initializeVideo(String url) {
     return Container(
       height: 48,
       width: size.width - 30,
-      padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
+      padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30.0),
           ),
-          backgroundColor: Color(0xffF2722B),
-          side: BorderSide(width: 1, color: Color(0xffF2722B)),
+          backgroundColor: const Color(0xffF2722B),
+          side: const BorderSide(width: 1, color: Color(0xffF2722B)),
         ),
         // <-- OutlinedButton
 
         onPressed: () {
-          if (feedController == null || feedController.value.text.isEmpty) {
+          if (feedController.value.text.isEmpty) {
             showMessage('Please share your thoughts');
           }
           //  else if (hashTagController == null ||

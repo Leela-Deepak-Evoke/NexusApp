@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MobileCustomAppbar extends ConsumerStatefulWidget {
-  MobileCustomAppbar({Key? key}) : super(key: key);
+  const MobileCustomAppbar({Key? key}) : super(key: key);
   @override
   MobileCustomAppbarState createState() => MobileCustomAppbarState();
 }
@@ -39,7 +39,7 @@ class MobileCustomAppbarState extends ConsumerState<MobileCustomAppbar> {
 
       },
       loading: () {
-        return CircularProgressIndicator();
+        return const CircularProgressIndicator();
       },
       error: (error, stackTrace) {},
     );
@@ -135,7 +135,7 @@ class MobileCustomAppbarState extends ConsumerState<MobileCustomAppbar> {
                         color: Colors.white, shape: BoxShape.circle),
                     child: CircleAvatar(
                       radius: 30,
-                      backgroundColor: Color(0xffF2722B),
+                      backgroundColor: const Color(0xffF2722B),
                       child: Text(avatarText,
                           style: TextStyle(
                             color: Colors.white,
@@ -182,7 +182,7 @@ class CustomAppbar extends StatelessWidget {
   final Function() topBarSearchButtonAction;
   final Function() topBarSortingButtonAction;
 
-  CustomAppbar({
+  const CustomAppbar({
     super.key,
     required this.title,
     required this.hasBackAction,
@@ -253,7 +253,7 @@ class CustomAppbar extends StatelessWidget {
                             children: [
                               if (showSearchIcon)
                                 IconButton(
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.search,
                                     color: Colors.white,
                                   ), // Add your search icon here
@@ -297,7 +297,7 @@ class CustomAppbar extends StatelessWidget {
                     : showSearchIcon
                         ? Row(children: [
                             IconButton(
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.search,
                                 color: Colors.white,
                               ), // Add your search icon here
@@ -313,7 +313,7 @@ class CustomAppbar extends StatelessWidget {
                             //   },
                             // ),
                           ])
-                        : SizedBox(), //,
+                        : const SizedBox(), //,
               ],
               // actions: [
 

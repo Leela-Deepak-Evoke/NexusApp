@@ -40,13 +40,13 @@ class UserLike {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['userName'] = userName;
-    _data['userId'] = userId;
-    _data['identityId'] = identityId;
-    _data['profilePicture'] = profilePicture;
-    _data['title'] = title;
+    final data = <String, dynamic>{};
+    data['userName'] = userName;
+    data['userId'] = userId;
+    data['identityId'] = identityId;
+    data['profilePicture'] = profilePicture;
+    data['title'] = title;
 
-    return _data;
+    return data;
   }
 }

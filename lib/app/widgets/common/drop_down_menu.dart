@@ -9,7 +9,7 @@ class DropDownMenuPage extends StatefulWidget {
   // const DropDownMenuPage({Key? key}) : super(key: key);
   final List<String> items;
 
-  DropDownMenuPage({required this.items});
+  const DropDownMenuPage({super.key, required this.items});
 
   @override
   State<DropDownMenuPage> createState() => _DropDownMenuPageState();
@@ -66,7 +66,7 @@ class _DropDownMenuPageState extends State<DropDownMenuPage> {
               buttonStyleData: const ButtonStyleData(
                 height: 50,
                 width: 50,
-                padding: const EdgeInsets.only(left: 14, right: 14),
+                padding: EdgeInsets.only(left: 14, right: 14),
                 elevation: 2,
               ),
             menuItemStyleData: const MenuItemStyleData(

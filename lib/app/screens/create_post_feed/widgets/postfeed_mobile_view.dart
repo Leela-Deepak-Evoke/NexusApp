@@ -16,7 +16,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import 'package:video_player/video_player.dart';
-import 'package:path_provider/path_provider.dart';
 
 enum ContentType {
   image,
@@ -53,7 +52,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   bool isImageSelect = false;
   bool isVideoSelect = false;
   bool replaceImageTriggered = false; // Add this line
-  bool updateEditCategories= false; // Add this line
+  bool updateEditCategories = false; // Add this line
 
   String? selectedCategory;
   final ImagePicker imagePicker = ImagePicker();
@@ -317,8 +316,8 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                       ),
                     ),
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.grey.shade100),
-                      
+                      backgroundColor:
+                          MaterialStateProperty.all(Colors.grey.shade100),
                     ),
                   )),
 
@@ -374,7 +373,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                     onPressed: () {
                       // isVisible = true;
                       // _selectFile(ContentType.document);
-                       _showToast(context);
+                      _showToast(context);
                     },
                     icon: Image.asset(
                       'assets/images/Vector-1.png',
@@ -408,11 +407,29 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
         : const Uuid().v4();
 
     if (widget.isEditFeed == true && !replaceImageTriggered) {
-      if (widget.feedItem?.hasImage == true){
-      return AspectRatio(
-        aspectRatio: 16 / 9,
-        child: FeedMediaView(item: widget.feedItem!),
-      );}
+      if (widget.feedItem?.hasImage == true) {
+        return Container(
+          padding: const EdgeInsets.all(15.0),
+          child: Stack(
+            children: [
+              FeedMediaView(item: widget.feedItem!),
+              Positioned(
+                top: -10,
+                right: 1,
+                child: IconButton(
+                  onPressed: () {
+                    dltImages(widget.feedItem);
+                  },
+                  icon: const Icon(
+                    Icons.cancel,
+                    color: AppColors.blueTextColour,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }
       return Container();
     } else {
       return SizedBox(
@@ -477,7 +494,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                 ? Expanded(
                     child: Stack(
                       children: <Widget>[
-                         Container(
+                        SizedBox(
                           height: 100,
                           width: 100,
                           child: AspectRatio(
@@ -577,10 +594,8 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
         uploadedFileName = resultFileName["mediaPath"];
       });
       fileList.add(uploadedFilePath.toString());
-    };
+    }
   }
-
-
 
   videoAttachment() async {
     final feedId = const Uuid().v4();
@@ -595,32 +610,30 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
         uploadedFileName = resultFileName["mediaPath"];
       });
       initializeVideo(uploadedFilePath.toString());
-    }
-    else{
+    } else {
       _showFileSizeExceedDialog();
     }
   }
 
-
-void _showFileSizeExceedDialog() {
-  showDialog(
-    context: context, // Make sure to have a reference to the BuildContext
-    builder: (context) {
-      return AlertDialog(
-        title: Text('File Size Exceeded'),
-        content: Text('Please select a video file that is 5MB or smaller.'),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text('OK'),
-          ),
-        ],
-      );
-    },
-  );
-}
+  void _showFileSizeExceedDialog() {
+    showDialog(
+      context: context, // Make sure to have a reference to the BuildContext
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('File Size Exceeded'),
+          content: const Text('Please select a video file that is 5MB or smaller.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void initializeVideo(String url) {
     _videoPlayerController = VideoPlayerController.file(File(url))
@@ -630,7 +643,6 @@ void _showFileSizeExceedDialog() {
         setState(() {});
       });
   }
-
 
 // Future<void> initializeVideo(String url) async {
 //     print("Video URL: $url");
@@ -650,7 +662,7 @@ void _showFileSizeExceedDialog() {
 
 //     // Initialize the VideoPlayer with the new file path
 //     _videoPlayerController = VideoPlayerController.file(newFile);
-    
+
 //     // Listen for when the initialization is complete
 //     await _videoPlayerController!.initialize();
 
@@ -662,7 +674,6 @@ void _showFileSizeExceedDialog() {
 //     // Start playing the video
 //     _videoPlayerController!.play();
 //   }
-
 
   Widget returnFileContainer(int index) {
     if (!fileList[index].contains('mp4')) {
@@ -737,19 +748,19 @@ void _showFileSizeExceedDialog() {
     return Container(
       height: 48,
       width: size.width - 30,
-      padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
+      padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30.0),
           ),
-          backgroundColor: Color(0xffF2722B),
-          side: BorderSide(width: 1, color: Color(0xffF2722B)),
+          backgroundColor: const Color(0xffF2722B),
+          side: const BorderSide(width: 1, color: Color(0xffF2722B)),
         ),
         // <-- OutlinedButton
 
         onPressed: () {
-          if (feedController == null || feedController.value.text.isEmpty) {
+          if (feedController.value.text.isEmpty) {
             showMessage('Please share your thoughts');
           }
           // else if (hashTagController == null ||
@@ -785,15 +796,15 @@ void _showFileSizeExceedDialog() {
             : feedId,
         content: feedController
             .text, //widget.isEditFeed == true ? widget.feedItem?.content :
-        category:   (widget.isEditFeed == true && updateEditCategories == true)
-              ? (selectedIndex != null)
-                  ? checkListItems[selectedIndex ?? 0]
-                  : widget.feedItem?.name ?? "General Feed"
-              : (widget.isEditFeed == true && updateEditCategories == false)
-                  ? widget.feedItem?.name ?? "General Feed"
-                  : (selectedIndex != null)
-                      ? checkListItems[selectedIndex ?? 0]
-                      : "General Feed",
+        category: (widget.isEditFeed == true && updateEditCategories == true)
+            ? (selectedIndex != null)
+                ? checkListItems[selectedIndex ?? 0]
+                : widget.feedItem?.name ?? "General Feed"
+            : (widget.isEditFeed == true && updateEditCategories == false)
+                ? widget.feedItem?.name ?? "General Feed"
+                : (selectedIndex != null)
+                    ? checkListItems[selectedIndex ?? 0]
+                    : "General Feed",
         media: false,
         hasImage: false,
         hasVideo: false);
@@ -815,14 +826,14 @@ void _showFileSizeExceedDialog() {
       // hashTag: hashTagController.text,
       hasVideo: isVideoSelect,
       category: (widget.isEditFeed == true && updateEditCategories == true)
-              ? (selectedIndex != null)
+          ? (selectedIndex != null)
+              ? checkListItems[selectedIndex ?? 0]
+              : widget.feedItem?.name ?? "General Feed"
+          : (widget.isEditFeed == true && updateEditCategories == false)
+              ? widget.feedItem?.name ?? "General Feed"
+              : (selectedIndex != null)
                   ? checkListItems[selectedIndex ?? 0]
-                  : widget.feedItem?.name ?? "General Feed"
-              : (widget.isEditFeed == true && updateEditCategories == false)
-                  ? widget.feedItem?.name ?? "General Feed"
-                  : (selectedIndex != null)
-                      ? checkListItems[selectedIndex ?? 0]
-                      : "General Feed",
+                  : "General Feed",
     );
     _handleSubmit(params, ref);
     //_resetValues();
@@ -889,14 +900,12 @@ void _showFileSizeExceedDialog() {
 
       setState(() {
         selectedIndex = categoryIndex;
-        if (categoryIndex != null) {
-          selectedIndex = categoryIndex;
-          if (widget.isEditFeed == true){
-            updateEditCategories = true;
-          }
-          // selectedCategories.add(categories[index]);
+        selectedIndex = categoryIndex;
+        if (widget.isEditFeed == true) {
+          updateEditCategories = true;
         }
-        // selectedIndex = categoryIndex;
+        // selectedCategories.add(categories[index]);
+              // selectedIndex = categoryIndex;
       });
     }
   }
@@ -920,7 +929,7 @@ void _showFileSizeExceedDialog() {
   // LIST VIEW
   Widget categoryListView() {
     return Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: ListView.builder(
           itemCount: checkListItems.length,
           itemBuilder: (context, index) {
@@ -951,39 +960,39 @@ void _showFileSizeExceedDialog() {
         ));
   }
 
-Widget categoryHearViewWidget() {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-    child: Wrap(
-      spacing: 5,
-      direction: Axis.horizontal,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        const CircleAvatar(
-          radius: 3,
-          backgroundColor: Color(0xffB54242),
-        ),
-        Text(
-          (widget.isEditFeed == true && updateEditCategories == true)
-              ? (selectedIndex != null)
-                  ? checkListItems[selectedIndex ?? 0]
-                  : widget.feedItem?.name ?? "General Feed"
-              : (widget.isEditFeed == true && updateEditCategories == false)
-                  ? widget.feedItem?.name ?? "General Feed"
-                  : (selectedIndex != null)
-                      ? checkListItems[selectedIndex ?? 0]
-                      : "General Feed",
-          style: TextStyle(
-            color: Color(0xffB54242),
-            fontSize: 12.0,
-            fontFamily: GoogleFonts.poppins().fontFamily,
-            fontWeight: FontWeight.w500,
+  Widget categoryHearViewWidget() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+      child: Wrap(
+        spacing: 5,
+        direction: Axis.horizontal,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          const CircleAvatar(
+            radius: 3,
+            backgroundColor: Color(0xffB54242),
           ),
-        ),
-      ],
-    ),
-  );
-}
+          Text(
+            (widget.isEditFeed == true && updateEditCategories == true)
+                ? (selectedIndex != null)
+                    ? checkListItems[selectedIndex ?? 0]
+                    : widget.feedItem?.name ?? "General Feed"
+                : (widget.isEditFeed == true && updateEditCategories == false)
+                    ? widget.feedItem?.name ?? "General Feed"
+                    : (selectedIndex != null)
+                        ? checkListItems[selectedIndex ?? 0]
+                        : "General Feed",
+            style: TextStyle(
+              color: const Color(0xffB54242),
+              fontSize: 12.0,
+              fontFamily: GoogleFonts.poppins().fontFamily,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget categoryHearViewWidget_old() {
     return Padding(
@@ -997,11 +1006,14 @@ Widget categoryHearViewWidget() {
                 radius: 3,
                 backgroundColor: Color(0xffB54242),
               ),
-              Text( widget.isEditFeed == true
-            ? widget.feedItem?.name ?? "General Feed"
-            :  (selectedIndex != null) ? checkListItems[selectedIndex ?? 0] : "General Feed",
+              Text(
+                widget.isEditFeed == true
+                    ? widget.feedItem?.name ?? "General Feed"
+                    : (selectedIndex != null)
+                        ? checkListItems[selectedIndex ?? 0]
+                        : "General Feed",
                 style: TextStyle(
-                  color: Color(0xffB54242),
+                  color: const Color(0xffB54242),
                   fontSize: 12.0,
                   fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.w500,
@@ -1010,17 +1022,16 @@ Widget categoryHearViewWidget() {
             ]));
   }
 
-
-
- void _showToast(BuildContext context) {
+  void _showToast(BuildContext context) {
     final scaffold = ScaffoldMessenger.of(context);
     scaffold.showSnackBar(
       SnackBar(
         content: const SizedBox(
-              height:70,
-              child: Text('In Progress'),
+          height: 70,
+          child: Text('In Progress'),
         ),
-        action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+        action: SnackBarAction(
+            label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
       ),
     );
   }

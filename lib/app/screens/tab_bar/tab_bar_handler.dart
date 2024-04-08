@@ -1,17 +1,14 @@
 import 'dart:async';
 
 import 'package:evoke_nexus_app/app/models/user.dart';
-import 'package:evoke_nexus_app/app/screens/home/home_screen.dart';
 import 'package:evoke_nexus_app/app/screens/home/home_screen_small.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/feeds_tab_menu.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/forums_tab_menu.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/orgupdates_tab_menu.dart';
-import 'package:evoke_nexus_app/app/screens/tab_bar/profile_tab_menu.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_menu.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_utils.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_menu_item.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../app_router.dart';
 
 final TabBarNotifier _tabBarNotifier = TabBarNotifier();
@@ -37,7 +34,7 @@ class TabBarHandler extends StatefulWidget {
 }
 
 class _TabBarHandlerState extends State<TabBarHandler> {
-    HomeScreenSmall userHomeScreen = HomeScreenSmall();
+    HomeScreenSmall userHomeScreen = const HomeScreenSmall();
       GlobalKey<HomeScreenSmallState> childKey = GlobalKey();
 
   @override

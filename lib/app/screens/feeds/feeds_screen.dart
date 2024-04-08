@@ -12,8 +12,8 @@ class FeedsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ResponsiveLayout(
       smallScreenLayout: FeedsScreenSmall(isFromHomePage: isFromHomePage),
-      mediumScreenLayout: FeedsScreenMedium(),
-      largeScreenLayout: FeedsScreenLarge(),
+      mediumScreenLayout: const FeedsScreenMedium(),
+      largeScreenLayout: const FeedsScreenLarge(),
     );
   }
 }

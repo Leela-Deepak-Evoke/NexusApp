@@ -8,14 +8,14 @@ class CommentScreen extends StatelessWidget {
     final Widget? headerCard;
       final String posttype;
         final String postId;
-   CommentScreen({Key? key, this.headerCard ,required this.posttype,required this.postId}) : super(key: key);
+   const CommentScreen({Key? key, this.headerCard ,required this.posttype,required this.postId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return  ResponsiveLayout(
       smallScreenLayout: CommentScreenSmall(headerCard: headerCard ?? Container(), postId: postId,posttype: posttype),
-      mediumScreenLayout: CommentScreenMedium(),
-      largeScreenLayout: CommentScreenLarge(),
+      mediumScreenLayout: const CommentScreenMedium(),
+      largeScreenLayout: const CommentScreenLarge(),
     );
   }
 }

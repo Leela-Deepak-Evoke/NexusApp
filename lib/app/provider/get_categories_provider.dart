@@ -1,5 +1,3 @@
-import 'package:evoke_nexus_app/app/models/categories.dart';
-import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/services/category_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

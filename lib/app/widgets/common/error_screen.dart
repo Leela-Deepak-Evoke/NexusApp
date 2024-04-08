@@ -6,8 +6,8 @@ class ErrorScreen extends StatelessWidget {
   final String? strErrorMessage;
   final bool? showErrorMessage; //
 
-  ErrorScreen(
-      {this.strErrorMessage,
+  const ErrorScreen(
+      {super.key, this.strErrorMessage,
       this.showErrorMessage,
       required this.onRetryPressed});
 

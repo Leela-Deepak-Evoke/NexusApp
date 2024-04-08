@@ -201,13 +201,13 @@ class _PostFeedFABState extends ConsumerState<PostFeedFAB> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  const Row(
 
                     children: [
-                      const Text('Image:',
+                      Text('Image:',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 12)),
-                      const SizedBox(width: 15),
+                      SizedBox(width: 15),
                       // Expanded(
                       //   child: ImageUploader(
                       //       feedId: feedId, onFileUploaded: _updateFilePath),
@@ -327,12 +327,12 @@ class _PostFeedFABState extends ConsumerState<PostFeedFAB> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  const Row(
                     children: [
-                      const Text('Video:',
+                      Text('Video:',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 12)),
-                      const SizedBox(width: 15),
+                      SizedBox(width: 15),
                       // VideoUploader(
                       //     feedId: feedId, onFileUploaded: _updateFilePath),
                     ],
@@ -450,12 +450,12 @@ class _PostFeedFABState extends ConsumerState<PostFeedFAB> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  const Row(
                     children: [
-                      const Text('Image:',
+                      Text('Image:',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 12)),
-                      const SizedBox(width: 15),
+                      SizedBox(width: 15),
                       // Expanded(
                       //   child: ImageUploader(
                       //       feedId: feedId, onFileUploaded: _updateFilePath),

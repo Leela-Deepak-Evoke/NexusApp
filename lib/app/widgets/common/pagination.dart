@@ -7,7 +7,7 @@ class Pagination<T> extends StatefulWidget {
   final Future<List<T>> Function(int page) fetchData;
   final Widget Function(List<T>) itemBuilder;
 
-  Pagination({
+  const Pagination({super.key, 
     required this.currentPage,
     required this.itemsPerPage,
     required this.totalItems,
@@ -22,7 +22,7 @@ class Pagination<T> extends StatefulWidget {
 class _PaginationState<T> extends State<Pagination<T>> {
   late int _currentPage;
   late bool _isLoading;
-  List<T> _items = [];
+  final List<T> _items = [];
 
   @override
   void initState() {
@@ -61,8 +61,8 @@ class _PaginationState<T> extends State<Pagination<T>> {
           },
         ),
         if (_isLoading)
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
             child: CircularProgressIndicator(),
           ),
       ],

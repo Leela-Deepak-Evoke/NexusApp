@@ -5,7 +5,6 @@ import 'package:evoke_nexus_app/app/screens/profile/widgets/profile_mobile_view.
 import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class ProfileScreenSmall extends ConsumerStatefulWidget {
   // final BuildContext context;

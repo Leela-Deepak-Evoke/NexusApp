@@ -12,7 +12,6 @@ import 'package:evoke_nexus_app/app/screens/org_updates/org_updates_screen.dart'
 import 'package:evoke_nexus_app/app/screens/profile/profile_screen.dart';
 import 'package:evoke_nexus_app/app/screens/root_screen/root_screen.dart';
 import 'package:evoke_nexus_app/app/screens/root_screen/root_screen_mobile.dart';
-import 'package:evoke_nexus_app/app/screens/tab_bar/profile_tab_menu.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_screen.dart';
 import 'package:evoke_nexus_app/app/screens/timeline/timeline_screen.dart';
 import 'package:evoke_nexus_app/app/utils/app_routes.dart';
@@ -156,7 +155,7 @@ final mobileappRouter = GoRouter(
             path: "profile",
             pageBuilder: (context, state) => MaterialPage<void>(
               key: state.pageKey,
-              child: ProfileScreen(),
+              child: const ProfileScreen(),
             ),
           ),
           GoRoute(
@@ -184,12 +183,12 @@ final mobileappRouter = GoRouter(
           pageBuilder: (context, state) => MaterialPage<void>(
                 key: state.pageKey,
                 // child: const RootScreenMobile(),
-                child: RootScreenMobile(),
+                child: const RootScreenMobile(),
               ),
           routes: [
             GoRoute(
               name: AppRoute.tabbarscreen.name,
-              path: '${AppRoute.tabbarscreen.name}',
+              path: AppRoute.tabbarscreen.name,
               pageBuilder: (context, state) => MaterialPage<void>(
                 key: state.pageKey,
                 child: TabbarScreen(
@@ -244,7 +243,7 @@ final feedsRouter = GoRouter(
               path: AppRoute.forum.name,
               pageBuilder: (context, state) => NoTransitionPage<void>(
                 key: state.pageKey,
-                child: ProfileScreen(),
+                child: const ProfileScreen(),
               ),
             )
           ])
@@ -267,7 +266,7 @@ final forumsRouter = GoRouter(
               path: AppRoute.profile.name,
               pageBuilder: (context, state) => MaterialPage<void>(
                 key: state.pageKey,
-                child: ProfileScreen(),
+                child: const ProfileScreen(),
               ),
             ),
             GoRoute(
@@ -317,7 +316,7 @@ final profileRouter = GoRouter(
           pageBuilder: (context, state) => NoTransitionPage<void>(
                 key: state.pageKey,
                 // child: ProfileScreen(rootScreenMobileContext: context),
-                 child: ProfileScreen(),
+                 child: const ProfileScreen(),
               ),
           routes: [
             GoRoute(
@@ -325,7 +324,7 @@ final profileRouter = GoRouter(
               path: AppRoute.timeline.name,
               pageBuilder: (context, state) => NoTransitionPage<void>(
                 key: state.pageKey,
-                child: TimelineScreen(),
+                child: const TimelineScreen(),
               ),
             )
           ])

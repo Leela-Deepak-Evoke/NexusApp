@@ -9,13 +9,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
 class AnswersScreenSmall extends ConsumerStatefulWidget {
-   AnswersScreenSmall({super.key,required this.question});
+   const AnswersScreenSmall({super.key,required this.question});
   final Question question;
   @override
   ConsumerState<AnswersScreenSmall> createState() => _AnswersScreenSmallState();
 }
 
 class _AnswersScreenSmallState extends ConsumerState<AnswersScreenSmall> {
+  @override
   Widget build(BuildContext context) 
   {
       void  onPostClicked()

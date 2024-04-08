@@ -17,14 +17,14 @@ import 'package:evoke_nexus_app/app/screens/org_updates/org_updates_screen.dart'
 import 'package:intl/intl.dart';
 
 class HomeScreenSmall extends ConsumerStatefulWidget {
-  HomeScreenSmall({Key? key}) : super(key: key);
+  const HomeScreenSmall({Key? key}) : super(key: key);
   @override
   HomeScreenSmallState createState() => HomeScreenSmallState();
 }
 
 class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
   User? user; // Nullable User
-  AsyncValue<UserHome> userHomeAsyncValue = AsyncValue.loading();
+  AsyncValue<UserHome> userHomeAsyncValue = const AsyncValue.loading();
 
   void refreshScreen() {
     setState(() {});
@@ -41,7 +41,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
             ref.watch(userHomeProvider(user!)); // Update userHomeAsyncValue
       },
       loading: () {
-        return CircularProgressIndicator();
+        return const CircularProgressIndicator();
       },
       error: (error, stackTrace) {},
     );
@@ -65,7 +65,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
             bodyContentRatioMin: bodyContentRatioMin,
             bodyContentRatioMax: bodyContentRatioMax,
           ),
-           MobileCustomAppbar(),
+           const MobileCustomAppbar(),
 
           // Floating action button
           Positioned(
@@ -115,7 +115,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
               child: SizedBox(
                 height: 250 + 50,
                 width: size.width,
-                child: Image(
+                child: const Image(
                   image: AssetImage('assets/images/navBarRect.png'),
                   fit: BoxFit.cover,
                 ),
@@ -196,7 +196,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
 
                             Container(
                               width: size.width,
-                              color: Color(0xffF2F2F2),
+                              color: const Color(0xffF2F2F2),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -234,7 +234,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
   Widget cardForGridViewChannels(BuildContext context, Size size,
       AsyncValue<UserHome> userHomeAsyncValue) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
@@ -248,12 +248,12 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
+                  SizedBox(
                     // color: Colors.white,
                     height: 140,
                     child: viewHorizontalGridView(),
@@ -394,7 +394,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                   padding: const EdgeInsets.only(
                       left: 0, right: 0, top: 0, bottom: 0),
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: latestUpdates.length,
                   itemBuilder: (context, index) {
                     final item = latestUpdates[index];
@@ -427,13 +427,13 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               ListTile(
                                 leading: _profilePicWidget(item, ref),
                                 title: Text(
-                                  author!,
+                                  author,
                                   style: const TextStyle(fontSize: 16),
                                 ),
                                 subtitle: Text(
-                                  "${item.orgUpdate.content!} | ${formattedDate}",
+                                  "${item.orgUpdate.content} | $formattedDate",
                                   style: TextStyle(
-                                    color: Color(0xff676A79),
+                                    color: const Color(0xff676A79),
                                     fontSize: 12.0,
                                     fontFamily:
                                         GoogleFonts.notoSans().fontFamily,
@@ -443,7 +443,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                 trailing: isCurrentUser &&
                                         (user!.role != 'Group' ||
                                             user!.role != 'Leader')
-                                    ? Container(
+                                    ? SizedBox(
                                         width: 30,
                                         child: PopupMenuButton<String>(
                                           icon: const Icon(Icons.more_vert),
@@ -494,7 +494,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                 children: [
                                   const SizedBox(height: 4.0),
                                   Padding(
-                                    padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
                                     child: contentViewWidget(item),
                                   ),
                                   item.orgUpdate.media
@@ -568,7 +568,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       child: Text('Channels you like to join',
           style: TextStyle(
-            color: Color(0xff8E54E9),
+            color: const Color(0xff8E54E9),
             fontSize: 16.0,
             fontFamily: GoogleFonts.poppins().fontFamily,
             fontWeight: FontWeight.w600,
@@ -602,7 +602,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                       width: 24,
                       height: 24,
                     ),
-                    SizedBox(width: 4), // Adjust spacing between icon and text
+                    const SizedBox(width: 4), // Adjust spacing between icon and text
                   ],
                 ),
                 label: Column(
@@ -611,9 +611,9 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                   children: [
                     //"User Created At: ${user!.createdAt}",
                     Text(
-                      '${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(userHome.userDetails.createdAt.toString()))}', // Show the difference in days
+                      Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(userHome.userDetails.createdAt.toString())), // Show the difference in days
                       style: TextStyle(
-                        color: Color(0xff292929),
+                        color: const Color(0xff292929),
                         fontSize: 12.0,
                         fontFamily: GoogleFonts.poppins().fontFamily,
                         fontWeight: FontWeight.w500,
@@ -622,7 +622,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                     Text(
                       'Usage Duration',
                       style: TextStyle(
-                        color: Color(0xff292929),
+                        color: const Color(0xff292929),
                         fontSize: 12.0,
                         fontFamily: GoogleFonts.poppins().fontFamily,
                         fontWeight: FontWeight.w500,
@@ -644,16 +644,16 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                       width: 24,
                       height: 24,
                     ),
-                    SizedBox(width: 4), // Adjust spacing between icon and text
+                    const SizedBox(width: 4), // Adjust spacing between icon and text
                   ],
                 ),
                 label: Column(
                   crossAxisAlignment:
                       CrossAxisAlignment.start, // Align text to the start
                   children: [
-                    Text('${lastLoginDate}', // Show the difference in days
+                    Text(lastLoginDate, // Show the difference in days
                         style: TextStyle(
-                          color: Color(0xff292929),
+                          color: const Color(0xff292929),
                           fontSize: 12.0,
                           fontFamily: GoogleFonts.poppins().fontFamily,
                           fontWeight: FontWeight.w500,
@@ -661,7 +661,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                     Text(
                       'Last Login',
                       style: TextStyle(
-                        color: Color(0xff292929),
+                        color: const Color(0xff292929),
                         fontSize: 12.0,
                         fontFamily: GoogleFonts.poppins().fontFamily,
                         fontWeight: FontWeight.w500,
@@ -682,16 +682,16 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                       width: 24,
                       height: 24,
                     ),
-                    SizedBox(width: 4), // Adjust spacing between icon and text
+                    const SizedBox(width: 4), // Adjust spacing between icon and text
                   ],
                 ),
                 label: Column(
                   crossAxisAlignment:
                       CrossAxisAlignment.start, // Align text to the start
                   children: [
-                    Text('${userHome.userDetails.status}',
+                    Text(userHome.userDetails.status,
                         style: TextStyle(
-                          color: Color(0xff292929),
+                          color: const Color(0xff292929),
                           fontSize: 12.0,
                           fontFamily: GoogleFonts.poppins().fontFamily,
                           fontWeight: FontWeight.w500,
@@ -699,7 +699,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                     Text(
                       'Status',
                       style: TextStyle(
-                        color: Color(0xff292929),
+                        color: const Color(0xff292929),
                         fontSize: 12.0,
                         fontFamily: GoogleFonts.poppins().fontFamily,
                         fontWeight: FontWeight.w500,
@@ -738,7 +738,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                       width: 38,
                       height: 38,
                     ),
-                    SizedBox(width: 4), // Adjust spacing between icon and text
+                    const SizedBox(width: 4), // Adjust spacing between icon and text
                   ],
                 ),
                 label: Column(
@@ -780,7 +780,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                       width: 38,
                       height: 38,
                     ),
-                    SizedBox(width: 4), // Adjust spacing between icon and text
+                    const SizedBox(width: 4), // Adjust spacing between icon and text
                   ],
                 ),
                 label: Column(
@@ -820,7 +820,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                       width: 38,
                       height: 38,
                     ),
-                    SizedBox(width: 4), // Adjust spacing between icon and text
+                    const SizedBox(width: 4), // Adjust spacing between icon and text
                   ],
                 ),
                 label: Column(
@@ -861,10 +861,10 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
   }
 
   Widget buttonComponentsSetupLayout(Size size) {
-    return userHomeAsyncValue!.when(
+    return userHomeAsyncValue.when(
       data: (userHome) {
         return Padding(
-          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0),
@@ -907,13 +907,13 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                 width: 18,
                                 height: 14,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                   width:
                                       8), // Add some space between the image and text
                               Text(
                                 'Feed',
                                 style: TextStyle(
-                                  color: Color(0xff292929),
+                                  color: const Color(0xff292929),
                                   fontSize: 12.0,
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w500,
@@ -931,13 +931,13 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                 width: 18,
                                 height: 14,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                   width:
                                       8), // Add some space between the image and text
                               Text(
                                 'Forum',
                                 style: TextStyle(
-                                  color: Color(0xff292929),
+                                  color: const Color(0xff292929),
                                   fontSize: 12.0,
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w500,
@@ -961,7 +961,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               Text(
                                 'Answer',
                                 style: TextStyle(
-                                  color: Color(0xff292929),
+                                  color: const Color(0xff292929),
                                   fontSize: 12.0,
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w500,
@@ -990,7 +990,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               Text(
                                 '${userHome.postsCount.feeds} ${userHome.postsCount.feeds == 1 ? 'Post' : 'Posts'}',
                                 style: TextStyle(
-                                  color: Color(0xff292929),
+                                  color: const Color(0xff292929),
                                   fontSize: 12.0,
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w500,
@@ -1009,7 +1009,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               Text(
                                 '${userHome.postsCount.questions} ${userHome.postsCount.questions == 1 ? 'Post' : 'Posts'}', // Conditional expression to display 'Post' or 'Posts'
                                 style: TextStyle(
-                                  color: Color(0xff292929),
+                                  color: const Color(0xff292929),
                                   fontSize: 12.0,
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w500,
@@ -1028,7 +1028,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               Text(
                                 '${userHome.postsCount.answers} ${userHome.postsCount.answers == 1 ? 'Post' : 'Posts'}',
                                 style: TextStyle(
-                                  color: Color(0xff292929),
+                                  color: const Color(0xff292929),
                                   fontSize: 12.0,
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w500,
@@ -1076,7 +1076,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               Text(
                                 '-----',
                                 style: TextStyle(
-                                  color: Color(0xff292929),
+                                  color: const Color(0xff292929),
                                   fontSize: 12.0,
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w500,
@@ -1095,7 +1095,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               Text(
                                 '${userHome.postsCount.answerLikeCount} ${userHome.postsCount.answerLikeCount == 1 ? 'Like' : 'Likes'}',
                                 style: TextStyle(
-                                  color: Color(0xff292929),
+                                  color: const Color(0xff292929),
                                   fontSize: 12.0,
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w500,
@@ -1127,7 +1127,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               Text(
                                 '${userHome.postsCount.feedCommentCount} ${userHome.postsCount.feedCommentCount == 1 ? 'Comment' : 'Comments'}',
                                 style: TextStyle(
-                                  color: Color(0xff292929),
+                                  color: const Color(0xff292929),
                                   fontSize: 12.0,
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w500,
@@ -1146,7 +1146,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               Text(
                                 '${userHome.postsCount.questionAnswerCount} ${userHome.postsCount.questionAnswerCount == 1 ? 'Comment' : 'Comments'}',
                                 style: TextStyle(
-                                  color: Color(0xff292929),
+                                  color: const Color(0xff292929),
                                   fontSize: 12.0,
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w500,
@@ -1165,7 +1165,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               Text(
                                 '${userHome.postsCount.answerCommentCount} ${userHome.postsCount.answerCommentCount == 1 ? 'Comment' : 'Comments'}',
                                 style: TextStyle(
-                                  color: Color(0xff292929),
+                                  color: const Color(0xff292929),
                                   fontSize: 12.0,
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w500,
@@ -1202,10 +1202,10 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
   }
 
   Widget buttonComponentsSetupLayout_OLD(Size size) {
-    return userHomeAsyncValue!.when(
+    return userHomeAsyncValue.when(
       data: (userHome) {
         return Padding(
-          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0),
@@ -1250,7 +1250,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               onPressed: null),
                           Text('Feed',
                               style: TextStyle(
-                                color: Color(0xff292929),
+                                color: const Color(0xff292929),
                                 fontSize: 12.0,
                                 fontFamily: GoogleFonts.poppins().fontFamily,
                                 fontWeight: FontWeight.w500,
@@ -1269,7 +1269,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               onPressed: null),
                           Text('Forum',
                               style: TextStyle(
-                                color: Color(0xff292929),
+                                color: const Color(0xff292929),
                                 fontSize: 12.0,
                                 fontFamily: GoogleFonts.poppins().fontFamily,
                                 fontWeight: FontWeight.w500,
@@ -1288,7 +1288,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               onPressed: null),
                           Text('Answer',
                               style: TextStyle(
-                                color: Color(0xff292929),
+                                color: const Color(0xff292929),
                                 fontSize: 12.0,
                                 fontFamily: GoogleFonts.poppins().fontFamily,
                                 fontWeight: FontWeight.w500,
@@ -1313,7 +1313,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               onPressed: null,
                               child: Text("${userHome.postsCount.feeds}",
                                   style: TextStyle(
-                                    color: Color(0xff292929),
+                                    color: const Color(0xff292929),
                                     fontSize: 12.0,
                                     fontFamily:
                                         GoogleFonts.poppins().fontFamily,
@@ -1322,7 +1322,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
 
                           Text('Count',
                               style: TextStyle(
-                                color: Color(0xff292929),
+                                color: const Color(0xff292929),
                                 fontSize: 12.0,
                                 fontFamily: GoogleFonts.poppins().fontFamily,
                                 fontWeight: FontWeight.w500,
@@ -1336,7 +1336,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               onPressed: null,
                               child: Text("${userHome.postsCount.questions}",
                                   style: TextStyle(
-                                    color: Color(0xff292929),
+                                    color: const Color(0xff292929),
                                     fontSize: 12.0,
                                     fontFamily:
                                         GoogleFonts.poppins().fontFamily,
@@ -1344,7 +1344,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                   ))),
                           Text('Count',
                               style: TextStyle(
-                                color: Color(0xff292929),
+                                color: const Color(0xff292929),
                                 fontSize: 12.0,
                                 fontFamily: GoogleFonts.poppins().fontFamily,
                                 fontWeight: FontWeight.w500,
@@ -1358,7 +1358,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               onPressed: null,
                               child: Text("${userHome.postsCount.answers}",
                                   style: TextStyle(
-                                    color: Color(0xff292929),
+                                    color: const Color(0xff292929),
                                     fontSize: 12.0,
                                     fontFamily:
                                         GoogleFonts.poppins().fontFamily,
@@ -1366,7 +1366,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                   ))),
                           Text('Count',
                               style: TextStyle(
-                                color: Color(0xff292929),
+                                color: const Color(0xff292929),
                                 fontSize: 12.0,
                                 fontFamily: GoogleFonts.poppins().fontFamily,
                                 fontWeight: FontWeight.w500,
@@ -1392,7 +1392,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               child:
                                   Text("${userHome.postsCount.feedLikeCount}",
                                       style: TextStyle(
-                                        color: Color(0xff292929),
+                                        color: const Color(0xff292929),
                                         fontSize: 12.0,
                                         fontFamily:
                                             GoogleFonts.poppins().fontFamily,
@@ -1414,7 +1414,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               onPressed: null,
                               child: Text('0', //NEED PARAM
                                   style: TextStyle(
-                                    color: Color(0xff292929),
+                                    color: const Color(0xff292929),
                                     fontSize: 12.0,
                                     fontFamily:
                                         GoogleFonts.poppins().fontFamily,
@@ -1422,7 +1422,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                   ))),
                           Text('Like',
                               style: TextStyle(
-                                color: Color(0xff292929),
+                                color: const Color(0xff292929),
                                 fontSize: 12.0,
                                 fontFamily: GoogleFonts.poppins().fontFamily,
                                 fontWeight: FontWeight.w500,
@@ -1437,7 +1437,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               child:
                                   Text("${userHome.postsCount.answerLikeCount}",
                                       style: TextStyle(
-                                        color: Color(0xff292929),
+                                        color: const Color(0xff292929),
                                         fontSize: 12.0,
                                         fontFamily:
                                             GoogleFonts.poppins().fontFamily,
@@ -1445,7 +1445,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                       ))),
                           Text('Like',
                               style: TextStyle(
-                                color: Color(0xff292929),
+                                color: const Color(0xff292929),
                                 fontSize: 12.0,
                                 fontFamily: GoogleFonts.poppins().fontFamily,
                                 fontWeight: FontWeight.w500,
@@ -1471,7 +1471,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               child: Text(
                                   "${userHome.postsCount.feedCommentCount}",
                                   style: TextStyle(
-                                    color: Color(0xff292929),
+                                    color: const Color(0xff292929),
                                     fontSize: 12.0,
                                     fontFamily:
                                         GoogleFonts.poppins().fontFamily,
@@ -1479,7 +1479,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                   ))),
                           Text('Comment',
                               style: TextStyle(
-                                color: Color(0xff292929),
+                                color: const Color(0xff292929),
                                 fontSize: 12.0,
                                 fontFamily: GoogleFonts.poppins().fontFamily,
                                 fontWeight: FontWeight.w500,
@@ -1494,7 +1494,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               child: Text(
                                   "${userHome.postsCount.questionAnswerCount}",
                                   style: TextStyle(
-                                    color: Color(0xff292929),
+                                    color: const Color(0xff292929),
                                     fontSize: 12.0,
                                     fontFamily:
                                         GoogleFonts.poppins().fontFamily,
@@ -1502,7 +1502,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                   ))),
                           Text('Comment',
                               style: TextStyle(
-                                color: Color(0xff292929),
+                                color: const Color(0xff292929),
                                 fontSize: 12.0,
                                 fontFamily: GoogleFonts.poppins().fontFamily,
                                 fontWeight: FontWeight.w500,
@@ -1517,7 +1517,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               child: Text(
                                   "${userHome.postsCount.answerCommentCount}",
                                   style: TextStyle(
-                                    color: Color(0xff292929),
+                                    color: const Color(0xff292929),
                                     fontSize: 12.0,
                                     fontFamily:
                                         GoogleFonts.poppins().fontFamily,
@@ -1525,7 +1525,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                   ))),
                           Text('Comment',
                               style: TextStyle(
-                                color: Color(0xff292929),
+                                color: const Color(0xff292929),
                                 fontSize: 12.0,
                                 fontFamily: GoogleFonts.poppins().fontFamily,
                                 fontWeight: FontWeight.w500,
@@ -1647,7 +1647,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                 maxLines: 2, // Set max lines to 2
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  color: Color(0xff676A79),
+                  color: const Color(0xff676A79),
                   fontSize: 13.0,
                   fontFamily: GoogleFonts.notoSans().fontFamily,
                   fontWeight: FontWeight.w600,
@@ -1672,7 +1672,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
             onPressed: null, // Disable user interaction
 
             icon: (item.currentUserLiked
-                ? Icon(Icons.thumb_up)
+                ? const Icon(Icons.thumb_up)
                 : Image.asset(
                     'assets/images/thumb_up.png',
                     width: 20,
@@ -1681,7 +1681,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
             label: Text(
               'Like',
               style: TextStyle(
-                color: Color(0xff393E41),
+                color: const Color(0xff393E41),
                 fontFamily: GoogleFonts.inter().fontFamily,
                 fontWeight: FontWeight.normal,
                 fontSize: 14,
@@ -1699,7 +1699,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
             label: Text(
               'Comment',
               style: TextStyle(
-                color: Color(0xff393E41),
+                color: const Color(0xff393E41),
                 fontFamily: GoogleFonts.inter().fontFamily,
                 fontWeight: FontWeight.normal,
                 fontSize: 14,
@@ -1717,7 +1717,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end, // Align items to the end
         children: [
-          Spacer(), // Add a spacer to push the button to the right
+          const Spacer(), // Add a spacer to push the button to the right
           Column(
             children: [
               TextButton.icon(
@@ -1735,7 +1735,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                 label: Text(
                   'More',
                   style: TextStyle(
-                    color: Color(0XFF0707b5),
+                    color: const Color(0XFF0707b5),
                     fontSize: 12.0,
                     fontFamily: GoogleFonts.notoSans().fontFamily,
                     fontWeight: FontWeight.normal,
@@ -1751,7 +1751,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
 
   Widget contentViewWidget(LatestUpdate item) {
     if (item.orgUpdate.content != null) {
-      return Text(item.orgUpdate.content!,
+      return Text(item.orgUpdate.content,
           style: const TextStyle(fontSize: 14));
     }
     //  else if (item.orgUpdate.mediaCaption != null) {
@@ -1772,7 +1772,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
   Widget _profilePicWidget(dynamic item, WidgetRef ref) {
     final bool isQuestion = item is LatestQuestion;
 
-    final String name = isQuestion ? item.question.name! : item.orgUpdate.name!;
+    final String name = isQuestion ? item.question.name: item.orgUpdate.name!;
     final String avatarText = getAvatarText(name);
 
     final double radius = isQuestion ? 12.0 : 20.0;
@@ -1802,7 +1802,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
             return CircleAvatar(radius: radius, child: Text(avatarText));
           }
         },
-        loading: () => Center(
+        loading: () => const Center(
             // child: SizedBox(
             //   height: isQuestion ? 30.0 : 20.0,
             //   width: isQuestion ? 30.0 : 20.0,
@@ -1887,14 +1887,14 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
         ),
         Text("Asked by",
             style: TextStyle(
-              color: Color(0xff676A79),
+              color: const Color(0xff676A79),
               fontSize: 12.0,
               fontFamily: GoogleFonts.notoSans().fontFamily,
               fontWeight: FontWeight.normal,
             )),
         Text(isCurrentUser ? "me" : item.user.name ?? "",
             style: TextStyle(
-              color: Color(0xff676A79),
+              color: const Color(0xff676A79),
               fontSize: 12.0,
               fontFamily: GoogleFonts.notoSans().fontFamily,
               fontWeight: FontWeight.normal,
@@ -1909,7 +1909,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end, // Align items to the end
         children: [
-          Spacer(), // Add a spacer to push the button to the right
+          const Spacer(), // Add a spacer to push the button to the right
           Column(
             children: [
               TextButton.icon(
@@ -1927,7 +1927,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                 label: Text(
                   'More',
                   style: TextStyle(
-                    color: Color(0XFF0707b5),
+                    color: const Color(0XFF0707b5),
                     fontSize: 12.0,
                     fontFamily: GoogleFonts.notoSans().fontFamily,
                     fontWeight: FontWeight.normal,
@@ -1994,10 +1994,10 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
   Widget contentViewWidgetQuestion(LatestQuestion item) {
     if (item.question.content != null) {
       var content = '';
-      if (item.question.content!.length > 30) {
-        content = '${item.question.content!.substring(0, 30)}...';
+      if (item.question.content.length > 30) {
+        content = '${item.question.content.substring(0, 30)}...';
       } else {
-        content = item.question.content!;
+        content = item.question.content;
       }
       return Text(content,
           maxLines: 3, // Limiting to 3 lines, adjust as needed
@@ -2031,7 +2031,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
               Text(
                 item.question.category ?? "General",
                 style: TextStyle(
-                  color: Color(0xffB54242),
+                  color: const Color(0xffB54242),
                   fontSize: 12.0,
                   fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.w500,
@@ -2039,9 +2039,9 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
               ),
             ],
           ),
-          Spacer(), // Add a Spacer widget to push the PopupMenuButton to the right.
+          const Spacer(), // Add a Spacer widget to push the PopupMenuButton to the right.
           if (isCurrentUser)
-            Container(
+            SizedBox(
               width: 30, // Adjust the width as needed
               child: PopupMenuButton<String>(
                 icon: const Icon(
@@ -2095,7 +2095,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
         children: [
           Text('Latest Updates',
               style: TextStyle(
-                color: Color(0xff8E54E9),
+                color: const Color(0xff8E54E9),
                 fontSize: 16.0,
                 fontFamily: GoogleFonts.poppins().fontFamily,
                 fontWeight: FontWeight.w600,
@@ -2108,7 +2108,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0),
                 ),
-                backgroundColor: Color(0xffF2722B),
+                backgroundColor: const Color(0xffF2722B),
                 side: const BorderSide(width: 1, color: Color(0xffF2722B)),
               ),
               onPressed: () {
@@ -2142,7 +2142,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
         children: [
           Text('Latest Questions',
               style: TextStyle(
-                color: Color(0xff8E54E9),
+                color: const Color(0xff8E54E9),
                 fontSize: 16.0,
                 fontFamily: GoogleFonts.poppins().fontFamily,
                 fontWeight: FontWeight.w600,
@@ -2155,7 +2155,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0),
                 ),
-                backgroundColor: Color(0xffF2722B),
+                backgroundColor: const Color(0xffF2722B),
                 side: const BorderSide(width: 1, color: Color(0xffF2722B)),
               ),
               onPressed: () {
@@ -2448,12 +2448,14 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
 // }
 
 class ExpandCollapseDemo extends StatefulWidget {
+  const ExpandCollapseDemo({super.key});
+
   @override
   _ExpandCollapseDemoState createState() => _ExpandCollapseDemoState();
 }
 
 class _ExpandCollapseDemoState extends State<ExpandCollapseDemo> {
-  List<Item> _data = generateItems(2);
+  final List<Item> _data = generateItems(2);
 
   @override
   Widget build(BuildContext context) {
@@ -2483,7 +2485,7 @@ class _ExpandCollapseDemoState extends State<ExpandCollapseDemo> {
             },
             body: ListTile(
               title: Text(item.expandedValue),
-              subtitle: Text('Details about this item'),
+              subtitle: const Text('Details about this item'),
             ),
             isExpanded: item.isExpanded,
           );

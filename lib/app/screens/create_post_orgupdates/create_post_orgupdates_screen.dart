@@ -1,4 +1,3 @@
-import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/models/org_updates.dart';
 import 'package:flutter/material.dart';
 import 'package:evoke_nexus_app/app/screens/create_post_orgupdates/create_post_orgupdates_screen_large.dart';
@@ -15,8 +14,8 @@ class CreatePostOrgUpdatesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ResponsiveLayout(
       smallScreenLayout: CreatePostOrgUpdatesScreenSmall(orgUpdateItem: orgUpdateItem, isEditOrgUpdate: isEditOrgUpdate),
-      mediumScreenLayout: CreatePostOrgUpdatesScreenMedium(),
-      largeScreenLayout: CreatePostOrgUpdatesScreenLarge(),
+      mediumScreenLayout: const CreatePostOrgUpdatesScreenMedium(),
+      largeScreenLayout: const CreatePostOrgUpdatesScreenLarge(),
     );
   }
 }

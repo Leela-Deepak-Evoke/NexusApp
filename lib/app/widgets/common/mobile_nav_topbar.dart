@@ -17,9 +17,9 @@ class MobileAppNavTopBar extends StatelessWidget implements PreferredSizeWidget 
           title: Row(
            mainAxisAlignment: MainAxisAlignment.center,
            children: [
-            Padding(padding: EdgeInsets.all(0),child: Image.asset("assets/images/Nexus.png",width: 30,height: 30,fit: BoxFit.fill,)),
-            SizedBox(width: 5,),
-            Text("Nexus",style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.white),)
+            Padding(padding: const EdgeInsets.all(0),child: Image.asset("assets/images/Nexus.png",width: 30,height: 30,fit: BoxFit.fill,)),
+            const SizedBox(width: 5,),
+            const Text("Nexus",style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.white),)
            ],
           ),
           actions: [
@@ -32,7 +32,7 @@ class MobileAppNavTopBar extends StatelessWidget implements PreferredSizeWidget 
                 },
                 icon: Image.asset('assets/images/create-post.png'),
                   ),
-            ):SizedBox(),
+            ):const SizedBox(),
             const SizedBox(width: 20,)
           ],
     );

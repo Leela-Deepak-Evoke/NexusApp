@@ -3,7 +3,6 @@ import 'package:evoke_nexus_app/app/screens/profile/profile_screen_large.dart';
 import 'package:evoke_nexus_app/app/screens/profile/profile_screen_medium.dart';
 import 'package:evoke_nexus_app/app/screens/profile/profile_screen_small.dart';
 import 'package:evoke_nexus_app/app/screens/responsive/responsive_layout.dart';
-import 'package:go_router/go_router.dart';
 
 // class ProfileScreen extends StatelessWidget {
 //   //  ProfileScreen({Key? key}) : super(key: key);

@@ -1,7 +1,5 @@
 import 'package:evoke_nexus_app/app/models/answer.dart';
-import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
-import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_media_view.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,7 +32,7 @@ class _AnswerHeaderCardViewState extends State<AnswerHeaderCardView> {
               subtitle: Text(
                 "${widget.item.authorTitle!} | ${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(widget.item.postedAt.toString()))}",
                 style: TextStyle(
-                  color: Color(0xff676A79),
+                  color: const Color(0xff676A79),
                   fontSize: 12.0,
                   fontFamily: GoogleFonts.notoSans().fontFamily,
                   fontWeight: FontWeight.normal,

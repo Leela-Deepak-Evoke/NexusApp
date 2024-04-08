@@ -1,11 +1,9 @@
-import 'package:evoke_nexus_app/app/utils/constants.dart';
-import 'package:evoke_nexus_app/app/widgets/common/search_bar_small.dart';
 import 'package:flutter/material.dart';
 
 class SearchHeaderView extends StatelessWidget {
   final Function() onIconClicked;
 
-  SearchHeaderView({required this.onIconClicked});
+  const SearchHeaderView({super.key, required this.onIconClicked});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +21,7 @@ class SearchHeaderView extends StatelessWidget {
                 borderRadius: BorderRadius.circular(5.0),
                 color: const Color.fromRGBO(255, 255, 255, 0.2),
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.search,
                 color: Colors.white,
               ),
@@ -39,7 +37,7 @@ class SearchHeaderView extends StatelessWidget {
                 borderRadius: BorderRadius.circular(5.0),
                 color: const Color.fromRGBO(255, 255, 255, 0.2),
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.filter_list,
                 color: Colors.white,
               ),

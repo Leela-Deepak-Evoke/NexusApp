@@ -21,17 +21,6 @@ class RoundedActionView extends StatelessWidget {
                onPressed();
              },
           child: Container(
-            child: Center(
-             child:   Text(
-              title,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white
-              ),
-
-            )
-            )
-           ,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15), // Adjust the radius to make it rounded
               border: Border.all(
@@ -39,7 +28,17 @@ class RoundedActionView extends StatelessWidget {
                 width: 2.0, // Set your desired border width
               ),
               
-          )
+          ),
+            child: Center(
+             child:   Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white
+              ),
+
+            )
+            )
 
           )
 

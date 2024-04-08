@@ -1,29 +1,35 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: MyScreen(),
     );
   }
 }
 
 class MyScreen extends StatelessWidget {
+  const MyScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("My Screen"),
+        title: const Text("My Screen"),
       ),
-      body: MyScreenBody(),
+      body: const MyScreenBody(),
     );
   }
 }
 
 class MyScreenBody extends StatelessWidget {
+  const MyScreenBody({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -31,8 +37,8 @@ class MyScreenBody extends StatelessWidget {
       children: <Widget>[
         // Header
         Container(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
+          padding: const EdgeInsets.all(16.0),
+          child: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
@@ -51,8 +57,8 @@ class MyScreenBody extends StatelessWidget {
         // Content (List of Comments)
         Expanded(
           child: ListView(
-            padding: EdgeInsets.all(16.0),
-            children: <Widget>[
+            padding: const EdgeInsets.all(16.0),
+            children: const <Widget>[
               // Your comment items here, or a message if no comments available
               CommentItem(text: "Comment 1"),
               CommentItem(text: "Comment 2"),
@@ -63,8 +69,8 @@ class MyScreenBody extends StatelessWidget {
 
         // Footer (Text Field)
         Container(
-          padding: EdgeInsets.all(16.0),
-          child: TextField(
+          padding: const EdgeInsets.all(16.0),
+          child: const TextField(
             decoration: InputDecoration(
               labelText: "Add a comment...",
               border: OutlineInputBorder(),
@@ -79,13 +85,13 @@ class MyScreenBody extends StatelessWidget {
 class CommentItem extends StatelessWidget {
   final String text;
 
-  CommentItem({required this.text});
+  const CommentItem({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 2.0,
-      margin: EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: ListTile(
         title: Text(text),
       ),

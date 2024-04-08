@@ -35,11 +35,11 @@ class CommentsListMobileView extends ConsumerStatefulWidget {
 class _CommentsListMobileViewState
     extends ConsumerState<CommentsListMobileView> {
 final List<Color> cardColors = [
-                      Color(0xffE6E3FB),
-                      Color(0xffBFE9EF),
-                      Color(0xffF6E2E1),
-                      Color(0xffE8CDEE),
-                      Color(0xffF7E1C1),
+                      const Color(0xffE6E3FB),
+                      const Color(0xffBFE9EF),
+                      const Color(0xffF6E2E1),
+                      const Color(0xffE8CDEE),
+                      const Color(0xffF7E1C1),
                       // Add more colors as needed
                     ]; 
 
@@ -69,7 +69,7 @@ final List<Color> cardColors = [
   }
 
   Widget _profilePicWidget(UserComment item, WidgetRef ref) {
-    final avatarText = getAvatarText(item.userName!);
+    final avatarText = getAvatarText(item.userName);
     if (item.authorThumbnail == null) {
       return CircleAvatar(radius: 12.0, child: Text(avatarText));
     } else {
@@ -152,23 +152,23 @@ final List<Color> cardColors = [
               padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
               child: Container(
                 color: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                 child: CommentTreeWidget<Comment, Comment>(
                   Comment(
                       avatar: item.authorThumbnail,
                       userName: item.userName,
                       content: item.comment),
-                  [],
+                  const [],
                   treeThemeData: const TreeThemeData(
                       lineColor: Colors.transparent, lineWidth: 0),
                   avatarRoot: (context, data) => PreferredSize(
+                    preferredSize: const Size.fromRadius(18),
                     child: _profilePicWidget(item, ref),
-                    preferredSize: Size.fromRadius(18),
                   ),
 
                   //Child tree list
                   avatarChild: (context, data) => PreferredSize(
-                    preferredSize: Size.fromRadius(12),
+                    preferredSize: const Size.fromRadius(12),
                     child: _profilePicWidget(item, ref),
                   ),
 
@@ -178,7 +178,7 @@ final List<Color> cardColors = [
                       children: [
                         Container(
                           padding:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                              const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                           decoration: BoxDecoration(
                               color: Colors.grey[100],
                               borderRadius: BorderRadius.circular(12)),
@@ -189,19 +189,19 @@ final List<Color> cardColors = [
                                 '${data.userName}',
                                 style: Theme.of(context)
                                     .textTheme
-                                    .caption
+                                    .bodySmall
                                     ?.copyWith(
                                         fontWeight: FontWeight.w600,
                                         color: Colors.black),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 4,
                               ),
                               Text(
                                 '${data.content}',
                                 style: Theme.of(context)
                                     .textTheme
-                                    .caption
+                                    .bodySmall
                                     ?.copyWith(
                                         fontWeight: FontWeight.w300,
                                         color: Colors.black),
@@ -218,7 +218,7 @@ final List<Color> cardColors = [
                       children: [
                         Container(
                           padding:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                              const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                           decoration: BoxDecoration(
                               color: identityIdColor, // Use color based on username, //Colors.grey[100]
                               borderRadius: BorderRadius.circular(12)),
@@ -232,14 +232,14 @@ final List<Color> cardColors = [
                                   '${data.userName}',
                                   style: Theme.of(context)
                                       .textTheme
-                                      .caption!
+                                      .bodySmall!
                                       .copyWith(
                                           fontWeight: FontWeight.w500,
                                           color: Colors.black),
                                 )),
-                                Spacer(), // Add a Spacer to push the PopupMenuButton to the right edge
+                                const Spacer(), // Add a Spacer to push the PopupMenuButton to the right edge
                                 if (isCurrentUser)
-                                  Container(
+                                  SizedBox(
                                     width: 30, // Adjust the width as needed
                                     child: PopupMenuButton<String>(
                                       icon: const Icon(
@@ -283,23 +283,23 @@ final List<Color> cardColors = [
                                   ),
                               ]),
                               Text(
-                                '${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.commentedAt.toString()))}',
+                                Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.commentedAt.toString())),
                                 style: Theme.of(context)
                                     .textTheme
-                                    .caption!
+                                    .bodySmall!
                                     .copyWith(
                                         fontWeight: FontWeight.w300,
                                         fontSize: 9,
                                         color: Colors.grey),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 4,
                               ),
                               Text(
                                 '${data.content}',
                                 style: Theme.of(context)
                                     .textTheme
-                                    .caption!
+                                    .bodySmall!
                                     .copyWith(
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black),
@@ -334,7 +334,7 @@ final List<Color> cardColors = [
       return SliverList.builder(
         itemCount: 1,
         itemBuilder: (context, index) {
-          return Text('');
+          return const Text('');
         },
       );
     }
@@ -397,17 +397,17 @@ final List<Color> cardColors = [
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Confirm Delete"),
-          content: Text("Are you sure you want to delete this item?"),
+          title: const Text("Confirm Delete"),
+          content: const Text("Are you sure you want to delete this item?"),
           actions: [
             TextButton(
-              child: Text("Cancel"),
+              child: const Text("Cancel"),
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
             ),
             TextButton(
-              child: Text("Delete"),
+              child: const Text("Delete"),
               onPressed: () async {
                 try {
                   final deleteParams = Delete(

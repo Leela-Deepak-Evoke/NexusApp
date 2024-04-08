@@ -100,14 +100,14 @@ if (filteredItems.isEmpty) {
                               subtitle: Text(
                                 "${item.authorTitle!} | ${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString()))}",
                                 style: TextStyle(
-                                  color: Color(0xff676A79),
+                                  color: const Color(0xff676A79),
                                   fontSize: 12.0,
                                   fontFamily: GoogleFonts.notoSans().fontFamily,
                                   fontWeight: FontWeight.normal,
                                 ),
                               ),
                                trailing: isCurrentUser && (widget.user.role != 'Group' || widget.user.role != 'Leader')
-                                  ? Container(
+                                  ? SizedBox(
                                       width: 30, // Adjust the width as needed
                                       child: PopupMenuButton<String>(
                                         //  padding: const EdgeInsets.only(left: 50, right: 0),
@@ -162,7 +162,7 @@ if (filteredItems.isEmpty) {
                               children: [
                                 const SizedBox(height: 4.0),
                                 Padding(
-                                    padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
                                     child: contentViewWidget(item)),
                                 // Padding(
                                 //     padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
@@ -325,7 +325,7 @@ if (filteredItems.isEmpty) {
               )));
             },
             icon: (item.currentUserLiked
-                ? Icon(Icons.thumb_up)
+                ? const Icon(Icons.thumb_up)
                 : Image.asset(
                     'assets/images/thumb_up.png',
                     width: 20,
@@ -334,7 +334,7 @@ if (filteredItems.isEmpty) {
             label: Text(
               'Like',
               style: TextStyle(
-                color: Color(0xff393E41),
+                color: const Color(0xff393E41),
                 fontFamily: GoogleFonts.inter().fontFamily,
                 fontWeight: FontWeight.normal,
                 fontSize: 14,
@@ -353,7 +353,7 @@ if (filteredItems.isEmpty) {
             label: Text(
               'Comment',
               style: TextStyle(
-                color: Color(0xff393E41),
+                color: const Color(0xff393E41),
                 fontFamily: GoogleFonts.inter().fontFamily,
                 fontWeight: FontWeight.normal,
                 fontSize: 14,
@@ -396,7 +396,7 @@ if (filteredItems.isEmpty) {
             label: Text(
               '${item.likes}',
               style: TextStyle(
-                color: Color(0xff676A79),
+                color: const Color(0xff676A79),
                 fontSize: 12.0,
                 fontFamily: GoogleFonts.notoSans().fontFamily,
                 fontWeight: FontWeight.normal,
@@ -421,7 +421,7 @@ if (filteredItems.isEmpty) {
                 label: Text(
                   '${item.comments} comments',
                   style: TextStyle(
-                    color: Color(0xff676A79),
+                    color: const Color(0xff676A79),
                     fontSize: 12.0,
                     fontFamily: GoogleFonts.notoSans().fontFamily,
                     fontWeight: FontWeight.normal,
@@ -462,17 +462,17 @@ if (filteredItems.isEmpty) {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Confirm Delete"),
-          content: Text("Are you sure you want to delete this item?"),
+          title: const Text("Confirm Delete"),
+          content: const Text("Are you sure you want to delete this item?"),
           actions: [
             TextButton(
-              child: Text("Cancel"),
+              child: const Text("Cancel"),
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
             ),
             TextButton(
-              child: Text("Delete"),
+              child: const Text("Delete"),
               onPressed: () async {
                 try {
                   final deleteParams = Delete(

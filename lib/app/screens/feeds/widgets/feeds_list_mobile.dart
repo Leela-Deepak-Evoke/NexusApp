@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:evoke_nexus_app/app/models/delete.dart';
 import 'package:evoke_nexus_app/app/models/feed.dart';
-import 'package:evoke_nexus_app/app/models/filter_feed.dart';
 import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
 import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
@@ -134,14 +133,14 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
                               subtitle: Text(
                                 "${item.authorTitle!} | ${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString()))}",
                                 style: TextStyle(
-                                  color: Color(0xff676A79),
+                                  color: const Color(0xff676A79),
                                   fontSize: 12.0,
                                   fontFamily: GoogleFonts.notoSans().fontFamily,
                                   fontWeight: FontWeight.normal,
                                 ),
                               ),
                               trailing: isCurrentUser
-                                  ? Container(
+                                  ? SizedBox(
                                       width: 30, // Adjust the width as needed
                                       child: PopupMenuButton<String>(
                                         //  padding: const EdgeInsets.only(left: 50, right: 0),
@@ -355,7 +354,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
               }
             },
             icon: (item.currentUserLiked
-                ? Icon(Icons.thumb_up)
+                ? const Icon(Icons.thumb_up)
                 : Image.asset(
                     'assets/images/thumb_up.png',
                     width: 20,
@@ -364,7 +363,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
             label: Text(
               'Like',
               style: TextStyle(
-                color: Color(0xff393E41),
+                color: const Color(0xff393E41),
                 fontFamily: GoogleFonts.inter().fontFamily,
                 fontWeight: FontWeight.normal,
                 fontSize: 14,
@@ -394,7 +393,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
             label: Text(
               'Comment',
               style: TextStyle(
-                color: Color(0xff393E41),
+                color: const Color(0xff393E41),
                 fontFamily: GoogleFonts.inter().fontFamily,
                 fontWeight: FontWeight.normal,
                 fontSize: 14,
@@ -413,7 +412,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
             label: Text(
               'Report',
               style: TextStyle(
-                color: Color(0xff393E41),
+                color: const Color(0xff393E41),
                 fontFamily: GoogleFonts.inter().fontFamily,
                 fontWeight: FontWeight.normal,
                 fontSize: 14,
@@ -455,7 +454,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
             label: Text(
               '${item.likes}',
               style: TextStyle(
-                color: Color(0xff676A79),
+                color: const Color(0xff676A79),
                 fontSize: 12.0,
                 fontFamily: GoogleFonts.notoSans().fontFamily,
                 fontWeight: FontWeight.normal,
@@ -480,7 +479,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
                 },
                 label: Text('${item.comments} comments',
                     style: TextStyle(
-                      color: Color(0xff676A79),
+                      color: const Color(0xff676A79),
                       fontSize: 12.0,
                       fontFamily: GoogleFonts.notoSans().fontFamily,
                       fontWeight: FontWeight.normal,
@@ -534,17 +533,17 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Confirm Delete"),
-          content: Text("Are you sure you want to delete this item?"),
+          title: const Text("Confirm Delete"),
+          content: const Text("Are you sure you want to delete this item?"),
           actions: [
             TextButton(
-              child: Text("Cancel"),
+              child: const Text("Cancel"),
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
             ),
             TextButton(
-              child: Text("Delete"),
+              child: const Text("Delete"),
               onPressed: () async {
                 try {
                   final deleteParams = Delete(

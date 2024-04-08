@@ -85,7 +85,7 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             askedbyViewHeader(item, ref),
-                            Divider(),
+                            const Divider(),
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 10.0,
@@ -110,10 +110,10 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
                                           item.currentUserLiked
                                               ? Icons.thumb_up
                                               : Icons.thumb_up_alt_outlined,
-                                          color: Color(0xffF16C24),
+                                          color: const Color(0xffF16C24),
                                           size: 13,
                                         ),
-                                        label: Text("")
+                                        label: const Text("")
                                         // label: Text(
                                         //   '${item.likes}',
                                         //   style: TextStyle(
@@ -152,7 +152,7 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
                                       label: Text(
                                         '${item.likes}',
                                         style: TextStyle(
-                                          color: Color(0xff676A79),
+                                          color: const Color(0xff676A79),
                                           fontSize: 12.0,
                                           fontFamily:
                                               GoogleFonts.notoSans().fontFamily,
@@ -273,7 +273,7 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
     bool isCurrentUser = item.authorId == widget.user.userId;
 
     return Padding(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Row(
         // Use a Row instead of Wrap for horizontal alignment
         children: [
@@ -283,21 +283,21 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
           ),
           Text("Replied by ",
               style: TextStyle(
-                color: Color(0xff676A79),
+                color: const Color(0xff676A79),
                 fontSize: 12.0,
                 fontFamily: GoogleFonts.notoSans().fontFamily,
                 fontWeight: FontWeight.normal,
               )),
           Text(isCurrentUser ? "me" : item.author ?? "",
               style: TextStyle(
-                color: Color(0xff676A79),
+                color: const Color(0xff676A79),
                 fontSize: 12.0,
                 fontFamily: GoogleFonts.notoSans().fontFamily,
                 fontWeight: FontWeight.normal,
               )),
-          Spacer(), // Add a Spacer widget to push the PopupMenuButton to the right.
+          const Spacer(), // Add a Spacer widget to push the PopupMenuButton to the right.
           if (isCurrentUser)
-            Container(
+            SizedBox(
               width: 30, // Adjust the width as needed
               child: PopupMenuButton<String>(
                 icon: const Icon(
@@ -344,7 +344,7 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
     if (item.content != null) {
       return Text(item.content!,
           style: TextStyle(
-            color: Color(0xff676A79),
+            color: const Color(0xff676A79),
             fontSize: 14.0,
             fontFamily: GoogleFonts.notoSans().fontFamily,
             fontWeight: FontWeight.normal,
@@ -425,17 +425,17 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Confirm Delete"),
-          content: Text("Are you sure you want to delete this item?"),
+          title: const Text("Confirm Delete"),
+          content: const Text("Are you sure you want to delete this item?"),
           actions: [
             TextButton(
-              child: Text("Cancel"),
+              child: const Text("Cancel"),
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
             ),
             TextButton(
-              child: Text("Delete"),
+              child: const Text("Delete"),
               onPressed: () async {
                 try {
                   final deleteParams = Delete(
@@ -499,7 +499,7 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
                     ? 'Hide Comments'
                     : 'View ${item.comments} Comments',
                 style: TextStyle(
-                  color: Color(0xff393E41),
+                  color: const Color(0xff393E41),
                   fontFamily: GoogleFonts.inter().fontFamily,
                   fontWeight: FontWeight.normal,
                   fontSize: 14,

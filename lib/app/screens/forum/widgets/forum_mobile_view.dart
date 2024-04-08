@@ -1,6 +1,5 @@
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/screens/forum/widgets/questions_list_mobile.dart';
-import 'package:evoke_nexus_app/app/widgets/common/search_header_view.dart';
 import 'package:flutter/material.dart';
 
 class ForumMobileView extends StatefulWidget {

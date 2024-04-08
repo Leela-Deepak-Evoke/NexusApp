@@ -2,7 +2,6 @@ import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/models/user_like.dart';
 import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
-import 'package:evoke_nexus_app/app/screens/profile/profile_screen.dart';
 import 'package:evoke_nexus_app/app/screens/profile/widgets/profile_mobile_view.dart';
 import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +44,7 @@ class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
       return _buildErrorWidget();
     }
 
-    return SizedBox.shrink();
+    return const SizedBox.shrink();
   }
 
   Widget _buildLoadingIndicator() {
@@ -75,7 +74,7 @@ class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
         SliverList(
           delegate: SliverChildBuilderDelegate(
             (context, index) {
-              return Text('An error occurred.');
+              return const Text('An error occurred.');
             },
             childCount: 1,
           ),
@@ -106,7 +105,7 @@ class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
                 Text(
                   "Likes",
                   style: TextStyle(
-                    color: Color(0xff676A79),
+                    color: const Color(0xff676A79),
                     fontSize: 20.0,
                     fontFamily: GoogleFonts.notoSans().fontFamily,
                     fontWeight: FontWeight.bold,
@@ -163,7 +162,7 @@ class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
                           } else {
                             // Return a placeholder while loading
                             return ListTile(
-                              leading: CircularProgressIndicator(),
+                              leading: const CircularProgressIndicator(),
                               title: Text(userLike.userName),
                             );
                           }
@@ -198,7 +197,7 @@ class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
             return CircleAvatar(radius: 15.0, child: Text(avatarText));
           }
         },
-        loading: () => CircularProgressIndicator(),
+        loading: () => const CircularProgressIndicator(),
         error: (error, stackTrace) => CircleAvatar(
           radius: 15.0,
           child: Text(avatarText),

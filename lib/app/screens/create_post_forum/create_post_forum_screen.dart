@@ -13,9 +13,9 @@ class CreatePostForumScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  ResponsiveLayout(
-      smallScreenLayout: CreatePostForumScreenSmall(questionItem: this.questionItem, isEditQuestion: this.isEditQuestion),
-      mediumScreenLayout: CreatePostForumScreenMedium(),
-      largeScreenLayout: CreatePostForumScreenLarge(),
+      smallScreenLayout: CreatePostForumScreenSmall(questionItem: questionItem, isEditQuestion: isEditQuestion),
+      mediumScreenLayout: const CreatePostForumScreenMedium(),
+      largeScreenLayout: const CreatePostForumScreenLarge(),
     );
   }
 }

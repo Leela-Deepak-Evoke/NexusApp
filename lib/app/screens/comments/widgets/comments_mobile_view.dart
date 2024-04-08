@@ -61,7 +61,7 @@ class _CommentsMobileViewState extends ConsumerState<CommentsMobileView> {
   }
 
   void _sendComment() {
-    if (_commentController.text == null || _commentController.text == "") {
+    if (_commentController.text == "") {
       return;
     }
     final commentId = const Uuid().v4();
@@ -144,7 +144,7 @@ class _CommentsMobileViewState extends ConsumerState<CommentsMobileView> {
         ),
         ElevatedButton(
           onPressed: _sendComment,
-          child: Text("Send"),
+          child: const Text("Send"),
         ),
       ]),
       SizedBox(

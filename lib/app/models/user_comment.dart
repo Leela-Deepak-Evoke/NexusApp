@@ -61,7 +61,7 @@ class UserComment {
     required this.userName,
     required this.userId,
     required this.identityId,
-    required this.profilePicture,
+     this.profilePicture,
     required this.commentId,
     required this.comment,
     required this.commentedAt,
@@ -71,7 +71,7 @@ class UserComment {
   late final String userName;
   late final String userId;
   late final String identityId;
-  late final String profilePicture;
+  final String? profilePicture;
   late final String commentId;
   late final String comment;
   late final String commentedAt;
@@ -105,15 +105,15 @@ class UserComment {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['userName'] = userName;
-    _data['userId'] = userId;
-    _data['identityId'] = identityId;
-    _data['profilePicture'] = profilePicture;
-    _data['commentId'] = commentId;
-    _data['comment'] = comment;
-    _data['commentedAt'] = commentedAt;
-    _data['commentStatus'] = commentStatus;
-    return _data;
+    final data = <String, dynamic>{};
+    data['userName'] = userName;
+    data['userId'] = userId;
+    data['identityId'] = identityId;
+    data['profilePicture'] = profilePicture;
+    data['commentId'] = commentId;
+    data['comment'] = comment;
+    data['commentedAt'] = commentedAt;
+    data['commentStatus'] = commentStatus;
+    return data;
   }
 }

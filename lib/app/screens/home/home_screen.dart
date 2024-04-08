@@ -1,4 +1,3 @@
-import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:evoke_nexus_app/app/screens/home/home_screen_large.dart';
 import 'package:evoke_nexus_app/app/screens/home/home_screen_medium.dart';
@@ -10,7 +9,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  ResponsiveLayout(
+    return  const ResponsiveLayout(
       smallScreenLayout: HomeScreenSmall(),
       mediumScreenLayout: HomeScreenMedium(),
       largeScreenLayout: HomeScreenLarge(),

@@ -1,8 +1,6 @@
 import 'package:evoke_nexus_app/app/models/feed.dart';
-import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
-import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/timeline_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/comments/comments_screen.dart';
@@ -69,7 +67,7 @@ class _TimelineListMobileViewState extends ConsumerState<TimelineListMobile> {
                                   subtitle: Text(
                                     "${item.authorTitle!} | ${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString()))}",
                                     style: TextStyle(
-                                      color: Color(0xff676A79),
+                                      color: const Color(0xff676A79),
                                       fontSize: 12.0,
                                       fontFamily:
                                           GoogleFonts.notoSans().fontFamily,
@@ -123,7 +121,7 @@ class _TimelineListMobileViewState extends ConsumerState<TimelineListMobile> {
                           const Divider(),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 100,
                   )
                 ])));
@@ -263,7 +261,7 @@ class _TimelineListMobileViewState extends ConsumerState<TimelineListMobile> {
             label: Text(
               'Comment',
               style: TextStyle(
-                color: Color(0xff393E41),
+                color: const Color(0xff393E41),
                 fontFamily: GoogleFonts.inter().fontFamily,
                 fontWeight: FontWeight.normal,
                 fontSize: 14,
@@ -302,7 +300,7 @@ class _TimelineListMobileViewState extends ConsumerState<TimelineListMobile> {
             label: Text(
               '${item.likes}',
               style: TextStyle(
-                color: Color(0xff676A79),
+                color: const Color(0xff676A79),
                 fontSize: 12.0,
                 fontFamily: GoogleFonts.notoSans().fontFamily,
                 fontWeight: FontWeight.normal,
@@ -329,7 +327,7 @@ class _TimelineListMobileViewState extends ConsumerState<TimelineListMobile> {
                 label: Text(
                   '${item.comments} comments',
                   style: TextStyle(
-                    color: Color(0xff676A79),
+                    color: const Color(0xff676A79),
                     fontSize: 12.0,
                     fontFamily: GoogleFonts.notoSans().fontFamily,
                     fontWeight: FontWeight.normal,

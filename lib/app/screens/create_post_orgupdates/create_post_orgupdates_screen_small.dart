@@ -1,8 +1,5 @@
-import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/models/org_updates.dart';
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
-import 'package:evoke_nexus_app/app/screens/create_post_feed/widgets/postfeed_mobile_view.dart';
-import 'package:evoke_nexus_app/app/screens/create_post_forum/widgets/post_forum_mobile_view.dart';
 import 'package:evoke_nexus_app/app/screens/create_post_orgupdates/widgets/orgupdates_mobile_view.dart';
 import 'package:evoke_nexus_app/app/widgets/common/round_action_view.dart';
 import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';

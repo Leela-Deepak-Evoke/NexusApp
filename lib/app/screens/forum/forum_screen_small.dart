@@ -128,7 +128,7 @@ class _ForumScreenSmallState extends ConsumerState<ForumScreenSmall> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return Container(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -199,14 +199,14 @@ class _ForumScreenSmallState extends ConsumerState<ForumScreenSmall> {
       },
       style: OutlinedButton.styleFrom(
         side: BorderSide(
-          color: isSelected ? Color(0xffFFA500) : Colors.grey,
+          color: isSelected ? const Color(0xffFFA500) : Colors.grey,
           width: 1.0,
         ),
       ),
       child: Text(
         category,
         style: TextStyle(
-          color: Color(0xff676A79),
+          color: const Color(0xff676A79),
           fontSize: 14.0,
           fontFamily: GoogleFonts.notoSans().fontFamily,
           fontWeight: FontWeight.bold,

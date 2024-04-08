@@ -14,8 +14,8 @@ class CreatePostFeedScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ResponsiveLayout(
       smallScreenLayout: CreatePostFeedScreenSmall(feedItem: feedItem, isEditFeed: isEditFeed),
-      mediumScreenLayout: CreatePostFeedScreenMedium(),
-      largeScreenLayout: CreatePostFeedScreenLarge(),
+      mediumScreenLayout: const CreatePostFeedScreenMedium(),
+      largeScreenLayout: const CreatePostFeedScreenLarge(),
     );
   }
 }

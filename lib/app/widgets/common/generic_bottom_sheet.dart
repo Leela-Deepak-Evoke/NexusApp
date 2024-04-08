@@ -38,7 +38,7 @@ class _GenericBottomSheetState extends State<GenericBottomSheet> {
             padding: const EdgeInsets.all(16.0),
             child: Text(
               widget.title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 18.0,
               ),
@@ -59,7 +59,7 @@ class _GenericBottomSheetState extends State<GenericBottomSheet> {
   }
 
   Widget btnPost() {
-    return Container(
+    return SizedBox(
       height: 48,
       width: 358,
       child: OutlinedButton(
@@ -67,8 +67,8 @@ class _GenericBottomSheetState extends State<GenericBottomSheet> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30.0),
           ),
-          backgroundColor: Color(0xffF2722B),
-          side: BorderSide(width: 1, color: Color(0xffF2722B)),
+          backgroundColor: const Color(0xffF2722B),
+          side: const BorderSide(width: 1, color: Color(0xffF2722B)),
         ),
         // <-- OutlinedButton
         onPressed: () {

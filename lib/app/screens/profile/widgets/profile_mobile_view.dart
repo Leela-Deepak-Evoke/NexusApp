@@ -234,7 +234,7 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
             // The user's choice will be available in the 'value' variable
             if (value == true) {
               // User clicked "Yes," proceed with the logout
-              // doLogout();
+              doLogout();
               _showToast(context);
             }
           });

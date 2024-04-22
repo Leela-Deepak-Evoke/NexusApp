@@ -71,6 +71,8 @@ class OrgUpdate {
         authorThumbnail = json['user']['profilePicture'];
         //json['user']['identityId'] + '/' + json['user']['profilePicture'];
       }
+    }else{
+        authorThumbnail = 'assets/images/avthar.png';
     }
 
     //  if (json['user']['profilePicture'] != null) {

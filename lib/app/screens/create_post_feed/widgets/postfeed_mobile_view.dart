@@ -95,6 +95,8 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     super.initState();
     if (widget.isEditFeed == true) {
       feedController.text = widget.feedItem?.content ?? feedController.text;
+      isMediaSelect = widget.feedItem?.hasImage ?? false;
+      isImageSelect = widget.feedItem?.hasImage ?? false;
     }
   }
 
@@ -406,19 +408,55 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
         ? widget.feedItem?.feedId ?? const Uuid().v4()
         : const Uuid().v4();
 
+ // Add widget.feedItem!.imagePath to fileList if it's not null
+  if (widget.isEditFeed == true &&
+      !replaceImageTriggered &&
+      widget.feedItem?.imagePath != null) {
+    fileList.add(widget.feedItem!.imagePath.toString());
+  }
+
+
     if (widget.isEditFeed == true && !replaceImageTriggered) {
       if (widget.feedItem?.hasImage == true) {
         return Container(
           padding: const EdgeInsets.all(15.0),
           child: Stack(
             children: [
+
               FeedMediaView(item: widget.feedItem!),
+               
               Positioned(
                 top: -10,
                 right: 1,
                 child: IconButton(
                   onPressed: () {
-                    dltImages(widget.feedItem);
+                    // dltImages(widget.feedItem);
+                     showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            // title: const Text(''),
+            content: const Text('Would you like to delete the image?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  // setState(() {
+                  //                         _showToast(context);
+
+                  // });
+                },
+                child: const Text('OK --(In Progress)'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Cancel'),
+              ),
+            ],
+          );
+        });
                   },
                   icon: const Icon(
                     Icons.cancel,
@@ -854,6 +892,16 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                   // _resetImageDeleteValues(data);
                   setState(() {
                     fileList.remove(data);
+                //     if (data is String) {
+                //   // If data is a file path (from fileList)
+                //   fileList.remove(data);
+                // } else if (data is Feed) {
+                //   // If data is a Feed object (from widget.feedItem)
+                //   // Assuming you have a way to uniquely identify feed items
+                //   // and you want to delete the item matching the feedId
+                //   // widget.feedItem?.removeWhere((item) => item.feedId == data.feedId);
+                //   fileList.remove(data);
+                // }
                   });
                 },
                 child: const Text('OK'),

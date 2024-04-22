@@ -28,6 +28,9 @@ class User_Comment {
         authorThumbnail = json['profilePicture'];
         //json['identityId'] + '/' + json['profilePicture'];
       }
+    }else{
+      
+            authorThumbnail = 'assets/images/avthar.png';
     }
     print("convert likes to json");
     print(json.toString());
@@ -89,6 +92,8 @@ class UserComment {
         authorThumbnail = json[
             'profilePicture']; //json['identityId'] + '/' + json['profilePicture'];
       }
+    }else{
+        authorThumbnail = 'assets/images/avthar.png';
     }
 
     return UserComment(

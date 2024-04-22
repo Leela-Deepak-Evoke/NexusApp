@@ -56,6 +56,8 @@ class Question {
         authorThumbnail = json['user']['profilePicture'];
         //json['user']['identityId'] + '/' + json['user']['profilePicture'];
       }
+    }else{
+        authorThumbnail = 'assets/images/avthar.png';
     }
 
     return Question(

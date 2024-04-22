@@ -2,14 +2,14 @@ class UserLike {
   final String userName;
   final String userId;
   final String identityId;
-  final String profilePicture;
+   String? profilePicture;
   final String title;
 
   UserLike({
     required this.userName,
     required this.userId,
     required this.identityId,
-    required this.profilePicture,
+     this.profilePicture,
     required this.title,
   });
 
@@ -26,9 +26,11 @@ class UserLike {
       if (json['userId'] == currentUserId) {
         authorThumbnail = json['profilePicture'];
       } else {
-        authorThumbnail = json[
-            'profilePicture']; //json['identityId'] + '/' + json['profilePicture'];
+        authorThumbnail = json['profilePicture']; //json['identityId'] + '/' + json['profilePicture'];
       }
+    }else{
+            authorThumbnail = 'assets/images/avthar.png';
+
     }
     return UserLike(
       userName: json['userName'],
@@ -38,6 +40,8 @@ class UserLike {
       title: json['title'],
     );
   }
+
+  
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};

@@ -88,7 +88,7 @@ class CommentsWidget extends ConsumerWidget {
 
   Widget _userProfilePicWidget(UserComment item, WidgetRef ref) {
     final avatarText = getAvatarText(item.userName);
-    if (item.profilePicture!.isEmpty) {
+    if (item.profilePicture == null ) {
       return CircleAvatar(radius: 25.0, child: Text(avatarText));
     } else {
       // Note: We're using `watch` directly on the provider.

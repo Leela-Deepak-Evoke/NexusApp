@@ -25,9 +25,14 @@ class PostAnswerMobileView extends ConsumerStatefulWidget {
   final User user;
   final Question question;
   final Answer? answerItem;
-       bool? isEditAnswer;
+  bool? isEditAnswer;
 
-   PostAnswerMobileView({super.key, required this.user,required this.question, this.answerItem, this.isEditAnswer});
+  PostAnswerMobileView(
+      {super.key,
+      required this.user,
+      required this.question,
+      this.answerItem,
+      this.isEditAnswer});
 
   @override
   ConsumerState<PostAnswerMobileView> createState() =>
@@ -52,11 +57,10 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
   int? selectedIndex;
   List<XFile>? imageFileList = [];
   List<File>? _selectedPostImages;
-  
+
   String selectedCategory = "General";
   List<File>? get selectedPostImages => _selectedPostImages;
   String contentTypeSelected = "";
- 
 
   void _selectDocuments() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -80,8 +84,8 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
   @override
   void initState() {
     super.initState();
-     hashTagController.text = widget.question.content ?? "";
-      if (widget.isEditAnswer == true) {
+    hashTagController.text = widget.question.content ?? "";
+    if (widget.isEditAnswer == true) {
       feedController.text = widget.answerItem?.content ?? feedController.text;
     }
   }
@@ -119,7 +123,7 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-        feedController.text = feedController.text;
+    feedController.text = feedController.text;
     return Padding(
         padding: const EdgeInsets.only(top: 0),
         child: SingleChildScrollView(
@@ -149,7 +153,7 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
                         ),
 
                         //SELECT PHOTOS/VIDEOS/
-                       // attchmentFileButtons(context, ref),
+                        // attchmentFileButtons(context, ref),
                         const SizedBox(
                           height: 10,
                         )
@@ -162,8 +166,6 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
                 ),
                 //POST BUTTON
                 btnPost(size),
-                
-              
               ],
             ),
           ),
@@ -175,8 +177,6 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
   Widget feedsDescriptionUI() {
     return Column(
       children: [
-       
-       
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
           child: Row(
@@ -195,19 +195,17 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
                   fontFamily: GoogleFonts.notoSans().fontFamily,
                   fontWeight: FontWeight.w600,
                 ),
-                decoration:
-                    const InputDecoration.collapsed(hintText: "Title"),
+                decoration: const InputDecoration.collapsed(hintText: "Title"),
               )),
             ],
           ),
         ),
-         const Divider(
+        const Divider(
           thickness: 1,
           color: Color(0xffEAEAEA),
           height: 1,
         ),
-
-         Padding(
+        Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -352,51 +350,50 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
 
   // IMAGE Content
   Widget imagePickerContent(Size size) {
-     return SizedBox(
-      height: size.height - 600,
-      //color: Colors.green,
-      child: 
-      // Expanded(
-      //     child: 
-          Padding(
-              padding: const EdgeInsets.all(0),
-              child: GridView.builder(
-                  itemCount: fileList.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 1),
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Stack(
-                        //alignment: Alignment.topRight,
-                        children: [
-                          // SizedBox(
-                          //   height: 100,
-                          //   width: 100,
-                          //   child: Image.file(File(imageFileList![index].path), fit: BoxFit.cover),
-                          // ),
+    return SizedBox(
+        height: size.height - 600,
+        //color: Colors.green,
+        child:
+            // Expanded(
+            //     child:
+            Padding(
+                padding: const EdgeInsets.all(0),
+                child: GridView.builder(
+                    itemCount: fileList.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 1),
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Stack(
+                          //alignment: Alignment.topRight,
+                          children: [
+                            // SizedBox(
+                            //   height: 100,
+                            //   width: 100,
+                            //   child: Image.file(File(imageFileList![index].path), fit: BoxFit.cover),
+                            // ),
 
-
-                          returnFileContainer(index),
-                          Positioned(
-                              top: -10,
-                              right: 1,
-                              child: IconButton(
-                                onPressed: () {
-                                  dltImages(fileList[index]);
-                                },
-                                icon: const Icon(
-                                  Icons.cancel,
-                                  color: AppColors.blueTextColour,
-                                ),
-                              ))
-                        ],
-                      ),
-                    );
-                  })
-                  )
-                  // ),
-    );
+                            returnFileContainer(index),
+                            Positioned(
+                                top: -10,
+                                right: 1,
+                                child: IconButton(
+                                  onPressed: () {
+                                    dltImages(fileList[index]);
+                                  },
+                                  icon: const Icon(
+                                    Icons.cancel,
+                                    color: AppColors.blueTextColour,
+                                  ),
+                                ))
+                          ],
+                        ),
+                      );
+                    }))
+        // ),
+        );
   }
 
   // VIDEO Content
@@ -455,36 +452,37 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
   imageAttachment() async {
     final feedId = const Uuid().v4();
 
-    Map<String, dynamic>? resultFileName = await feedService.uploadMedia(feedId, 'Image');
+    Map<String, dynamic>? resultFileName =
+        await feedService.uploadMedia(feedId, 'Image');
     if (resultFileName != null) {
       setState(() {
         isMediaSelect = true;
         isImageSelect = true;
         isVideoSelect = false;
-       uploadedFilePath = resultFileName["platformFilePath"];
-        uploadedFileName =  resultFileName["mediaPath"];
+        uploadedFilePath = resultFileName["platformFilePath"];
+        uploadedFileName = resultFileName["mediaPath"];
       });
-       fileList.add(uploadedFilePath.toString());
-
+      fileList.add(uploadedFilePath.toString());
     }
   }
 
   videoAttachment() async {
     final feedId = const Uuid().v4();
-    Map<String, dynamic>? resultFileName = await feedService.uploadMedia(feedId, 'Video');
+    Map<String, dynamic>? resultFileName =
+        await feedService.uploadMedia(feedId, 'Video');
     if (resultFileName != null) {
       setState(() {
         isMediaSelect = true;
         isImageSelect = false;
         isVideoSelect = true;
-         uploadedFilePath = resultFileName["platformFilePath"];
-        uploadedFileName =  resultFileName["mediaPath"];
+        uploadedFilePath = resultFileName["platformFilePath"];
+        uploadedFileName = resultFileName["mediaPath"];
       });
-        initializeVideo(uploadedFilePath.toString());
+      initializeVideo(uploadedFilePath.toString());
     }
   }
 
-void initializeVideo(String url) {
+  void initializeVideo(String url) {
     _videoPlayerController = VideoPlayerController.file(File(url))
       ..initialize().then((_) {
         _videoPlayerController!.setVolume(0);
@@ -493,19 +491,16 @@ void initializeVideo(String url) {
       });
   }
 
-
- Widget returnFileContainer(int index) {
+  Widget returnFileContainer(int index) {
     if (!fileList[index].contains('mp4')) {
       return Padding(
           padding: const EdgeInsets.only(top: 10, right: 10),
-             child: Image.file(File(uploadedFilePath ?? ""),
-                  fit: BoxFit.cover)
-          );
+          child: Image.file(File(uploadedFilePath ?? ""), fit: BoxFit.cover));
     } else {
       return FittedBox(
           fit: BoxFit.cover,
           child: Padding(
-             padding: const EdgeInsets.only(top: 10, right: 10),
+            padding: const EdgeInsets.only(top: 10, right: 10),
             // width: 100,
             // height: 100,
             child: VideoPlayer(_videoPlayerController!),
@@ -515,9 +510,8 @@ void initializeVideo(String url) {
 
   void _removeVideo() {
     _resetValues();
-     
-        _videoPlayerController = null;
 
+    _videoPlayerController = null;
   }
 
   void _updateFilePath(String path) {
@@ -532,19 +526,19 @@ void initializeVideo(String url) {
       feedController.clear();
       hashTagController.clear();
       mediaCaptionController.clear();
-       _videoPlayerController!.dispose();
+      _videoPlayerController!.dispose();
       // dropdownValue = 'General Feed';
     });
   }
 
   void _handleSubmit(PostAnswerParams params, WidgetRef ref) async {
-     if (widget.isEditAnswer == true) {
+    if (widget.isEditAnswer == true) {
       await ref.read(editAnswerProvider(params).future);
     } else {
-    await ref.read(postAnswerProvider(params).future);
+      await ref.read(postAnswerProvider(params).future);
     }
-      Navigator.pop(context);
-       _resetValues();
+    Navigator.pop(context);
+    _resetValues();
   }
 
 // POST BUTTON
@@ -571,7 +565,7 @@ void initializeVideo(String url) {
           //     hashTagController.value.text.isEmpty) {
           //   showMessage('Please add hashtag');
           // }
-           else {
+          else {
             createPost();
           }
         },
@@ -588,22 +582,21 @@ void initializeVideo(String url) {
   }
 
   createPost() async {
-
     final answerId = const Uuid().v4();
     final params = PostAnswerParams(
-                    name: 'Answer',
-                    userId: widget.user.userId,
-                    questionId: widget.question.questionId,
-                    // answerId: answerId,
-                    answerId: widget.isEditAnswer == true ? widget.answerItem?.answerId ?? answerId: answerId,
-                    content: feedController.text,
-                    hasImage: false);
+        name: 'Answer',
+        userId: widget.user.userId,
+        questionId: widget.question.questionId,
+        // answerId: answerId,
+        answerId: widget.isEditAnswer == true
+            ? widget.answerItem?.answerId ?? answerId
+            : answerId,
+        content: feedController.text,
+        hasImage: false);
     _handleSubmit(params, ref);
-    
-   
   }
 
-void dltImages(data) {
+  void dltImages(data) {
     showDialog(
         context: context,
         builder: (context) {
@@ -615,9 +608,9 @@ void dltImages(data) {
                 onPressed: () {
                   Navigator.pop(context);
                   _resetValues();
-                   setState(() {
-                  fileList.remove(data);
-                });
+                  setState(() {
+                    fileList.remove(data);
+                  });
                 },
                 child: const Text('OK'),
               ),
@@ -631,7 +624,6 @@ void dltImages(data) {
           );
         });
   }
-  
 
 //Validation
   void showMessage(String text) {
@@ -639,7 +631,7 @@ void dltImages(data) {
         context: context,
         builder: (context) {
           return AlertDialog(
-             content: Text(text),
+            content: Text(text),
             actions: <Widget>[
               TextButton(
                 onPressed: () {

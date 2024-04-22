@@ -34,6 +34,12 @@ class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
     if (likesAsyncValue is AsyncData) {
       final items = likesAsyncValue.value!;
       return _buildLikesDialog(items, context);
+
+      // if(items.length > 0){
+      //         return _buildLikesDialog(items, context);
+
+      // }
+      return Container();
     }
 
     if (likesAsyncValue is AsyncLoading) {
@@ -131,12 +137,6 @@ class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
                                 minVerticalPadding: 15,
                                 title: Text(userLike.userName),
                                 onTap: () {
-                                  //     Navigator.push(
-                                  // context,
-                                  // MaterialPageRoute(
-                                  //   builder: (context) => ProfileScreen(),
-                                  // ));
-
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -144,7 +144,10 @@ class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
                                               title: 'User Profile',
                                               user: widget.user,
                                               hasBackAction: true,
-                                              hasRightAction: userLike.userId == widget.user.userId ? true : false,
+                                              hasRightAction: userLike.userId ==
+                                                      widget.user.userId
+                                                  ? true
+                                                  : false,
                                               topBarButtonAction: () {},
                                               backButtonAction: () {
                                                 Navigator.pop(context);
@@ -181,11 +184,11 @@ class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
 
   Future<Widget> _userProfilePicWidget(UserLike item, WidgetRef ref) async {
     final avatarText = getAvatarText(item.userName);
-    if (item.profilePicture.isEmpty) {
+    if (item.profilePicture == null) {
       return CircleAvatar(radius: 15.0, child: Text(avatarText));
     } else {
       final profilePicAsyncValue =
-          ref.watch(authorThumbnailProviderViewLike(item.profilePicture));
+          ref.watch(authorThumbnailProviderViewLike(item.profilePicture!));
       return profilePicAsyncValue.when(
         data: (imageUrl) {
           if (imageUrl != null && imageUrl.isNotEmpty) {

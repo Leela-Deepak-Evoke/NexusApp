@@ -424,7 +424,51 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
     }
   }
 
-  Widget _profilePicWidget(Question item, WidgetRef ref) {
+Widget _profilePicWidget(Question item, WidgetRef ref) {
+    final avatarText = getAvatarText(item.author!);
+    if (item.authorThumbnail == null) {
+      return CircleAvatar(radius: 12.0, child: Text(avatarText));
+    } else {
+      // Note: We're using `watch` directly on the provider.
+      final profilePicAsyncValue =
+          ref.watch(authorThumbnailProvider(item.authorThumbnail!));
+      //print(profilePicAsyncValue);
+      return profilePicAsyncValue.when(
+        data: (imageUrl) {
+          if (imageUrl != null && imageUrl.isNotEmpty) {
+            return CircleAvatar(
+              backgroundImage: NetworkImage(imageUrl),
+              radius: 12.0,
+            );
+          } else {
+            // Render a placeholder or an error image
+            return CircleAvatar(radius: 20.0, child: Text(avatarText));
+          }
+        },
+        loading: () => const Center(
+          child: SizedBox(
+            height: 20.0,
+            width: 20.0,
+            child: CircularProgressIndicator(),
+          ),
+        ),
+        error: (error, stackTrace) => CircleAvatar(
+            radius: 20.0,
+            child: Text(avatarText)), // Handle error state appropriately
+      );
+    }
+  }
+
+  String getAvatarText(String name) {
+    final nameParts = name.split(' ');
+    if (nameParts.length >= 2) {
+      return nameParts[0][0].toUpperCase() + nameParts[1][0].toUpperCase();
+    } else if (nameParts.isNotEmpty) {
+      return nameParts[0][0].toUpperCase();
+    }
+    return '';
+  }
+  Widget _profilePicWidget_OLD(Question item, WidgetRef ref) {
     final avatarText = getAvatarText(item.author!);
     if (item.authorThumbnail == null) {
       return CircleAvatar(radius: 12.0, child: Text(avatarText));
@@ -465,15 +509,7 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
     }
   }
 
-  String getAvatarText(String name) {
-    final nameParts = name.split(' ');
-    if (nameParts.length >= 2) {
-      return nameParts[0][0].toUpperCase() + nameParts[1][0].toUpperCase();
-    } else if (nameParts.isNotEmpty) {
-      return nameParts[0][0].toUpperCase();
-    }
-    return '';
-  }
+ 
 
   Future<void> _onRefresh() async {
     ref.read(refresUserProvider(""));

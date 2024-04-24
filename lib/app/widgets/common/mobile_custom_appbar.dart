@@ -27,16 +27,14 @@ class MobileCustomAppbarState extends ConsumerState<MobileCustomAppbar> {
   @override
   Widget build(BuildContext context) {
     User? user; // Nullable User
-    final userAsyncValue =
-        ref.watch(fetchUserProvider); 
-       String avatarText = "";
+    final userAsyncValue = ref.watch(fetchUserProvider);
+    String avatarText = "";
 
     userAsyncValue.when(
       data: (data) {
         user = data;
         final String name = user!.name;
-         avatarText = getAvatarText(name);
-
+        avatarText = getAvatarText(name);
       },
       loading: () {
         return const CircularProgressIndicator();
@@ -54,31 +52,6 @@ class MobileCustomAppbarState extends ConsumerState<MobileCustomAppbar> {
           builder: (context, value, child) {
             return AppBar(
               backgroundColor: Colors.transparent,
-              // leading: Image.asset(
-              //   'assets/images/Nexus_logo-artwork.png',
-              //    width: 24,
-              //       height: 24,
-              // ),
-              // titleSpacing: 0,
-              // centerTitle: false,
-              // title: Text(
-              //   "NEXUS",  //EVOKE NEXUS
-              //   style: TextStyle(
-              //     color: Colors.white,
-              //     fontSize: 16.0,
-              //     fontFamily: GoogleFonts.poppins().fontFamily,
-              //     fontWeight: FontWeight.w600,
-              //   ),
-              //   textAlign: TextAlign.left,
-              // ),
-              // leading:   IconButton(
-              //     icon: Image.asset(
-              //       'assets/images/Nexus_logo-artwork.png',
-              //       // width: 24,
-              //       // height: 24,
-              //     ),
-              //     onPressed: () {},
-              //   ),
               leading: IconButton(
                 icon: Image.asset(
                   'assets/images/Nexus_logo-artwork.png',
@@ -102,14 +75,15 @@ class MobileCustomAppbarState extends ConsumerState<MobileCustomAppbar> {
               actions: [
                 IconButton(
                   icon: Image.asset(
-                    'assets/images/notifications.png',
-                    width: 24,
-                    height: 24,
+                    'assets/images/icons8-notification-50.png',
+                    width: 28,
+                    height: 28,
                   ),
                   onPressed: () {
                     _showToast(context);
                   },
                 ),
+                SizedBox(width: 10),
                 InkWell(
                   onTap: () {
                     Navigator.push(
@@ -117,19 +91,10 @@ class MobileCustomAppbarState extends ConsumerState<MobileCustomAppbar> {
                       MaterialPageRoute(
                           builder: (context) => const ProfileScreen()),
                     );
-
-                    // Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //         fullscreenDialog: true,
-                    //         // builder: (context) => CreatePostFeedScreen(feedItem: item, isEditFeed: true),
-                    //         builder: (context) => ProfileScreen(),
-                    //       ),
-                    //     );
                   },
                   child: Container(
-                    width: 24,
-                    height: 24,
+                    width: 28,
+                    height: 28,
                     padding: const EdgeInsets.all(2),
                     decoration: const BoxDecoration(
                         color: Colors.white, shape: BoxShape.circle),
@@ -139,7 +104,7 @@ class MobileCustomAppbarState extends ConsumerState<MobileCustomAppbar> {
                       child: Text(avatarText,
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 10.0,
+                            fontSize: 12.0,
                             fontFamily: GoogleFonts.poppins().fontFamily,
                             fontWeight: FontWeight.w500,
                           )),

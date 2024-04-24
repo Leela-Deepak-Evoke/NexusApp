@@ -146,7 +146,14 @@ Future<void> _handleSubmit(BuildContext context) async {
           height: MediaQuery.of(context).size.height,
           alignment: AlignmentDirectional.center,
           padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
-          child: SizedBox(
+          child: 
+          Container(
+            height: MediaQuery.of(context).size.height,
+            alignment: AlignmentDirectional.center,
+            padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
+
+
+       child:   SizedBox(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             child: Card(
@@ -230,7 +237,7 @@ Future<void> _handleSubmit(BuildContext context) async {
                         const SizedBox(width: 10),
                         TextButton(
                             onPressed: _handleCancel,
-                            child: const Text("Cancel")),
+                            child: const Text("Clear")),
                       ],
                     ),
                   ],
@@ -239,6 +246,7 @@ Future<void> _handleSubmit(BuildContext context) async {
               ),
             ),
           ),
+          )
         ),
       ),
     );

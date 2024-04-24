@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/models/userhome.dart';
 import 'package:evoke_nexus_app/app/provider/org_update_service_provider.dart';
@@ -65,7 +66,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
             bodyContentRatioMin: bodyContentRatioMin,
             bodyContentRatioMax: bodyContentRatioMax,
           ),
-           const MobileCustomAppbar(),
+          const MobileCustomAppbar(),
 
           // Floating action button
           Positioned(
@@ -96,6 +97,23 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
 
     UserDetails? userDetails;
 
+    double screenWidth = MediaQuery.of(context).size.width;
+  double screenHeight = MediaQuery.of(context).size.height;
+    double spaceTopHeader = 115.0;
+
+  if (Platform.isAndroid) {
+    spaceTopHeader = screenWidth * 0.25; // For Android devices
+  } else {
+    // Check for iPhone SE based on logical screen dimensions
+    bool isIPhoneSE = screenWidth == 375 && screenHeight == 667; // iPhone SE 3rd generation has a logical size of 375x667 points
+    
+    if (isIPhoneSE) {
+      spaceTopHeader = screenWidth * 0.2; // For iPhone SE
+    } else {
+      spaceTopHeader = screenWidth * 0.3; // For other resolutions
+    }
+  }
+
     if (userHomeAsyncValue is AsyncValue<UserHome>) {
       // Check if userHomeAsyncValue is of type AsyncValue<UserHome>
       final userHome =
@@ -125,8 +143,9 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
         ),
         if (userDetails !=
             null) // Check if userDetails is not null before accessing its properties
+
           Container(
-            padding: const EdgeInsets.only(left: 16, right: 0, top: 115),
+            padding: EdgeInsets.only(left: 16, right: 0, top: spaceTopHeader),
             child: Wrap(direction: Axis.horizontal, spacing: 2, children: [
               _userProfilePic(userHomeAsyncValue as AsyncValue<UserHome>, ref),
               const SizedBox(
@@ -183,7 +202,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
             builder: (BuildContext context, ScrollController scrollController) {
               return Padding(
                 padding: const EdgeInsets.only(
-                    top: 10.0), // 50 Add padding above the Container
+                    top: 0.0), // 10, 50 Add padding above the Container
                 child: Container(
                   // color: Colors.amber,
                   child: Stack(
@@ -494,7 +513,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                 children: [
                                   const SizedBox(height: 4.0),
                                   Padding(
-                                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                    padding: const EdgeInsets.fromLTRB(
+                                        20, 10, 20, 0),
                                     child: contentViewWidget(item),
                                   ),
                                   item.orgUpdate.media
@@ -578,6 +598,14 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
 
 // TOP HEADER 3 Labels
   Widget viewUsersInformation(AsyncValue<UserHome>? userHomeAsyncValue) {
+    double fontSize = 12.0; // Default font size
+
+    if (Platform.isAndroid) {
+      fontSize = MediaQuery.of(context).size.width * 0.028;
+    } else if (Platform.isIOS) {
+      fontSize = 12;
+    }
+
     return userHomeAsyncValue!.when(
       data: (userHome) {
         DateTime startDate = DateTime.parse(userHome.userDetails.createdAt);
@@ -602,7 +630,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                       width: 24,
                       height: 24,
                     ),
-                    const SizedBox(width: 4), // Adjust spacing between icon and text
+                    const SizedBox(
+                        width: 4), // Adjust spacing between icon and text
                   ],
                 ),
                 label: Column(
@@ -611,10 +640,13 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                   children: [
                     //"User Created At: ${user!.createdAt}",
                     Text(
-                      Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(userHome.userDetails.createdAt.toString())), // Show the difference in days
+                      Global.calculateTimeDifferenceBetween(
+                          Global.getDateTimeFromStringForPosts(userHome
+                              .userDetails.createdAt
+                              .toString())), // Show the difference in days
                       style: TextStyle(
                         color: const Color(0xff292929),
-                        fontSize: 12.0,
+                        fontSize: fontSize,
                         fontFamily: GoogleFonts.poppins().fontFamily,
                         fontWeight: FontWeight.w500,
                       ),
@@ -623,7 +655,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                       'Usage Duration',
                       style: TextStyle(
                         color: const Color(0xff292929),
-                        fontSize: 12.0,
+                        fontSize: fontSize,
                         fontFamily: GoogleFonts.poppins().fontFamily,
                         fontWeight: FontWeight.w500,
                       ),
@@ -644,7 +676,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                       width: 24,
                       height: 24,
                     ),
-                    const SizedBox(width: 4), // Adjust spacing between icon and text
+                    const SizedBox(
+                        width: 4), // Adjust spacing between icon and text
                   ],
                 ),
                 label: Column(
@@ -654,7 +687,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                     Text(lastLoginDate, // Show the difference in days
                         style: TextStyle(
                           color: const Color(0xff292929),
-                          fontSize: 12.0,
+                          fontSize: fontSize,
                           fontFamily: GoogleFonts.poppins().fontFamily,
                           fontWeight: FontWeight.w500,
                         )),
@@ -662,7 +695,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                       'Last Login',
                       style: TextStyle(
                         color: const Color(0xff292929),
-                        fontSize: 12.0,
+                        fontSize: fontSize,
                         fontFamily: GoogleFonts.poppins().fontFamily,
                         fontWeight: FontWeight.w500,
                       ),
@@ -682,7 +715,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                       width: 24,
                       height: 24,
                     ),
-                    const SizedBox(width: 4), // Adjust spacing between icon and text
+                    const SizedBox(
+                        width: 4), // Adjust spacing between icon and text
                   ],
                 ),
                 label: Column(
@@ -692,7 +726,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                     Text(userHome.userDetails.status,
                         style: TextStyle(
                           color: const Color(0xff292929),
-                          fontSize: 12.0,
+                          fontSize: fontSize,
                           fontFamily: GoogleFonts.poppins().fontFamily,
                           fontWeight: FontWeight.w500,
                         )),
@@ -700,7 +734,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                       'Status',
                       style: TextStyle(
                         color: const Color(0xff292929),
-                        fontSize: 12.0,
+                        fontSize: fontSize,
                         fontFamily: GoogleFonts.poppins().fontFamily,
                         fontWeight: FontWeight.w500,
                       ),
@@ -738,7 +772,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                       width: 38,
                       height: 38,
                     ),
-                    const SizedBox(width: 4), // Adjust spacing between icon and text
+                    const SizedBox(
+                        width: 4), // Adjust spacing between icon and text
                   ],
                 ),
                 label: Column(
@@ -780,7 +815,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                       width: 38,
                       height: 38,
                     ),
-                    const SizedBox(width: 4), // Adjust spacing between icon and text
+                    const SizedBox(
+                        width: 4), // Adjust spacing between icon and text
                   ],
                 ),
                 label: Column(
@@ -820,7 +856,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                       width: 38,
                       height: 38,
                     ),
-                    const SizedBox(width: 4), // Adjust spacing between icon and text
+                    const SizedBox(
+                        width: 4), // Adjust spacing between icon and text
                   ],
                 ),
                 label: Column(
@@ -861,6 +898,13 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
   }
 
   Widget buttonComponentsSetupLayout(Size size) {
+    double fontSize = 12.0;
+
+    if (Platform.isAndroid) {
+      fontSize = MediaQuery.of(context).size.width * 0.028;
+    } else if (Platform.isIOS) {
+      fontSize = 12;
+    }
     return userHomeAsyncValue.when(
       data: (userHome) {
         return Padding(
@@ -882,7 +926,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                       Text('Activites',
                           style: TextStyle(
                             color: Colors.black87,
-                            fontSize: 16.0,
+                            fontSize: MediaQuery.of(context).size.width * 0.04,
                             fontFamily: GoogleFonts.poppins().fontFamily,
                             fontWeight: FontWeight.w600,
                           )),
@@ -914,7 +958,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                 'Feed',
                                 style: TextStyle(
                                   color: const Color(0xff292929),
-                                  fontSize: 12.0,
+                                  fontSize: fontSize,
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -938,7 +982,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                 'Forum',
                                 style: TextStyle(
                                   color: const Color(0xff292929),
-                                  fontSize: 12.0,
+                                  fontSize: fontSize,
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -962,7 +1006,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                 'Answer',
                                 style: TextStyle(
                                   color: const Color(0xff292929),
-                                  fontSize: 12.0,
+                                  fontSize: fontSize,
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -991,7 +1035,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                 '${userHome.postsCount.feeds} ${userHome.postsCount.feeds == 1 ? 'Post' : 'Posts'}',
                                 style: TextStyle(
                                   color: const Color(0xff292929),
-                                  fontSize: 12.0,
+                                  fontSize: fontSize,
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -1010,7 +1054,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                 '${userHome.postsCount.questions} ${userHome.postsCount.questions == 1 ? 'Post' : 'Posts'}', // Conditional expression to display 'Post' or 'Posts'
                                 style: TextStyle(
                                   color: const Color(0xff292929),
-                                  fontSize: 12.0,
+                                  fontSize: fontSize,
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -1029,7 +1073,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                 '${userHome.postsCount.answers} ${userHome.postsCount.answers == 1 ? 'Post' : 'Posts'}',
                                 style: TextStyle(
                                   color: const Color(0xff292929),
-                                  fontSize: 12.0,
+                                  fontSize: fontSize,
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -1058,7 +1102,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                 '${userHome.postsCount.feedLikeCount} ${userHome.postsCount.feedLikeCount == 1 ? 'Like' : 'Likes'}',
                                 style: TextStyle(
                                   color: const Color(0xff292929),
-                                  fontSize: 12.0,
+                                  fontSize: fontSize,
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -1077,7 +1121,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                 '-----',
                                 style: TextStyle(
                                   color: const Color(0xff292929),
-                                  fontSize: 12.0,
+                                  fontSize: fontSize,
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -1096,7 +1140,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                 '${userHome.postsCount.answerLikeCount} ${userHome.postsCount.answerLikeCount == 1 ? 'Like' : 'Likes'}',
                                 style: TextStyle(
                                   color: const Color(0xff292929),
-                                  fontSize: 12.0,
+                                  fontSize: fontSize,
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -1112,428 +1156,73 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                     const SizedBox(
                       height: 50,
                     ),
-
                     Flexible(
-  child: 
-  Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: size.width / 25, vertical: 0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                '${userHome.postsCount.feedCommentCount} ${userHome.postsCount.feedCommentCount == 1 ? 'Comment' : 'Comments'}',
-                                style: TextStyle(
-                                  color: const Color(0xff292929),
-                                  fontSize: 12.0,
-                                  fontFamily: GoogleFonts.poppins().fontFamily,
-                                  fontWeight: FontWeight.w500,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: size.width / 25, vertical: 0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  '${userHome.postsCount.feedCommentCount} ${userHome.postsCount.feedCommentCount == 1 ? 'Comment' : 'Comments'}',
+                                  style: TextStyle(
+                                    color: const Color(0xff292929),
+                                    fontSize: fontSize,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          // Forum Comment Count
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment
-                                .start, // Set mainAxisAlignment to start
-                            children: [
-                              Text(
-                                '${userHome.postsCount.questionAnswerCount} ${userHome.postsCount.questionAnswerCount == 1 ? 'Comment' : 'Comments'}',
-                                style: TextStyle(
-                                  color: const Color(0xff292929),
-                                  fontSize: 12.0,
-                                  fontFamily: GoogleFonts.poppins().fontFamily,
-                                  fontWeight: FontWeight.w500,
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            // Forum Comment Count
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment
+                                  .start, // Set mainAxisAlignment to start
+                              children: [
+                                Text(
+                                  '${userHome.postsCount.questionAnswerCount} ${userHome.postsCount.questionAnswerCount == 1 ? 'Comment' : 'Comments'}',
+                                  style: TextStyle(
+                                    color: const Color(0xff292929),
+                                    fontSize: fontSize,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          // Answer Comment Count
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment
-                                .start, // Set mainAxisAlignment to start
-                            children: [
-                              Text(
-                                '${userHome.postsCount.answerCommentCount} ${userHome.postsCount.answerCommentCount == 1 ? 'Comment' : 'Comments'}',
-                                style: TextStyle(
-                                  color: const Color(0xff292929),
-                                  fontSize: 12.0,
-                                  fontFamily: GoogleFonts.poppins().fontFamily,
-                                  fontWeight: FontWeight.w500,
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            // Answer Comment Count
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment
+                                  .start, // Set mainAxisAlignment to start
+                              children: [
+                                Text(
+                                  '${userHome.postsCount.answerCommentCount} ${userHome.postsCount.answerCommentCount == 1 ? 'Comment' : 'Comments'}',
+                                  style: TextStyle(
+                                    color: const Color(0xff292929),
+                                    fontSize: fontSize,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                        ],
-                      ),
-                    ),
-                   
-                    ),
-                    const SizedBox(
-                      height: 50,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-      loading: () {
-        return const Center();
-        // return CircularProgressIndicator();
-      },
-      error: (error, stackTrace) {
-        return Text('Error: $error');
-      },
-    );
-  }
-
-  Widget buttonComponentsSetupLayout_OLD(Size size) {
-    return userHomeAsyncValue.when(
-      data: (userHome) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            elevation: 4, // the size of the shadow
-            shadowColor: Colors.black,
-            child: Column(
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Activites',
-                          style: TextStyle(
-                            color: Colors.black87,
-                            fontSize: 16.0,
-                            fontFamily: GoogleFonts.poppins().fontFamily,
-                            fontWeight: FontWeight.w600,
-                          )),
-                    ],
-                  ),
-                ),
-                viewUsersInformation(userHomeAsyncValue),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: size.width / 25, vertical: 0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          //FEED
-                          IconButton(
-                              icon: Image.asset(
-                                'assets/images/feed.png',
-                                width: 24,
-                                height: 24,
-                              ),
-                              onPressed: null),
-                          Text('Feed',
-                              style: TextStyle(
-                                color: const Color(0xff292929),
-                                fontSize: 12.0,
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                                fontWeight: FontWeight.w500,
-                              )),
-                          const SizedBox(
-                            height: 10,
-                          ),
-
-                          //QUESTION
-                          IconButton(
-                              icon: Image.asset(
-                                'assets/images/forum.png',
-                                width: 24,
-                                height: 24,
-                              ),
-                              onPressed: null),
-                          Text('Forum',
-                              style: TextStyle(
-                                color: const Color(0xff292929),
-                                fontSize: 12.0,
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                                fontWeight: FontWeight.w500,
-                              )),
-                          const SizedBox(
-                            height: 10,
-                          ),
-
-                          //Answer
-                          IconButton(
-                              icon: Image.asset(
-                                'assets/images/updates.png',
-                                width: 24,
-                                height: 24,
-                              ),
-                              onPressed: null),
-                          Text('Answer',
-                              style: TextStyle(
-                                color: const Color(0xff292929),
-                                fontSize: 12.0,
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                                fontWeight: FontWeight.w500,
-                              )),
-                          const SizedBox(
-                            height: 10,
-                          )
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 50,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0, vertical: 10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          //Feed Count
-                          TextButton(
-                              onPressed: null,
-                              child: Text("${userHome.postsCount.feeds}",
-                                  style: TextStyle(
-                                    color: const Color(0xff292929),
-                                    fontSize: 12.0,
-                                    fontFamily:
-                                        GoogleFonts.poppins().fontFamily,
-                                    fontWeight: FontWeight.w500,
-                                  ))),
-
-                          Text('Count',
-                              style: TextStyle(
-                                color: const Color(0xff292929),
-                                fontSize: 12.0,
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                                fontWeight: FontWeight.w500,
-                              )),
-                          const SizedBox(
-                            height: 10,
-                          ),
-
-                          //Fourm Count
-                          TextButton(
-                              onPressed: null,
-                              child: Text("${userHome.postsCount.questions}",
-                                  style: TextStyle(
-                                    color: const Color(0xff292929),
-                                    fontSize: 12.0,
-                                    fontFamily:
-                                        GoogleFonts.poppins().fontFamily,
-                                    fontWeight: FontWeight.w500,
-                                  ))),
-                          Text('Count',
-                              style: TextStyle(
-                                color: const Color(0xff292929),
-                                fontSize: 12.0,
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                                fontWeight: FontWeight.w500,
-                              )),
-                          const SizedBox(
-                            height: 10,
-                          ),
-
-                          //Answer Count
-                          TextButton(
-                              onPressed: null,
-                              child: Text("${userHome.postsCount.answers}",
-                                  style: TextStyle(
-                                    color: const Color(0xff292929),
-                                    fontSize: 12.0,
-                                    fontFamily:
-                                        GoogleFonts.poppins().fontFamily,
-                                    fontWeight: FontWeight.w500,
-                                  ))),
-                          Text('Count',
-                              style: TextStyle(
-                                color: const Color(0xff292929),
-                                fontSize: 12.0,
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                                fontWeight: FontWeight.w500,
-                              )),
-                          const SizedBox(
-                            height: 10,
-                          )
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 50,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0, vertical: 10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          //Feed Like Count
-                          TextButton(
-                              onPressed: null,
-                              child:
-                                  Text("${userHome.postsCount.feedLikeCount}",
-                                      style: TextStyle(
-                                        color: const Color(0xff292929),
-                                        fontSize: 12.0,
-                                        fontFamily:
-                                            GoogleFonts.poppins().fontFamily,
-                                        fontWeight: FontWeight.w500,
-                                      ))),
-                          Text('Like',
-                              style: TextStyle(
-                                color: const Color(0xff292929),
-                                fontSize: 12.0,
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                                fontWeight: FontWeight.w500,
-                              )),
-                          const SizedBox(
-                            height: 10,
-                          ),
-
-                          //Fourm Like Count
-                          TextButton(
-                              onPressed: null,
-                              child: Text('0', //NEED PARAM
-                                  style: TextStyle(
-                                    color: const Color(0xff292929),
-                                    fontSize: 12.0,
-                                    fontFamily:
-                                        GoogleFonts.poppins().fontFamily,
-                                    fontWeight: FontWeight.w500,
-                                  ))),
-                          Text('Like',
-                              style: TextStyle(
-                                color: const Color(0xff292929),
-                                fontSize: 12.0,
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                                fontWeight: FontWeight.w500,
-                              )),
-                          const SizedBox(
-                            height: 10,
-                          ),
-
-                          //Answer Like Count
-                          TextButton(
-                              onPressed: null,
-                              child:
-                                  Text("${userHome.postsCount.answerLikeCount}",
-                                      style: TextStyle(
-                                        color: const Color(0xff292929),
-                                        fontSize: 12.0,
-                                        fontFamily:
-                                            GoogleFonts.poppins().fontFamily,
-                                        fontWeight: FontWeight.w500,
-                                      ))),
-                          Text('Like',
-                              style: TextStyle(
-                                color: const Color(0xff292929),
-                                fontSize: 12.0,
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                                fontWeight: FontWeight.w500,
-                              )),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 50,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10.0, vertical: 10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          //Feed Comment Count
-                          TextButton(
-                              onPressed: null,
-                              child: Text(
-                                  "${userHome.postsCount.feedCommentCount}",
-                                  style: TextStyle(
-                                    color: const Color(0xff292929),
-                                    fontSize: 12.0,
-                                    fontFamily:
-                                        GoogleFonts.poppins().fontFamily,
-                                    fontWeight: FontWeight.w500,
-                                  ))),
-                          Text('Comment',
-                              style: TextStyle(
-                                color: const Color(0xff292929),
-                                fontSize: 12.0,
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                                fontWeight: FontWeight.w500,
-                              )),
-                          const SizedBox(
-                            height: 10,
-                          ),
-
-                          //Fourm Comment Count
-                          TextButton(
-                              onPressed: null,
-                              child: Text(
-                                  "${userHome.postsCount.questionAnswerCount}",
-                                  style: TextStyle(
-                                    color: const Color(0xff292929),
-                                    fontSize: 12.0,
-                                    fontFamily:
-                                        GoogleFonts.poppins().fontFamily,
-                                    fontWeight: FontWeight.w500,
-                                  ))),
-                          Text('Comment',
-                              style: TextStyle(
-                                color: const Color(0xff292929),
-                                fontSize: 12.0,
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                                fontWeight: FontWeight.w500,
-                              )),
-                          const SizedBox(
-                            height: 10,
-                          ),
-
-                          //Answer Comment Count
-                          TextButton(
-                              onPressed: null,
-                              child: Text(
-                                  "${userHome.postsCount.answerCommentCount}",
-                                  style: TextStyle(
-                                    color: const Color(0xff292929),
-                                    fontSize: 12.0,
-                                    fontFamily:
-                                        GoogleFonts.poppins().fontFamily,
-                                    fontWeight: FontWeight.w500,
-                                  ))),
-                          Text('Comment',
-                              style: TextStyle(
-                                color: const Color(0xff292929),
-                                fontSize: 12.0,
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                                fontWeight: FontWeight.w500,
-                              )),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                        ],
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(
@@ -1751,8 +1440,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
 
   Widget contentViewWidget(LatestUpdate item) {
     if (item.orgUpdate.content != null) {
-      return Text(item.orgUpdate.content,
-          style: const TextStyle(fontSize: 14));
+      return Text(item.orgUpdate.content, style: const TextStyle(fontSize: 14));
     }
     //  else if (item.orgUpdate.mediaCaption != null) {
     //   return Text(item.mediaCaption!, style: const TextStyle(fontSize: 14));
@@ -1772,7 +1460,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
   Widget _profilePicWidget(dynamic item, WidgetRef ref) {
     final bool isQuestion = item is LatestQuestion;
 
-    final String name = isQuestion ? item.question.name: item.orgUpdate.name!;
+    final String name = isQuestion ? item.question.name : item.orgUpdate.name!;
     final String avatarText = getAvatarText(name);
 
     final double radius = isQuestion ? 12.0 : 20.0;
@@ -1832,9 +1520,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
       // final profilePicAsyncValue = ref.watch(authorThumbnailProvider(
       //     userHomeAsyncValue!.value!.userDetails.profilePicture));
 
-     final profilePicAsyncValue = ref.watch(authorThumbnailProvider(
-  userHomeAsyncValue?.value?.userDetails.profilePicture ?? ""));
-
+      final profilePicAsyncValue = ref.watch(authorThumbnailProvider(
+          userHomeAsyncValue?.value?.userDetails.profilePicture ?? ""));
 
       //print(profilePicAsyncValue);
       return profilePicAsyncValue.when(
@@ -2000,7 +1687,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
         content = item.question.content;
       }
       return Text(content,
-          maxLines: 3, // Limiting to 3 lines, adjust as needed
+          maxLines: 1, // Limiting to 3 lines, adjust as needed
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
             color: Colors.black,

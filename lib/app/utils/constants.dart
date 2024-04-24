@@ -60,7 +60,7 @@ static const Color blueTextColour = Color(0xff1B154C);
 abstract class Global {
 
 
-  static String calculateTimeDifferenceBetween(
+  static String calculateTimeDifferenceBetween_OLD(
        DateTime startDate) {
     int seconds = DateTime.now().difference(startDate).inSeconds;
     if (seconds < 60) {
@@ -75,6 +75,32 @@ abstract class Global {
       }
     }
   }
+
+  static String calculateTimeDifferenceBetween(DateTime startDate) {
+    DateTime now = DateTime.now();
+    Duration difference = now.difference(startDate);
+    int seconds = difference.inSeconds;
+
+    if (seconds < 60) {
+      return '$seconds seconds ago';
+    } else if (seconds < 3600) {
+      int minutes = difference.inMinutes;
+      return '$minutes minutes ago';
+    } else if (seconds < 86400) {
+      int hours = difference.inHours;
+      return '$hours hours ago';
+    } else {
+      // If more than 2 days ago, format as "day month hour:minute am/pm"
+      if (now.year == startDate.year) {
+        // If within the same year, display without the year
+        return DateFormat('d MMM').format(startDate); //h:mm a
+      } else {
+        // If across different years, display with the year
+        return DateFormat('d MMM yyyy').format(startDate); //h:mm a
+      }
+    }
+  }
+
 
   static DateTime getDateTimeFromString(String date) {
     DateTime tempDate = DateFormat("yyyy-MM-dd'T'HH:mm:ssZ").parse(date, true);

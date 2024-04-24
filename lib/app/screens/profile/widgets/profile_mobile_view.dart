@@ -37,121 +37,205 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
+    return Padding(
+      padding: const EdgeInsets.only(top: 0, bottom: 20),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 40), // Adjust the height as needed
-            _profilePicWidget(widget.user, ref),
-            TextButton(
-              onPressed: () {
-                ref.read(uploadProfileImageProvider(widget.user.userId));
-              },
-              child: widget.isFromOtherUser == false
-                  ? Text(
-                      widget.user.profilePicture != null &&
-                              widget.user.profilePicture!.isNotEmpty
-                          ? 'Change Profile Picture'
-                          : 'Add Profile Picture',
-                      style: const TextStyle(
-                        fontSize: 8,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )
-                  : widget.user.identityId == widget.otherUser!.identityId
-                      ? Text(
-                          widget.user.profilePicture != null &&
-                                  widget.user.profilePicture!.isNotEmpty
-                              ? 'Change Profile Picture'
-                              : 'Add Profile Picture',
-                          style: const TextStyle(
-                            fontSize: 8,
-                            fontWeight: FontWeight.bold,
+            Container(
+                      // height: MediaQuery.of(context).size.height,
+                      // alignment: AlignmentDirectional.center,
+                      // padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
+                      alignment: AlignmentDirectional.center,
+                      padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            children: [
+                              const SizedBox(
+                                  height: 40), // Adjust the height as needed
+                              _profilePicWidget(widget.user, ref),
+                              TextButton(
+                                onPressed: () {
+                                  ref.read(uploadProfileImageProvider(
+                                      widget.user.userId));
+                                },
+                                child: widget.isFromOtherUser == false
+                                    ? Text(
+                                        widget.user.profilePicture != null &&
+                                                widget.user.profilePicture!
+                                                    .isNotEmpty
+                                            ? 'Change Profile Picture'
+                                            : 'Add Profile Picture',
+                                        style: const TextStyle(
+                                          fontSize: 8,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      )
+                                    : widget.user.identityId ==
+                                            widget.otherUser!.identityId
+                                        ? Text(
+                                            widget.user.profilePicture !=
+                                                        null &&
+                                                    widget.user.profilePicture!
+                                                        .isNotEmpty
+                                                ? 'Change Profile Picture'
+                                                : 'Add Profile Picture',
+                                            style: const TextStyle(
+                                              fontSize: 8,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          )
+                                        : Container(),
+                              ),
+
+                              const SizedBox(height: 10),
+                              Text(
+                                widget.isFromOtherUser == false
+                                    ? widget.user.name
+                                    : widget.otherUser!.userName,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16.0,
+                                  fontFamily: GoogleFonts.notoSans().fontFamily,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                widget.isFromOtherUser == false
+                                    ? widget.user.role
+                                    : widget.otherUser!.title,
+                                style: TextStyle(
+                                  color: const Color(0xff676A79),
+                                  fontSize: 14.0,
+                                  fontFamily: GoogleFonts.notoSans().fontFamily,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                            ],
                           ),
-                        )
-                      : Container(),
-            ),
 
-            const SizedBox(height: 10),
-            Text(
-              widget.isFromOtherUser == false
-                  ? widget.user.name
-                  : widget.otherUser!.userName,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 16.0,
-                fontFamily: GoogleFonts.notoSans().fontFamily,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              widget.isFromOtherUser == false
-                  ? widget.user.role
-                  : widget.otherUser!.title,
-              style: TextStyle(
-                color: const Color(0xff676A79),
-                fontSize: 14.0,
-                fontFamily: GoogleFonts.notoSans().fontFamily,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 10),
-          ],
-        ),
+                          widget.isFromOtherUser == false
+                              ? Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: _buildViewProfile(),
+                                )
+                              : widget.user.identityId ==
+                                      widget.otherUser!.identityId
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: _buildViewProfile(),
+                                    )
+                                  : Container(),
 
-        widget.isFromOtherUser == false
-            ? Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: _buildViewProfile(),
-              )
-            : widget.user.identityId == widget.otherUser!.identityId
-                ? Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: _buildViewProfile(),
-                  )
-                : Container(),
-
-        // Align(
-        //   alignment: Alignment.centerLeft,
-        //   child: VerticalCardList(),
-        // ),
-        // const SizedBox(height: 20),
-        // LogoutButton(),
-        // _logout(),
-      ],
-    );
+                          // Align(
+                          //   alignment: Alignment.centerLeft,
+                          //   child: VerticalCardList(),
+                          // ),
+                          // const SizedBox(height: 20),
+                          // LogoutButton(),
+                          // _logout(),
+                        ],
+                      )
+                      )
+                      // )
+            ]
+            )
+     ) );
   }
 
   Widget _buildViewProfile() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if(widget.user.about != null || (widget.user.about != null && widget.user.about != " " || widget.user.about != ",," || widget.user.about != '"' ) ) 
-
-           Text(
-          'About Me: ${widget.user.about}',
-          style: TextStyle(
-            color: const Color(0xff676A79),
-            fontSize: 16.0,
-            fontFamily: GoogleFonts.notoSans().fontFamily,
-            fontWeight: FontWeight.w600,
+        if (widget.user.about != null && widget.user.about!.trim().isNotEmpty)
+          Text(
+            'About Me: ',
+            style: TextStyle(
+              color: const Color(0xff676A79),
+              fontSize: 16.0,
+              fontFamily: GoogleFonts.notoSans().fontFamily,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
+        if (widget.user.about != null && widget.user.about!.trim().isNotEmpty)
+          Text(
+            '${widget.user.about}',
+            style: TextStyle(
+              color: const Color(0xff676A79),
+              fontSize: 14.0, // Font size for `${widget.user.about}`
+              fontFamily: GoogleFonts.notoSans().fontFamily,
+              fontWeight:
+                  FontWeight.w500, // Font weight for `${widget.user.about}`
+            ),
+          ),
         const SizedBox(height: 10),
-     
-     if(widget.user.socialLinks != null && widget.user.socialLinks != ",,")
-        Text(
-          'Social Link: ${widget.user.socialLinks}',
-          style: TextStyle(
-            color: const Color(0xff676A79),
-            fontSize: 16.0,
-            fontFamily: GoogleFonts.notoSans().fontFamily,
-            fontWeight: FontWeight.w600,
+        if (widget.user.socialLinks != null &&
+            widget.user.socialLinks!.trim().isNotEmpty)
+          Text(
+            'Social Link: ',
+            style: TextStyle(
+              color: const Color(0xff676A79),
+              fontSize: 16.0,
+              fontFamily: GoogleFonts.notoSans().fontFamily,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
+        if (widget.user.socialLinks != null &&
+            widget.user.socialLinks!.trim().isNotEmpty)
+          Text(
+            '${widget.user.socialLinks}',
+            style: TextStyle(
+              color: Colors.blue, // Blue color for links
+              fontSize: 14.0, // Font size for `${widget.user.socialLinks}`
+              fontFamily: GoogleFonts.notoSans().fontFamily,
+              fontWeight: FontWeight
+                  .w500, // Font weight for `${widget.user.socialLinks}`
+              decoration: TextDecoration.underline, // Add underline to links
+            ),
+          ),
         _logout(),
+         const SizedBox(height: 50),
+      ],
+    );
+  }
+
+  Widget _buildViewProfile_OLD() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (widget.user.about != null ||
+            (widget.user.about != null && widget.user.about != " " ||
+                widget.user.about != ",," ||
+                widget.user.about != '"'))
+          Text(
+            'About Me: ${widget.user.about}',
+            style: TextStyle(
+              color: const Color(0xff676A79),
+              fontSize: 16.0,
+              fontFamily: GoogleFonts.notoSans().fontFamily,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        const SizedBox(height: 10),
+        if (widget.user.socialLinks != null && widget.user.socialLinks != ",,")
+          Text(
+            'Social Link: ${widget.user.socialLinks}',
+            style: TextStyle(
+              color: const Color(0xff676A79),
+              fontSize: 16.0,
+              fontFamily: GoogleFonts.notoSans().fontFamily,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        const SizedBox(height: 20),
+        _logout(),
+        const SizedBox(height: 20),
       ],
     );
   }
@@ -366,7 +450,7 @@ class VerticalCardList extends StatelessWidget {
     Icons.settings,
   ];
 
-   VerticalCardList({super.key});
+  VerticalCardList({super.key});
 
   @override
   Widget build(BuildContext context) {

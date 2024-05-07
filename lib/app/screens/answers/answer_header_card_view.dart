@@ -1,4 +1,5 @@
 import 'package:evoke_nexus_app/app/models/answer.dart';
+import 'package:evoke_nexus_app/app/provider/comment_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,9 @@ class _AnswerHeaderCardViewState extends State<AnswerHeaderCardView> {
         child: Column(
           children: [
             ListTile(
+
               leading: _profilePicWidget(widget.item, widget.ref),
+
               title: Text(widget.item.author!,
                   style: const TextStyle(fontSize: 16)),
               subtitle: Text(
@@ -64,26 +67,37 @@ class _AnswerHeaderCardViewState extends State<AnswerHeaderCardView> {
       return const SizedBox(height: 5.0);
     }
   }
-
   Widget _profilePicWidget(Answer item, WidgetRef ref) {
     final avatarText = getAvatarText(item.author!);
-    if (item.authorThumbnail == null) {
-      return CircleAvatar(radius: 20.0, child: Text(avatarText));
+    if (item.authorThumbnail == null || item.authorThumbnail == "" ) {
+      return CircleAvatar(radius: 12.0, child: Text(avatarText));
     } else {
       // Note: We're using `watch` directly on the provider.
       final profilePicAsyncValue =
-          ref.watch(authorThumbnailProvider(item.authorThumbnail!));
+          ref.watch(authorThumbnailProviderComments(item.authorThumbnail!));
       //print(profilePicAsyncValue);
       return profilePicAsyncValue.when(
         data: (imageUrl) {
-          if (imageUrl != null && imageUrl.isNotEmpty) {
+          if (imageUrl != null && imageUrl.isNotEmpty){
+          if (_isProperImageUrl(imageUrl)) {
             return CircleAvatar(
               backgroundImage: NetworkImage(imageUrl),
-              radius: 20.0,
+              radius: 12.0,
             );
           } else {
+            // Render text as a fallback when imageUrl is not proper
+            return CircleAvatar(
+              radius: 12.0,
+              child: Text(
+                avatarText,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+              ),
+            );
+          }
+        } else {
             // Render a placeholder or an error image
-            return CircleAvatar(radius: 20.0, child: Text(avatarText));
+            return CircleAvatar(radius: 12.0, child: Text(avatarText));
           }
         },
         loading: () => const Center(
@@ -100,6 +114,14 @@ class _AnswerHeaderCardViewState extends State<AnswerHeaderCardView> {
     }
   }
 
+    bool _isProperImageUrl(String imageUrl) {
+    // Check if the image URL contains spaces in the filename
+    if ( imageUrl.contains('%20')) {
+      return false;
+    }
+    return true;
+  }
+
   String getAvatarText(String name) {
     final nameParts = name.split(' ');
     if (nameParts.length >= 2) {
@@ -109,6 +131,8 @@ class _AnswerHeaderCardViewState extends State<AnswerHeaderCardView> {
     }
     return '';
   }
+
+
 
 // BUTTONS: REACT, COMMENT, SHARE
 }

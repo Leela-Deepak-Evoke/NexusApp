@@ -1,16 +1,19 @@
+import 'package:evoke_nexus_app/app/screens/home/home_screen_small.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_bar_handler.dart';
 import 'package:evoke_nexus_app/app/screens/tab_bar/tab_menu_item.dart';
 import 'package:flutter/material.dart';
 
 class TabBarMenu extends StatefulWidget {
   final BuildContext? rootScreenMobileContext; // Add this parameter
+  final VoidCallback refreshCallback; // Add this parameter
 
   const TabBarMenu(
       {Key? key,
       required this.model,
       required this.menuItems,
       required this.rootScreenMobileContext,
-      required this.onItemTapped})
+      required this.onItemTapped,
+      required this.refreshCallback})
       : super(key: key);
   final List<TabMenuItem> menuItems;
   final TabBarNotifier model;
@@ -21,6 +24,8 @@ class TabBarMenu extends StatefulWidget {
 }
 
 class _TabBarMenuState extends State<TabBarMenu> {
+        // GlobalKey<HomeScreenSmallState> childKey = GlobalKey();
+
   @override
   void initState() {
     super.initState();
@@ -30,7 +35,15 @@ class _TabBarMenuState extends State<TabBarMenu> {
   void dispose() {
     super.dispose();
   }
+  // void refreshScreen() {
+  //   setState(() {
+  //     // Add your logic to refresh the screen here
+  //     // For example, you can trigger a rebuild of the widget
 
+  //     childKey.currentState?.retry();
+
+  //   });
+  // }
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
@@ -41,7 +54,12 @@ class _TabBarMenuState extends State<TabBarMenu> {
         //    GoRouter.of(context).go('/${AppRoute.profile.name}',extra: widget.rootScreenMobileContext, // Pass the context here
         // );
         // }
-        widget.onItemTapped(x);
+        widget.onItemTapped(x); // Call the onItemTapped method
+
+         // If the tapped tab is the one requiring refresh, call the refreshScreen method
+        if (x == 0) {
+          widget.refreshCallback();
+        }
       },
       showUnselectedLabels: true,
       backgroundColor: const Color(0XFF0707b5),  //Color(0XFF4776E6),

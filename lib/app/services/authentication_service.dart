@@ -14,6 +14,7 @@ class AuthenticationService {
   Future<void> login(
       Function(bool isSucess) onloginComplition, BuildContext context) async {
     safePrint('Before Login');
+// signOutCurrentUser();
 
     if (Platform.isIOS) {
       final result = await Amplify.Auth.signInWithWebUI(
@@ -27,10 +28,13 @@ class AuthenticationService {
       safePrint('Result: $result');
       onloginComplition(true);
     } else {
-      final result = await Amplify.Auth.signInWithWebUI(provider: const AuthProvider.saml("EvokeAzureAD"));
-      safePrint('Result: $result');
 
+      final result = await Amplify.Auth.signInWithWebUI(
+          provider: const AuthProvider.saml("EvokeAzureAD"));
+      safePrint('Result: $result');
       onloginComplition(true);
+
+
     }
   }
 }
@@ -43,5 +47,13 @@ Future<void> signOutCurrentUser() async {
     safePrint('Sign out completed successfully');
   } else if (result is CognitoFailedSignOut) {
     safePrint('Error signing user out: ${result.exception.message}');
+  } else if (result is CognitoPartialSignOut) {
+    safePrint('Error signing user out: ${result.signedOutLocally}');
+    if(result.signedOutLocally){
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('authToken');
+    prefs.clear();
+
+    }
   }
 }

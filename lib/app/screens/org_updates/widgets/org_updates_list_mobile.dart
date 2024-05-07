@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:evoke_nexus_app/app/models/delete.dart';
 import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
 import 'package:evoke_nexus_app/app/models/org_updates.dart';
@@ -90,11 +92,13 @@ if (filteredItems.isEmpty) {
                           borderRadius: BorderRadius.circular(0)),
                       clipBehavior: Clip.antiAlias,
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(0),
                         child: Column(
                           children: [
                             ListTile(
                               leading: _profilePicWidget(item, ref),
+                                minLeadingWidth: 0,
+                                minVerticalPadding: 15,
                               title: Text(author!,
                                   style: const TextStyle(fontSize: 16)),
                               subtitle: Text(
@@ -168,7 +172,7 @@ if (filteredItems.isEmpty) {
                                 //     padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
                                 //     child: hasTagViewWidget(item)),
 
-                                //const SizedBox(height: 4.0),
+                                const SizedBox(height: 10.0),
                                 item.media
                                     ? AspectRatio(
                                         aspectRatio: 16 / 9,
@@ -200,9 +204,14 @@ if (filteredItems.isEmpty) {
                     return const Divider();
                   },
                 )),
-                const SizedBox(
-                  height: 100,
-                )
+                   if (Platform.isAndroid)
+                    const SizedBox(
+                      height: 60,
+                    ),
+                  if (Platform.isIOS)
+                    const SizedBox(
+                      height: 100,
+                    ),
               ]),
             ));
       }
@@ -262,7 +271,7 @@ if (filteredItems.isEmpty) {
 
   Widget _profilePicWidget(OrgUpdate item, WidgetRef ref) {
     final avatarText = getAvatarText(item.author!);
-    if (item.authorThumbnail == null) {
+    if (item.authorThumbnail == null || item.authorThumbnail == "") {
       return CircleAvatar(radius: 20.0, child: Text(avatarText));
     } else {
       // Note: We're using `watch` directly on the provider.
@@ -271,12 +280,24 @@ if (filteredItems.isEmpty) {
       //print(profilePicAsyncValue);
       return profilePicAsyncValue.when(
         data: (imageUrl) {
-          if (imageUrl != null && imageUrl.isNotEmpty) {
+          if (imageUrl != null && imageUrl.isNotEmpty){
+          if (_isProperImageUrl(imageUrl)) {
             return CircleAvatar(
               backgroundImage: NetworkImage(imageUrl),
               radius: 20.0,
             );
           } else {
+            // Render text as a fallback when imageUrl is not proper
+            return CircleAvatar(
+              radius: 20.0,
+              child: Text(
+                avatarText,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+              ),
+            );
+          }
+        } else {
             // Render a placeholder or an error image
             return CircleAvatar(radius: 20.0, child: Text(avatarText));
           }
@@ -293,6 +314,14 @@ if (filteredItems.isEmpty) {
             child: Text(avatarText)), // Handle error state appropriately
       );
     }
+  }
+
+  bool _isProperImageUrl(String imageUrl) {
+    // Check if the image URL contains spaces in the filename
+    if ( imageUrl.contains('%20')) {
+      return false;
+    }
+    return true;
   }
 
   String getAvatarText(String name) {

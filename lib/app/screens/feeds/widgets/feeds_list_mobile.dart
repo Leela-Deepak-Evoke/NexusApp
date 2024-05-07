@@ -29,13 +29,15 @@ class FeedListMobile extends ConsumerStatefulWidget {
   bool? isFilter;
   String? selectedCategory;
   // AsyncValue<List<Feed>>? filterfeedsList;
+  List<String>? selectedCategories; // Track selected categories
 
   FeedListMobile(
       {super.key,
       required this.user,
       this.searchQuery,
       this.isFilter,
-      this.selectedCategory
+      this.selectedCategory,
+      this.selectedCategories
       // this.filterfeedsList
       });
 
@@ -75,7 +77,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
       } else {
         // Filter the items based on the search query
         List<Feed> filteredItems = [];
-        if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
+        if (widget.searchQuery != "All" && widget.selectedCategories != "All") {
           filteredItems = items.where((item) {
             return item.author?.contains(widget.searchQuery ?? '') == true ||
                 item.name.contains(widget.searchQuery ?? '') == true ||
@@ -83,7 +85,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
                 item.content?.contains(widget.searchQuery ?? '') == true ||
                 item.status.contains(widget.searchQuery ?? '') == true;
           }).toList();
-        } else if (widget.selectedCategory == "All" ||
+        } else if (widget.selectedCategories == "All" ||
             widget.searchQuery == "All") {
           // If selectedCategory is "All", consider all items
           filteredItems = List.from(items);
@@ -196,12 +198,12 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
                                       padding: const EdgeInsets.fromLTRB(
                                           20, 10, 20, 0),
                                       child: contentViewWidget(item)),
-                                  Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          20, 5, 20, 10),
-                                      child: hasTagViewWidget(item)),
+                                  // Padding(
+                                  //     padding: const EdgeInsets.fromLTRB(
+                                  //         20, 5, 20, 10),
+                                  //     child: hasTagViewWidget(item)),
 
-                                  //const SizedBox(height: 4.0),
+                                  const SizedBox(height: 10.0),
                                   item.media
                                       ? AspectRatio(
                                           aspectRatio: 16 / 9,
@@ -284,21 +286,32 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
 
   Widget _profilePicWidget(Feed item, WidgetRef ref) {
     final avatarText = getAvatarText(item.author!);
-    if (item.authorThumbnail == null) {
+    if (item.authorThumbnail == null || item.authorThumbnail == "" ) {
       return CircleAvatar(radius: 20.0, child: Text(avatarText));
     } else {
-      // Note: We're using `watch` directly on the provider.
       final profilePicAsyncValue =
           ref.watch(authorThumbnailProvider(item.authorThumbnail!));
-      //print(profilePicAsyncValue);
       return profilePicAsyncValue.when(
         data: (imageUrl) {
-          if (imageUrl != null && imageUrl.isNotEmpty) {
+          if (imageUrl != null && imageUrl.isNotEmpty){
+          // Check if imageUrl is proper or not
+          if (_isProperImageUrl(imageUrl)) {
             return CircleAvatar(
               backgroundImage: NetworkImage(imageUrl),
               radius: 20.0,
             );
           } else {
+            // Render text as a fallback when imageUrl is not proper
+            return CircleAvatar(
+              radius: 20.0,
+              child: Text(
+                avatarText,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+              ),
+            );
+          }
+        } else {
             // Render a placeholder or an error image
             return CircleAvatar(radius: 20.0, child: Text(avatarText));
           }
@@ -316,6 +329,15 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
       );
     }
   }
+
+    bool _isProperImageUrl(String imageUrl) {
+    // Check if the image URL contains spaces in the filename
+    if ( imageUrl.contains('%20')) {
+      return false;
+    }
+    return true;
+  }
+
 
   String getAvatarText(String name) {
     final nameParts = name.split(' ');

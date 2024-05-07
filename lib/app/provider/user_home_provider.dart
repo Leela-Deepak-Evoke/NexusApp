@@ -14,6 +14,8 @@ final userHomeProvider = FutureProvider.autoDispose.family<UserHome, User>((ref,
 
 final refresUserHomeProvider =
     FutureProvider.autoDispose.family<bool, String>((ref, user) async {
-  ref.invalidate(homeServiceProvider);
+  ref.invalidate(userHomeProvider);
 return true;
 });
+
+

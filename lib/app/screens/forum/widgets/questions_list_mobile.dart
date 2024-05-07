@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:evoke_nexus_app/app/models/delete.dart';
 import 'package:evoke_nexus_app/app/models/question.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/delete_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/forum_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
+import 'package:evoke_nexus_app/app/screens/answers/answers_screen.dart';
 import 'package:evoke_nexus_app/app/screens/create_post_forum/create_post_forum_screen.dart';
 import 'package:evoke_nexus_app/app/screens/forum/widgets/answers_list.dart';
 import 'package:evoke_nexus_app/app/utils/app_routes.dart';
@@ -21,13 +24,15 @@ class QuestionsListMobile extends ConsumerStatefulWidget {
   String? searchQuery;
   bool? isFilter;
   String? selectedCategory;
+       bool? isFromHomePage;
 
   QuestionsListMobile(
       {super.key,
       required this.user,
       this.searchQuery,
       this.isFilter,
-      this.selectedCategory});
+      this.selectedCategory,
+      this.isFromHomePage});
 
   @override
   _QuestionsListMobileViewState createState() =>
@@ -83,10 +88,20 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
 
                         return InkWell(
                             onTap: () {
-                              context.goNamed(
+                              if (widget.isFromHomePage == false) {
+                                context.goNamed(
                                 AppRoute.answersforum.name,
                                 extra: item,
                               );
+                              }
+                               if (widget.isFromHomePage == true){
+                                 Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          AnswersScreen(question: item)));
+                               }
+                               
                             },
                             child: Card(
                               // margin: const EdgeInsets.all(0),
@@ -121,9 +136,17 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
                       // },
                     ),
                   ),
-                  const SizedBox(
-                    height: 100,
-                  )
+                  // const SizedBox(
+                  //   height: 100,
+                  // )
+                   if (Platform.isAndroid)
+                    const SizedBox(
+                      height: 60,
+                    ),
+                  if (Platform.isIOS)
+                    const SizedBox(
+                      height: 100,
+                    ),
                 ]),
               ));
         }
@@ -426,21 +449,31 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
 
 Widget _profilePicWidget(Question item, WidgetRef ref) {
     final avatarText = getAvatarText(item.author!);
-    if (item.authorThumbnail == null) {
+    if (item.authorThumbnail == null || item.authorThumbnail == "") {
       return CircleAvatar(radius: 12.0, child: Text(avatarText));
     } else {
-      // Note: We're using `watch` directly on the provider.
       final profilePicAsyncValue =
           ref.watch(authorThumbnailProvider(item.authorThumbnail!));
-      //print(profilePicAsyncValue);
       return profilePicAsyncValue.when(
         data: (imageUrl) {
           if (imageUrl != null && imageUrl.isNotEmpty) {
+          if (_isProperImageUrl(imageUrl)) {
             return CircleAvatar(
               backgroundImage: NetworkImage(imageUrl),
               radius: 12.0,
             );
           } else {
+            // Render text as a fallback when imageUrl is not proper
+            return CircleAvatar(
+              radius: 12.0,
+              child: Text(
+                avatarText,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+              ),
+            );
+          }
+        } else {
             // Render a placeholder or an error image
             return CircleAvatar(radius: 20.0, child: Text(avatarText));
           }
@@ -468,48 +501,15 @@ Widget _profilePicWidget(Question item, WidgetRef ref) {
     }
     return '';
   }
-  Widget _profilePicWidget_OLD(Question item, WidgetRef ref) {
-    final avatarText = getAvatarText(item.author!);
-    if (item.authorThumbnail == null) {
-      return CircleAvatar(radius: 12.0, child: Text(avatarText));
-    } else {
-      // Note: We're using `watch` directly on the provider.
-      final profilePicAsyncValue =
-          ref.watch(authorThumbnailProvider(item.authorThumbnail!));
-      //print(profilePicAsyncValue);
-      return profilePicAsyncValue.when(
-        data: (imageUrl) {
-          if (imageUrl != null && imageUrl.isNotEmpty) {
-            return CircleAvatar(
-              backgroundImage: NetworkImage(imageUrl),
-              radius: 12.0,
-              child: Text(
-                avatarText,
-                textAlign: TextAlign.center,
-                style:
-                    const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
-              ),
-            );
-          } else {
-            // Render a placeholder or an error image
-            return CircleAvatar(radius: 12.0, child: Text(avatarText));
-          }
-        },
-        loading: () => const Center(
-          child: SizedBox(
-            height: 30.0,
-            width: 30.0,
-            child: CircularProgressIndicator(),
-          ),
-        ),
-        error: (error, stackTrace) => CircleAvatar(
-            radius: 30.0,
-            child: Text(avatarText)), // Handle error state appropriately
-      );
+  
+    bool _isProperImageUrl(String imageUrl) {
+    // Check if the image URL contains spaces in the filename
+    if ( imageUrl.contains('%20')) {
+      return false;
     }
+    return true;
   }
 
- 
 
   Future<void> _onRefresh() async {
     ref.read(refresUserProvider(""));

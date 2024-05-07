@@ -13,6 +13,7 @@ import 'package:evoke_nexus_app/app/screens/answers/answer_header_card_view.dart
 import 'package:evoke_nexus_app/app/screens/comments/comments_screen.dart';
 import 'package:evoke_nexus_app/app/screens/comments/widgets/comments_mobile_view.dart';
 import 'package:evoke_nexus_app/app/screens/create_post_answers/create_post_answer_screen.dart';
+import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_header_card_view.dart';
 import 'package:evoke_nexus_app/app/widgets/common/edit_delete_button.dart';
 import 'package:evoke_nexus_app/app/widgets/common/error_screen.dart';
 import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
@@ -161,25 +162,7 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
                                       ),
                                     ),
                                   btnCommentsLayout(context, index, item, ref),
-          //                          TextButton.icon(
-          //   onPressed: () {
-          //   },
-          //   icon: Image.asset(
-          //     'assets/images/Vector-2.png',
-          //     width: 20,
-          //     height: 20,
-          //   ),
-          //   label: Text(
-          //     'Report',
-          //     style: TextStyle(
-          //       color: Color(0xff393E41),
-          //       fontFamily: GoogleFonts.inter().fontFamily,
-          //       fontWeight: FontWeight.normal,
-          //       fontSize: 14,
-          //     ),
-          //   ),
-          // ),
-                                ],
+                  ],
                               ),
                               
                             ),
@@ -356,7 +339,7 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
 
   Widget _profilePicWidget(Answer item, WidgetRef ref) {
     final avatarText = getAvatarText(item.author!);
-    if (item.authorThumbnail == null) {
+    if (item.authorThumbnail == null || item.authorThumbnail == "") {
       return CircleAvatar(radius: 10.0, child: Text(avatarText));
     } else {
       // Note: We're using `watch` directly on the provider.
@@ -366,17 +349,23 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
       return profilePicAsyncValue.when(
         data: (imageUrl) {
           if (imageUrl != null && imageUrl.isNotEmpty) {
+          if (_isProperImageUrl(imageUrl)) {
             return CircleAvatar(
               backgroundImage: NetworkImage(imageUrl),
+              radius: 12.0,
+            );
+          } else {
+            // Render text as a fallback when imageUrl is not proper
+            return CircleAvatar(
               radius: 12.0,
               child: Text(
                 avatarText,
                 textAlign: TextAlign.center,
-                style:
-                    const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
               ),
             );
-          } else {
+          }
+        } else {
             // Render a placeholder or an error image
             return CircleAvatar(radius: 12.0, child: Text(avatarText));
           }
@@ -394,6 +383,16 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
       );
     }
   }
+
+
+    bool _isProperImageUrl(String imageUrl) {
+    // Check if the image URL contains spaces in the filename
+    if ( imageUrl.contains('%20')) {
+      return false;
+    }
+    return true;
+  }
+
 
   String getAvatarText(String name) {
     final nameParts = name.split(' ');
@@ -494,6 +493,15 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
                 width: 20,
                 height: 20,
               ),
+              //    label: Text(
+              //   'View ${item.comments} Comments',
+              //   style: TextStyle(
+              //     color: const Color(0xff393E41),
+              //     fontFamily: GoogleFonts.inter().fontFamily,
+              //     fontWeight: FontWeight.normal,
+              //     fontSize: 14,
+              //   ),
+              // ),
               label: Text(
                 isCommentsVisible && isCommentsVisibleList == index
                     ? 'Hide Comments'

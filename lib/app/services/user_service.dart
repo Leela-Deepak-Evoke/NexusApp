@@ -50,6 +50,7 @@ class UserService {
       final tokens = result.userPoolTokensResult.value;
 
       final authToken = tokens.idToken.raw;
+      safePrint('---- TOKEN: ----- $result');
 
       SharedPreferences sharedPreferences =
           await SharedPreferences.getInstance();

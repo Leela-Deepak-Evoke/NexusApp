@@ -34,7 +34,6 @@ class TabBarHandler extends StatefulWidget {
 }
 
 class _TabBarHandlerState extends State<TabBarHandler> {
-    HomeScreenSmall userHomeScreen = const HomeScreenSmall();
       GlobalKey<HomeScreenSmallState> childKey = GlobalKey();
 
   @override
@@ -67,6 +66,7 @@ class _TabBarHandlerState extends State<TabBarHandler> {
   }
   @override
   Widget build(BuildContext context) {
+
     final menuItemlist = <TabMenuItem>[
       TabMenuItem(
           Icons.home,
@@ -106,9 +106,15 @@ class _TabBarHandlerState extends State<TabBarHandler> {
                   index: _tabBarNotifier.index,
                   children: [
                     for (int i = 0; i < menuItemlist.length; i++)
-                      menuItemlist[i].child
+                      menuItemlist[i].child,
+                                      // Add HomeScreenSmall as one of the children
+                HomeScreenSmall(key: childKey),
+
                   ],
                 ),
+            //      if (_tabBarNotifier.index == 0) // Check if Home tab is selected
+            //  HomeScreenSmall(key: childKey),
+
                 Positioned(
                   bottom: 0,
                   left: 0,
@@ -124,14 +130,19 @@ class _TabBarHandlerState extends State<TabBarHandler> {
 
                           //NEWLY ADDED CODE
                        // If the tab containing HomeScreenSmall is tapped, refresh the screen
-                      if (x == 0) {
-                        // Call the refresh method on the instance of HomeScreenSmall
-refreshScreen();
-                      }
+//                       if (x == 0) {
+//                         // Call the refresh method on the instance of HomeScreenSmall
+// // refreshScreen();
+//                 HomeScreenSmall(key: childKey);
+
+//                       }
                         }
                       },
-                      menuItems: menuItemlist),
+                      menuItems: menuItemlist, refreshCallback: refreshScreen),
+
                 ),
+                 // Add HomeScreenSmall here as a child of the Stack
+           
               ],
             );
           }),

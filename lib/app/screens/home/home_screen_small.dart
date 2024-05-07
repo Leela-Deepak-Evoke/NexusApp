@@ -31,6 +31,16 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     setState(() {});
   }
 
+//REFRESH OF BOTH LISTS
+  void retry() {
+    _onRefresh();
+  }
+
+  Future<void> _onRefresh() async {
+    ref.read(refresUserProvider(""));
+    ref.watch(refresUserHomeProvider(""));
+  }
+
   @override
   Widget build(BuildContext context) {
     final ValueNotifier<double> headerNegativeOffset = ValueNotifier<double>(0);
@@ -98,21 +108,23 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     UserDetails? userDetails;
 
     double screenWidth = MediaQuery.of(context).size.width;
-  double screenHeight = MediaQuery.of(context).size.height;
+    double screenHeight = MediaQuery.of(context).size.height;
     double spaceTopHeader = 115.0;
 
-  if (Platform.isAndroid) {
-    spaceTopHeader = screenWidth * 0.25; // For Android devices
-  } else {
-    // Check for iPhone SE based on logical screen dimensions
-    bool isIPhoneSE = screenWidth == 375 && screenHeight == 667; // iPhone SE 3rd generation has a logical size of 375x667 points
-    
-    if (isIPhoneSE) {
-      spaceTopHeader = screenWidth * 0.2; // For iPhone SE
+    if (Platform.isAndroid) {
+      spaceTopHeader = screenWidth * 0.25; // For Android devices
     } else {
-      spaceTopHeader = screenWidth * 0.3; // For other resolutions
+      // Check for iPhone SE based on logical screen dimensions
+      bool isIPhoneSE = screenWidth == 375 &&
+          screenHeight ==
+              667; // iPhone SE 3rd generation has a logical size of 375x667 points
+
+      if (isIPhoneSE) {
+        spaceTopHeader = screenWidth * 0.2; // For iPhone SE
+      } else {
+        spaceTopHeader = screenWidth * 0.3; // For other resolutions
+      }
     }
-  }
 
     if (userHomeAsyncValue is AsyncValue<UserHome>) {
       // Check if userHomeAsyncValue is of type AsyncValue<UserHome>
@@ -390,7 +402,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     return Container(
       width: size.width,
       height: calculateContainerHeight(userHomeAsyncValue,
-          userHomeAsyncValue?.value?.latestUpdates ?? [], 430), //455
+          userHomeAsyncValue?.value?.latestUpdates ?? [], 410), //455
       alignment: AlignmentDirectional.topStart,
       child: userHomeAsyncValue!.when(
         data: (userHome) {
@@ -440,11 +452,14 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                         ),
                         clipBehavior: Clip.antiAlias,
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(0),
                           child: Column(
                             children: [
                               ListTile(
-                                leading: _profilePicWidget(item, ref),
+                                leading:
+                                    _profilePicWidget(item.user, false, ref),
+                                minLeadingWidth: 0,
+                                minVerticalPadding: 15,
                                 title: Text(
                                   author,
                                   style: const TextStyle(fontSize: 16),
@@ -517,6 +532,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                         20, 10, 20, 0),
                                     child: contentViewWidget(item),
                                   ),
+                                  const SizedBox(height: 12.0),
+
                                   item.orgUpdate.media
                                       ? AspectRatio(
                                           aspectRatio: 16 / 9,
@@ -573,16 +590,6 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     }
   }
 
-//REFRESH OF BOTH LISTS
-  void retry() {
-    _onRefresh();
-  }
-
-  Future<void> _onRefresh() async {
-    ref.read(refresUserProvider(""));
-    ref.watch(refresUserHomeProvider(""));
-  }
-
   Widget lblChannelsJoin() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
@@ -597,7 +604,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
   }
 
 // TOP HEADER 3 Labels
-  Widget viewUsersInformation(AsyncValue<UserHome>? userHomeAsyncValue) {
+  Widget viewUsersInformation(
+      AsyncValue<UserHome>? userHomeAsyncValue, Size size) {
     double fontSize = 12.0; // Default font size
 
     if (Platform.isAndroid) {
@@ -614,135 +622,139 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
         final lastLoginDate = DateFormat('MMM d').format(
           DateTime.parse(userHome.userDetails.lastLoginAt.toString()).toLocal(),
         );
+        final horizontalPadding =
+            size.width * 0.01; // Adjust the percentage as needed
+        return Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: horizontalPadding, vertical: 0),
+            child: Row(
+                // crossAxisAlignment: CrossAxisAlignment.center,
+                // mainAxisAlignment: MainAxisAlignment.start, //spaceEvenly
+                children: [
+                  //Calender
+                  TextButton.icon(
+                    onPressed: null, // Disable user interaction
+                    icon: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/images/icons8-calendar-plus-48.png',
+                          width: 24,
+                          height: 24,
+                        ),
+                        const SizedBox(
+                            width: 0), // Adjust spacing between icon and text
+                      ],
+                    ),
+                    label: Column(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start, // Align text to the start
+                      children: [
+                        //"User Created At: ${user!.createdAt}",
+                        Text(
+                          Global.calculateTimeDifferenceBetween(
+                              Global.getDateTimeFromStringForPosts(userHome
+                                  .userDetails.createdAt
+                                  .toString())), // Show the difference in days
+                          style: TextStyle(
+                            color: const Color(0xff292929),
+                            fontSize: fontSize,
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          'Usage Duration',
+                          style: TextStyle(
+                            color: const Color(0xff292929),
+                            fontSize: fontSize,
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
 
-        return Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              //Calender
-              TextButton.icon(
-                onPressed: null, // Disable user interaction
-                icon: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset(
-                      'assets/images/icons8-calendar-plus-48.png',
-                      width: 24,
-                      height: 24,
-                    ),
-                    const SizedBox(
-                        width: 4), // Adjust spacing between icon and text
-                  ],
-                ),
-                label: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start, // Align text to the start
-                  children: [
-                    //"User Created At: ${user!.createdAt}",
-                    Text(
-                      Global.calculateTimeDifferenceBetween(
-                          Global.getDateTimeFromStringForPosts(userHome
-                              .userDetails.createdAt
-                              .toString())), // Show the difference in days
-                      style: TextStyle(
-                        color: const Color(0xff292929),
-                        fontSize: fontSize,
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      'Usage Duration',
-                      style: TextStyle(
-                        color: const Color(0xff292929),
-                        fontSize: fontSize,
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                  // Last Login
 
-              // Last Login
+                  TextButton.icon(
+                    onPressed: null, // Disable user interaction
+                    icon: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/images/last-login-48.png',
+                          width: 24,
+                          height: 24,
+                        ),
+                        const SizedBox(
+                            width: 0), // Adjust spacing between icon and text
+                      ],
+                    ),
+                    label: Column(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start, // Align text to the start
+                      children: [
+                        Text(lastLoginDate, // Show the difference in days
+                            style: TextStyle(
+                              color: const Color(0xff292929),
+                              fontSize: fontSize,
+                              fontFamily: GoogleFonts.poppins().fontFamily,
+                              fontWeight: FontWeight.w500,
+                            )),
+                        Text(
+                          'Last Login',
+                          style: TextStyle(
+                            color: const Color(0xff292929),
+                            fontSize: fontSize,
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
 
-              TextButton.icon(
-                onPressed: null, // Disable user interaction
-                icon: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset(
-                      'assets/images/last-login-48.png',
-                      width: 24,
-                      height: 24,
+                  // Status
+                  TextButton.icon(
+                    onPressed: null, // Disable user interaction
+                    icon: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/images/status-48.png',
+                          width: 24,
+                          height: 24,
+                        ),
+                        const SizedBox(
+                            width: 0), // Adjust spacing between icon and text
+                      ],
                     ),
-                    const SizedBox(
-                        width: 4), // Adjust spacing between icon and text
-                  ],
-                ),
-                label: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start, // Align text to the start
-                  children: [
-                    Text(lastLoginDate, // Show the difference in days
-                        style: TextStyle(
-                          color: const Color(0xff292929),
-                          fontSize: fontSize,
-                          fontFamily: GoogleFonts.poppins().fontFamily,
-                          fontWeight: FontWeight.w500,
-                        )),
-                    Text(
-                      'Last Login',
-                      style: TextStyle(
-                        color: const Color(0xff292929),
-                        fontSize: fontSize,
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    label: Column(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start, // Align text to the start
+                      children: [
+                        Text(userHome.userDetails.status,
+                            style: TextStyle(
+                              color: const Color(0xff292929),
+                              fontSize: fontSize,
+                              fontFamily: GoogleFonts.poppins().fontFamily,
+                              fontWeight: FontWeight.w500,
+                            )),
+                        Text(
+                          'Status',
+                          style: TextStyle(
+                            color: const Color(0xff292929),
+                            fontSize: fontSize,
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-
-              // Status
-              TextButton.icon(
-                onPressed: null, // Disable user interaction
-                icon: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset(
-                      'assets/images/status-48.png',
-                      width: 24,
-                      height: 24,
-                    ),
-                    const SizedBox(
-                        width: 4), // Adjust spacing between icon and text
-                  ],
-                ),
-                label: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start, // Align text to the start
-                  children: [
-                    Text(userHome.userDetails.status,
-                        style: TextStyle(
-                          color: const Color(0xff292929),
-                          fontSize: fontSize,
-                          fontFamily: GoogleFonts.poppins().fontFamily,
-                          fontWeight: FontWeight.w500,
-                        )),
-                    Text(
-                      'Status',
-                      style: TextStyle(
-                        color: const Color(0xff292929),
-                        fontSize: fontSize,
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ]);
+                  ),
+                ]));
       },
       loading: () {
         return const Center();
@@ -933,7 +945,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                     ],
                   ),
                 ),
-                viewUsersInformation(userHomeAsyncValue),
+                viewUsersInformation(userHomeAsyncValue, size),
                 Row(
                   // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -1252,7 +1264,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
       itemCount: 4,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 1,
-        mainAxisSpacing: 0.99,
+        // mainAxisSpacing: 0,
         crossAxisSpacing: 1,
         // width / height: fixed for *all* items
         childAspectRatio: 0.99,
@@ -1266,7 +1278,6 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
   Widget _buildGridItem(int index) {
     String iconAsset;
     String label;
-
     // Determine icon and label based on the index
     switch (index) {
       case 0:
@@ -1289,29 +1300,23 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
         iconAsset = 'assets/images/default_icon.png';
         label = 'Label $index';
     }
-
     return Container(
-      // width: 200,
-      // height: 200,
-      // margin: const EdgeInsets.symmetric(horizontal: 0),
-      // color: Colors.white,
-
-      child: Padding(
-        // padding: const EdgeInsets.all(0.0),
-        padding: const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
-
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              width: 80, //100
-              height: 80,
-              decoration: BoxDecoration(
-                color: Colors.grey[300], // Background color for icon
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Center(
+        margin: const EdgeInsets.only(right: 0),
+        // color: Colors.red[300],
+        child: Padding(
+          padding: const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
+          child: Column(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            // crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 80, //100
+                height: 80,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300], // Background color for icon
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                // child: Center(
                 child: Container(
                   decoration: BoxDecoration(
                     // color: Colors.white, // Background color for icon
@@ -1326,27 +1331,26 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                     ),
                   ),
                 ),
+                // ),
               ),
-            ),
-            const SizedBox(height: 8.0),
-            Expanded(
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                maxLines: 2, // Set max lines to 2
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: const Color(0xff676A79),
-                  fontSize: 13.0,
-                  fontFamily: GoogleFonts.notoSans().fontFamily,
-                  fontWeight: FontWeight.w600,
+              const SizedBox(height: 8.0),
+              Expanded(
+                child: Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  maxLines: 2, // Set max lines to 2
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: const Color(0xff676A79),
+                    fontSize: 13.0,
+                    fontFamily: GoogleFonts.notoSans().fontFamily,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
+            ],
+          ),
+        ));
   }
 
 //List View Methods of Updates
@@ -1457,52 +1461,75 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
   void _onCommentsPressed(LatestUpdate item) {}
 
 //COMMON PROFILE PIC METHODS
-  Widget _profilePicWidget(dynamic item, WidgetRef ref) {
-    final bool isQuestion = item is LatestQuestion;
-
-    final String name = isQuestion ? item.question.name : item.orgUpdate.name!;
-    final String avatarText = getAvatarText(name);
-
+  Widget _profilePicWidget(UserList item, bool isQuestion, WidgetRef ref) {
+    final avatarText = getAvatarText(item.name);
     final double radius = isQuestion ? 12.0 : 20.0;
 
-    if (item.user.profilePicture == null) {
-      return CircleAvatar(radius: radius, child: Text(avatarText));
-    } else {
-      // Note: We're using `watch` directly on the provider.
-      final profilePicAsyncValue =
-          ref.watch(authorThumbnailProvider(item.user.profilePicture!));
+    final profilePicAsyncValue =
+        ref.watch(authorThumbnailProvider(item.profilePicture!));
 
-      return profilePicAsyncValue.when(
-        data: (imageUrl) {
-          if (imageUrl != null && imageUrl.isNotEmpty) {
+    return profilePicAsyncValue.when(
+      data: (imageUrl) {
+        if (imageUrl != null && imageUrl.isNotEmpty) {
+          // Check if imageUrl is proper or not
+          if (_isProperImageUrl(imageUrl)) {
             return CircleAvatar(
               backgroundImage: NetworkImage(imageUrl),
+              radius: radius,
+            );
+          } else {
+            // Render text as a fallback when imageUrl is not proper
+            return CircleAvatar(
               radius: radius,
               child: Text(
                 avatarText,
                 textAlign: TextAlign.center,
-                style:
-                    const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
               ),
             );
-          } else {
-            // Render a placeholder or an error image
-            return CircleAvatar(radius: radius, child: Text(avatarText));
           }
-        },
-        loading: () => const Center(
-            // child: SizedBox(
-            //   height: isQuestion ? 30.0 : 20.0,
-            //   width: isQuestion ? 30.0 : 20.0,
-            //   child: CircularProgressIndicator(),
-            // ),
-            ),
-        error: (error, stackTrace) => CircleAvatar(
+        } else {
+          // Render initials if imageUrl is null or empty
+          return CircleAvatar(
+            radius: radius,
+            child: Text(avatarText),
+          );
+        }
+      },
+      loading: () => CircleAvatar(
+        radius: radius,
+        child: CircularProgressIndicator(), // Placeholder for loading state
+      ),
+      error: (error, stackTrace) {
+        // Render initials with a fallback text in case of error
+        return CircleAvatar(
           radius: radius,
-          child: Text(avatarText),
-        ), // Handle error state appropriately
-      );
+          child: Text(
+            avatarText,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+          ),
+        );
+      },
+    );
+  }
+
+  bool _isProperImageUrl(String imageUrl) {
+    // Check if the image URL contains spaces in the filename
+    if ( imageUrl.contains('%20')) {
+      return false;
     }
+    return true;
+  }
+
+  String getAvatarText(String name) {
+    final nameParts = name.split(' ');
+    if (nameParts.length >= 2) {
+      return nameParts[0][0].toUpperCase() + nameParts[1][0].toUpperCase();
+    } else if (nameParts.isNotEmpty) {
+      return nameParts[0][0].toUpperCase();
+    }
+    return '';
   }
 
   Widget _userProfilePic(
@@ -1550,16 +1577,6 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     }
   }
 
-  String getAvatarText(String name) {
-    final nameParts = name.split(' ');
-    if (nameParts.length >= 2) {
-      return nameParts[0][0].toUpperCase() + nameParts[1][0].toUpperCase();
-    } else if (nameParts.isNotEmpty) {
-      return nameParts[0][0].toUpperCase();
-    }
-    return '';
-  }
-
 //HEADER AND FOOTER OF LATEST QUESTIONS
   Wrap askedbyViewHeader(LatestQuestion item, WidgetRef ref) {
     bool isCurrentUser = item.user.userId == user!.userId;
@@ -1568,7 +1585,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
       direction: Axis.horizontal,
       spacing: 2,
       children: [
-        _profilePicWidget(item, ref),
+        _profilePicWidget(item.user, true, ref),
         const SizedBox(
           width: 5,
         ),

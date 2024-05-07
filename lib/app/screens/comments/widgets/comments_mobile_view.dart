@@ -148,7 +148,7 @@ class _CommentsMobileViewState extends ConsumerState<CommentsMobileView> {
         ),
       ]),
       SizedBox(
-          height: _isKeyboardVisible ? 350 : 100,
+          height:    _isKeyboardVisible ? 350 : 100,
           child: Container(
             color: Colors.white,
           ))

@@ -8,13 +8,15 @@ class ForumMobileView extends StatefulWidget {
   bool? isFilter;
   String? selectedCategory;
   Function() onPostClicked;
+       bool? isFromHomePage;
+
   ForumMobileView(
       {super.key,
       required this.user,
       required this.searchQuery,
       this.isFilter,
       this.selectedCategory,
-      required this.onPostClicked});
+      required this.onPostClicked, this.isFromHomePage});
 
   @override
   State<ForumMobileView> createState() => _ForumMobileViewCardState();
@@ -37,6 +39,7 @@ class _ForumMobileViewCardState extends State<ForumMobileView> {
               isFilter: widget.isFilter ?? false,
               selectedCategory:
                   widget.isFilter ?? false ? widget.selectedCategory : null,
+                  isFromHomePage: widget.isFromHomePage
             ),
           ),
         ),

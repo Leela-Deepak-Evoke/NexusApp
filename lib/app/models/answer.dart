@@ -48,18 +48,34 @@ class Answer {
         'currentUserLiked': currentUserLiked
       };
 
-  factory Answer.fromJson(Map<String, dynamic> json, String currentUserId) {
+  // factory Answer.fromJson(Map<String, dynamic> json, String currentUserId) {
+  //   String? authorThumbnail;
+  //   if (json['user']['profilePicture'] != null) {
+  //     if (json['user']['userId'] == currentUserId) {
+  //       authorThumbnail = json['user']['profilePicture'];
+  //     } else {
+  //       authorThumbnail = json['user']['profilePicture'];
+  //       //json['user']['identityId'] + '/' + json['user']['profilePicture'];
+  //     }
+  //   }else{
+  //       authorThumbnail = 'assets/images/avthar.png';
+  //   }
+
+
+
+ factory Answer.fromJson(Map<String, dynamic> json, String currentUserId) {
     String? authorThumbnail;
     if (json['user']['profilePicture'] != null) {
       if (json['user']['userId'] == currentUserId) {
         authorThumbnail = json['user']['profilePicture'];
       } else {
         authorThumbnail = json['user']['profilePicture'];
-        //json['user']['identityId'] + '/' + json['user']['profilePicture'];
+        // json['user']['identityId'] + '/' + json['user']['profilePicture'];
       }
     }else{
-        authorThumbnail = 'assets/images/avthar.png';
+        authorThumbnail = 'assets/images/dummy_avthar.png';
     }
+
 
     return Answer(
         answerId: json['answer']['answerId'],

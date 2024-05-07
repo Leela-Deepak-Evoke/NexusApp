@@ -58,6 +58,14 @@ final List<Color> cardColors = [
     return cardColors[index % cardColors.length];
   }
 
+  bool _isProperImageUrl(String imageUrl) {
+    // Check if the image URL contains spaces in the filename
+    if ( imageUrl.contains('%20')) {
+      return false;
+    }
+    return true;
+  }
+
   String getAvatarText(String name) {
     final nameParts = name.split(' ');
     if (nameParts.length >= 2) {
@@ -70,7 +78,7 @@ final List<Color> cardColors = [
 
   Widget _profilePicWidget(UserComment item, WidgetRef ref) {
     final avatarText = getAvatarText(item.userName);
-    if (item.authorThumbnail == null) {
+    if (item.authorThumbnail == null  || item.authorThumbnail == "" ) {
       return CircleAvatar(radius: 12.0, child: Text(avatarText));
     } else {
       // Note: We're using `watch` directly on the provider.
@@ -80,17 +88,23 @@ final List<Color> cardColors = [
       return profilePicAsyncValue.when(
         data: (imageUrl) {
           if (imageUrl != null && imageUrl.isNotEmpty) {
+          if (_isProperImageUrl(imageUrl)) {
             return CircleAvatar(
               backgroundImage: NetworkImage(imageUrl),
+              radius: 12.0,
+            );
+          } else {
+            // Render text as a fallback when imageUrl is not proper
+            return CircleAvatar(
               radius: 12.0,
               child: Text(
                 avatarText,
                 textAlign: TextAlign.center,
-                style:
-                    const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
               ),
             );
-          } else {
+          }
+        }else {
             // Render a placeholder or an error image
             return CircleAvatar(radius: 12.0, child: Text(avatarText));
           }

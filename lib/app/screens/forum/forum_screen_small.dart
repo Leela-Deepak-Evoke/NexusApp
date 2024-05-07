@@ -59,6 +59,7 @@ class _ForumScreenSmallState extends ConsumerState<ForumScreenSmall> {
                onPostClicked: () {
               context.goNamed(AppRoute.postforum.name, extra: data);
             },
+            isFromHomePage: widget.isFromHomePage == true ? true : false
               ),
         );
       },

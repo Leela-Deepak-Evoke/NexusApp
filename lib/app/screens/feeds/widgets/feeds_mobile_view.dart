@@ -8,13 +8,15 @@ class FeedsMobileView extends StatefulWidget {
   bool? isFilter;
   String? selectedCategory;
 // AsyncValue<List<Feed>>? filterfeedsList;
+  List<String>? selectedCategories; // Track selected categories
 
   FeedsMobileView(
       {super.key,
       required this.user,
       required this.searchQuery,
       this.isFilter,
-      this.selectedCategory
+      this.selectedCategory,
+       this.selectedCategories
       // this.filterfeedsList
       });
 
@@ -48,6 +50,7 @@ class _FeedsMobileViewCardState extends State<FeedsMobileView> {
             searchQuery: widget.searchQuery,
             isFilter: widget.isFilter ?? false,
             selectedCategory: widget.isFilter ?? false ? widget.selectedCategory : null,
+            selectedCategories:  widget.isFilter ?? false ? widget.selectedCategories?.toList() : null,
           ),
         ),
       ),

@@ -66,6 +66,8 @@ class ForumService {
         final response = await restOperation.response;
         if (response.statusCode == 200) {
           final jsonResponse = json.decode(response.decodeBody());
+                safePrint('jsonResponse: ${jsonResponse}');
+
           if (jsonResponse is List) {
             return jsonResponse
                 .map((forumJson) => Answer.fromJson(forumJson, params.userId))

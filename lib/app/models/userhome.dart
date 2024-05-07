@@ -4,6 +4,8 @@ class UserHome {
   late PostsCount postsCount;
   late List<LatestQuestion> latestQuestions;
   late List<LatestUpdate> latestUpdates;
+  // static const String defaultProfilePicture = 'assets/images/dummy_avthar.png'; // Default profile picture
+
 
   UserHome({
     required this.userDetails,
@@ -17,6 +19,11 @@ class UserHome {
     postsCount = PostsCount.fromJson(json['posts_count']);
     latestQuestions = List<LatestQuestion>.from(json['latest_questions'].map((x) => LatestQuestion.fromJson(x)));
     latestUpdates = List<LatestUpdate>.from(json['latest_updates'].map((x) => LatestUpdate.fromJson(x)));
+  
+  // // Set default profile picture if it's missing or null
+  //   if (userDetails.profilePicture == null) {
+  //     userDetails.profilePicture = defaultProfilePicture;
+  //   }
   }
 }
 

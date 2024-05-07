@@ -14,6 +14,8 @@ class FeedService {
       };
       final prefs = await SharedPreferences.getInstance();
       final authToken = prefs.getString('authToken');
+                      safePrint(authToken);
+
       if (authToken != null) {
         final restOperation = Amplify.API.post(
           'fetchfeeds',

@@ -88,8 +88,7 @@ class AnswerList extends ConsumerWidget {
   var params = GetCommentsParams(
                       userId: user.userId,
                       postId: item.answerId,
-                      postType: "Feed");
-
+                      postType: "Answer");
 
                                       return LikesWidget(user: user, spaceName: "Answer", spaceId: item.answerId, params: params);
                                       // return LikesWidget(spaceName: 'Answer', spaceId: item.answerId, userId: user.userId, isLike: false);

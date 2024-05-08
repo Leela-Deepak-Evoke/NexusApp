@@ -48,19 +48,37 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
         // Handle the case where there is no data found
         return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
       } else {
-         List<OrgUpdate> filteredItems = [];
-        if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
-          filteredItems = items.where((item) {
-            return item.author?.contains(widget.searchQuery ?? '') == true ||
-                item.name.contains(widget.searchQuery ?? '') == true ||
-                item.authorTitle?.contains(widget.searchQuery ?? '') == true ||
-                item.content?.contains(widget.searchQuery ?? '') == true ||
-                item.status.contains(widget.searchQuery ?? '') == true;
-          }).toList();
-        } else if (widget.selectedCategory == "All" || widget.searchQuery == "All") {
-          // If selectedCategory is "All", consider all items
-          filteredItems = List.from(items);
-        }
+        //  List<OrgUpdate> filteredItems = [];
+        // if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
+        //   filteredItems = items.where((item) {
+        //     return item.author?.contains(widget.searchQuery ?? '') == true ||
+        //         item.name.contains(widget.searchQuery ?? '') == true ||
+        //         item.authorTitle?.contains(widget.searchQuery ?? '') == true ||
+        //         item.content?.contains(widget.searchQuery ?? '') == true ||
+        //         item.status.contains(widget.searchQuery ?? '') == true;
+        //   }).toList();
+        // } else if (widget.selectedCategory == "All" || widget.searchQuery == "All") {
+        //   // If selectedCategory is "All", consider all items
+        //   filteredItems = List.from(items);
+        // }
+
+
+
+       List<OrgUpdate> filteredItems = [];
+if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
+  filteredItems = items.where((item) {
+    return (item.author?.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true) ||
+           (item.name.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true) ||
+           (item.authorTitle?.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true) ||
+           (item.content?.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true) ||
+           (item.status.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true);
+  }).toList();
+} else if (widget.selectedCategory == "All" || widget.searchQuery == "All") {
+  // If selectedCategory is "All", consider all items
+  filteredItems = List.from(items);
+}
+
+
 if (filteredItems.isEmpty) {
         return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
       } else { 

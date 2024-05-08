@@ -29,7 +29,7 @@ class FeedListMobile extends ConsumerStatefulWidget {
   bool? isFilter;
   String? selectedCategory;
   // AsyncValue<List<Feed>>? filterfeedsList;
-  List<String>? selectedCategories; // Track selected categories
+  // List<String>? selectedCategories; // Track selected categories
 
   FeedListMobile(
       {super.key,
@@ -37,7 +37,7 @@ class FeedListMobile extends ConsumerStatefulWidget {
       this.searchQuery,
       this.isFilter,
       this.selectedCategory,
-      this.selectedCategories
+      // this.selectedCategories
       // this.filterfeedsList
       });
 
@@ -76,20 +76,47 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
         return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
       } else {
         // Filter the items based on the search query
-        List<Feed> filteredItems = [];
-        if (widget.searchQuery != "All" && widget.selectedCategories != "All") {
-          filteredItems = items.where((item) {
-            return item.author?.contains(widget.searchQuery ?? '') == true ||
-                item.name.contains(widget.searchQuery ?? '') == true ||
-                item.authorTitle?.contains(widget.searchQuery ?? '') == true ||
-                item.content?.contains(widget.searchQuery ?? '') == true ||
-                item.status.contains(widget.searchQuery ?? '') == true;
-          }).toList();
-        } else if (widget.selectedCategories == "All" ||
-            widget.searchQuery == "All") {
-          // If selectedCategory is "All", consider all items
-          filteredItems = List.from(items);
-        }
+
+        //WITHOUT Case-sensitive
+        // List<Feed> filteredItems = [];
+        // if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
+        //   filteredItems = items.where((item) {
+        //     return item.author?.contains(widget.searchQuery ?? '') == true ||
+        //         item.name.contains(widget.searchQuery ?? '') == true ||
+        //         item.authorTitle?.contains(widget.searchQuery ?? '') == true ||
+        //         item.content?.contains(widget.searchQuery ?? '') == true ||
+        //         item.status.contains(widget.searchQuery ?? '') == true;
+        //   }).toList();
+        // } else if (widget.selectedCategory == "All" ||
+        //     widget.searchQuery == "All") {
+        //   // If selectedCategory is "All", consider all items
+        //   filteredItems = List.from(items);
+        // }
+
+
+
+//
+List<Feed> filteredItems = [];
+if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
+  filteredItems = items.where((item) {
+    return (item.author?.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true) ||
+           (item.name.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true) ||
+           (item.authorTitle?.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true) ||
+           (item.content?.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true) ||
+           (item.status.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true);
+  }).toList();
+} else if (widget.selectedCategory == "All" || widget.searchQuery == "All") {
+  // If selectedCategory is "All", consider all items
+  filteredItems = List.from(items);
+}
+
+// Case-sensitive comparison for selected category
+
+// if (widget.selectedCategory != null && widget.selectedCategory!.isNotEmpty) {
+//   filteredItems = filteredItems.where((item) =>
+//       item.category == widget.selectedCategory).toList();
+// }
+
 
         if (filteredItems.isEmpty) {
           // Handle the case where there is no data found

@@ -73,7 +73,7 @@ class Feed {
       }
     }else{
         // authorThumbnail = 'assets/images/avthar.png';
-                authorThumbnail = '';
+                 authorThumbnail = '';
 
     }
 

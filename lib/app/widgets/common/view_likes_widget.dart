@@ -184,7 +184,7 @@ class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
 
   Future<Widget> _userProfilePicWidget(UserLike item, WidgetRef ref) async {
     final avatarText = getAvatarText(item.userName);
-    if (item.profilePicture == null) {
+    if (item.profilePicture == null  || item.profilePicture == "") {
       return CircleAvatar(radius: 15.0, child: Text(avatarText));
     } else {
       final profilePicAsyncValue =
@@ -192,11 +192,23 @@ class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
       return profilePicAsyncValue.when(
         data: (imageUrl) {
           if (imageUrl != null && imageUrl.isNotEmpty) {
+          if (_isProperImageUrl(imageUrl)) {
             return CircleAvatar(
               backgroundImage: NetworkImage(imageUrl),
               radius: 15.0,
             );
           } else {
+            // Render text as a fallback when imageUrl is not proper
+            return CircleAvatar(
+              radius: 15.0,
+              child: Text(
+                avatarText,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 8, fontWeight: FontWeight.w600),
+              ),
+            );
+          }
+        } else {
             return CircleAvatar(radius: 15.0, child: Text(avatarText));
           }
         },
@@ -207,6 +219,13 @@ class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
         ),
       );
     }
+  }
+  bool _isProperImageUrl(String imageUrl) {
+    // Check if the image URL contains spaces in the filename
+    if ( imageUrl.contains('%20')) {
+      return false;
+    }
+    return true;
   }
 
   String getAvatarText(String name) {

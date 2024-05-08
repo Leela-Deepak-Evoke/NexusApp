@@ -93,7 +93,7 @@ class UserComment {
             'profilePicture']; //json['identityId'] + '/' + json['profilePicture'];
       }
     }else{
-        authorThumbnail = 'assets/images/avthar.png';
+        authorThumbnail = ''; //assets/images/avthar.png
     }
 
     return UserComment(

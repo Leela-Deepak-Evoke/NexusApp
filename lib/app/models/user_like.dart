@@ -29,7 +29,7 @@ class UserLike {
         authorThumbnail = json['profilePicture']; //json['identityId'] + '/' + json['profilePicture'];
       }
     }else{
-            authorThumbnail = 'assets/images/avthar.png';
+            authorThumbnail = '';
 
     }
     return UserLike(

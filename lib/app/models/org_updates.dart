@@ -72,7 +72,7 @@ class OrgUpdate {
         //json['user']['identityId'] + '/' + json['user']['profilePicture'];
       }
     }else{
-        authorThumbnail = 'assets/images/avthar.png';
+                 authorThumbnail = '';
     }
 
     //  if (json['user']['profilePicture'] != null) {

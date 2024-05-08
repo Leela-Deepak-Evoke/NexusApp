@@ -73,7 +73,7 @@ class Answer {
         // json['user']['identityId'] + '/' + json['user']['profilePicture'];
       }
     }else{
-        authorThumbnail = 'assets/images/dummy_avthar.png';
+        authorThumbnail = ''; //assets/images/dummy_avthar.png
     }
 
 

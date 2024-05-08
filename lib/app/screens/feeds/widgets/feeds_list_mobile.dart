@@ -294,7 +294,6 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
       return profilePicAsyncValue.when(
         data: (imageUrl) {
           if (imageUrl != null && imageUrl.isNotEmpty){
-          // Check if imageUrl is proper or not
           if (_isProperImageUrl(imageUrl)) {
             return CircleAvatar(
               backgroundImage: NetworkImage(imageUrl),

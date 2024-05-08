@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:package_info_plus/package_info_plus.dart';
 
 class ProfileMobileView extends ConsumerStatefulWidget {
   final User user;
@@ -33,37 +34,77 @@ class ProfileMobileView extends ConsumerStatefulWidget {
 }
 
 class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
-  File? _image; // Variable to store the selected image
+  File? _image; 
+  // PackageInfo _packageInfo = PackageInfo(
+  //   appName: '',
+  //   packageName: '',
+  //   version: '',
+  //   buildNumber: '',
+  //   buildSignature: '',
+  //   installerStore: '',
+  // );
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _initPackageInfo();
+  // }
+
+  // Future<void> _initPackageInfo() async {
+  //   final info = await PackageInfo.fromPlatform();
+  //   setState(() {
+  //     _packageInfo = info;
+  //   });
+  // }
+
+  Widget _infoTile(String title, String subtitle) {
+    return ListTile(
+      title: Text(title),
+      subtitle: Text(subtitle.isEmpty ? 'Not set' : subtitle),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 0, bottom: 20),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-                      // height: MediaQuery.of(context).size.height,
-                      // alignment: AlignmentDirectional.center,
-                      // padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
-                      alignment: AlignmentDirectional.center,
-                      padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.only(top: 0, bottom: 20),
+        child: SingleChildScrollView(
+            padding: const EdgeInsets.all(0),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Container(
+                  // height: MediaQuery.of(context).size.height,
+                  // alignment: AlignmentDirectional.center,
+                  // padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
+                  alignment: AlignmentDirectional.center,
+                  padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
                         children: [
-                          Column(
-                            children: [
-                              const SizedBox(
-                                  height: 40), // Adjust the height as needed
-                              _profilePicWidget(widget.user, ref),
-                              TextButton(
-                                onPressed: () {
-                                  ref.read(uploadProfileImageProvider(
-                                      widget.user.userId));
-                                },
-                                child: widget.isFromOtherUser == false
+                          const SizedBox(
+                              height: 40), // Adjust the height as needed
+                          _profilePicWidget(widget.user, ref),
+                          TextButton(
+                            onPressed: () {
+                              ref.read(uploadProfileImageProvider(
+                                  widget.user.userId));
+                            },
+                            child: widget.isFromOtherUser == false
+                                ? Text(
+                                    widget.user.profilePicture != null &&
+                                            widget
+                                                .user.profilePicture!.isNotEmpty
+                                        ? 'Change Profile Picture'
+                                        : 'Add Profile Picture',
+                                    style: const TextStyle(
+                                      fontSize: 8,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )
+                                : widget.user.identityId ==
+                                        widget.otherUser!.identityId
                                     ? Text(
                                         widget.user.profilePicture != null &&
                                                 widget.user.profilePicture!
@@ -75,78 +116,61 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       )
-                                    : widget.user.identityId ==
-                                            widget.otherUser!.identityId
-                                        ? Text(
-                                            widget.user.profilePicture !=
-                                                        null &&
-                                                    widget.user.profilePicture!
-                                                        .isNotEmpty
-                                                ? 'Change Profile Picture'
-                                                : 'Add Profile Picture',
-                                            style: const TextStyle(
-                                              fontSize: 8,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          )
-                                        : Container(),
-                              ),
-
-                              const SizedBox(height: 10),
-                              Text(
-                                widget.isFromOtherUser == false
-                                    ? widget.user.name
-                                    : widget.otherUser!.userName,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16.0,
-                                  fontFamily: GoogleFonts.notoSans().fontFamily,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                widget.isFromOtherUser == false
-                                    ? widget.user.role
-                                    : widget.otherUser!.title,
-                                style: TextStyle(
-                                  color: const Color(0xff676A79),
-                                  fontSize: 14.0,
-                                  fontFamily: GoogleFonts.notoSans().fontFamily,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                            ],
+                                    : Container(),
                           ),
 
-                          widget.isFromOtherUser == false
+                          const SizedBox(height: 10),
+                          Text(
+                            widget.isFromOtherUser == false
+                                ? widget.user.name
+                                : widget.otherUser!.userName,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16.0,
+                              fontFamily: GoogleFonts.notoSans().fontFamily,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            widget.isFromOtherUser == false
+                                ? widget.user.role
+                                : widget.otherUser!.title,
+                            style: TextStyle(
+                              color: const Color(0xff676A79),
+                              fontSize: 14.0,
+                              fontFamily: GoogleFonts.notoSans().fontFamily,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                        ],
+                      ),
+
+                      widget.isFromOtherUser == false
+                          ? Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: _buildViewProfile(),
+                            )
+                          : widget.user.identityId ==
+                                  widget.otherUser!.identityId
                               ? Padding(
                                   padding: const EdgeInsets.all(16.0),
                                   child: _buildViewProfile(),
                                 )
-                              : widget.user.identityId ==
-                                      widget.otherUser!.identityId
-                                  ? Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: _buildViewProfile(),
-                                    )
-                                  : Container(),
+                              : Container(),
 
-                          // Align(
-                          //   alignment: Alignment.centerLeft,
-                          //   child: VerticalCardList(),
-                          // ),
-                          // const SizedBox(height: 20),
-                          // LogoutButton(),
-                          // _logout(),
-                        ],
-                      )
-                      )
-                      // )
-            ]
-            )
-     ) );
+                      // Align(
+                      //   alignment: Alignment.centerLeft,
+                      //   child: VerticalCardList(),
+                      // ),
+                      // const SizedBox(height: 20),
+                      // LogoutButton(),
+                      // _logout(),
+                    ],
+                  )),
+              // )
+            ])));
   }
 
   Widget _buildViewProfile() {
@@ -199,8 +223,11 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
               decoration: TextDecoration.underline, // Add underline to links
             ),
           ),
+        // _infoTile('App version', _packageInfo.version),
+        // _infoTile('Build number', _packageInfo.buildNumber),
+
         _logout(),
-         const SizedBox(height: 50),
+        const SizedBox(height: 50),
       ],
     );
   }

@@ -57,7 +57,7 @@ class Question {
         //json['user']['identityId'] + '/' + json['user']['profilePicture'];
       }
     }else{
-        authorThumbnail = 'assets/images/avthar.png';
+        authorThumbnail = "";   //'assets/images/avthar.png';
     }
 
     return Question(

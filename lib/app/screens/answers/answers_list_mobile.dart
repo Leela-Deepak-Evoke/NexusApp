@@ -338,7 +338,15 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
   }
 
   Widget _profilePicWidget(Answer item, WidgetRef ref) {
-    final avatarText = getAvatarText(item.author!);
+    // final avatarText = getAvatarText(item.author!);
+
+      final String? authorName = item.author;
+  if (authorName == null || authorName.isEmpty) {
+    return CircleAvatar(radius: 20.0, child: Text('NO'));
+  }
+    // final avatarText = getAvatarText(item.author!);
+  final avatarText = getAvatarText(authorName);
+
     if (item.authorThumbnail == null || item.authorThumbnail == "") {
       return CircleAvatar(radius: 10.0, child: Text(avatarText));
     } else {

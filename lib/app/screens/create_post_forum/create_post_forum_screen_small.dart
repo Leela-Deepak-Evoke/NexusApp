@@ -27,7 +27,7 @@ class _CreatePostForumScreenSmallState extends ConsumerState<CreatePostForumScre
           title: "Post Question",
           user: data,
           hasBackAction: true,
-          hasRightAction: true,
+          hasRightAction: false,
           topBarButtonAction: () {   
                     
           },
@@ -35,10 +35,10 @@ class _CreatePostForumScreenSmallState extends ConsumerState<CreatePostForumScre
             Navigator.pop(context);
           },
          
-            rightChildWiget: RoundedActionView(onPressed:() {
-            childKey.currentState?.onCategorySelected();
-          }
-          , title: rightActionTitle),
+          //   rightChildWiget: RoundedActionView(onPressed:() {
+          //   childKey.currentState?.onCategorySelected();
+          // }
+          // , title: rightActionTitle),
           child: PostForumMobileView(key: childKey, user: data, questionItem: widget.questionItem, isEditQuestion: widget.isEditQuestion),
 
         );

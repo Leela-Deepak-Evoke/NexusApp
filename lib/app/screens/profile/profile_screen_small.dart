@@ -28,8 +28,8 @@ class _ProfileScreenSmallState extends ConsumerState<ProfileScreenSmall> {
     final userAsyncValue = ref.watch(fetchUserProvider);
     return userAsyncValue.when(
       data: (data) {
-        if (userAsyncValue.value?.lastLoginAt != null ||
-            userAsyncValue.value?.status != "NEW") {
+        // if (userAsyncValue.value?.lastLoginAt != null ||
+        //     userAsyncValue.value?.status != "NEW") {
           return MobileLayout(
             title: 'Profile',
             user: data,
@@ -40,7 +40,7 @@ class _ProfileScreenSmallState extends ConsumerState<ProfileScreenSmall> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      fullscreenDialog: false,
+                      // fullscreenDialog: false,
                       builder: (context) =>
                           UserForm(user: data, isFromWelcomeScreen: false)));
             },
@@ -54,20 +54,21 @@ class _ProfileScreenSmallState extends ConsumerState<ProfileScreenSmall> {
               onPostClicked: () {},
             ),
           );
-        } else {
-          return MobileLayout(
-            title: 'Profile',
-            user: data,
-            hasBackAction: false,
-            hasRightAction: false,
-            showSearchIcon: false,
-            topBarButtonAction: () {},
-            backButtonAction: () {
-              Navigator.pop(context);
-            },
-            child: UserForm(user: data, isFromWelcomeScreen: true),
-          );
-        }
+        // } 
+        // else {
+        //   return MobileLayout(
+        //     title: 'Profile',
+        //     user: data,
+        //     hasBackAction: false,
+        //     hasRightAction: false,
+        //     showSearchIcon: false,
+        //     topBarButtonAction: () {},
+        //     backButtonAction: () {
+        //       Navigator.pop(context);
+        //     },
+        //     child: UserForm(user: data, context: context,isFromWelcomeScreen: true),
+        //   );
+        // }
       },
       loading: () => const Center(
         child: SizedBox(

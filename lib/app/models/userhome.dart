@@ -105,7 +105,8 @@ class UserDetails {
     userId = json['userId'];
     name = json['name'];
     // profilePicture = json['profilePicture'];
-        profilePicture = json['profilePicture']; // Update here
+        // profilePicture = json['profilePicture']; // Update here
+            profilePicture = json['profilePicture'] ?? null; // Update here
 
     lastLoginAt = json['lastLoginAt'];
     createdAt = json['createdAt'];

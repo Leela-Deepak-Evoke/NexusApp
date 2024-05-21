@@ -73,17 +73,17 @@ class MobileCustomAppbarState extends ConsumerState<MobileCustomAppbar> {
                 textAlign: TextAlign.left,
               ),
               actions: [
-                IconButton(
-                  icon: Image.asset(
-                    'assets/images/icons8-notification-50.png',
-                    width: 28,
-                    height: 28,
-                  ),
-                  onPressed: () {
-                    _showToast(context);
-                  },
-                ),
-                SizedBox(width: 10),
+                // IconButton(
+                //   icon: Image.asset(
+                //     'assets/images/icons8-notification-50.png',
+                //     width: 28,
+                //     height: 28,
+                //   ),
+                //   onPressed: () {
+                //     _showToast(context);
+                //   },
+                // ),
+                // SizedBox(width: 10),
                 InkWell(
                   onTap: () {
                     Navigator.push(

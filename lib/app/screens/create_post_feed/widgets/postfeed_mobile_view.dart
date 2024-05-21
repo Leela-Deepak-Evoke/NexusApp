@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/models/post_feed_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
@@ -24,15 +23,15 @@ enum ContentType {
 }
 
 class PostFeedsMobileView extends ConsumerStatefulWidget {
-  final User user;
-  final String slectedCategory;
+  final User? user;
+  final String? slectedCategory;
   final Feed? feedItem;
   final bool? isEditFeed;
 
   const PostFeedsMobileView(
       {super.key,
-      required this.user,
-      required this.slectedCategory,
+      this.user,
+      this.slectedCategory,
       this.feedItem,
       this.isEditFeed});
 
@@ -51,8 +50,8 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   bool isMediaSelect = false;
   bool isImageSelect = false;
   bool isVideoSelect = false;
-  bool replaceImageTriggered = false; // Add this line
-  bool updateEditCategories = false; // Add this line
+  bool replaceImageTriggered = false;
+  bool updateEditCategories = false;
 
   String? selectedCategory;
   final ImagePicker imagePicker = ImagePicker();
@@ -63,6 +62,8 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   List<File>? get selectedPostImages => _selectedPostImages;
   String contentTypeSelected = "";
   bool isVisible = true; // Set this boolean based on your condition
+  final FocusNode feedFocusNode = FocusNode();
+  bool _isLoading = false;
 
   void _selectDocuments() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -144,7 +145,6 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
       final feedsCategoryList = categoryAsyncValue;
       checkListItems = feedsCategoryList.value;
     }
-
     if (categoryAsyncValue is AsyncLoading) {
       const Center(
         child: SizedBox(
@@ -154,7 +154,6 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
         ),
       );
     }
-
     final Size size = MediaQuery.of(context).size;
     feedController.text = feedController.text;
     return Padding(
@@ -162,37 +161,28 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(0),
           child: Container(
-            height: MediaQuery.of(context).size.height,
+            // height: MediaQuery.of(context).size.height,
             alignment: AlignmentDirectional.center,
             padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(0),
                   child: Card(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      // crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        categoryHearViewWidget(),
-                        // const SizedBox(
-                        //   height: 5,
-                        // ),
-
-                        //Share your thoughts
-                        feedsDescriptionUI(),
-
-                        //VIDEOS,IMAGES PICKERS
-
-                        videoPickerContent(size),
-
-                        // Image Picker
-                        if (isVisible) imagePickerContent(size),
-                        // imagePickerContent(size),
-
                         const SizedBox(
-                          height: 20,
+                          height: 5,
                         ),
-
+                        categoryHearViewWidget(),
+                        feedsDescriptionUI(context),
+                        videoPickerContent(size),
+                        if (isVisible) imagePickerContent(size),
+                        // const SizedBox(
+                        //   height: 20,
+                        // ),
                         //SELECT PHOTOS/VIDEOS/
                         attchmentFileButtons(context, ref),
                         const SizedBox(
@@ -207,50 +197,109 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                 ),
                 //POST BUTTON
                 btnPost(size),
+                const SizedBox(
+                  height: 100,
+                )
               ],
             ),
           ),
         ));
   }
 
-  //CARD - Feeds Descriotion
-
-  Widget feedsDescriptionUI() {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//   //CARD - Feeds Descriotion
+  Widget feedsDescriptionUI(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        // Focus on TextFormField when Container is tapped
+        FocusScope.of(context).requestFocus(feedFocusNode);
+      },
+      child: Container(
+        constraints: BoxConstraints(minHeight: 200), // Set a minimum height
+        color: Colors.white, // Background color
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
+          child: Column(
             children: [
-              Expanded(
-                  child: TextFormField(
-                validator: (value) => value!.isEmpty
-                    ? 'Share your thoughts cannot be blank'
-                    : null,
-                controller: feedController,
-                textInputAction: TextInputAction.done,
-                maxLines: null,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 14.0,
-                  fontFamily: GoogleFonts.notoSans().fontFamily,
-                  fontWeight: FontWeight.normal,
-                ),
-                decoration: const InputDecoration.collapsed(
-                    hintText: "Share your thoughts with colleagues.."),
-//                               InputDecoration.collapsed(
-//   hintText: ref.read(selectedItemProvider)?.content ?? 'Share your thoughts with colleagues..',
-// ),
-              )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      focusNode: feedFocusNode,
+                      cursorColor: Color(0xffB54242),
+                      enabled: true,
+                      validator: (value) => value!.isEmpty
+                          ? 'Share your thoughts cannot be blank'
+                          : null,
+                      controller: feedController,
+                      textInputAction: TextInputAction.done,
+                      maxLines: null,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14.0,
+                        fontFamily: GoogleFonts.notoSans().fontFamily,
+                        fontWeight: FontWeight.normal,
+                      ),
+                      decoration: const InputDecoration.collapsed(
+                        hintText: "Share your thoughts with colleagues..",
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
-        // const Divider(
-        //   thickness: 1,
-        //   color: Color(0xffEAEAEA),
-        //   height: 1,
-        // ),
+      ),
+    );
+  }
+
+  Widget feedsDescriptionUI_OLD(BuildContext context) {
+    return GestureDetector(
+        onTap: () {
+          FocusScope.of(context)
+              .requestFocus(FocusNode()); // Focus on TextFormField
+        },
+        child: Column(
+          children: [
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                      child: TextFormField(
+                    cursorColor: Color(0xffB54242),
+                    enabled: true,
+                    //  focusNode: feedFocusNode, // Assign the FocusNode
+                    validator: (value) => value!.isEmpty
+                        ? 'Share your thoughts cannot be blank'
+                        : null,
+                    controller: feedController,
+                    textInputAction: TextInputAction.done,
+                    maxLines: null,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14.0,
+                      fontFamily: GoogleFonts.notoSans().fontFamily,
+                      fontWeight: FontWeight.normal,
+                    ),
+                    decoration: const InputDecoration.collapsed(
+                        hintText: "Share your thoughts with colleagues.."),
+                    // Listen for when the "Done" button is pressed
+                    //   onFieldSubmitted: (_) {
+                    //   feedFocusNode.unfocus(); // Unfocus the TextFormField
+                    // },
+                  )),
+                ],
+              ),
+            ),
+            // const Divider(
+            //   thickness: 1,
+            //   color: Color(0xffEAEAEA),
+            //   height: 1,
+            // ),
 //         Padding(
 //           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
 //           child: Row(
@@ -278,8 +327,8 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
 //             ],
 //           ),
 //         ),
-      ],
-    );
+          ],
+        ));
   }
 
   //SELECT PHOTOS/VIDEOS/
@@ -300,6 +349,13 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                       : false,
                   child: TextButton.icon(
                     onPressed: () {
+                      // Unfocus keyboard when tapping outside of TextFormField
+                      FocusScopeNode currentFocus = FocusScope.of(context);
+                      if (!currentFocus.hasPrimaryFocus &&
+                          currentFocus.focusedChild != null) {
+                        FocusManager.instance.primaryFocus!.unfocus();
+                      }
+
                       _selectFile(ContentType.image);
                       isVisible = true;
                     },
@@ -328,73 +384,86 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                 width: 5,
               ),
 
-              //VIDEO
-              Visibility(
-                  visible: ((contentTypeSelected == ContentType.video.name) ||
-                          (contentTypeSelected == ''))
-                      ? true
-                      : false,
-                  child: TextButton.icon(
-                    onPressed: () {
-                      // isVisible = false;
-                      // _selectFile(ContentType.video);
+              //Right now hiding once Functionality starts uncomment this VIDEO & Document
+              // Visibility(
+              //     visible: ((contentTypeSelected == ContentType.video.name) ||
+              //             (contentTypeSelected == ''))
+              //         ? true
+              //         : false,
+              //     child: TextButton.icon(
+              //       onPressed: () {
+              //         // isVisible = false;
+              //         // _selectFile(ContentType.video);
+              //         // Unfocus keyboard when tapping outside of TextFormField
+              //         FocusScopeNode currentFocus = FocusScope.of(context);
+              //         if (!currentFocus.hasPrimaryFocus &&
+              //             currentFocus.focusedChild != null) {
+              //           FocusManager.instance.primaryFocus!.unfocus();
+              //         }
 
-                      _showToast(context);
-                    },
-                    icon: Image.asset(
-                      'assets/images/Vector.png',
-                      width: 20,
-                      height: 20,
-                    ),
-                    label: Text(
-                      'Video',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 12.0,
-                        fontFamily: GoogleFonts.inter().fontFamily,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.grey.shade100)),
-                  )),
-              const SizedBox(
-                width: 5,
-              ),
+              //         _showToast(context);
+              //       },
+              //       icon: Image.asset(
+              //         'assets/images/Vector.png',
+              //         width: 20,
+              //         height: 20,
+              //       ),
+              //       label: Text(
+              //         'Video',
+              //         style: TextStyle(
+              //           color: Colors.black,
+              //           fontSize: 12.0,
+              //           fontFamily: GoogleFonts.inter().fontFamily,
+              //           fontWeight: FontWeight.normal,
+              //         ),
+              //       ),
+              //       style: ButtonStyle(
+              //           backgroundColor:
+              //               MaterialStateProperty.all(Colors.grey.shade100)),
+              //     )),
+              // const SizedBox(
+              //   width: 5,
+              // ),
 
-              //DOCUMENT
-              Visibility(
-                  visible:
-                      ((contentTypeSelected == ContentType.document.name) ||
-                              (contentTypeSelected == ''))
-                          ? true
-                          : false,
-                  child: TextButton.icon(
-                    // <-- TextButton
-                    onPressed: () {
-                      // isVisible = true;
-                      // _selectFile(ContentType.document);
-                      _showToast(context);
-                    },
-                    icon: Image.asset(
-                      'assets/images/Vector-1.png',
-                      width: 20,
-                      height: 20,
-                    ),
-                    label: Text(
-                      'Document',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 12.0,
-                        fontFamily: GoogleFonts.inter().fontFamily,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.grey.shade100)),
-                  )),
+              // //DOCUMENT
+              // Visibility(
+              //     visible:
+              //         ((contentTypeSelected == ContentType.document.name) ||
+              //                 (contentTypeSelected == ''))
+              //             ? true
+              //             : false,
+              //     child: TextButton.icon(
+              //       // <-- TextButton
+              //       onPressed: () {
+              //         // isVisible = true;
+              //         // _selectFile(ContentType.document);
+              //         // Unfocus keyboard when tapping outside of TextFormField
+              //         FocusScopeNode currentFocus = FocusScope.of(context);
+              //         if (!currentFocus.hasPrimaryFocus &&
+              //             currentFocus.focusedChild != null) {
+              //           FocusManager.instance.primaryFocus!.unfocus();
+              //         }
+
+              //         _showToast(context);
+              //       },
+              //       icon: Image.asset(
+              //         'assets/images/Vector-1.png',
+              //         width: 20,
+              //         height: 20,
+              //       ),
+              //       label: Text(
+              //         'Document',
+              //         style: TextStyle(
+              //           color: Colors.black,
+              //           fontSize: 12.0,
+              //           fontFamily: GoogleFonts.inter().fontFamily,
+              //           fontWeight: FontWeight.normal,
+              //         ),
+              //       ),
+              //       style: ButtonStyle(
+              //           backgroundColor:
+              //               MaterialStateProperty.all(Colors.grey.shade100)),
+              //     )),
             ],
           ),
         ],
@@ -408,13 +477,11 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
         ? widget.feedItem?.feedId ?? const Uuid().v4()
         : const Uuid().v4();
 
- // Add widget.feedItem!.imagePath to fileList if it's not null
-  if (widget.isEditFeed == true &&
-      !replaceImageTriggered &&
-      widget.feedItem?.imagePath != null) {
-    fileList.add(widget.feedItem!.imagePath.toString());
-  }
-
+    if (widget.isEditFeed == true &&
+        !replaceImageTriggered &&
+        widget.feedItem?.imagePath != null) {
+      fileList.add(widget.feedItem!.imagePath.toString());
+    }
 
     if (widget.isEditFeed == true && !replaceImageTriggered) {
       if (widget.feedItem?.hasImage == true) {
@@ -422,41 +489,147 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
           padding: const EdgeInsets.all(15.0),
           child: Stack(
             children: [
-
               FeedMediaView(item: widget.feedItem!),
-               
+              Positioned(
+                top: -10,
+                right: 1,
+                child: IconButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          content:
+                              const Text('Would you like to delete the image?'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+
+                                  // fileList.remove(data);
+                              },
+                              child: const Text('OK --(In Progress)'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.cancel,
+                    color: AppColors.blueTextColour,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+      return Container();
+    } else {
+      return fileList.isNotEmpty
+          ? SizedBox(
+              height: size.height - 600,
+              // height: 90,
+              child: Padding(
+                  padding: const EdgeInsets.all(0),
+                  child:
+
+                      // GridView.builder(
+                      //   itemCount: fileList.length,
+                      //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      //     crossAxisCount: 1,
+                      //   ),
+                      //   itemBuilder: (BuildContext context, int index) {
+                      //     return
+                      Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.all(8.0),
+                    child: Stack(
+                      children: [
+                        returnFileContainer(0),
+                        Positioned(
+                          top: -10,
+                          right: 1,
+                          child: IconButton(
+                            onPressed: () {
+                              dltImages(fileList[0]);
+                            },
+                            icon: const Icon(
+                              Icons.cancel,
+                              color: AppColors.blueTextColour,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                  // },
+                  // ),
+                  ),
+            )
+          : Container(); // Return an empty container if fileList is empty
+    }
+  }
+
+  Widget imagePickerContent_old(Size size) {
+    final feedId = widget.isEditFeed == true
+        ? widget.feedItem?.feedId ?? const Uuid().v4()
+        : const Uuid().v4();
+
+    // Add widget.feedItem!.imagePath to fileList if it's not null
+    if (widget.isEditFeed == true &&
+        !replaceImageTriggered &&
+        widget.feedItem?.imagePath != null) {
+      fileList.add(widget.feedItem!.imagePath.toString());
+    }
+
+    if (widget.isEditFeed == true && !replaceImageTriggered) {
+      if (widget.feedItem?.hasImage == true) {
+        return Container(
+          padding: const EdgeInsets.all(15.0),
+          child: Stack(
+            children: [
+              FeedMediaView(item: widget.feedItem!),
               Positioned(
                 top: -10,
                 right: 1,
                 child: IconButton(
                   onPressed: () {
                     // dltImages(widget.feedItem);
-                     showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            // title: const Text(''),
-            content: const Text('Would you like to delete the image?'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  // setState(() {
-                  //                         _showToast(context);
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            // title: const Text(''),
+                            content: const Text(
+                                'Would you like to delete the image?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  // setState(() {
+                                  //                         _showToast(context);
 
-                  // });
-                },
-                child: const Text('OK --(In Progress)'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Cancel'),
-              ),
-            ],
-          );
-        });
+                                  // });
+                                },
+                                child: const Text('OK --(In Progress)'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Cancel'),
+                              ),
+                            ],
+                          );
+                        });
                   },
                   icon: const Icon(
                     Icons.cancel,
@@ -520,7 +693,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   // VIDEO Content
   Widget videoPickerContent(Size size) {
     return Container(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(2),
       // color: Colors.red,
       // height: 200,
       // width: 200,
@@ -659,7 +832,8 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
       builder: (context) {
         return AlertDialog(
           title: const Text('File Size Exceeded'),
-          content: const Text('Please select a video file that is 5MB or smaller.'),
+          content:
+              const Text('Please select a video file that is 5MB or smaller.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -771,18 +945,134 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     });
   }
 
+  // void _handleSubmit(PostFeedParams params, WidgetRef ref) async {
+  //   if (widget.isEditFeed == true) {
+  //     await ref.read(editFeedProvider(params).future);
+  //   } else {
+  //     await ref.read(postFeedProvider(params).future);
+  //   }
+  //   // Navigator.pop(context);
+  //   _resetValues();
+  //   showMessage('Feed posted successfully.');
+
+  // }
+
   void _handleSubmit(PostFeedParams params, WidgetRef ref) async {
-    if (widget.isEditFeed == true) {
-      await ref.read(editFeedProvider(params).future);
-    } else {
-      await ref.read(postFeedProvider(params).future);
+    try {
+      if (widget.isEditFeed == true) {
+        await ref.read(editFeedProvider(params).future);
+      } else {
+        await ref.read(postFeedProvider(params).future);
+      }
+      Navigator.pop(context);
+      _resetValues();
+    } catch (e) {
+      // showMessage('Failed to post feed. Please try again.');
+    } finally {
+      setState(() {
+        _isLoading = false; // Hide loader
+      });
     }
-    Navigator.pop(context);
-    _resetValues();
+  }
+
+//Validation
+  void showMessage(String text) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Text(text),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _resetValues();
+                  if (text == 'Feed posted successfully.') {
+                    Navigator.pop(context);
+                  }
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        });
   }
 
 // POST BUTTON
+
   Widget btnPost(Size size) {
+    return Stack(
+      children: [
+        Container(
+          height: 48,
+          width: size.width - 30,
+          padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              backgroundColor: const Color(0xffF2722B),
+              side: const BorderSide(width: 1, color: Color(0xffF2722B)),
+            ),
+            onPressed: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus &&
+                  currentFocus.focusedChild != null) {
+                FocusManager.instance.primaryFocus!.unfocus();
+              }
+
+              if (feedController.value.text.isEmpty) {
+                showMessage('Please share your thoughts');
+              }
+              // else if (hashTagController == null ||
+              //     hashTagController.value.text.isEmpty) {
+              //   showMessage('Please add hashtag');
+              // }
+              else {
+                if (isMediaSelect == false) {
+                  setState(() {
+                    _isLoading = true; // Show loader
+                  });
+                  createPostWithoutAttachment();
+                } else {
+                  setState(() {
+                    _isLoading = true; // Show loader
+                  });
+                  createPostAttachments();
+                }
+              }
+            },
+            child: Text(
+              'Post',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16.0,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ),
+        ),
+        if (_isLoading) // Show loader if _isLoading is true
+          const Positioned.fill(
+            child: Center(
+              child: SizedBox(
+                width:
+                    50, // Set the size of the SizedBox to control the size of the CircularProgressIndicator
+                height: 50,
+                child: CircularProgressIndicator(
+                  strokeWidth:
+                      3, // Increase the strokeWidth to make the CircularProgressIndicator larger
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget btnPost_OLD(Size size) {
     return Container(
       height: 48,
       width: size.width - 30,
@@ -798,6 +1088,13 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
         // <-- OutlinedButton
 
         onPressed: () {
+          // Unfocus keyboard when tapping outside of TextFormField
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus &&
+              currentFocus.focusedChild != null) {
+            FocusManager.instance.primaryFocus!.unfocus();
+          }
+
           if (feedController.value.text.isEmpty) {
             showMessage('Please share your thoughts');
           }
@@ -828,7 +1125,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   createPostWithoutAttachment() async {
     final feedId = const Uuid().v4();
     final params = PostFeedParams(
-        userId: widget.user.userId,
+        userId: widget.user!.userId,
         feedId: widget.isEditFeed == true
             ? widget.feedItem?.feedId ?? feedId
             : feedId,
@@ -852,7 +1149,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   createPostAttachments() async {
     final feedId = const Uuid().v4();
     final params = PostFeedParams(
-      userId: widget.user.userId,
+      userId: widget.user!.userId,
       feedId: widget.isEditFeed == true
           ? widget.feedItem?.feedId ?? feedId
           : feedId,
@@ -892,16 +1189,16 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                   // _resetImageDeleteValues(data);
                   setState(() {
                     fileList.remove(data);
-                //     if (data is String) {
-                //   // If data is a file path (from fileList)
-                //   fileList.remove(data);
-                // } else if (data is Feed) {
-                //   // If data is a Feed object (from widget.feedItem)
-                //   // Assuming you have a way to uniquely identify feed items
-                //   // and you want to delete the item matching the feedId
-                //   // widget.feedItem?.removeWhere((item) => item.feedId == data.feedId);
-                //   fileList.remove(data);
-                // }
+                    //     if (data is String) {
+                    //   // If data is a file path (from fileList)
+                    //   fileList.remove(data);
+                    // } else if (data is Feed) {
+                    //   // If data is a Feed object (from widget.feedItem)
+                    //   // Assuming you have a way to uniquely identify feed items
+                    //   // and you want to delete the item matching the feedId
+                    //   // widget.feedItem?.removeWhere((item) => item.feedId == data.feedId);
+                    //   fileList.remove(data);
+                    // }
                   });
                 },
                 child: const Text('OK'),
@@ -911,29 +1208,6 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                   Navigator.pop(context);
                 },
                 child: const Text('Cancel'),
-              ),
-            ],
-          );
-        });
-  }
-
-//Validation
-  void showMessage(String text) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Text(text),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _resetValues();
-                  if (text == 'Feed posted successfully') {
-                    Navigator.pop(context);
-                  }
-                },
-                child: const Text('OK'),
               ),
             ],
           );
@@ -953,7 +1227,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
           updateEditCategories = true;
         }
         // selectedCategories.add(categories[index]);
-              // selectedIndex = categoryIndex;
+        // selectedIndex = categoryIndex;
       });
     }
   }
@@ -994,7 +1268,11 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                   fontSize: 14,
                 ),
               ),
-              value: selectedIndex == index,
+              // value: selectedIndex == index,
+              value: selectedIndex == index ||
+                  (selectedIndex == null &&
+                      index ==
+                          0), // Select "General Feed" by default if no category is selected
               onChanged: (value) {
                 setState(() {
                   selectedIndex = index;
@@ -1008,7 +1286,8 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
         ));
   }
 
-  Widget categoryHearViewWidget() {
+//WITHOUT ARROW
+  Widget categoryHearViewWidget_OLD() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
       child: Wrap(
@@ -1042,32 +1321,59 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     );
   }
 
-  Widget categoryHearViewWidget_old() {
+  Widget categoryHearViewWidget() {
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-        child: Wrap(
-            spacing: 5,
-            direction: Axis.horizontal,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              const CircleAvatar(
-                radius: 3,
-                backgroundColor: Color(0xffB54242),
-              ),
-              Text(
-                widget.isEditFeed == true
-                    ? widget.feedItem?.name ?? "General Feed"
-                    : (selectedIndex != null)
-                        ? checkListItems[selectedIndex ?? 0]
-                        : "General Feed",
-                style: TextStyle(
-                  color: const Color(0xffB54242),
-                  fontSize: 12.0,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontWeight: FontWeight.w500,
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5),
+      child: Wrap(
+        spacing: 5,
+        direction: Axis.horizontal,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          const CircleAvatar(
+            radius: 3,
+            backgroundColor: Color(0xffB54242),
+          ),
+          GestureDetector(
+            onTap: () {
+              _showBottomSheet(context);
+            },
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  (widget.isEditFeed == true && updateEditCategories == true)
+                      ? (selectedIndex != null)
+                          ? checkListItems[selectedIndex ?? 0]
+                          : widget.feedItem?.name ?? "General Feed"
+                      : (widget.isEditFeed == true &&
+                              updateEditCategories == false)
+                          ? widget.feedItem?.name ?? "General Feed"
+                          : (selectedIndex != null)
+                              ? checkListItems[selectedIndex ?? 0]
+                              : "General Feed",
+                  style: TextStyle(
+                    color: const Color(0xffB54242),
+                    fontSize: 14.0,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-            ]));
+                Icon(
+                  Icons.arrow_drop_down,
+                  color: const Color(0xffB54242),
+                ),
+              ],
+            ),
+          ),
+          const Divider(
+            thickness: 1,
+            color: Color(0xffEAEAEA),
+            height: 10,
+          ),
+        ],
+      ),
+    );
   }
 
   void _showToast(BuildContext context) {

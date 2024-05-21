@@ -8,7 +8,7 @@ class User {
   final DateTime createdAt;
   final String status;
   final String? about;
-  final String? profilePicture;
+   String? profilePicture;
   final String? socialLinks;
   
   final DateTime? currentLoginAt;

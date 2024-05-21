@@ -77,7 +77,15 @@ final List<Color> cardColors = [
   }
 
   Widget _profilePicWidget(UserComment item, WidgetRef ref) {
-    final avatarText = getAvatarText(item.userName);
+    // final avatarText = getAvatarText(item.userName);
+
+      final String? authorName = item.userName;
+  if (authorName == null || authorName.isEmpty) {
+    return CircleAvatar(radius: 20.0, child: Text('NO'));
+  }
+    // final avatarText = getAvatarText(item.author!);
+  final avatarText = getAvatarText(authorName);
+
     if (item.authorThumbnail == null  || item.authorThumbnail == "" ) {
       return CircleAvatar(radius: 12.0, child: Text(avatarText));
     } else {

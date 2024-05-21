@@ -32,7 +32,7 @@ class _CreatePostFeedScreenSmallState extends ConsumerState<CreatePostFeedScreen
           title: "Post Feed",
           user: data,
           hasBackAction: true,
-          hasRightAction: true,
+          hasRightAction: false,
 
           topBarButtonAction: () {  
 
@@ -40,10 +40,10 @@ class _CreatePostFeedScreenSmallState extends ConsumerState<CreatePostFeedScreen
           backButtonAction: () {
             Navigator.pop(context);
           },
-          rightChildWiget: RoundedActionView(onPressed:() {
-            childKey.currentState?.onCategorySelected();
-          }
-          , title: rightActionTitle),
+            // rightChildWiget: RoundedActionView(onPressed:() {
+            //   childKey.currentState?.onCategorySelected();
+            // }
+            // , title: rightActionTitle),
           child: PostFeedsMobileView(key: childKey, user: data,slectedCategory:  rightActionTitle, feedItem: feedItem, isEditFeed: isEditFeed),
 
         );

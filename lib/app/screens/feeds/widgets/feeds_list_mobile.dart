@@ -93,9 +93,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
         //   filteredItems = List.from(items);
         // }
 
-
-
-//
+//Case-sensitive
 List<Feed> filteredItems = [];
 if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
   filteredItems = items.where((item) {
@@ -110,11 +108,23 @@ if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
   filteredItems = List.from(items);
 }
 
-// Case-sensitive comparison for selected category
+//Case-sensitive comparison for selected category
 
 // if (widget.selectedCategory != null && widget.selectedCategory!.isNotEmpty) {
 //   filteredItems = filteredItems.where((item) =>
 //       item.category == widget.selectedCategory).toList();
+// }
+
+
+// List<Feed> filteredItems = [];
+
+// if (widget.isFilter == true && widget.selectedCategory != null) {
+//   filteredItems = items.where((item) {
+//     // Check if the item's category is contained within the selected categories
+//     return selectedCategories.contains(item.category);
+//   }).toList();
+// } else {
+//   filteredItems = List.from(items);
 // }
 
 
@@ -312,7 +322,13 @@ if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
   }
 
   Widget _profilePicWidget(Feed item, WidgetRef ref) {
-    final avatarText = getAvatarText(item.author!);
+     final String? authorName = item.author;
+  if (authorName == null || authorName.isEmpty) {
+    return CircleAvatar(radius: 20.0, child: Text('NO'));
+  }
+    // final avatarText = getAvatarText(item.author!);
+  final avatarText = getAvatarText(authorName);
+
     if (item.authorThumbnail == null || item.authorThumbnail == "" ) {
       return CircleAvatar(radius: 20.0, child: Text(avatarText));
     } else {
@@ -374,6 +390,7 @@ if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
     }
     return '';
   }
+
 
 // BUTTONS: REACT, COMMENT, SHARE
   Widget btnSharingInfoLayout(
@@ -449,25 +466,25 @@ if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
               ),
             ),
           ),
-          TextButton.icon(
-            onPressed: () {
-              _showToast(context);
-            },
-            icon: Image.asset(
-              'assets/images/Vector-2.png',
-              width: 20,
-              height: 20,
-            ),
-            label: Text(
-              'Report',
-              style: TextStyle(
-                color: const Color(0xff393E41),
-                fontFamily: GoogleFonts.inter().fontFamily,
-                fontWeight: FontWeight.normal,
-                fontSize: 14,
-              ),
-            ),
-          ),
+          // TextButton.icon(
+          //   onPressed: () {
+          //     _showToast(context);
+          //   },
+          //   icon: Image.asset(
+          //     'assets/images/Vector-2.png',
+          //     width: 20,
+          //     height: 20,
+          //   ),
+          //   label: Text(
+          //     'Report',
+          //     style: TextStyle(
+          //       color: const Color(0xff393E41),
+          //       fontFamily: GoogleFonts.inter().fontFamily,
+          //       fontWeight: FontWeight.normal,
+          //       fontSize: 14,
+          //     ),
+          //   ),
+          // ),
         ]);
   }
 

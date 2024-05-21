@@ -1,3 +1,4 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:evoke_nexus_app/app/screens/welcome/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,7 +47,7 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
   @override
   Widget build(BuildContext context) {
     final authService = ref.watch(authenticationServiceProvider);
-    print(authService);
+    safePrint(authService);
     final size = MediaQuery.of(context).size;
     return Scaffold(
         body: Stack(

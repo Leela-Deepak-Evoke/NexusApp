@@ -23,11 +23,11 @@ enum ContentType {
 
 class PostForumMobileView extends ConsumerStatefulWidget {
   final User user;
-   final Question? questionItem; // Remove the const keyword
-   final bool? isEditQuestion;
+  final Question? questionItem; // Remove the const keyword
+  final bool? isEditQuestion;
 
-  const PostForumMobileView({super.key, required this.user, this.questionItem,
-      this.isEditQuestion});
+  const PostForumMobileView(
+      {super.key, required this.user, this.questionItem, this.isEditQuestion});
 
   @override
   PostForumMobileViewState createState() => PostForumMobileViewState();
@@ -51,7 +51,7 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
   bool isImageSelect = false;
   bool isVideoSelect = false;
   bool replaceImageTriggered = false; // Add this line
-  bool updateEditCategories= false; // Add this line
+  bool updateEditCategories = false; // Add this line
 
   final ImagePicker imagePicker = ImagePicker();
   List<String> fileList = [];
@@ -62,6 +62,8 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
   String selectedCategory = "General";
   List<File>? get selectedPostImages => _selectedPostImages;
   String contentTypeSelected = "";
+  final FocusNode forumFocusNode = FocusNode();
+  bool _isLoading = false;
 
   void _selectDocuments() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -90,8 +92,7 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
     super.initState();
     if (widget.isEditQuestion == true) {
       feedController.text = widget.questionItem?.content ?? feedController.text;
-        selectedCategory = widget.questionItem?.category ?? selectedCategory;
-
+      selectedCategory = widget.questionItem?.category ?? selectedCategory;
     }
   }
 
@@ -104,15 +105,15 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
     //   return;
     // }
     setState(() {
-       if (widget.isEditQuestion == true) {
-      contentTypeSelected = widget.questionItem?.category ?? type.name;
-       }else{
-         contentTypeSelected =  type.name;
-       }
+      if (widget.isEditQuestion == true) {
+        contentTypeSelected = widget.questionItem?.category ?? type.name;
+      } else {
+        contentTypeSelected = type.name;
+      }
     });
     switch (type) {
       case ContentType.image:
-              replaceImageTriggered = true;
+        replaceImageTriggered = true;
         imageAttachment();
         break;
       case ContentType.video:
@@ -133,7 +134,7 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
 
   @override
   Widget build(BuildContext context) {
-       final categoryAsyncValue = ref.watch(categoriesProviderQuestion);
+    final categoryAsyncValue = ref.watch(categoriesProviderQuestion);
     if (categoryAsyncValue is AsyncData<List<String>>) {
       final questionsList = categoryAsyncValue;
       print('Questions: $questionsList ');
@@ -141,7 +142,7 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
     }
 
     if (categoryAsyncValue is AsyncLoading) {
-       const Center(
+      const Center(
         child: SizedBox(
           height: 50.0,
           width: 50.0,
@@ -151,45 +152,37 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
     }
 
     if (categoryAsyncValue is AsyncError) {
-       Text('An error occurred: ${categoryAsyncValue.error}');
+      Text('An error occurred: ${categoryAsyncValue.error}');
     }
     final Size size = MediaQuery.of(context).size;
-        feedController.text = feedController.text;
+    feedController.text = feedController.text;
     return Padding(
-        padding: const EdgeInsets.only(top: 0),
+        padding: const EdgeInsets.only(top: 0, bottom: 20),
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(0),
           child: Container(
-            height: MediaQuery.of(context).size.height,
+            // height: MediaQuery.of(context).size.height,
             alignment: AlignmentDirectional.center,
             padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(0),
                   child: Card(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      // crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        categoryHearViewWidget(),
-                        //Share your thoughts
-                        feedsDescriptionUI(),
-
-                        //VIDEOS,IMAGES PICKERS
-                        videoPickerContent(size),
-
-                        // Image Picker
-                        imagePickerContent(size),
-
                         const SizedBox(
-                          height: 20,
+                          height: 5,
                         ),
-
+                        categoryHearViewWidget(),
+                        feedsDescriptionUI(),
                         //SELECT PHOTOS/VIDEOS/
                         //  attchmentFileButtons(context, ref),
-                        const SizedBox(
-                          height: 10,
-                        )
+                        // const SizedBox(
+                        //   height: 10,
+                        // )
                       ],
                     ),
                   ),
@@ -199,6 +192,9 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
                 ),
                 //POST BUTTON
                 btnPost(size),
+                const SizedBox(
+                  height: 100,
+                )
               ],
             ),
           ),
@@ -208,64 +204,47 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
   //CARD - Feeds Descriotion
 
   Widget feedsDescriptionUI() {
-    return Column(
-      children: [
-        //COMMENTED QUESTION TITLE
-        // Padding(
-        //   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        //     children: [
-        //       Expanded(
-        //           child: TextFormField(
-        //         validator: (value) => value!.isEmpty ? 'Title' : null,
-        //         controller: hashTagController,
-        //         textInputAction: TextInputAction.done,
-        //         maxLines: null,
-        //         style: TextStyle(
-        //           color: Colors.black,
-        //           fontSize: 14.0,
-        //           fontFamily: GoogleFonts.notoSans().fontFamily,
-        //           fontWeight: FontWeight.normal,
-        //         ),
-        //         decoration:
-        //             const InputDecoration.collapsed(hintText: "Title"),
-        //       )),
-        //     ],
-        //   ),
-        // ),
-        //  const Divider(
-        //   thickness: 1,
-        //   color: Color(0xffEAEAEA),
-        //   height: 1,
-        // ),
+    return GestureDetector(
+        onTap: () {
+          // Focus on TextFormField when Container is tapped
+          FocusScope.of(context).requestFocus(forumFocusNode);
+        },
+        child: Container(
+            constraints: BoxConstraints(minHeight: 200), // Set a minimum height
+            color: Colors.white,
+            child: Column(
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                          child: TextFormField(
+                        cursorColor: Color.fromARGB(255, 45, 43, 43),
 
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                  child: TextFormField(
-                validator: (value) =>
-                    value!.isEmpty ? 'Question field cannot be blank' : null,
-                controller: feedController,
-                textInputAction: TextInputAction.done,
-                maxLines: null,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 14.0,
-                  fontFamily: GoogleFonts.notoSans().fontFamily,
-                  fontWeight: FontWeight.normal,
+                        focusNode: forumFocusNode, // Assign the FocusNode
+                        validator: (value) => value!.isEmpty
+                            ? 'Question field cannot be blank'
+                            : null,
+                        controller: feedController,
+                        textInputAction: TextInputAction.done,
+                        maxLines: null,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14.0,
+                          fontFamily: GoogleFonts.notoSans().fontFamily,
+                          fontWeight: FontWeight.normal,
+                        ),
+                        decoration: const InputDecoration.collapsed(
+                            hintText: "Ask your question here"),
+                      )),
+                    ],
+                  ),
                 ),
-                decoration: const InputDecoration.collapsed(
-                    hintText: "Ask your question here"),
-              )),
-            ],
-          ),
-        ),
-      ],
-    );
+              ],
+            )));
   }
 
   //SELECT PHOTOS/VIDEOS/
@@ -425,9 +404,7 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
                           ],
                         ),
                       );
-                    }))
-          );
-
+                    })));
   }
 
   // VIDEO Content
@@ -565,8 +542,8 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
     });
   }
 
-  void _handleSubmit(PostQuestionParams params, WidgetRef ref) async {
-     if (widget.isEditQuestion == true) {
+  void _handleSubmit_old(PostQuestionParams params, WidgetRef ref) async {
+    if (widget.isEditQuestion == true) {
       await ref.read(editForumProvider(params).future);
     } else {
       await ref.read(postQuestionProvider(params).future);
@@ -575,43 +552,81 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
     _resetValues();
   }
 
+  void _handleSubmit(PostQuestionParams params, WidgetRef ref) async {
+    try {
+      if (widget.isEditQuestion == true) {
+        await ref.read(editForumProvider(params).future);
+      } else {
+        await ref.read(postQuestionProvider(params).future);
+      }
+      Navigator.pop(context);
+      _resetValues();
+    } catch (e) {
+      // showMessage('Failed to post feed. Please try again.');
+    } finally {
+      setState(() {
+        _isLoading = false; // Hide loader
+      });
+    }
+  }
+
 // POST BUTTON
   Widget btnPost(Size size) {
-    return Container(
-      height: 48,
-      width: size.width - 30,
-      padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
-      child: OutlinedButton(
-        style: OutlinedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.0),
-          ),
-          backgroundColor: const Color(0xffF2722B),
-          side: const BorderSide(width: 1, color: Color(0xffF2722B)),
-        ),
-        // <-- OutlinedButton
+    return Stack(
+      children: [
+        Container(
+          height: 48,
+          width: size.width - 30,
+          padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              backgroundColor: const Color(0xffF2722B),
+              side: const BorderSide(width: 1, color: Color(0xffF2722B)),
+            ),
+            // <-- OutlinedButton
 
-        onPressed: () {
-          if (feedController.value.text.isEmpty) {
-            showMessage('Question field should not be empty.');
-          }
-          // else if (hashTagController == null ||
-          //     hashTagController.value.text.isEmpty) {
-          //   showMessage('Please add hashtag');
-          // }
-          else {
-            createPost();
-          }
-        },
-        //POSt Feed
-        child: Text('Post',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16.0,
-              fontFamily: GoogleFonts.poppins().fontFamily,
+            onPressed: () {
+              if (feedController.value.text.isEmpty) {
+                showMessage('Question field should not be empty.');
+              }
+              // else if (hashTagController == null ||
+              //     hashTagController.value.text.isEmpty) {
+              //   showMessage('Please add hashtag');
+              // }
+              else {
+                   setState(() {
+                _isLoading = true; // Show loader
+              });
+                createPost();
+              }
+            },
+            //POSt Feed
+            child: Text('Post',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
               fontWeight: FontWeight.normal,
-            )),
+            ),
+          ),
+        ),
       ),
+        if (_isLoading)
+         const Positioned.fill(
+    child: Center(
+      child: SizedBox(
+        width: 50, 
+        height: 50,
+        child: CircularProgressIndicator(
+          strokeWidth: 3, 
+        ),
+      ),
+    ),
+  ),
+      ],
     );
   }
 
@@ -621,7 +636,9 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
       name: 'Question',
       userId: widget.user.userId,
       // questionId: questionId,
-        questionId: widget.isEditQuestion == true ? widget.questionItem?.questionId ?? questionId : questionId,
+      questionId: widget.isEditQuestion == true
+          ? widget.questionItem?.questionId ?? questionId
+          : questionId,
       content: feedController.text,
       hasImage: false,
       subCategory: "",
@@ -629,14 +646,14 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
       //     ? checkListItems[selectedIndex ?? 0]
       //     : selectedCategory,
       category: (widget.isEditQuestion == true && updateEditCategories == true)
-              ? (selectedIndex != null)
+          ? (selectedIndex != null)
+              ? checkListItems[selectedIndex ?? 0]
+              : widget.questionItem?.category ?? selectedCategory
+          : (widget.isEditQuestion == true && updateEditCategories == false)
+              ? widget.questionItem?.category ?? selectedCategory
+              : (selectedIndex != null)
                   ? checkListItems[selectedIndex ?? 0]
-                  : widget.questionItem?.category ?? selectedCategory
-              : (widget.isEditQuestion == true && updateEditCategories == false)
-                  ? widget.questionItem?.category ?? selectedCategory
-                  : (selectedIndex != null)
-                      ? checkListItems[selectedIndex ?? 0]
-                      : selectedCategory,
+                  : selectedCategory,
     );
     // final params = PostQuestionParams(
     //   userId: widget.user.userId,
@@ -706,7 +723,6 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
   }
 
   void onCategorySelected() {
-   
     _showBottomSheet(context);
   }
 
@@ -719,18 +735,16 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
       setState(() {
         selectedIndex = categoryIndex;
         selectedIndex = categoryIndex;
-         if (widget.isEditQuestion == true){
+        if (widget.isEditQuestion == true) {
           updateEditCategories = true;
         }
         // selectedCategories.add(categories[index]);
-              // selectedIndex = categoryIndex;
+        // selectedIndex = categoryIndex;
       });
     }
   }
 
   void _showBottomSheet(BuildContext context) {
-    
-    
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -766,7 +780,12 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
                   fontSize: 14,
                 ),
               ),
-              value: selectedIndex == index,
+              // value: selectedIndex == index,
+              value: selectedIndex == index ||
+                  (selectedIndex == null &&
+                      index ==
+                          0), // Select "General Feed" by default if no category is selected
+
               onChanged: (value) {
                 setState(() {
                   selectedIndex = index;
@@ -782,33 +801,57 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
 
   Widget categoryHearViewWidget() {
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-        child: Wrap(
-            spacing: 5,
-            direction: Axis.horizontal,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              const CircleAvatar(
-                radius: 3,
-                backgroundColor: Color(0xffB54242),
-              ),
-              Text(
-                (widget.isEditQuestion == true && updateEditCategories == true)
-              ? (selectedIndex != null)
-                  ? checkListItems[selectedIndex ?? 0]
-                  : widget.questionItem?.category ?? selectedCategory
-              : (widget.isEditQuestion == true && updateEditCategories == false)
-                  ? widget.questionItem?.category ?? selectedCategory
-                  : (selectedIndex != null)
-                      ? checkListItems[selectedIndex ?? 0]
-                      : selectedCategory,
-                style: TextStyle(
-                  color: const Color(0xffB54242),
-                  fontSize: 12.0,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontWeight: FontWeight.w500,
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5),
+      child: Wrap(
+        spacing: 5,
+        direction: Axis.horizontal,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          const CircleAvatar(
+            radius: 3,
+            backgroundColor: Color(0xffB54242),
+          ),
+          GestureDetector(
+            onTap: () {
+              _showBottomSheet(context);
+            },
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  (widget.isEditQuestion == true &&
+                          updateEditCategories == true)
+                      ? (selectedIndex != null)
+                          ? checkListItems[selectedIndex ?? 0]
+                          : widget.questionItem?.category ?? selectedCategory
+                      : (widget.isEditQuestion == true &&
+                              updateEditCategories == false)
+                          ? widget.questionItem?.category ?? selectedCategory
+                          : (selectedIndex != null)
+                              ? checkListItems[selectedIndex ?? 0]
+                              : selectedCategory,
+                  style: TextStyle(
+                    color: const Color(0xffB54242),
+                    fontSize: 14.0,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-            ]));
+                Icon(
+                  Icons.arrow_drop_down,
+                  color: const Color(0xffB54242),
+                ),
+              ],
+            ),
+          ),
+          const Divider(
+            thickness: 1,
+            color: Color(0xffEAEAEA),
+            height: 10,
+          ),
+        ],
+      ),
+    );
   }
 }

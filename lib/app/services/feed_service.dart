@@ -12,6 +12,7 @@ class FeedService {
       final userPayload = {
         "user": {"userId": user.userId}
       };
+      safePrint(user.userId);
       final prefs = await SharedPreferences.getInstance();
       final authToken = prefs.getString('authToken');
                       safePrint(authToken);

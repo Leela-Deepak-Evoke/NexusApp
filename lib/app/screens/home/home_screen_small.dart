@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/models/userhome.dart';
 import 'package:evoke_nexus_app/app/provider/org_update_service_provider.dart';
@@ -79,21 +80,21 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
           const MobileCustomAppbar(),
 
           // Floating action button
-          Positioned(
-            bottom: 100.0, // Adjust the position as needed
-            right: 16.0, // Adjust the position as needed
-            child: FloatingActionButton(
-              onPressed: () {
-                _showToast(context);
-              },
-              backgroundColor: const Color(0XFF0707b5),
-              child: Image.asset(
-                'assets/images/evita.png',
-                width: 50,
-                height: 50,
-              ),
-            ),
-          ),
+          // Positioned(
+          //   bottom: 100.0, // Adjust the position as needed
+          //   right: 16.0, // Adjust the position as needed
+          //   child: FloatingActionButton(
+          //     onPressed: () {
+          //       _showToast(context);
+          //     },
+          //     backgroundColor: const Color(0XFF0707b5),
+          //     child: Image.asset(
+          //       'assets/images/evita.png',
+          //       width: 50,
+          //       height: 50,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
@@ -128,12 +129,16 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
 
     if (userHomeAsyncValue is AsyncValue<UserHome>) {
       // Check if userHomeAsyncValue is of type AsyncValue<UserHome>
-      final userHome =
-          userHomeAsyncValue.value; // Access data property directly
+      final userHome = userHomeAsyncValue.value; // Access data property directly
 
       if (userHome != null) {
         userDetails = userHome.userDetails;
+      }else{
+            safePrint('userDetails -- : $userDetails');
       }
+    }else{
+          safePrint('UserHomeAsyncValue is not of type AsyncValue<UserHome>');
+
     }
     return Stack(
       children: [
@@ -1462,7 +1467,16 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
 
 //COMMON PROFILE PIC METHODS
   Widget _profilePicWidget(UserList item, bool isQuestion, WidgetRef ref) {
-    final avatarText = getAvatarText(item.name);
+    // final avatarText = getAvatarText(item.name);
+    
+
+
+         final String? authorName = item.name;
+  if (authorName == null || authorName.isEmpty) {
+    return CircleAvatar(radius: 20.0, child: Text('NO'));
+  }
+  final avatarText = getAvatarText(authorName);
+
     final double radius = isQuestion ? 12.0 : 20.0;
 
     final profilePicAsyncValue =
@@ -1541,6 +1555,19 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
         ? getAvatarText(userDetails.name)
         : ""; // Provide a default value or handle the null case appropriately
 
+if (userDetails != null){
+     final String? authorName = userDetails!.name;
+  if (authorName == null || authorName.isEmpty) {
+    return CircleAvatar(radius: 20.0, child: Text('NO'));
+  } 
+   final avatarText = getAvatarText(authorName);
+}else{
+   final String avatarText = userDetails != null
+        ? getAvatarText(userDetails.name)
+        : ""; //
+}
+
+
     if (userHomeAsyncValue?.value?.userDetails.profilePicture == null) {
       return CircleAvatar(radius: 20.0, child: Text(avatarText));
     } else {
@@ -1553,12 +1580,25 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
       //print(profilePicAsyncValue);
       return profilePicAsyncValue.when(
         data: (imageUrl) {
-          if (imageUrl != null && imageUrl.isNotEmpty) {
+          if (imageUrl != null && imageUrl.isNotEmpty)  {
+          // Check if imageUrl is proper or not
+          if (_isProperImageUrl(imageUrl)) {
             return CircleAvatar(
               backgroundImage: NetworkImage(imageUrl),
-              radius: 20.0,
+              radius: 20,
             );
           } else {
+            // Render text as a fallback when imageUrl is not proper
+            return CircleAvatar(
+              radius: 20,
+              child: Text(
+                avatarText,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+              ),
+            );
+          }
+        } else {
             // Render a placeholder or an error image
             return CircleAvatar(radius: 20.0, child: Text(avatarText));
           }

@@ -183,7 +183,14 @@ class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
   }
 
   Future<Widget> _userProfilePicWidget(UserLike item, WidgetRef ref) async {
-    final avatarText = getAvatarText(item.userName);
+    // final avatarText = getAvatarText(item.userName);
+         final String? authorName = item.userName;
+  if (authorName == null || authorName.isEmpty) {
+    return CircleAvatar(radius: 20.0, child: Text('NO'));
+  }
+    // final avatarText = getAvatarText(item.author!);
+  final avatarText = getAvatarText(authorName);
+
     if (item.profilePicture == null  || item.profilePicture == "") {
       return CircleAvatar(radius: 15.0, child: Text(avatarText));
     } else {

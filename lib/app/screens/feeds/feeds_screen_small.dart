@@ -23,7 +23,6 @@ class _FeedsScreenSmallState extends ConsumerState<FeedsScreenSmall> {
   List<String> checkListItems = [];
   String selectedCategory = '';
   bool isFilter = false;
-
   // Multiple Categories - Define a Set to store selected categories
   Set<String> selectedCategories = Set();
 

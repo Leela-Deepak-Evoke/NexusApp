@@ -11,7 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:package_info_plus/package_info_plus.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class ProfileMobileView extends ConsumerStatefulWidget {
   final User user;
@@ -34,7 +34,7 @@ class ProfileMobileView extends ConsumerStatefulWidget {
 }
 
 class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
-  File? _image; 
+  File? _image;
   // PackageInfo _packageInfo = PackageInfo(
   //   appName: '',
   //   packageName: '',
@@ -56,6 +56,22 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
   //     _packageInfo = info;
   //   });
   // }
+
+  @override
+  void initState() {
+    super.initState();
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+      String appName = packageInfo.appName;
+      String packageName = packageInfo.packageName;
+      String version = packageInfo.version;
+      String buildNumber = packageInfo.buildNumber;
+    });
+
+//    PackageInfo.fromPlatform().then((value) {
+//      print(value);
+// // // Value will be our all details we get from package info package
+//    });
+  }
 
   Widget _infoTile(String title, String subtitle) {
     return ListTile(
@@ -198,36 +214,57 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
                   FontWeight.w500, // Font weight for `${widget.user.about}`
             ),
           ),
-        const SizedBox(height: 10),
-        if (widget.user.socialLinks != null &&
-            widget.user.socialLinks!.trim().isNotEmpty)
+        const SizedBox(height: 20),
+
+        //Social Link Dont Remove below Code
+        // if (widget.user.socialLinks != null &&
+        //     widget.user.socialLinks!.trim().isNotEmpty)
+        //   Text(
+        //     'Social Link: ',
+        //     style: TextStyle(
+        //       color: const Color(0xff676A79),
+        //       fontSize: 16.0,
+        //       fontFamily: GoogleFonts.notoSans().fontFamily,
+        //       fontWeight: FontWeight.w600,
+        //     ),
+        //   ),
+        // if (widget.user.socialLinks != null &&
+        //     widget.user.socialLinks!.trim().isNotEmpty)
+        //   Text(
+        //     '${widget.user.socialLinks}',
+        //     style: TextStyle(
+        //       color: Colors.blue, // Blue color for links
+        //       fontSize: 14.0, // Font size for `${widget.user.socialLinks}`
+        //       fontFamily: GoogleFonts.notoSans().fontFamily,
+        //       fontWeight: FontWeight
+        //           .w500, // Font weight for `${widget.user.socialLinks}`
+        //       decoration: TextDecoration.underline, // Add underline to links
+        //     ),
+        //   ),
+
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Text(
-            'Social Link: ',
+            'Application Version: ',
             style: TextStyle(
               color: const Color(0xff676A79),
-              fontSize: 16.0,
+              fontSize: 14.0,
               fontFamily: GoogleFonts.notoSans().fontFamily,
               fontWeight: FontWeight.w600,
             ),
           ),
-        if (widget.user.socialLinks != null &&
-            widget.user.socialLinks!.trim().isNotEmpty)
           Text(
-            '${widget.user.socialLinks}',
+            '23.0.0(1)',
             style: TextStyle(
-              color: Colors.blue, // Blue color for links
-              fontSize: 14.0, // Font size for `${widget.user.socialLinks}`
+              color: const Color(0xff676A79),
+              fontSize: 16.0,
               fontFamily: GoogleFonts.notoSans().fontFamily,
-              fontWeight: FontWeight
-                  .w500, // Font weight for `${widget.user.socialLinks}`
-              decoration: TextDecoration.underline, // Add underline to links
+              fontWeight: FontWeight.w500,
             ),
-          ),
-        // _infoTile('App version', _packageInfo.version),
-        // _infoTile('Build number', _packageInfo.buildNumber),
+          )
+        ]),
 
-        _logout(),
-        const SizedBox(height: 50),
+        // _logout(),
+        const SizedBox(height: 90),
       ],
     );
   }
@@ -260,8 +297,8 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
               fontWeight: FontWeight.w600,
             ),
           ),
-        const SizedBox(height: 20),
-        _logout(),
+        // const SizedBox(height: 20),
+        // _logout(),
         const SizedBox(height: 20),
       ],
     );

@@ -59,7 +59,7 @@ class QuestionCardView extends ConsumerWidget {
         Row(
           children: [
             TextButton.icon(
-                onPressed: () {},
+                onPressed: null,
                 icon: Image.asset('assets/images/response.png'),
                 label: Text(
                   '${item.answers}',

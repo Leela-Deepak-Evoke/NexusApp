@@ -80,11 +80,11 @@ final refresFeedsProvider =
 
 
 //Need to use
-final pagginationFeedsProvider =
-    FutureProvider.autoDispose.family<bool, String>((ref, user) async {
-  ref.invalidate(feedsProvider);
-      ref.invalidate(filterFeedsProvider);
+// final pagginationFeedsProvider =
+//     FutureProvider.autoDispose.family<bool, String>((ref, user) async {
+//   ref.invalidate(feedsProvider);
+//       ref.invalidate(filterFeedsProvider);
 
-  return true;
-});
+//   return true;
+// });
 

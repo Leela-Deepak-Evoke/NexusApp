@@ -35,16 +35,16 @@ class _CreatePostOrgUpdatesScreenSmallState
           title: "Post OrgUpdates",
           user: data,
           hasBackAction: true,
-          hasRightAction: true,
+          hasRightAction: false,
           topBarButtonAction: () {},
           backButtonAction: () {
             Navigator.pop(context);
           },
-          rightChildWiget: RoundedActionView(
-              onPressed: () {
-                childKey.currentState?.onCategorySelected();
-              },
-              title: rightActionTitle),
+          // rightChildWiget: RoundedActionView(
+          //     onPressed: () {
+          //       childKey.currentState?.onCategorySelected();
+          //     },
+          //     title: rightActionTitle),
           child: OrgUpdatesMobileView(
               key: childKey,
               user: data,

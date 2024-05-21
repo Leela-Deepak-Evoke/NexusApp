@@ -48,9 +48,7 @@ class _UserFormState extends ConsumerState<UserForm> {
             (index < socialLinksList.length) ? socialLinksList[index] : "");
   }
 
-
-
-Future<void> _handleSubmit(BuildContext context) async {
+  Future<void> _handleSubmit(BuildContext context) async {
     FocusScope.of(context).unfocus();
 
     bool changed = initialAbout != _aboutController.text ||
@@ -74,18 +72,53 @@ Future<void> _handleSubmit(BuildContext context) async {
       );
       final currentUser =
           await ref.read(updateUserProvider(updatedUser).future);
-          Navigator.pop(context);
-      setState(() {
-        initialAbout = currentUser.about!;
-        initialSocialLinks = currentUser.socialLinks! as List<String>;
-                
 
+      final updatedUserData =
+          await ref.read(updateUserProvider(updatedUser).future);
+      setState(() {
+        initialAbout = updatedUserData.about ?? "";
+        initialSocialLinks = (updatedUserData.socialLinks ?? "").split(',');
       });
     } else {
       print("No changes detected.");
     }
-  Navigator.pop(context);
+    Navigator.pop(context);
   }
+
+  // Future<void> _handleSubmit(BuildContext context) async {
+  //   FocusScope.of(context).unfocus();
+
+  //   bool changed = initialAbout != _aboutController.text ||
+  //       !_compareLists(initialSocialLinks,
+  //           _socialLinksControllers.map((e) => e.text).toList());
+
+  //   if (changed) {
+  //     // Update the user object with new values
+  //     User updatedUser = User(
+  //       userId: widget.user.userId,
+  //       identityId: widget.user.identityId,
+  //       name: widget.user.name,
+  //       email: widget.user.email,
+  //       title: widget.user.title,
+  //       role: widget.user.role,
+  //       createdAt: widget.user.createdAt,
+  //       status: widget.user.status,
+  //       about: _aboutController.text,
+  //       profilePicture: widget.user.profilePicture,
+  //       socialLinks: _socialLinksControllers.map((e) => e.text).join(','),
+  //     );
+  //     final currentUser =
+  //         await ref.read(updateUserProvider(updatedUser).future);
+  //     Navigator.pop(context);
+  //     setState(() {
+  //       initialAbout = currentUser.about!;
+  //       initialSocialLinks = currentUser.socialLinks! as List<String>;
+  //     });
+  //   } else {
+  //     print("No changes detected.");
+  //   }
+  //   Navigator.pop(context);
+  // }
 
   void _handleCancel() {
     // Reset form fields to initial values
@@ -106,55 +139,53 @@ Future<void> _handleSubmit(BuildContext context) async {
   @override
   Widget build(BuildContext context) {
     final userAsyncValue = ref.watch(fetchUserProvider);
-    if (widget.isFromWelcomeScreen == true) {
-      return _editDetails(widget.user, context);
-    } else {
-      return userAsyncValue.when(
-        data: (data) {
-          return MobileLayout(
-              title: 'Edit Profile',
-              user: data,
-              hasBackAction: true,
-              hasRightAction: false,
-              topBarButtonAction: () {},
-              backButtonAction: () {
-                Navigator.pop(context);
-              },
-              child: _editDetails(widget.user, context));
-        },
-        loading: () => const Center(
-          child: SizedBox(
-            height: 50.0,
-            width: 50.0,
-            child: CircularProgressIndicator(),
-          ),
+    // if (widget.isFromWelcomeScreen == true) {
+    //   return _editDetails(widget.user, context);
+    // } else {
+
+    final userNotifier = ref.watch(currentUserProvider.notifier).state;
+    print("user: $userNotifier");
+
+    return userAsyncValue.when(
+      data: (data) {
+        return MobileLayout(
+            title: 'Edit Profile',
+            user: data,
+            hasBackAction: true,
+            hasRightAction: false,
+            topBarButtonAction: () {},
+            backButtonAction: () {
+              Navigator.pop(context);
+            },
+            child: _editDetails(userNotifier, context));
+      },
+      loading: () => const Center(
+        child: SizedBox(
+          height: 50.0,
+          width: 50.0,
+          child: CircularProgressIndicator(),
         ),
-        error: (error, stack) {
-          // Handle the error case if needed
-          return Text('An error occurred: $error');
-        },
-      );
-    }
+      ),
+      error: (error, stack) {
+        // Handle the error case if needed
+        return Text('An error occurred: $error');
+      },
+    );
+    // }
   }
 
-  Widget _editDetails(User user, BuildContext context) {
+  Widget _editDetails(User? user, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 0),
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(0),
         child: Container(
-          height: MediaQuery.of(context).size.height,
+          // height: MediaQuery.of(context).size.height,
           alignment: AlignmentDirectional.center,
-          padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
-          child: 
-          Container(
-            height: MediaQuery.of(context).size.height,
-            alignment: AlignmentDirectional.center,
-            padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
-
-
-       child:   SizedBox(
-            height: MediaQuery.of(context).size.height,
+          padding:
+              const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 120),
+          child: SizedBox(
+            // height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             child: Card(
               margin: const EdgeInsets.all(8.0),
@@ -169,10 +200,14 @@ Future<void> _handleSubmit(BuildContext context) async {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 10),
-                    _profilePicWidget(widget.user, ref),
+                    _profilePicWidget(user!, ref),
                     TextButton(
-                      onPressed: () => ref
-                          .read(uploadProfileImageProvider(widget.user.userId)),
+                      // onPressed: () => ref
+                      //     .read(uploadProfileImageProvider(widget.user.userId)),
+                      onPressed: () {
+                        ref.read(
+                            uploadProfileImageProvider(widget.user.userId));
+                      },
                       child: Center(
                         child: Text(
                           widget.user.profilePicture != null &&
@@ -209,35 +244,42 @@ Future<void> _handleSubmit(BuildContext context) async {
                     const SizedBox(height: 20),
                     Column(
                       children: [
-                        TextField(
-                          controller: _aboutController,
-                          maxLines: 3, // Increase this number for more lines
-                          decoration: const InputDecoration(
-                              labelText: "About",
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.all(8)),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Expanded(
+                                  child: TextField(
+                                controller: _aboutController,
+                                maxLines: null,
+                                keyboardType: TextInputType
+                                    .multiline, // Enable multiline input
 
-                          // maxLength: 3000,
-                        ),
-                        // ExpandCollapseDemo(),
-
-                        const SizedBox(height: 20),
-                        ..._buildSocialLinksFields()
+                                decoration: const InputDecoration(
+                                  labelText: "About Me",
+                                  hintText: 'About Me',
+                                  border: OutlineInputBorder(),
+                                  alignLabelWithHint:
+                                      true, // Aligns the label with the hint text
+                                ),
+                              )),
+                              // SizedBox(height: 20),
+                              // ..._buildSocialLinksFields()
+                            ])
                       ],
                     ),
                     const SizedBox(height: 5),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ElevatedButton(
                             onPressed: () async {
-                                _handleSubmit(context);
+                              _handleSubmit(context);
                             },
                             child: const Text("Submit")),
-                        const SizedBox(width: 10),
-                        TextButton(
-                            onPressed: _handleCancel,
-                            child: const Text("Clear")),
+                        // const SizedBox(width: 10),
+                        // TextButton(
+                        //     onPressed: _handleCancel,
+                        //     child: const Text("Clear")),
                       ],
                     ),
                   ],
@@ -246,7 +288,6 @@ Future<void> _handleSubmit(BuildContext context) async {
               ),
             ),
           ),
-          )
         ),
       ),
     );
@@ -270,16 +311,16 @@ Future<void> _handleSubmit(BuildContext context) async {
   List<Widget> _buildSocialLinksFields() {
     // Icons for Facebook, LinkedIn, Instagram
     List<IconData> icons = [
-      Icons.facebook,
+      // Icons.facebook,
       Icons.group,
-      Icons.photo_album,
+      // Icons.photo_album,
     ];
     List<String> labels = [
-      "Facebook",
+      // "Facebook",
       "LinkedIn",
-      "Instagram",
+      // "Instagram",
     ];
-    return List.generate(3, (index) {
+    return List.generate(1, (index) {
       return Column(
         children: [
           TextField(
@@ -300,7 +341,6 @@ Future<void> _handleSubmit(BuildContext context) async {
   @override
   void dispose() {
     _aboutController.dispose();
-
     for (var controller in _socialLinksControllers) {
       controller.dispose();
     }
@@ -311,16 +351,51 @@ Future<void> _handleSubmit(BuildContext context) async {
     final avatarText = getAvatarText(user.name);
 
     final profileThumbnailAsyncValue =
-        ref.watch(profileThumbnailProvider(user.profilePicture ?? ""));
+        ref.watch(profileThumbnailProvider(user.profilePicture!));
 
     return profileThumbnailAsyncValue.when(
       data: (data) {
         if (data != null) {
           return Center(
-              child: CircleAvatar(
-            backgroundImage: NetworkImage(data),
-            radius: 80.0,
-          ));
+            child: CircleAvatar(
+              backgroundImage: NetworkImage(data),
+              radius: 80.0,
+            ),
+          );
+        } else {
+          // Render a placeholder or an error image
+          return CircleAvatar(radius: 80.0, child: Text(avatarText));
+        }
+      },
+      loading: () => Center(
+        child: SizedBox(
+          height: 80.0,
+          width: 80.0,
+          child: CircleAvatar(radius: 80.0, child: Text(avatarText)),
+        ),
+      ),
+      error: (error, stack) {
+        // Handle the error case if needed
+        return CircleAvatar(radius: 80.0, child: Text(avatarText));
+      },
+    );
+  }
+
+  Widget _profilePicWidget_working(User user, WidgetRef ref) {
+    final avatarText = getAvatarText(user.name);
+
+    final profileThumbnailAsyncValue =
+        ref.watch(profileThumbnailProvider(user.profilePicture!));
+
+    return profileThumbnailAsyncValue.when(
+      data: (data) {
+        if (data != null) {
+          return Center(
+            child: CircleAvatar(
+              backgroundImage: NetworkImage(data),
+              radius: 80.0,
+            ),
+          );
         } else {
           // Render a placeholder or an error image
           return CircleAvatar(radius: 80.0, child: Text(avatarText));

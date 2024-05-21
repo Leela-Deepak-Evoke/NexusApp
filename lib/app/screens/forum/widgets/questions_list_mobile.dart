@@ -208,7 +208,7 @@ if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
           ),
         ),
         TextButton.icon(
-            onPressed: () {},
+            onPressed: null,
             icon: Image.asset('assets/images/response.png'),
             label: Text(
               '${item.answers}',
@@ -219,25 +219,25 @@ if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
                 fontWeight: FontWeight.normal,
               ),
             )),
-        TextButton.icon(
-          onPressed: () {
-            _showToast(context);
-          },
-          icon: Image.asset(
-            'assets/images/Vector-2.png',
-            width: 20,
-            height: 20,
-          ),
-          label: Text(
-            'Report',
-            style: TextStyle(
-              color: const Color(0xff393E41),
-              fontFamily: GoogleFonts.inter().fontFamily,
-              fontWeight: FontWeight.normal,
-              fontSize: 14,
-            ),
-          ),
-        ),
+        // TextButton.icon(
+        //   onPressed: () {
+        //     _showToast(context);
+        //   },
+        //   icon: Image.asset(
+        //     'assets/images/Vector-2.png',
+        //     width: 20,
+        //     height: 20,
+        //   ),
+        //   label: Text(
+        //     'Report',
+        //     style: TextStyle(
+        //       color: const Color(0xff393E41),
+        //       fontFamily: GoogleFonts.inter().fontFamily,
+        //       fontWeight: FontWeight.normal,
+        //       fontSize: 14,
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }
@@ -464,7 +464,18 @@ if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
   }
 
 Widget _profilePicWidget(Question item, WidgetRef ref) {
-    final avatarText = getAvatarText(item.author!);
+  // final String? authorName = item.author;
+
+  final String? authorName = item.author;
+  if (authorName == null || authorName.isEmpty) {
+    return CircleAvatar(radius: 20.0, child: Text('NO'));
+  }
+  if (authorName == null || authorName.isEmpty) {
+    return CircleAvatar(radius: 20.0, child: Text('NO'));
+  }
+  final avatarText = getAvatarText(authorName);
+    // final avatarText = getAvatarText(item.author!);
+
     if (item.authorThumbnail == null || item.authorThumbnail == "") {
       return CircleAvatar(radius: 12.0, child: Text(avatarText));
     } else {
@@ -519,7 +530,6 @@ Widget _profilePicWidget(Question item, WidgetRef ref) {
   }
   
     bool _isProperImageUrl(String imageUrl) {
-    // Check if the image URL contains spaces in the filename
     if ( imageUrl.contains('%20')) {
       return false;
     }

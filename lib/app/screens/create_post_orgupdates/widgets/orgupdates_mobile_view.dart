@@ -64,7 +64,9 @@ class OrgUpdatesMobileViewMobileViewState
   List<File>? get selectedPostImages => _selectedPostImages;
   String contentTypeSelected = "";
   bool isVisible = true; // Set this boolean based on your condition
-
+  final FocusNode orgUpdateFocusNode = FocusNode();
+  bool updateEditCategories = false;
+  bool _isLoading = false;
   void _selectDocuments() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -94,9 +96,14 @@ class OrgUpdatesMobileViewMobileViewState
   @override
   void initState() {
     super.initState();
+    // if (widget.isEditOrgUpdate == true) {
+    //   feedController.text = widget.orgUpdateItem?.content ?? feedController.text;
+    // }
+
     if (widget.isEditOrgUpdate == true) {
-      feedController.text =
-          widget.orgUpdateItem?.content ?? feedController.text;
+      feedController.text = widget.orgUpdateItem?.content ?? feedController.text;
+      isMediaSelect = widget.orgUpdateItem?.hasImage ?? false;
+      isImageSelect = widget.orgUpdateItem?.hasImage ?? false;
     }
   }
 
@@ -158,37 +165,29 @@ class OrgUpdatesMobileViewMobileViewState
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(0),
           child: Container(
-            height: MediaQuery.of(context).size.height,
+            // height: MediaQuery.of(context).size.height,
             alignment: AlignmentDirectional.center,
             padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(0),
                   child: Card(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      // crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // categoryHearViewWidget(),
-                        // const SizedBox(
-                        //   height: 5,
-                        // ),
-
+                        const SizedBox(
+                          height: 5,
+                        ),
                         categoryHearViewWidget(),
                         //Share your thoughts
-                        feedsDescriptionUI(),
-
-                        //VIDEOS,IMAGES PICKERS
-
+                        feedsDescriptionUI(context),
                         videoPickerContent(size),
-
-                        // Image Picker
                         if (isVisible) imagePickerContent(size),
-                        // imagePickerContent(size),
-
-                        const SizedBox(
-                          height: 20,
-                        ),
+                        // const SizedBox(
+                        //   height: 20,
+                        // ),
 
                         //SELECT PHOTOS/VIDEOS/
                         attchmentFileButtons(context, ref),
@@ -204,6 +203,9 @@ class OrgUpdatesMobileViewMobileViewState
                 ),
                 //POST BUTTON
                 btnPost(size),
+                const SizedBox(
+                  height: 100,
+                )
               ],
             ),
           ),
@@ -211,17 +213,67 @@ class OrgUpdatesMobileViewMobileViewState
   }
 
   //CARD - Feeds Descriotion
+  Widget feedsDescriptionUI(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        // Focus on TextFormField when Container is tapped
+        FocusScope.of(context).requestFocus(orgUpdateFocusNode);
+      },
+      child: Container(
+        constraints: BoxConstraints(minHeight: 200), // Set a minimum height
+        color: Colors.white, // Background color
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      focusNode: orgUpdateFocusNode,
+                      cursorColor: Color(0xffB54242),
+                      enabled: true,
+                      validator: (value) => value!.isEmpty
+                          ? 'Share your thoughts cannot be blank'
+                          : null,
+                      controller: feedController,
+                      textInputAction: TextInputAction.done,
+                      maxLines: null,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14.0,
+                        fontFamily: GoogleFonts.notoSans().fontFamily,
+                        fontWeight: FontWeight.normal,
+                      ),
+                      decoration: const InputDecoration.collapsed(
+                        hintText: "Share your thoughts with colleagues..",
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
-  Widget feedsDescriptionUI() {
+  Widget feedsDescriptionUI_OLD() {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+          padding:
+              const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0), //16
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Expanded(
                   child: TextFormField(
+                cursorColor: Color(0xffB54242),
+                focusNode: orgUpdateFocusNode, // Assign the FocusNode
+
                 validator: (value) => value!.isEmpty
                     ? 'Share your thoughts cannot be blank'
                     : null,
@@ -230,7 +282,7 @@ class OrgUpdatesMobileViewMobileViewState
                 maxLines: null,
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 14.0,
+                  fontSize: 15.0,
                   fontFamily: GoogleFonts.notoSans().fontFamily,
                   fontWeight: FontWeight.normal,
                 ),
@@ -324,72 +376,72 @@ class OrgUpdatesMobileViewMobileViewState
                 width: 5,
               ),
 
-              //VIDEO
-              Visibility(
-                  visible: ((contentTypeSelected == ContentType.video.name) ||
-                          (contentTypeSelected == ''))
-                      ? true
-                      : false,
-                  child: TextButton.icon(
-                    onPressed: () {
-                      // isVisible = false;
-                      // _selectFile(ContentType.video);
-                      _showToast(context);
-                    },
-                    icon: Image.asset(
-                      'assets/images/Vector.png',
-                      width: 20,
-                      height: 20,
-                    ),
-                    label: Text(
-                      'Video',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 12.0,
-                        fontFamily: GoogleFonts.inter().fontFamily,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.grey.shade100)),
-                  )),
-              const SizedBox(
-                width: 5,
-              ),
+              // //VIDEO
+              // Visibility(
+              //     visible: ((contentTypeSelected == ContentType.video.name) ||
+              //             (contentTypeSelected == ''))
+              //         ? true
+              //         : false,
+              //     child: TextButton.icon(
+              //       onPressed: () {
+              //         // isVisible = false;
+              //         // _selectFile(ContentType.video);
+              //         _showToast(context);
+              //       },
+              //       icon: Image.asset(
+              //         'assets/images/Vector.png',
+              //         width: 20,
+              //         height: 20,
+              //       ),
+              //       label: Text(
+              //         'Video',
+              //         style: TextStyle(
+              //           color: Colors.black,
+              //           fontSize: 12.0,
+              //           fontFamily: GoogleFonts.inter().fontFamily,
+              //           fontWeight: FontWeight.normal,
+              //         ),
+              //       ),
+              //       style: ButtonStyle(
+              //           backgroundColor:
+              //               MaterialStateProperty.all(Colors.grey.shade100)),
+              //     )),
+              // const SizedBox(
+              //   width: 5,
+              // ),
 
-              //DOCUMENT
-              Visibility(
-                  visible:
-                      ((contentTypeSelected == ContentType.document.name) ||
-                              (contentTypeSelected == ''))
-                          ? true
-                          : false,
-                  child: TextButton.icon(
-                    // <-- TextButton
-                    onPressed: () {
-                      // isVisible = true;
-                      // _selectFile(ContentType.document);
-                      _showToast(context);
-                    },
-                    icon: Image.asset(
-                      'assets/images/Vector-1.png',
-                      width: 20,
-                      height: 20,
-                    ),
-                    label: Text(
-                      'Document',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 12.0,
-                        fontFamily: GoogleFonts.inter().fontFamily,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.grey.shade100)),
-                  )),
+              // //DOCUMENT
+              // Visibility(
+              //     visible:
+              //         ((contentTypeSelected == ContentType.document.name) ||
+              //                 (contentTypeSelected == ''))
+              //             ? true
+              //             : false,
+              //     child: TextButton.icon(
+              //       // <-- TextButton
+              //       onPressed: () {
+              //         // isVisible = true;
+              //         // _selectFile(ContentType.document);
+              //         _showToast(context);
+              //       },
+              //       icon: Image.asset(
+              //         'assets/images/Vector-1.png',
+              //         width: 20,
+              //         height: 20,
+              //       ),
+              //       label: Text(
+              //         'Document',
+              //         style: TextStyle(
+              //           color: Colors.black,
+              //           fontSize: 12.0,
+              //           fontFamily: GoogleFonts.inter().fontFamily,
+              //           fontWeight: FontWeight.normal,
+              //         ),
+              //       ),
+              //       style: ButtonStyle(
+              //           backgroundColor:
+              //               MaterialStateProperty.all(Colors.grey.shade100)),
+              //     )),
             ],
           ),
         ],
@@ -398,7 +450,7 @@ class OrgUpdatesMobileViewMobileViewState
   }
 
   // IMAGE Content
-  Widget imagePickerContent(Size size) {
+  Widget imagePickerContent_OLD(Size size) {
     if (widget.isEditOrgUpdate == true && !replaceImageTriggered && widget.orgUpdateItem!.hasImage == true) {
       return AspectRatio(
         aspectRatio: 16 / 9,
@@ -450,6 +502,109 @@ class OrgUpdatesMobileViewMobileViewState
           );
     }
   }
+
+
+Widget imagePickerContent(Size size) {
+    final orgUpdateID = widget.isEditOrgUpdate == true ? widget.orgUpdateItem?.orgUpdateId ?? const Uuid().v4() : const Uuid().v4();
+
+    if (widget.isEditOrgUpdate == true && !replaceImageTriggered && widget.orgUpdateItem?.imagePath != null) {
+      fileList.add(widget.orgUpdateItem!.imagePath.toString());
+    }
+
+    if (widget.isEditOrgUpdate == true && !replaceImageTriggered) {
+      if (widget.orgUpdateItem?.hasImage == true) {
+        return Container(
+          padding: const EdgeInsets.all(15.0),
+          child: Stack(
+            children: [
+              OrgUpdateMediaView(item: widget.orgUpdateItem!),
+              Positioned(
+                top: -10,
+                right: 1,
+                child: IconButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          content:
+                              const Text('Would you like to delete the image?'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('OK --(In Progress)'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.cancel,
+                    color: AppColors.blueTextColour,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+      return Container();
+    } else {
+      return fileList.isNotEmpty
+          ? SizedBox(
+              height: size.height - 600,
+              // height: 90,
+              child: Padding(
+                  padding: const EdgeInsets.all(0),
+                  child:
+
+                      // GridView.builder(
+                      //   itemCount: fileList.length,
+                      //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      //     crossAxisCount: 1,
+                      //   ),
+                      //   itemBuilder: (BuildContext context, int index) {
+                      //     return
+                      Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.all(8.0),
+                    child: Stack(
+                      children: [
+                        returnFileContainer(0),
+                        Positioned(
+                          top: -10,
+                          right: 1,
+                          child: IconButton(
+                            onPressed: () {
+                              dltImages(fileList[0]);
+                            },
+                            icon: const Icon(
+                              Icons.cancel,
+                              color: AppColors.blueTextColour,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                  // },
+                  // ),
+                  ),
+            )
+          : Container(); // Return an empty container if fileList is empty
+    }
+  }
+
+
 
   // VIDEO Content
   Widget videoPickerContent(Size size) {
@@ -602,7 +757,7 @@ class OrgUpdatesMobileViewMobileViewState
     });
   }
 
-  void _handleSubmit(PostOrgUpdateParams params, WidgetRef ref) async {
+  void _handleSubmit_old(PostOrgUpdateParams params, WidgetRef ref) async {
     if (widget.isEditOrgUpdate == true) {
       await ref.read(editOrgUpdateProvider(params).future);
     } else {
@@ -612,9 +767,30 @@ class OrgUpdatesMobileViewMobileViewState
     _resetValues();
   }
 
+  void _handleSubmit(PostOrgUpdateParams params, WidgetRef ref) async {
+    try {
+      if (widget.isEditOrgUpdate == true) {
+        await ref.read(editOrgUpdateProvider(params).future);
+      } else {
+        await ref.read(postOrgUpdateProvider(params).future);
+      }
+      Navigator.pop(context);
+      _resetValues();
+    } catch (e) {
+      // showMessage('Failed to post feed. Please try again.');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+
 // POST BUTTON
   Widget btnPost(Size size) {
-    return Container(
+    return Stack(
+      children: [
+    Container(
       height: 48,
       width: size.width - 30,
       padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
@@ -629,6 +805,13 @@ class OrgUpdatesMobileViewMobileViewState
         // <-- OutlinedButton
 
         onPressed: () {
+          
+          //   FocusScopeNode currentFocus = FocusScope.of(context);
+          // if (!currentFocus.hasPrimaryFocus &&
+          //     currentFocus.focusedChild != null) {
+          //   FocusManager.instance.primaryFocus!.unfocus();
+          // }
+
           if (feedController.value.text.isEmpty) {
             showMessage('Please share your thoughts');
           }
@@ -638,8 +821,14 @@ class OrgUpdatesMobileViewMobileViewState
           // }
           else {
             if (isMediaSelect == false) {
+                 setState(() {
+                _isLoading = true; // Show loader
+              });
               createPostWithoutAttachment();
             } else {
+                 setState(() {
+                _isLoading = true; // Show loader
+              });
               createPostAttachments();
             }
           }
@@ -653,7 +842,7 @@ class OrgUpdatesMobileViewMobileViewState
               fontWeight: FontWeight.normal,
             )),
       ),
-    );
+    ) ]);
   }
 
   createPostWithoutAttachment() async {
@@ -665,7 +854,17 @@ class OrgUpdatesMobileViewMobileViewState
             ? widget.orgUpdateItem?.orgUpdateId ?? orgId
             : orgId,
         content: feedController.text,
-        category: "General",
+        // category: "All Evoke",
+                category: (widget.isEditOrgUpdate == true && updateEditCategories == true)
+            ? (selectedIndex != null)
+                ? checkListItems[selectedIndex ?? 0]
+                : widget.orgUpdateItem?.name ?? "All Evoke"
+            : (widget.isEditOrgUpdate == true && updateEditCategories == false)
+                ? widget.orgUpdateItem?.name ?? "All Evoke"
+                : (selectedIndex != null)
+                    ? checkListItems[selectedIndex ?? 0]
+                    : "All Evoke",
+
 
         // category: (selectedIndex != null)
         //     ? checkListItems[selectedIndex ?? 0]
@@ -690,7 +889,17 @@ class OrgUpdatesMobileViewMobileViewState
       mediaCaption: mediaCaptionController.text,
       hashTag: hashTagController.text,
       hasVideo: isVideoSelect,
-      category: "General",
+      // category: "All Evoke",
+            category: (widget.isEditOrgUpdate == true && updateEditCategories == true)
+          ? (selectedIndex != null)
+              ? checkListItems[selectedIndex ?? 0]
+              : widget.orgUpdateItem?.name ?? "All Evoke"
+          : (widget.isEditOrgUpdate == true && updateEditCategories == false)
+              ? widget.orgUpdateItem?.name ?? "All Evoke"
+              : (selectedIndex != null)
+                  ? checkListItems[selectedIndex ?? 0]
+                  : "All Evoke",
+
       // category: (selectedIndex != null)
       //     ? checkListItems[selectedIndex ?? 0]
       //     : "General",
@@ -761,8 +970,11 @@ class OrgUpdatesMobileViewMobileViewState
       setState(() {
         selectedIndex = categoryIndex;
         selectedIndex = categoryIndex;
+        if (widget.isEditOrgUpdate == true) {
+          updateEditCategories = true;
+        }
         // selectedCategories.add(categories[index]);
-              // selectedIndex = categoryIndex;
+        // selectedIndex = categoryIndex;
       });
     }
   }
@@ -803,7 +1015,11 @@ class OrgUpdatesMobileViewMobileViewState
                   fontSize: 14,
                 ),
               ),
-              value: selectedIndex == index,
+              // value: selectedIndex == index,
+              value: selectedIndex == index ||
+                  (selectedIndex == null &&
+                      index ==
+                          0), // Select "General Feed" by default if no category is selected
               onChanged: (value) {
                 setState(() {
                   selectedIndex = index;
@@ -819,28 +1035,68 @@ class OrgUpdatesMobileViewMobileViewState
 
   Widget categoryHearViewWidget() {
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-        child: Wrap(
-            spacing: 5,
-            direction: Axis.horizontal,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              const CircleAvatar(
-                radius: 3,
-                backgroundColor: Color(0xffB54242),
-              ),
-              Text(
-                (selectedIndex != null)
-                    ? checkListItems[selectedIndex ?? 0]
-                    : "General",
-                style: TextStyle(
-                  color: const Color(0xffB54242),
-                  fontSize: 12.0,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontWeight: FontWeight.w500,
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5),
+      child: Wrap(
+        spacing: 5,
+        direction: Axis.horizontal,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          const CircleAvatar(
+            radius: 3,
+            backgroundColor: Color(0xffB54242),
+          ),
+          GestureDetector(
+            onTap: () {
+              _showBottomSheet(context);
+            },
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Text(
+                //   (selectedIndex != null)
+                //       ? checkListItems[selectedIndex ?? 0]
+                //       : "All Evoke",
+                //   style: TextStyle(
+                //     color: const Color(0xffB54242),
+                //     fontSize: 15.0,
+                //     fontFamily: GoogleFonts.poppins().fontFamily,
+                //     fontWeight: FontWeight.w500,
+                //   ),
+                // ),
+                 Text(
+                  (widget.isEditOrgUpdate == true && updateEditCategories == true)
+                      ? (selectedIndex != null)
+                          ? checkListItems[selectedIndex ?? 0]
+                          : widget.orgUpdateItem?.name ?? "All Evoke"
+                      : (widget.isEditOrgUpdate == true &&
+                              updateEditCategories == false)
+                          ? widget.orgUpdateItem?.name ?? "All Evoke"
+                          : (selectedIndex != null)
+                              ? checkListItems[selectedIndex ?? 0]
+                              : "All Evoke",
+                  style: TextStyle(
+                    color: const Color(0xffB54242),
+                    fontSize: 14.0,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-            ]));
+                Icon(
+                  Icons.arrow_drop_down,
+                  color: const Color(0xffB54242),
+                ),
+              ],
+            ),
+          ),
+          const Divider(
+            thickness: 1,
+            color: Color(0xffEAEAEA),
+            height: 10,
+          ),
+        ],
+      ),
+    );
   }
 
   void _showToast(BuildContext context) {
@@ -848,10 +1104,11 @@ class OrgUpdatesMobileViewMobileViewState
     scaffold.showSnackBar(
       SnackBar(
         content: const SizedBox(
-              height:70,
-              child: Text('In Progress'),
+          height: 70,
+          child: Text('In Progress'),
         ),
-        action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+        action: SnackBarAction(
+            label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
       ),
     );
   }

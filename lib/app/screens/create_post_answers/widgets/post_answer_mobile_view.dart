@@ -61,6 +61,8 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
   String selectedCategory = "General";
   List<File>? get selectedPostImages => _selectedPostImages;
   String contentTypeSelected = "";
+  final FocusNode answerFocusNode = FocusNode();
+  bool _isLoading = false;
 
   void _selectDocuments() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -129,10 +131,11 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(0),
           child: Container(
-            height: MediaQuery.of(context).size.height,
+            // height: MediaQuery.of(context).size.height,
             alignment: AlignmentDirectional.center,
             padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(0),
@@ -143,20 +146,20 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
                         feedsDescriptionUI(),
 
                         //VIDEOS,IMAGES PICKERS
-                        videoPickerContent(size),
+                        // videoPickerContent(size),
 
-                        // Image Picker
-                        imagePickerContent(size),
+                        // // Image Picker
+                        // imagePickerContent(size),
 
-                        const SizedBox(
-                          height: 80,
-                        ),
+                        // const SizedBox(
+                        //   height: 80,
+                        // ),
 
-                        //SELECT PHOTOS/VIDEOS/
-                        // attchmentFileButtons(context, ref),
-                        const SizedBox(
-                          height: 10,
-                        )
+                        // //SELECT PHOTOS/VIDEOS/
+                        // // attchmentFileButtons(context, ref),
+                        // const SizedBox(
+                        //   height: 10,
+                        // )
                       ],
                     ),
                   ),
@@ -166,6 +169,9 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
                 ),
                 //POST BUTTON
                 btnPost(size),
+                const SizedBox(
+                  height: 100,
+                )
               ],
             ),
           ),
@@ -173,8 +179,89 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
   }
 
   //CARD - Feeds Descriotion
+Widget feedsDescriptionUI() {
+  return Column(
+    children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Expanded(
+              child: TextFormField(
+                enabled: false,
+                validator: (value) => value!.isEmpty ? 'Title' : null,
+                controller: hashTagController,
+                textInputAction: TextInputAction.done,
+                maxLines: null,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16.0,
+                  fontFamily: GoogleFonts.notoSans().fontFamily,
+                  fontWeight: FontWeight.w600,
+                ),
+                decoration: const InputDecoration.collapsed(hintText: "Title"),
+              ),
+            ),
+          ],
+        ),
+      ),
+      const Divider(
+        thickness: 1,
+        color: Color(0xffEAEAEA),
+        height: 1,
+      ),
+      GestureDetector(
+        onTap: () {
+          // Focus on TextFormField when Container is tapped
+          FocusScope.of(context).requestFocus(answerFocusNode);
+        },
+        child: Container(
+          constraints: BoxConstraints(minHeight: 200), // Set a minimum height
+          color: Colors.white, // Background color
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+            child: Column(
+              children: [
+                TextFormField(
+                  cursorColor: Color(0xffB54242),
+                  focusNode: answerFocusNode,
+                  validator: (value) => value!.isEmpty
+                      ? 'Share your thoughts cannot be blank'
+                      : null,
+                  controller: feedController,
+                  textInputAction: TextInputAction.done,
+                  maxLines: null,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14.0,
+                    fontFamily: GoogleFonts.notoSans().fontFamily,
+                    fontWeight: FontWeight.normal,
+                  ),
+                       decoration: const InputDecoration.collapsed(
+                          hintText: "Share your thoughts with colleagues.."),
+                ),
+                // Align(
+                //   alignment: Alignment.topLeft,
+                //   child: Text(
+                //     feedController.text.isEmpty ? 'Share your thoughts cannot be blank' : '',
+                //     style: TextStyle(
+                //       color: Colors.red,
+                //       fontSize: 12.0,
+                //       fontFamily: GoogleFonts.notoSans().fontFamily,
+                //     ),
+                //   ),
+                // ),
+              ],
+            ),
+          ),
+        ),
+      )
+    ],
+  );
+}
 
-  Widget feedsDescriptionUI() {
+  Widget feedsDescriptionUI_OLD() {
     return Column(
       children: [
         Padding(
@@ -205,31 +292,46 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
           color: Color(0xffEAEAEA),
           height: 1,
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                  child: TextFormField(
-                validator: (value) => value!.isEmpty
-                    ? 'Share your thoughts cannot be blank'
-                    : null,
-                controller: feedController,
-                textInputAction: TextInputAction.done,
-                maxLines: null,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 14.0,
-                  fontFamily: GoogleFonts.notoSans().fontFamily,
-                  fontWeight: FontWeight.normal,
+        GestureDetector(
+            onTap: () {
+              // Focus on TextFormField when Container is tapped
+              FocusScope.of(context).requestFocus(answerFocusNode);
+            },
+            child: Container(
+              constraints:
+                  BoxConstraints(minHeight: 200), // Set a minimum height
+              color: Colors.white, // Background color
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+                child: 
+                
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                        child: TextFormField(
+                      cursorColor: Color(0xffB54242),
+                      focusNode: answerFocusNode, 
+                      validator: (value) => value!.isEmpty
+                          ? 'Share your thoughts cannot be blank'
+                          : null,
+                      controller: feedController,
+                      textInputAction: TextInputAction.done,
+                      maxLines: null,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14.0,
+                        fontFamily: GoogleFonts.notoSans().fontFamily,
+                        fontWeight: FontWeight.normal,
+                      ),
+                      decoration: const InputDecoration.collapsed(
+                          hintText: "Share your thoughts with colleagues.."),
+                    )),
+                  ],
                 ),
-                decoration: const InputDecoration.collapsed(
-                    hintText: "Share your thoughts with colleagues.."),
-              )),
-            ],
-          ),
-        ),
+              ),
+            ))
       ],
     );
   }
@@ -531,7 +633,7 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
     });
   }
 
-  void _handleSubmit(PostAnswerParams params, WidgetRef ref) async {
+  void _handleSubmit_old(PostAnswerParams params, WidgetRef ref) async {
     if (widget.isEditAnswer == true) {
       await ref.read(editAnswerProvider(params).future);
     } else {
@@ -541,9 +643,29 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
     _resetValues();
   }
 
+  void _handleSubmit(PostAnswerParams params, WidgetRef ref) async {
+    try {
+      if (widget.isEditAnswer == true) {
+        await ref.read(editAnswerProvider(params).future);
+      } else {
+        await ref.read(postAnswerProvider(params).future);
+      }
+      Navigator.pop(context);
+      _resetValues();
+    } catch (e) {
+      // showMessage('Failed to post feed. Please try again.');
+    } finally {
+      setState(() {
+        _isLoading = false; // Hide loader
+      });
+    }
+  }
+
 // POST BUTTON
   Widget btnPost(Size size) {
-    return Container(
+    return Stack(
+      children: [
+     Container(
       height: 48,
       width: size.width - 30,
       padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
@@ -558,6 +680,7 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
         // <-- OutlinedButton
 
         onPressed: () {
+            
           if (feedController.value.text.isEmpty) {
             showMessage('Please share your thoughts');
           }
@@ -566,6 +689,9 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
           //   showMessage('Please add hashtag');
           // }
           else {
+               setState(() {
+                _isLoading = true; // Show loader
+              });
             createPost();
           }
         },
@@ -578,7 +704,7 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
               fontWeight: FontWeight.normal,
             )),
       ),
-    );
+    )]);
   }
 
   createPost() async {

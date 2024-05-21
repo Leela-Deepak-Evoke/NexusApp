@@ -63,6 +63,8 @@ class UserService {
       );
       final response = await restOperation.response;
       if (response.statusCode == 200) {
+              safePrint('---- checkUser response: ----- $response');
+
         final jsonResponse = json.decode(response.decodeBody());
         return User.fromJson(jsonResponse);
       } else {

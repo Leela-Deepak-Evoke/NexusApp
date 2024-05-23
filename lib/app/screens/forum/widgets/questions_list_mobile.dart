@@ -542,7 +542,7 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
                   child: Text(
                     avatarText,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
                   ),
                 );
               }
@@ -556,7 +556,7 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
             ),
             error: (error, stackTrace) => CircleAvatar(
                 radius: 20.0,
-                child: Text(avatarText)), // Handle error state appropriately
+                child: Text(avatarText)), 
           ));
     }
   }

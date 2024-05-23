@@ -205,7 +205,7 @@ class OrgUpdateHome {
   late bool hasVideo;
   late bool hasDocument;
   late String postedAt;
-  late String imagePath;
+  late String? imagePath;
   late String name;
   late bool hasImage;
   late bool media;

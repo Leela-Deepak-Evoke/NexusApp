@@ -345,10 +345,8 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
     if (item.authorThumbnail == null || item.authorThumbnail == "") {
       return CircleAvatar(radius: 10.0, child: Text(avatarText));
     } else {
-      // Note: We're using `watch` directly on the provider.
       final profilePicAsyncValue =
           ref.watch(authorThumbnailProviderComments(item.authorThumbnail!));
-      //print(profilePicAsyncValue);
       return Container(
           decoration: BoxDecoration(
               shape: BoxShape.circle,

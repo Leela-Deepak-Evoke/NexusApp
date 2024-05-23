@@ -234,7 +234,7 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
             ),
           ),
           Text(
-            '23.0.0(1)',
+            '24.0.0(1)',
             style: TextStyle(
               color: const Color(0xff676A79),
               fontSize: 16.0,

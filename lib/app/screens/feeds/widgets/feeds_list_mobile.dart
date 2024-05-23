@@ -256,13 +256,16 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
                                   //     padding: const EdgeInsets.fromLTRB(
                                   //         20, 5, 20, 10),
                                   //     child: hasTagViewWidget(item)),
+//  item.media
+//                                       ? AspectRatio(
+//                                           aspectRatio: 16 / 9,
+//                                           child: FeedMediaView(item: item),
+//                                         )
+//                                       : const SizedBox(height: 2.0),
 
                                   const SizedBox(height: 10.0),
                                   item.media
-                                      ? AspectRatio(
-                                          aspectRatio: 16 / 9,
-                                          child: FeedMediaView(item: item),
-                                        )
+                                      ? FeedMediaView(item: item)
                                       : const SizedBox(height: 2.0),
                                   const SizedBox(height: 4.0),
                                   // const Divider(
@@ -407,16 +410,10 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
   }
 
   bool _isProperImageUrl(String imageUrl) {
-    // String sanitizedProfilePicturePath = imageUrl.replaceAll(' ', '_');
     if (imageUrl.contains('%20')) {
       return false;
     }
     return true;
-
-
-//      String profilePicturePath = imageUrl;
-// String sanitizedProfilePicturePath = profilePicturePath.replaceAll(' ', '_');
-// print(sanitizedProfilePicturePath);
   }
 
   String getAvatarText(String name) {

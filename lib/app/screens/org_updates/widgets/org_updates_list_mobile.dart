@@ -212,10 +212,7 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
 
                                   const SizedBox(height: 10.0),
                                   item.media
-                                      ? AspectRatio(
-                                          aspectRatio: 16 / 9,
-                                          child: OrgUpdateMediaView(item: item),
-                                        )
+                                      ? OrgUpdateMediaView(item: item)
                                       : const SizedBox(height: 2.0),
                                   const SizedBox(height: 4.0),
                                   // const Divider(

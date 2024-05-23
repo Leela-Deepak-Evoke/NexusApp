@@ -123,7 +123,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
       if (isIPhoneSE) {
         spaceTopHeader = screenWidth * 0.2; // For iPhone SE
       } else {
-        spaceTopHeader = screenWidth * 0.3; // For other resolutions
+        spaceTopHeader = screenWidth * 0.3; // For other resolutions -- need to change for 8 plus
       }
     }
 
@@ -245,6 +245,9 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                   lblLatestUpdates(),
                                   _latestUpdatesListView(
                                       context, userHomeAsyncValue, size),
+                                  const SizedBox(
+                    height: 20,
+                  ),
                                   lblLatestQuestions(),
                                   _latestQuestionsListView(
                                       context, userHomeAsyncValue, size),
@@ -333,7 +336,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                   child: Column(children: [
                     SizedBox(
                       //  margin: const EdgeInsets.symmetric(vertical: 20),
-                      height: 180,
+                      height:
+                          150, //180 -working if footerVIewWidget  More is there
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemExtent: 320,
@@ -374,7 +378,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                         height: 10,
                                       ),
                                       askedbyViewHeader(item, ref),
-                                      footerVIewWidget(formattedDate, item)
+                                      // footerVIewWidget(formattedDate, item)
                                     ],
                                   )),
                             ),
@@ -406,8 +410,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
       AsyncValue<UserHome>? userHomeAsyncValue, Size size) {
     return Container(
       width: size.width,
-      height: calculateContainerHeight(userHomeAsyncValue,
-          userHomeAsyncValue?.value?.latestUpdates ?? [], 395), //455
+      // height: calculateContainerHeight(userHomeAsyncValue,
+      //     userHomeAsyncValue?.value?.latestUpdates ?? [], 395), //455
       alignment: AlignmentDirectional.topStart,
       child: userHomeAsyncValue!.when(
         data: (userHome) {
@@ -422,8 +426,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
           } else {
             return Container(
               alignment: AlignmentDirectional.topStart,
-              padding:
-                  const EdgeInsets.only(left: 12, right: 12, top: 0, bottom: 0),
+              padding: const EdgeInsets.only(left: 8, right: 8, top: 0, bottom: 0),
               child: RefreshIndicator(
                 onRefresh: _onRefresh,
                 child: ListView.builder(
@@ -456,6 +459,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         clipBehavior: Clip.antiAlias,
+                         elevation: 2,
+                        shadowColor: Colors.black,
                         child: Padding(
                           padding: const EdgeInsets.all(0),
                           child: Column(
@@ -469,8 +474,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                   author,
                                   style: const TextStyle(fontSize: 16),
                                 ),
-                                subtitle: Text(
-                                  "${item.orgUpdate.content} | $formattedDate",
+                                subtitle: Text( 
+                                  "${item.user.title} | $formattedDate",
                                   style: TextStyle(
                                     color: const Color(0xff676A79),
                                     fontSize: 12.0,
@@ -540,16 +545,13 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                   const SizedBox(height: 12.0),
 
                                   item.orgUpdate.media
-                                      ? AspectRatio(
-                                          aspectRatio: 16 / 9,
-                                          child: HomeLatestUpdateMediaView(
-                                            item: item.orgUpdate,
-                                          ),
+                                      ? HomeLatestUpdateMediaView(
+                                          item: item.orgUpdate,
                                         )
                                       : const SizedBox(height: 2.0),
-                                  const SizedBox(height: 4.0),
-                                  getInfoOFViewsComments(
-                                      context, ref, index, item),
+                                  // const SizedBox(height: 30.0),
+                                  
+                                  getInfoOFViewsComments(context, ref, index, item),
                                   // const Divider(
                                   //   thickness: 1.0,
                                   //   height: 1.0,
@@ -1415,31 +1417,31 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end, // Align items to the end
         children: [
-          const Spacer(), // Add a spacer to push the button to the right
+          // const Spacer(), // Add a spacer to push the button to the right
           Column(
             children: [
-              TextButton.icon(
-                onPressed: null, // Disable user interaction
-                icon: const SizedBox(
-                  // height: 15,
-                  // width: 15,
-                  child: Center(
-                    child: Icon(
-                      Icons.more_horiz,
-                      color: Color(0XFF0707b5),
-                    ),
-                  ),
-                ),
-                label: Text(
-                  'More',
-                  style: TextStyle(
-                    color: const Color(0XFF0707b5),
-                    fontSize: 12.0,
-                    fontFamily: GoogleFonts.notoSans().fontFamily,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-              ),
+              // TextButton.icon(
+              //   onPressed: null, // Disable user interaction
+              //   icon: const SizedBox(
+              //     // height: 15,
+              //     // width: 15,
+              //     child: Center(
+              //       child: Icon(
+              //         Icons.more_horiz,
+              //         color: Color(0XFF0707b5),
+              //       ),
+              //     ),
+              //   ),
+              //   label: Text(
+              //     'More',
+              //     style: TextStyle(
+              //       color: const Color(0XFF0707b5),
+              //       fontSize: 12.0,
+              //       fontFamily: GoogleFonts.notoSans().fontFamily,
+              //       fontWeight: FontWeight.normal,
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ],
@@ -1459,6 +1461,28 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
       return const SizedBox(height: 5.0);
     }
   }
+
+// Widget contentViewWidget(LatestUpdate item) {
+//   if (item.orgUpdate.content != null) {
+//     return Column(
+//       children: [
+//         Text(
+//           item.orgUpdate.content,
+//           style: const TextStyle(fontSize: 14),
+//         ),
+//         const SizedBox(height: 5.0), // Adding a bit of space after the text
+//       ],
+//     );
+//   }
+//   //  else if (item.orgUpdate.mediaCaption != null) {
+//   //   return Text(item.mediaCaption!, style: const TextStyle(fontSize: 14));
+//   // }
+
+//   else {
+//     return const SizedBox(height: 5.0);
+//   }
+// }
+
 
 //EDIT AND DELETE OF Updates
   void _editItem(LatestUpdate item) async {}
@@ -1503,24 +1527,27 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                   child: Text(
                     avatarText,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w600),
                   ),
                 );
               }
             } else {
               return CircleAvatar(
-                  radius: radius,
-                  child: Text(
-                    avatarText,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                  ),
-                );
+                radius: radius,
+                child: Text(
+                  avatarText,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.w600),
+                ),
+              );
             }
           },
           loading: () => CircleAvatar(
             radius: radius,
-            child: const CircularProgressIndicator(), // Placeholder for loading state
+            child:
+                const CircularProgressIndicator(), // Placeholder for loading state
           ),
           error: (error, stackTrace) {
             // Render initials with a fallback text in case of error
@@ -1596,13 +1623,14 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                 } else {
                   // Render text as a fallback when imageUrl is not proper
                   return CircleAvatar(
-                  radius: 20,
-                  child: Text(
-                    avatarText,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                  ),
-                );
+                    radius: 20,
+                    child: Text(
+                      avatarText,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.w600),
+                    ),
+                  );
                 }
               } else {
                 // Render a placeholder or an error image
@@ -1611,7 +1639,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                   child: Text(
                     avatarText,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w600),
                   ),
                 );
               }

@@ -192,16 +192,33 @@ class AnswerList extends ConsumerWidget {
       final profilePicAsyncValue =
           ref.watch(authorThumbnailProvider(item.authorThumbnail!));
       //print(profilePicAsyncValue);
-      return profilePicAsyncValue.when(
+      return Container(
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: new DecorationImage(
+                image: new AssetImage("assets/images/user_pic_s3_new.png"),
+                fit: BoxFit.fill,
+              )),
+          child:
+      profilePicAsyncValue.when(
         data: (imageUrl) {
           if (imageUrl != null && imageUrl.isNotEmpty) {
             return CircleAvatar(
+                                                  backgroundColor: Colors.transparent,
+
               backgroundImage: NetworkImage(imageUrl),
               radius: 30.0,
             );
           } else {
             // Render a placeholder or an error image
-            return CircleAvatar(radius: 30.0, child: Text(avatarText));
+            return CircleAvatar(
+                  radius: 20,
+                  child: Text(
+                    avatarText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                  ),
+                );
           }
         },
         loading: () => const Center(
@@ -214,7 +231,7 @@ class AnswerList extends ConsumerWidget {
         error: (error, stackTrace) => CircleAvatar(
             radius: 30.0,
             child: Text(avatarText)), // Handle error state appropriately
-      );
+      ));
     }
   }
 

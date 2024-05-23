@@ -97,19 +97,47 @@ class _FeedHeaderCardViewState extends State<FeedHeaderCardView> {
       // Note: We're using `watch` directly on the provider.
       final profilePicAsyncValue =
           ref.watch(authorThumbnailProvider(item.authorThumbnail!));
-      //print(profilePicAsyncValue);
-      return profilePicAsyncValue.when(
-        data: (imageUrl) {
-          if (imageUrl != null && imageUrl.isNotEmpty) {
-            return CircleAvatar(
-              backgroundImage: NetworkImage(imageUrl),
-              radius: 20.0,
-            );
-          } else {
-            // Render a placeholder or an error image
-            return CircleAvatar(radius: 20.0, child: Text(avatarText));
-          }
-        },
+      return Container(
+              decoration:BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: new DecorationImage(
+                    image: new AssetImage("assets/images/user_pic_s3_new.png"),
+                    fit: BoxFit.fill,
+                  )
+                  ),
+              child: profilePicAsyncValue.when(
+        data: (imageUrl)  {
+              if (imageUrl != null && imageUrl.isNotEmpty) {
+                if (_isProperImageUrl(imageUrl)) {
+                  return CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    backgroundImage: NetworkImage(imageUrl),
+                    radius: 20.0,
+                  );
+                } else {
+                  return CircleAvatar(
+                    radius: 20,
+                    child: Text(
+                      avatarText,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.w600),
+                    ),
+                  );
+                }
+              } else {
+                // Render a placeholder or an error image
+                return CircleAvatar(
+                  radius: 20,
+                  child: Text(
+                    avatarText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w600),
+                  ),
+                );
+              }
+            },
         loading: () => const Center(
           child: SizedBox(
             height: 20.0,
@@ -120,8 +148,15 @@ class _FeedHeaderCardViewState extends State<FeedHeaderCardView> {
         error: (error, stackTrace) => CircleAvatar(
             radius: 20.0,
             child: Text(avatarText)), // Handle error state appropriately
-      );
+      ));
     }
+  }
+ bool _isProperImageUrl(String imageUrl) {
+    // Check if the image URL contains spaces in the filename
+    if (imageUrl.contains('%20')) {
+      return false;
+    }
+    return true;
   }
 
   String getAvatarText(String name) {

@@ -43,7 +43,9 @@ class ProfileService {
       const options = StorageUploadFileOptions(
         accessLevel: StorageAccessLevel.guest, //protected
       );
-      final String mediaPath = 'profile/$rootId/${platformFile.name}';
+
+    String sanitizedProfilePicturePath = platformFile.name.replaceAll(' ', '_');
+      final String mediaPath = 'profile/$rootId/${sanitizedProfilePicturePath}';
 
       final result = await Amplify.Storage.uploadFile(
         localFile: AWSFile.fromStream(

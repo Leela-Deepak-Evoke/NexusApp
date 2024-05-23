@@ -184,52 +184,79 @@ class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
 
   Future<Widget> _userProfilePicWidget(UserLike item, WidgetRef ref) async {
     // final avatarText = getAvatarText(item.userName);
-         final String? authorName = item.userName;
-  if (authorName == null || authorName.isEmpty) {
-    return CircleAvatar(radius: 20.0, child: Text('NO'));
-  }
+    final String? authorName = item.userName;
+    if (authorName == null || authorName.isEmpty) {
+      return const CircleAvatar(
+        radius: 15,
+        child: Text(
+          "NO",
+          textAlign: TextAlign.center,
+          style:  TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+        ),
+      );
+    }
     // final avatarText = getAvatarText(item.author!);
-  final avatarText = getAvatarText(authorName);
+    final avatarText = getAvatarText(authorName);
 
-    if (item.profilePicture == null  || item.profilePicture == "") {
+    if (item.profilePicture == null || item.profilePicture == "") {
       return CircleAvatar(radius: 15.0, child: Text(avatarText));
     } else {
       final profilePicAsyncValue =
           ref.watch(authorThumbnailProviderViewLike(item.profilePicture!));
-      return profilePicAsyncValue.when(
-        data: (imageUrl) {
-          if (imageUrl != null && imageUrl.isNotEmpty) {
-          if (_isProperImageUrl(imageUrl)) {
-            return CircleAvatar(
-              backgroundImage: NetworkImage(imageUrl),
+
+      return Container(
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: new DecorationImage(
+                image: new AssetImage("assets/images/user_pic_s3_new.png"),
+                fit: BoxFit.fill,
+              )),
+          child: profilePicAsyncValue.when(
+            data: (imageUrl) {
+              if (imageUrl != null && imageUrl.isNotEmpty) {
+                if (_isProperImageUrl(imageUrl)) {
+                  return CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    backgroundImage: NetworkImage(imageUrl),
+                    radius: 15.0,
+                  );
+                } else {
+                  // Render text as a fallback when imageUrl is not proper
+                  return CircleAvatar(
+                    radius: 15,
+                    child: Text(
+                      avatarText,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          fontSize: 10, fontWeight: FontWeight.w600),
+                    ),
+                  );
+                }
+              } else {
+                // Render a placeholder or an error image
+                return CircleAvatar(
+                  radius: 15,
+                  child: Text(
+                    avatarText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontSize: 10, fontWeight: FontWeight.w600),
+                  ),
+                );
+              }
+            },
+            loading: () => const CircularProgressIndicator(),
+            error: (error, stackTrace) => CircleAvatar(
               radius: 15.0,
-            );
-          } else {
-            // Render text as a fallback when imageUrl is not proper
-            return CircleAvatar(
-              radius: 15.0,
-              child: Text(
-                avatarText,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 8, fontWeight: FontWeight.w600),
-              ),
-            );
-          }
-        } else {
-            return CircleAvatar(radius: 15.0, child: Text(avatarText));
-          }
-        },
-        loading: () => const CircularProgressIndicator(),
-        error: (error, stackTrace) => CircleAvatar(
-          radius: 15.0,
-          child: Text(avatarText),
-        ),
-      );
+              child: Text(avatarText),
+            ),
+          ));
     }
   }
+
   bool _isProperImageUrl(String imageUrl) {
     // Check if the image URL contains spaces in the filename
-    if ( imageUrl.contains('%20')) {
+    if (imageUrl.contains('%20')) {
       return false;
     }
     return true;

@@ -46,6 +46,8 @@ class _MobileLayoutState extends State<MobileLayout> {
     final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
+            backgroundColor: Colors.grey.shade100,
+
       // drawer: const Drawer(),
       // resizeToAvoidBottomInset: false, //false works for comments and true works for edit profile
       resizeToAvoidBottomInset: widget.title == "Edit Profile", 

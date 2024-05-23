@@ -20,8 +20,10 @@ class QuestionCardView extends ConsumerWidget {
         .format(DateTime.parse(item.postedAt.toString()).toLocal());
     return Card(
       margin: const EdgeInsets.all(0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+      elevation: 2,
+      shadowColor: Colors.black,
       child: Padding(
           padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 0.0),
           child: Column(
@@ -48,7 +50,8 @@ class QuestionCardView extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-            Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString())),
+          Global.calculateTimeDifferenceBetween(
+              Global.getDateTimeFromStringForPosts(item.postedAt.toString())),
           style: TextStyle(
             color: const Color(0xff676A79),
             fontSize: 12.0,
@@ -106,7 +109,7 @@ class QuestionCardView extends ConsumerWidget {
   }
 
   Wrap askedbyViewHeader(Question item, WidgetRef ref) {
-        bool isCurrentUser = item.authorId == user.userId;
+    bool isCurrentUser = item.authorId == user.userId;
 
     return Wrap(
       direction: Axis.horizontal,
@@ -204,37 +207,65 @@ class QuestionCardView extends ConsumerWidget {
       // Note: We're using `watch` directly on the provider.
       final profilePicAsyncValue =
           ref.watch(authorThumbnailProvider(item.authorThumbnail!));
-      //print(profilePicAsyncValue);
-      return profilePicAsyncValue.when(
-        data: (imageUrl) {
-          if (imageUrl != null && imageUrl.isNotEmpty) {
-            return CircleAvatar(
-              backgroundImage: NetworkImage(imageUrl),
-              radius: 12.0,
-              child: Text(
-                avatarText,
-                textAlign: TextAlign.center,
-                style:
-                    const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+      return Container(
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: new DecorationImage(
+                image: new AssetImage("assets/images/user_pic_s3_new.png"),
+                fit: BoxFit.fill,
+              )),
+          child: profilePicAsyncValue.when(
+            data: (imageUrl) {
+              if (imageUrl != null && imageUrl.isNotEmpty) {
+                if (_isProperImageUrl(imageUrl)) {
+                  return CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    backgroundImage: NetworkImage(imageUrl),
+                    radius: 12.0,
+                  );
+                } else {
+                  return CircleAvatar(
+                    radius: 12.0,
+                    child: Text(
+                      avatarText,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          fontSize: 10, fontWeight: FontWeight.w600),
+                    ),
+                  );
+                }
+              } else {
+                return CircleAvatar(
+                  radius: 12.0,
+                  child: Text(
+                    avatarText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontSize: 10, fontWeight: FontWeight.w600),
+                  ),
+                );
+              }
+            },
+            loading: () => const Center(
+              child: SizedBox(
+                height: 20.0,
+                width: 20.0,
+                child: CircularProgressIndicator(),
               ),
-            );
-          } else {
-            // Render a placeholder or an error image
-            return CircleAvatar(radius: 12.0, child: Text(avatarText));
-          }
-        },
-        loading: () => const Center(
-          child: SizedBox(
-            height: 30.0,
-            width: 30.0,
-            child: CircularProgressIndicator(),
-          ),
-        ),
-        error: (error, stackTrace) => CircleAvatar(
-            radius: 30.0,
-            child: Text(avatarText)), // Handle error state appropriately
-      );
+            ),
+            error: (error, stackTrace) => CircleAvatar(
+                radius: 20.0,
+                child: Text(avatarText)), // Handle error state appropriately
+          ));
     }
+  }
+
+  bool _isProperImageUrl(String imageUrl) {
+    // Check if the image URL contains spaces in the filename
+    if (imageUrl.contains('%20')) {
+      return false;
+    }
+    return true;
   }
 
   String getAvatarText(String name) {

@@ -32,14 +32,14 @@ class _AnswersScreenSmallState extends ConsumerState<AnswersScreenSmall> {
           title: 'Answers',
           user: data,
           hasBackAction: true,
-          hasRightAction: true,
+          hasRightAction: false,
           topBarButtonAction: () {
             setState(() {
        
-             Navigator.push(
-              context,
-              MaterialPageRoute(fullscreenDialog: true,
-                  builder: (context) => CreatePostAnswerScreen(question: widget.question)));
+            //  Navigator.push(
+            //   context,
+            //   MaterialPageRoute(fullscreenDialog: true,
+            //       builder: (context) => CreatePostAnswerScreen(question: widget.question)));
 
            }); 
            },

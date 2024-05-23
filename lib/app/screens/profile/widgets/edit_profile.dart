@@ -1,4 +1,5 @@
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
+import 'package:evoke_nexus_app/app/widgets/common/profile_pic.dart';
 import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,6 +24,7 @@ class _UserFormState extends ConsumerState<UserForm> {
   late String initialAbout;
   late List<String> initialSocialLinks;
   final profileService = ProfileService();
+  bool _isLoading = false; // Track if the profile image is loading
 
   @override
   void initState() {
@@ -146,31 +148,43 @@ class _UserFormState extends ConsumerState<UserForm> {
     final userNotifier = ref.watch(currentUserProvider.notifier).state;
     print("user: $userNotifier");
 
-    return userAsyncValue.when(
-      data: (data) {
-        return MobileLayout(
-            title: 'Edit Profile',
-            user: data,
-            hasBackAction: true,
-            hasRightAction: false,
-            topBarButtonAction: () {},
-            backButtonAction: () {
-              Navigator.pop(context);
-            },
-            child: _editDetails(userNotifier, context));
-      },
-      loading: () => const Center(
-        child: SizedBox(
-          height: 50.0,
-          width: 50.0,
-          child: CircularProgressIndicator(),
-        ),
-      ),
-      error: (error, stack) {
-        // Handle the error case if needed
-        return Text('An error occurred: $error');
-      },
-    );
+    return AbsorbPointer(
+        absorbing:
+            _isLoading, // Disable user interaction if profile image is loading
+        child: userAsyncValue.when(
+          data: (data) {
+            return MobileLayout(
+              title: 'Edit Profile',
+              user: data,
+              hasBackAction: true,
+              hasRightAction: false,
+              topBarButtonAction: () {},
+              backButtonAction: () {
+                Navigator.pop(context);
+              },
+              // child: _editDetails(userNotifier, context)
+              child: _isLoading
+                  ? Center(
+                      child:
+                          CircularProgressIndicator(), // Show loader if loading
+                    )
+                  : SingleChildScrollView(
+                      child: _editDetails(userNotifier, context),
+                    ),
+            );
+          },
+          loading: () => const Center(
+            child: SizedBox(
+              height: 50.0,
+              width: 50.0,
+              child: CircularProgressIndicator(),
+            ),
+          ),
+          error: (error, stack) {
+            // Handle the error case if needed
+            return Text('An error occurred: $error');
+          },
+        ));
     // }
   }
 
@@ -188,7 +202,7 @@ class _UserFormState extends ConsumerState<UserForm> {
             // height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             child: Card(
-              margin: const EdgeInsets.all(8.0),
+              margin: const EdgeInsets.all(5.0),
               clipBehavior: Clip.antiAlias,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
@@ -201,13 +215,45 @@ class _UserFormState extends ConsumerState<UserForm> {
                   children: [
                     const SizedBox(height: 10),
                     _profilePicWidget(user!, ref),
+                    // ProfilePic(
+                    //   user: widget.user,
+                    //   size: "LARGE",
+                    //   isFromOtherUser: false,
+                    //   otherUser: null,
+                    // ),
+                    // TextButton(
+                    //   // onPressed: () => ref
+                    //   //     .read(uploadProfileImageProvider(widget.user.userId)),
+                    //   onPressed: () {
+                    //     ref.read(
+                    //         uploadProfileImageProvider(widget.user.userId));
+                    //   },
                     TextButton(
-                      // onPressed: () => ref
-                      //     .read(uploadProfileImageProvider(widget.user.userId)),
-                      onPressed: () {
-                        ref.read(
-                            uploadProfileImageProvider(widget.user.userId));
-                      },
+                      onPressed: _isLoading
+                          ? null
+                          : () async {
+                              setState(() {
+                                _isLoading = true; // Set loading state
+                              });
+                              await ref.read(uploadProfileImageProvider(
+                                  widget.user.userId));
+                              setState(() {
+                                _isLoading = false; // Reset loading state
+                              });
+                            },
+                      //   child: Center(
+                      //     child: Text(
+                      //       widget.user.profilePicture != null &&
+                      //               widget.user.profilePicture!.isNotEmpty
+                      //           ? 'Change Profile Picture'
+                      //           : 'Add Profile Picture',
+                      //       style: const TextStyle(
+                      //         fontSize: 8,
+                      //         fontWeight: FontWeight.bold,
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                       child: Center(
                         child: Text(
                           widget.user.profilePicture != null &&
@@ -272,10 +318,19 @@ class _UserFormState extends ConsumerState<UserForm> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ElevatedButton(
-                            onPressed: () async {
-                              _handleSubmit(context);
-                            },
-                            child: const Text("Submit")),
+                          onPressed: _isLoading
+                              ? null
+                              : () async {
+                                  await _handleSubmit(context);
+                                },
+                          child: const Text("Submit"),
+                        ),
+                        // ElevatedButton(
+                        //     onPressed: () async {
+                        //       _handleSubmit(context);
+                        //     },
+                        //     child: const Text("Submit")
+                        //     ),
                         // const SizedBox(width: 10),
                         // TextButton(
                         //     onPressed: _handleCancel,
@@ -347,7 +402,121 @@ class _UserFormState extends ConsumerState<UserForm> {
     super.dispose();
   }
 
+  Widget _profilePicWidget_WORKING_MAIN(User user, WidgetRef ref) {
+    final avatarText = getAvatarText(user.name);
+
+    final profileThumbnailAsyncValue =
+        ref.watch(profileThumbnailProvider(user.profilePicture!));
+
+    return AbsorbPointer(
+      // Disable user interaction
+      absorbing: true, // Disable user interaction
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          profileThumbnailAsyncValue.when(
+            data: (data) {
+              if (data != null) {
+                return Center(
+                  child: CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    backgroundImage: NetworkImage(data),
+                    radius: 65.0,
+                  ),
+                );
+              } else {
+                // Render a placeholder or an error image
+                return CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    radius: 65.0,
+                    child: Text(avatarText));
+              }
+            },
+            loading: () => const Center(
+              child: SizedBox(
+                height: 65.0,
+                width: 65.0,
+                child: CircularProgressIndicator(), // Show a loader
+              ),
+            ),
+            error: (error, stack) {
+              // Handle the error case if needed
+              return CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  radius: 65.0,
+                  child: Text(avatarText));
+            },
+          ),
+          // Show loader or other indicators
+          if (profileThumbnailAsyncValue.isLoading)
+            CircularProgressIndicator(), // Show a loader
+        ],
+      ),
+    );
+  }
+
+
   Widget _profilePicWidget(User user, WidgetRef ref) {
+
+    final avatarText = getAvatarText(user.name);
+    final profileThumbnailAsyncValue =
+        ref.watch(profileThumbnailProvider(user.profilePicture!));
+
+    if (user.profilePicture == null || user.profilePicture!.isEmpty) {
+      return CircleAvatar(
+          radius: 65.0 , child: Text(avatarText));
+    } else {
+      return Center(
+          child: Container(
+              height: 120.0,
+              width: 120.0,
+              decoration:  BoxDecoration(
+                  color: Colors.blue,
+                  shape: BoxShape.circle,
+                  image: new DecorationImage(
+                    image: new AssetImage("assets/images/user_pic_s3_new.png"),
+                    fit: BoxFit.fill,
+                  )
+                  ),
+              child: profileThumbnailAsyncValue.when(
+                data: (data) {
+                  if (data != null) {
+                    return Center(
+                        child: CircleAvatar(
+                      backgroundColor: Colors
+                          .transparent, // Set background color to transparent
+
+                      backgroundImage: NetworkImage(data),
+                      radius: 65.0,
+                    ));
+                  } else {
+                    // Render a placeholder or an error image
+                    return CircleAvatar(
+                        backgroundColor: Colors
+                            .transparent, // Set background color to transparent
+                        radius: 65.0,
+                        child: Text(avatarText));
+                  }
+                },
+                loading: () => Center(
+                  child: SizedBox(
+                    height: 65.0,
+                    width: 65.0,
+                    child: const CircularProgressIndicator(),
+                  ),
+                ),
+                error: (error, stack) {
+                  return CircleAvatar(
+                      backgroundColor: Colors
+                          .transparent, // Set background color to transparent
+                      radius: 30.0,
+                      child: Text(avatarText));
+                },
+              )));
+    }
+
+}
+  Widget _profilePicWidget_WORKING(User user, WidgetRef ref) {
     final avatarText = getAvatarText(user.name);
 
     final profileThumbnailAsyncValue =
@@ -372,40 +541,6 @@ class _UserFormState extends ConsumerState<UserForm> {
           height: 80.0,
           width: 80.0,
           child: CircleAvatar(radius: 80.0, child: Text(avatarText)),
-        ),
-      ),
-      error: (error, stack) {
-        // Handle the error case if needed
-        return CircleAvatar(radius: 80.0, child: Text(avatarText));
-      },
-    );
-  }
-
-  Widget _profilePicWidget_working(User user, WidgetRef ref) {
-    final avatarText = getAvatarText(user.name);
-
-    final profileThumbnailAsyncValue =
-        ref.watch(profileThumbnailProvider(user.profilePicture!));
-
-    return profileThumbnailAsyncValue.when(
-      data: (data) {
-        if (data != null) {
-          return Center(
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(data),
-              radius: 80.0,
-            ),
-          );
-        } else {
-          // Render a placeholder or an error image
-          return CircleAvatar(radius: 80.0, child: Text(avatarText));
-        }
-      },
-      loading: () => const Center(
-        child: SizedBox(
-          height: 80.0,
-          width: 80.0,
-          child: CircularProgressIndicator(),
         ),
       ),
       error: (error, stack) {

@@ -27,15 +27,14 @@ class AnswerListMobile extends ConsumerStatefulWidget {
   final User user;
   final String questionId;
   final FetchAnswerParams params;
-    final Question question;
+  final Question question;
 
-  const AnswerListMobile({
-    super.key,
-    required this.params,
-    required this.user,
-    required this.questionId,
-     required this.question
-  });
+  const AnswerListMobile(
+      {super.key,
+      required this.params,
+      required this.user,
+      required this.questionId,
+      required this.question});
 
   @override
   _AnswerListMobileViewState createState() => _AnswerListMobileViewState();
@@ -57,8 +56,8 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
         children: [
           Flexible(
             child: ListView.builder(
-              padding:  const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 100),
-
+              padding:
+                  const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 100),
               itemCount: items.length,
               itemBuilder: (context, index) {
                 final item = items[index];
@@ -78,8 +77,10 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
                       margin: const EdgeInsets.all(5),
                       clipBehavior: Clip.antiAlias,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0),
-                      ),
+                          borderRadius: BorderRadius.circular(12)),
+                      elevation: 1, // the size of the shadow
+                      shadowColor: Colors.black,
+
                       child: Padding(
                         padding: const EdgeInsets.all(0.0),
                         child: Column(
@@ -162,9 +163,8 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
                                       ),
                                     ),
                                   btnCommentsLayout(context, index, item, ref),
-                  ],
+                                ],
                               ),
-                              
                             ),
                             if (isCommentsVisibleList == index)
                               Visibility(
@@ -204,9 +204,7 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
     }
 
     if (answersAsyncValue is AsyncError) {
-      if (answersAsyncValue.error == "The incoming token has expired") {
-                print("TOKEN EXPR");
-      }
+      if (answersAsyncValue.error == "The incoming token has expired") {}
       return ErrorScreen(showErrorMessage: true, onRetryPressed: retry); //
 
       // return Text('An error occurred: ${answersAsyncValue.error}');
@@ -218,22 +216,19 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
 
   // Create a function for navigation
   Widget navigateToCommentScreen() {
-    
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.5,
       child: CommentsMobileView(
         user: widget.user,
         postId: selectedItem?.answerId ?? '',
         posttype: "Answer",
-          context: context,
-
+        context: context,
       ),
     );
-    
   }
 
   Future<void> _onRefresh() async {
-     ref.read(refresUserProvider(""));
+    ref.read(refresUserProvider(""));
     ref.watch(refresAnswerProvider(""));
   }
 
@@ -340,12 +335,12 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
   Widget _profilePicWidget(Answer item, WidgetRef ref) {
     // final avatarText = getAvatarText(item.author!);
 
-      final String? authorName = item.author;
-  if (authorName == null || authorName.isEmpty) {
-    return CircleAvatar(radius: 20.0, child: Text('NO'));
-  }
+    final String? authorName = item.author;
+    if (authorName == null || authorName.isEmpty) {
+      return CircleAvatar(radius: 20.0, child: Text('NO'));
+    }
     // final avatarText = getAvatarText(item.author!);
-  final avatarText = getAvatarText(authorName);
+    final avatarText = getAvatarText(authorName);
 
     if (item.authorThumbnail == null || item.authorThumbnail == "") {
       return CircleAvatar(radius: 10.0, child: Text(avatarText));
@@ -354,53 +349,66 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
       final profilePicAsyncValue =
           ref.watch(authorThumbnailProviderComments(item.authorThumbnail!));
       //print(profilePicAsyncValue);
-      return profilePicAsyncValue.when(
-        data: (imageUrl) {
-          if (imageUrl != null && imageUrl.isNotEmpty) {
-          if (_isProperImageUrl(imageUrl)) {
-            return CircleAvatar(
-              backgroundImage: NetworkImage(imageUrl),
-              radius: 12.0,
-            );
-          } else {
-            // Render text as a fallback when imageUrl is not proper
-            return CircleAvatar(
-              radius: 12.0,
-              child: Text(
-                avatarText,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+      return Container(
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: new DecorationImage(
+                image: new AssetImage("assets/images/user_pic_s3_new.png"),
+                fit: BoxFit.fill,
+              )),
+          child: profilePicAsyncValue.when(
+            data: (imageUrl) {
+              if (imageUrl != null && imageUrl.isNotEmpty) {
+                if (_isProperImageUrl(imageUrl)) {
+                  return CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    backgroundImage: NetworkImage(imageUrl),
+                    radius: 12.0,
+                  );
+                } else {
+                  return CircleAvatar(
+                    radius: 12.0,
+                    child: Text(
+                      avatarText,
+                      textAlign: TextAlign.center,
+                      style:
+                          const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+                    ),
+                  );
+                }
+              } else {
+                return CircleAvatar(
+                    radius: 12.0,
+                    child: Text(
+                      avatarText,
+                      textAlign: TextAlign.center,
+                      style:
+                          const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+                    ),
+                  );
+              }
+            },
+            loading: () => const Center(
+              child: SizedBox(
+                height: 20.0,
+                width: 20.0,
+                child: CircularProgressIndicator(),
               ),
-            );
-          }
-        } else {
-            // Render a placeholder or an error image
-            return CircleAvatar(radius: 12.0, child: Text(avatarText));
-          }
-        },
-        loading: () => const Center(
-          child: SizedBox(
-            height: 30.0,
-            width: 30.0,
-            child: CircularProgressIndicator(),
-          ),
-        ),
-        error: (error, stackTrace) => CircleAvatar(
-            radius: 30.0,
-            child: Text(avatarText)), // Handle error state appropriately
-      );
+            ),
+            error: (error, stackTrace) => CircleAvatar(
+                radius: 20.0,
+                child: Text(avatarText)), // Handle error state appropriately
+          ));
     }
   }
 
-
-    bool _isProperImageUrl(String imageUrl) {
+  bool _isProperImageUrl(String imageUrl) {
     // Check if the image URL contains spaces in the filename
-    if ( imageUrl.contains('%20')) {
+    if (imageUrl.contains('%20')) {
       return false;
     }
     return true;
   }
-
 
   String getAvatarText(String name) {
     final nameParts = name.split(' ');
@@ -414,15 +422,15 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
 
 // Edit an item
   void _editItem(Answer item) {
-    
     setState(() {
-    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          fullscreenDialog: true,
-                          builder: (context) =>
-                              CreatePostAnswerScreen(question: widget.question, answerItem: item, isEditAnswer: true)));
-
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              fullscreenDialog: true,
+              builder: (context) => CreatePostAnswerScreen(
+                  question: widget.question,
+                  answerItem: item,
+                  isEditAnswer: true)));
     });
   }
 
@@ -467,7 +475,6 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
   // BUTTONS: COMMENT
   Widget btnCommentsLayout(
       BuildContext context, int index, Answer item, WidgetRef ref) {
-
     return Column(
       children: [
         Row(
@@ -486,15 +493,16 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
                 //   }
                 // });
 
-                 Navigator.push(
-        context,
-        MaterialPageRoute(
-            fullscreenDialog: true,
-            builder: (context) => CommentScreen(
-                  headerCard: AnswerHeaderCardView(item: item, ref: ref),
-                  postId: item.answerId,
-                  posttype: "Answer",
-                )));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        fullscreenDialog: true,
+                        builder: (context) => CommentScreen(
+                              headerCard:
+                                  AnswerHeaderCardView(item: item, ref: ref),
+                              postId: item.answerId,
+                              posttype: "Answer",
+                            )));
               },
               icon: Image.asset(
                 'assets/images/chat_bubble_outline.png',

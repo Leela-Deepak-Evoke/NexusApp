@@ -83,7 +83,6 @@ final List<Color> cardColors = [
   if (authorName == null || authorName.isEmpty) {
     return CircleAvatar(radius: 20.0, child: Text('NO'));
   }
-    // final avatarText = getAvatarText(item.author!);
   final avatarText = getAvatarText(authorName);
 
     if (item.authorThumbnail == null  || item.authorThumbnail == "" ) {
@@ -93,41 +92,55 @@ final List<Color> cardColors = [
       final profilePicAsyncValue =
           ref.watch(authorThumbnailProvider(item.authorThumbnail!));
       //print(profilePicAsyncValue);
-      return profilePicAsyncValue.when(
+      return Container(
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: new DecorationImage(
+                image: new AssetImage("assets/images/user_pic_s3_new.png"),
+                fit: BoxFit.fill,
+              )),
+          child: profilePicAsyncValue.when(
         data: (imageUrl) {
           if (imageUrl != null && imageUrl.isNotEmpty) {
           if (_isProperImageUrl(imageUrl)) {
             return CircleAvatar(
+                                                  backgroundColor: Colors.transparent,
               backgroundImage: NetworkImage(imageUrl),
               radius: 12.0,
             );
           } else {
             // Render text as a fallback when imageUrl is not proper
             return CircleAvatar(
-              radius: 12.0,
-              child: Text(
-                avatarText,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
-              ),
-            );
+                  radius: 12,
+                  child: Text(
+                    avatarText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+                  ),
+                );
           }
         }else {
-            // Render a placeholder or an error image
-            return CircleAvatar(radius: 12.0, child: Text(avatarText));
+            return CircleAvatar(
+                  radius: 12,
+                  child: Text(
+                    avatarText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+                  ),
+                );
           }
         },
         loading: () => const Center(
           child: SizedBox(
-            height: 30.0,
-            width: 30.0,
+            height: 20.0,
+            width: 20.0,
             child: CircularProgressIndicator(),
           ),
         ),
         error: (error, stackTrace) => CircleAvatar(
-            radius: 30.0,
+            radius: 20.0,
             child: Text(avatarText)), // Handle error state appropriately
-      );
+     ));
     }
   }
 
@@ -173,7 +186,7 @@ final List<Color> cardColors = [
             return Padding(
               padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
               child: Container(
-                color: Colors.white,
+                // color: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                 child: CommentTreeWidget<Comment, Comment>(
                   Comment(

@@ -8,27 +8,27 @@ class User {
   final DateTime createdAt;
   final String status;
   final String? about;
-   String? profilePicture;
+  String? profilePicture;
   final String? socialLinks;
-  
+
   final DateTime? currentLoginAt;
   final DateTime? lastLoginAt;
 
-  User(
-      {required this.userId,
-      required this.identityId,
-      required this.name,
-      required this.email,
-      required this.title,
-      required this.createdAt,
-      required this.role,
-      required this.status,
-      this.about,
-      this.profilePicture,
-      this.socialLinks,
-       this.currentLoginAt,
-        this.lastLoginAt,
-      });
+  User({
+    required this.userId,
+    required this.identityId,
+    required this.name,
+    required this.email,
+    required this.title,
+    required this.createdAt,
+    required this.role,
+    required this.status,
+    this.about,
+    this.profilePicture,
+    this.socialLinks,
+    this.currentLoginAt,
+    this.lastLoginAt,
+  });
 
   Map<String, dynamic> toJson() => {
         'userId': userId,
@@ -42,15 +42,21 @@ class User {
         'about': about,
         'profilePicture': profilePicture,
         'socialLinks': socialLinks,
-         'currentLoginAt': currentLoginAt,
-          'lastLoginAt': lastLoginAt
+        'currentLoginAt': currentLoginAt,
+        'lastLoginAt': lastLoginAt
       };
 
   factory User.fromJson(Map<String, dynamic> json) {
     DateTime? lastLogin;
     if (json['lastLoginAt'] != null) {
-        lastLogin =  DateTime.parse(json['lastLoginAt']);
-      
+      lastLogin = DateTime.parse(json['lastLoginAt']);
+    }
+
+    String? authorThumbnail;
+    if (json['profilePicture'] != null) {
+      authorThumbnail = json['profilePicture'];
+    } else {
+      authorThumbnail = '';
     }
 
     return User(
@@ -63,10 +69,9 @@ class User {
         role: json['role'],
         status: json['status'],
         about: json['about'],
-        profilePicture: json['profilePicture'],
+        profilePicture: authorThumbnail, //json['profilePicture'],
         socialLinks: json['socialLinks'],
         currentLoginAt: DateTime.parse(json['currentLoginAt']),
-        lastLoginAt: lastLogin
-        );
+        lastLoginAt: lastLogin);
   }
 }

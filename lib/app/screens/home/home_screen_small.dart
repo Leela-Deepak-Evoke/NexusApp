@@ -129,16 +129,16 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
 
     if (userHomeAsyncValue is AsyncValue<UserHome>) {
       // Check if userHomeAsyncValue is of type AsyncValue<UserHome>
-      final userHome = userHomeAsyncValue.value; // Access data property directly
+      final userHome =
+          userHomeAsyncValue.value; // Access data property directly
 
       if (userHome != null) {
         userDetails = userHome.userDetails;
-      }else{
-            safePrint('userDetails -- : $userDetails');
+      } else {
+        safePrint('userDetails -- : $userDetails');
       }
-    }else{
-          safePrint('UserHomeAsyncValue is not of type AsyncValue<UserHome>');
-
+    } else {
+      safePrint('UserHomeAsyncValue is not of type AsyncValue<UserHome>');
     }
     return Stack(
       children: [
@@ -407,7 +407,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     return Container(
       width: size.width,
       height: calculateContainerHeight(userHomeAsyncValue,
-          userHomeAsyncValue?.value?.latestUpdates ?? [], 410), //455
+          userHomeAsyncValue?.value?.latestUpdates ?? [], 395), //455
       alignment: AlignmentDirectional.topStart,
       child: userHomeAsyncValue!.when(
         data: (userHome) {
@@ -426,7 +426,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                   const EdgeInsets.only(left: 12, right: 12, top: 0, bottom: 0),
               child: RefreshIndicator(
                 onRefresh: _onRefresh,
-                child: ListView.separated(
+                child: ListView.builder(
                   padding: const EdgeInsets.only(
                       left: 0, right: 0, top: 0, bottom: 0),
                   shrinkWrap: true,
@@ -564,9 +564,9 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                       ),
                     );
                   },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return const Divider();
-                  },
+                  // separatorBuilder: (BuildContext context, int index) {
+                  //   return const Divider();
+                  // },
                 ),
               ),
             );
@@ -1468,69 +1468,78 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
 //COMMON PROFILE PIC METHODS
   Widget _profilePicWidget(UserList item, bool isQuestion, WidgetRef ref) {
     // final avatarText = getAvatarText(item.name);
-    
 
-
-         final String? authorName = item.name;
-  if (authorName == null || authorName.isEmpty) {
-    return CircleAvatar(radius: 20.0, child: Text('NO'));
-  }
-  final avatarText = getAvatarText(authorName);
+    final String? authorName = item.name;
+    if (authorName == null || authorName.isEmpty) {
+      return CircleAvatar(radius: 20.0, child: Text('NO'));
+    }
+    final avatarText = getAvatarText(authorName);
 
     final double radius = isQuestion ? 12.0 : 20.0;
 
     final profilePicAsyncValue =
         ref.watch(authorThumbnailProvider(item.profilePicture!));
 
-    return profilePicAsyncValue.when(
-      data: (imageUrl) {
-        if (imageUrl != null && imageUrl.isNotEmpty) {
-          // Check if imageUrl is proper or not
-          if (_isProperImageUrl(imageUrl)) {
+    return Container(
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            image: new DecorationImage(
+              image: new AssetImage("assets/images/user_pic_s3_new.png"),
+              fit: BoxFit.fill,
+            )),
+        child: profilePicAsyncValue.when(
+          data: (imageUrl) {
+            if (imageUrl != null && imageUrl.isNotEmpty) {
+              // Check if imageUrl is proper or not
+              if (_isProperImageUrl(imageUrl)) {
+                return CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  backgroundImage: NetworkImage(imageUrl),
+                  radius: radius,
+                );
+              } else {
+                return CircleAvatar(
+                  radius: radius,
+                  child: Text(
+                    avatarText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                  ),
+                );
+              }
+            } else {
+              return CircleAvatar(
+                  radius: radius,
+                  child: Text(
+                    avatarText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                  ),
+                );
+            }
+          },
+          loading: () => CircleAvatar(
+            radius: radius,
+            child: const CircularProgressIndicator(), // Placeholder for loading state
+          ),
+          error: (error, stackTrace) {
+            // Render initials with a fallback text in case of error
             return CircleAvatar(
-              backgroundImage: NetworkImage(imageUrl),
-              radius: radius,
-            );
-          } else {
-            // Render text as a fallback when imageUrl is not proper
-            return CircleAvatar(
+              backgroundColor: Colors.transparent,
               radius: radius,
               child: Text(
                 avatarText,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
               ),
             );
-          }
-        } else {
-          // Render initials if imageUrl is null or empty
-          return CircleAvatar(
-            radius: radius,
-            child: Text(avatarText),
-          );
-        }
-      },
-      loading: () => CircleAvatar(
-        radius: radius,
-        child: CircularProgressIndicator(), // Placeholder for loading state
-      ),
-      error: (error, stackTrace) {
-        // Render initials with a fallback text in case of error
-        return CircleAvatar(
-          radius: radius,
-          child: Text(
-            avatarText,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
-          ),
-        );
-      },
-    );
+          },
+        ));
   }
 
   bool _isProperImageUrl(String imageUrl) {
     // Check if the image URL contains spaces in the filename
-    if ( imageUrl.contains('%20')) {
+    if (imageUrl.contains('%20')) {
       return false;
     }
     return true;
@@ -1548,72 +1557,76 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
 
   Widget _userProfilePic(
       AsyncValue<UserHome>? userHomeAsyncValue, WidgetRef ref) {
-    // final UserDetails? userDetails = userHomeAsyncValue!.value?.userDetails;
     final UserDetails? userDetails = userHomeAsyncValue?.value?.userDetails;
+    final String avatarText =
+        userDetails != null ? getAvatarText(userDetails.name) : "";
 
-    final String avatarText = userDetails != null
-        ? getAvatarText(userDetails.name)
-        : ""; // Provide a default value or handle the null case appropriately
-
-if (userDetails != null){
-     final String? authorName = userDetails!.name;
-  if (authorName == null || authorName.isEmpty) {
-    return CircleAvatar(radius: 20.0, child: Text('NO'));
-  } 
-   final avatarText = getAvatarText(authorName);
-}else{
-   final String avatarText = userDetails != null
-        ? getAvatarText(userDetails.name)
-        : ""; //
-}
-
+    if (userDetails != null) {
+      final String? authorName = userDetails!.name;
+      if (authorName == null || authorName.isEmpty) {
+        return CircleAvatar(radius: 20.0, child: Text('NO'));
+      }
+      final avatarText = getAvatarText(authorName);
+    } else {
+      final String avatarText =
+          userDetails != null ? getAvatarText(userDetails.name) : ""; //
+    }
 
     if (userHomeAsyncValue?.value?.userDetails.profilePicture == null) {
       return CircleAvatar(radius: 20.0, child: Text(avatarText));
     } else {
-      // final profilePicAsyncValue = ref.watch(authorThumbnailProvider(
-      //     userHomeAsyncValue!.value!.userDetails.profilePicture));
-
       final profilePicAsyncValue = ref.watch(authorThumbnailProvider(
           userHomeAsyncValue?.value?.userDetails.profilePicture ?? ""));
-
-      //print(profilePicAsyncValue);
-      return profilePicAsyncValue.when(
-        data: (imageUrl) {
-          if (imageUrl != null && imageUrl.isNotEmpty)  {
-          // Check if imageUrl is proper or not
-          if (_isProperImageUrl(imageUrl)) {
-            return CircleAvatar(
-              backgroundImage: NetworkImage(imageUrl),
-              radius: 20,
-            );
-          } else {
-            // Render text as a fallback when imageUrl is not proper
-            return CircleAvatar(
-              radius: 20,
-              child: Text(
-                avatarText,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
-              ),
-            );
-          }
-        } else {
-            // Render a placeholder or an error image
-            return CircleAvatar(radius: 20.0, child: Text(avatarText));
-          }
-        },
-        loading: () => const Center(
-            // child: SizedBox(
-            //   height: 20.0,
-            //   width: 20.0,
-            //   child: CircularProgressIndicator(),
-            // ),
-            ),
-        error: (error, stackTrace) => CircleAvatar(
-            radius: 20.0,
-            child: Text(avatarText)), // Handle error state appropriately
-      );
+      return Container(
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: new DecorationImage(
+                image: new AssetImage("assets/images/user_pic_s3_new.png"),
+                fit: BoxFit.fill,
+              )),
+          child: profilePicAsyncValue.when(
+            data: (imageUrl) {
+              if (imageUrl != null && imageUrl.isNotEmpty) {
+                if (_isProperImageUrl(imageUrl)) {
+                  return CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    backgroundImage: NetworkImage(imageUrl),
+                    radius: 20,
+                  );
+                } else {
+                  // Render text as a fallback when imageUrl is not proper
+                  return CircleAvatar(
+                  radius: 20,
+                  child: Text(
+                    avatarText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                  ),
+                );
+                }
+              } else {
+                // Render a placeholder or an error image
+                return CircleAvatar(
+                  radius: 20,
+                  child: Text(
+                    avatarText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                  ),
+                );
+              }
+            },
+            loading: () => const Center(
+                // child: SizedBox(
+                //   height: 20.0,
+                //   width: 20.0,
+                //   child: CircularProgressIndicator(),
+                // ),
+                ),
+            error: (error, stackTrace) => CircleAvatar(
+                radius: 20.0,
+                child: Text(avatarText)), // Handle error state appropriately
+          ));
     }
   }
 

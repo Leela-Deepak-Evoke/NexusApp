@@ -31,15 +31,15 @@ class FeedListMobile extends ConsumerStatefulWidget {
   // AsyncValue<List<Feed>>? filterfeedsList;
   // List<String>? selectedCategories; // Track selected categories
 
-  FeedListMobile(
-      {super.key,
-      required this.user,
-      this.searchQuery,
-      this.isFilter,
-      this.selectedCategory,
-      // this.selectedCategories
-      // this.filterfeedsList
-      });
+  FeedListMobile({
+    super.key,
+    required this.user,
+    this.searchQuery,
+    this.isFilter,
+    this.selectedCategory,
+    // this.selectedCategories
+    // this.filterfeedsList
+  });
 
   @override
   _FeedListMobileViewState createState() => _FeedListMobileViewState();
@@ -50,7 +50,7 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
 
   @override
   void initState() {
-     super.initState();
+    super.initState();
   }
 
   void _onCommentsPressed(Feed item) {
@@ -94,19 +94,35 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
         // }
 
 //Case-sensitive
-List<Feed> filteredItems = [];
-if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
-  filteredItems = items.where((item) {
-    return (item.author?.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true) ||
-           (item.name.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true) ||
-           (item.authorTitle?.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true) ||
-           (item.content?.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true) ||
-           (item.status.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true);
-  }).toList();
-} else if (widget.selectedCategory == "All" || widget.searchQuery == "All") {
-  // If selectedCategory is "All", consider all items
-  filteredItems = List.from(items);
-}
+        List<Feed> filteredItems = [];
+        if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
+          filteredItems = items.where((item) {
+            return (item.author
+                        ?.toLowerCase()
+                        .contains(widget.searchQuery?.toLowerCase() ?? '') ==
+                    true) ||
+                (item.name
+                        .toLowerCase()
+                        .contains(widget.searchQuery?.toLowerCase() ?? '') ==
+                    true) ||
+                (item.authorTitle
+                        ?.toLowerCase()
+                        .contains(widget.searchQuery?.toLowerCase() ?? '') ==
+                    true) ||
+                (item.content
+                        ?.toLowerCase()
+                        .contains(widget.searchQuery?.toLowerCase() ?? '') ==
+                    true) ||
+                (item.status
+                        .toLowerCase()
+                        .contains(widget.searchQuery?.toLowerCase() ?? '') ==
+                    true);
+          }).toList();
+        } else if (widget.selectedCategory == "All" ||
+            widget.searchQuery == "All") {
+          // If selectedCategory is "All", consider all items
+          filteredItems = List.from(items);
+        }
 
 //Case-sensitive comparison for selected category
 
@@ -114,7 +130,6 @@ if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
 //   filteredItems = filteredItems.where((item) =>
 //       item.category == widget.selectedCategory).toList();
 // }
-
 
 // List<Feed> filteredItems = [];
 
@@ -126,7 +141,6 @@ if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
 // } else {
 //   filteredItems = List.from(items);
 // }
-
 
         if (filteredItems.isEmpty) {
           // Handle the case where there is no data found
@@ -140,7 +154,7 @@ if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
                 onRefresh: _onRefresh,
                 child: Column(children: [
                   Expanded(
-                      child: ListView.separated(
+                      child: ListView.builder(
                     // controller: _refreshController.scrollController,
                     padding: const EdgeInsets.only(
                         left: 0, right: 0, top: 0, bottom: 0),
@@ -156,9 +170,12 @@ if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
 
                       return Card(
                         margin: const EdgeInsets.all(5),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(0)),
                         clipBehavior: Clip.antiAlias,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+            elevation: 2, // the size of the shadow
+            shadowColor: Colors.black,
+  
                         child: Padding(
                           padding: const EdgeInsets.all(0),
                           child: Column(
@@ -268,9 +285,9 @@ if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
                         ),
                       );
                     },
-                    separatorBuilder: (BuildContext context, int index) {
-                      return const Divider();
-                    },
+                    // separatorBuilder: (BuildContext context, int index) {
+                    //   return const Divider();
+                    // },
                   )),
                   if (Platform.isAndroid)
                     const SizedBox(
@@ -322,40 +339,57 @@ if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
   }
 
   Widget _profilePicWidget(Feed item, WidgetRef ref) {
-     final String? authorName = item.author;
-  if (authorName == null || authorName.isEmpty) {
-    return CircleAvatar(radius: 20.0, child: Text('NO'));
-  }
+    final String? authorName = item.author;
+    if (authorName == null || authorName.isEmpty) {
+      return CircleAvatar(radius: 20.0, child: Text('NO'));
+    }
     // final avatarText = getAvatarText(item.author!);
-  final avatarText = getAvatarText(authorName);
+    final avatarText = getAvatarText(authorName);
 
-    if (item.authorThumbnail == null || item.authorThumbnail == "" ) {
+    if (item.authorThumbnail == null || item.authorThumbnail == "") {
       return CircleAvatar(radius: 20.0, child: Text(avatarText));
     } else {
       final profilePicAsyncValue =
           ref.watch(authorThumbnailProvider(item.authorThumbnail!));
-      return profilePicAsyncValue.when(
+      
+      return Container(
+              decoration:BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: new DecorationImage(
+                    image: new AssetImage("assets/images/user_pic_s3_new.png"),
+                    fit: BoxFit.fill,
+                  )
+                  ),
+              child: profilePicAsyncValue.when(
         data: (imageUrl) {
-          if (imageUrl != null && imageUrl.isNotEmpty){
-          if (_isProperImageUrl(imageUrl)) {
-            return CircleAvatar(
-              backgroundImage: NetworkImage(imageUrl),
-              radius: 20.0,
-            );
+          if (imageUrl != null && imageUrl.isNotEmpty) {
+            if (_isProperImageUrl(imageUrl)) {
+              return CircleAvatar(
+                                    backgroundColor: Colors.transparent,
+                backgroundImage: NetworkImage(imageUrl),
+                radius: 20.0,
+              );
+            } else {
+              // Render text as a fallback when imageUrl is not proper
+              return CircleAvatar(
+                  radius: 20,
+                  child: Text(
+                    avatarText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                  ),
+                );
+            }
           } else {
-            // Render text as a fallback when imageUrl is not proper
-            return CircleAvatar(
-              radius: 20.0,
-              child: Text(
-                avatarText,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
-              ),
-            );
-          }
-        } else {
             // Render a placeholder or an error image
-            return CircleAvatar(radius: 20.0, child: Text(avatarText));
+            return CircleAvatar(
+                  radius: 20,
+                  child: Text(
+                    avatarText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                  ),
+                );
           }
         },
         loading: () => const Center(
@@ -368,18 +402,22 @@ if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
         error: (error, stackTrace) => CircleAvatar(
             radius: 20.0,
             child: Text(avatarText)), // Handle error state appropriately
-      );
+      ));
     }
   }
 
-    bool _isProperImageUrl(String imageUrl) {
-    // Check if the image URL contains spaces in the filename
-    if ( imageUrl.contains('%20')) {
+  bool _isProperImageUrl(String imageUrl) {
+    // String sanitizedProfilePicturePath = imageUrl.replaceAll(' ', '_');
+    if (imageUrl.contains('%20')) {
       return false;
     }
     return true;
-  }
 
+
+//      String profilePicturePath = imageUrl;
+// String sanitizedProfilePicturePath = profilePicturePath.replaceAll(' ', '_');
+// print(sanitizedProfilePicturePath);
+  }
 
   String getAvatarText(String name) {
     final nameParts = name.split(' ');
@@ -390,7 +428,6 @@ if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
     }
     return '';
   }
-
 
 // BUTTONS: REACT, COMMENT, SHARE
   Widget btnSharingInfoLayout(
@@ -499,20 +536,20 @@ if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
             // <-- TextButton
             onPressed: () {
               if (item.likes != 0)
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  var params = GetCommentsParams(
-                      userId: widget.user.userId,
-                      postId: item.feedId,
-                      postType: "Feed");
-                  return LikesWidget(
-                      user: widget.user,
-                      spaceName: "Feed",
-                      spaceId: item.feedId,
-                      params: params);
-                },
-              );
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    var params = GetCommentsParams(
+                        userId: widget.user.userId,
+                        postId: item.feedId,
+                        postType: "Feed");
+                    return LikesWidget(
+                        user: widget.user,
+                        spaceName: "Feed",
+                        spaceId: item.feedId,
+                        params: params);
+                  },
+                );
             },
             icon: Image.asset(
               'assets/images/reactions.png',

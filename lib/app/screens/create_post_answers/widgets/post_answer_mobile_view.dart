@@ -179,87 +179,89 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
   }
 
   //CARD - Feeds Descriotion
-Widget feedsDescriptionUI() {
-  return Column(
-    children: [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Expanded(
-              child: TextFormField(
-                enabled: false,
-                validator: (value) => value!.isEmpty ? 'Title' : null,
-                controller: hashTagController,
-                textInputAction: TextInputAction.done,
-                maxLines: null,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16.0,
-                  fontFamily: GoogleFonts.notoSans().fontFamily,
-                  fontWeight: FontWeight.w600,
-                ),
-                decoration: const InputDecoration.collapsed(hintText: "Title"),
-              ),
-            ),
-          ],
-        ),
-      ),
-      const Divider(
-        thickness: 1,
-        color: Color(0xffEAEAEA),
-        height: 1,
-      ),
-      GestureDetector(
-        onTap: () {
-          // Focus on TextFormField when Container is tapped
-          FocusScope.of(context).requestFocus(answerFocusNode);
-        },
-        child: Container(
-          constraints: BoxConstraints(minHeight: 200), // Set a minimum height
-          color: Colors.white, // Background color
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-            child: Column(
-              children: [
-                TextFormField(
-                  cursorColor: Color(0xffB54242),
-                  focusNode: answerFocusNode,
-                  validator: (value) => value!.isEmpty
-                      ? 'Share your thoughts cannot be blank'
-                      : null,
-                  controller: feedController,
+  Widget feedsDescriptionUI() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: TextFormField(
+                  enabled: false,
+                  validator: (value) => value!.isEmpty ? 'Title' : null,
+                  controller: hashTagController,
                   textInputAction: TextInputAction.done,
                   maxLines: null,
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 14.0,
+                    fontSize: 16.0,
                     fontFamily: GoogleFonts.notoSans().fontFamily,
-                    fontWeight: FontWeight.normal,
+                    fontWeight: FontWeight.w600,
                   ),
-                       decoration: const InputDecoration.collapsed(
-                          hintText: "Share your thoughts with colleagues.."),
+                  decoration:
+                      const InputDecoration.collapsed(hintText: "Title"),
                 ),
-                // Align(
-                //   alignment: Alignment.topLeft,
-                //   child: Text(
-                //     feedController.text.isEmpty ? 'Share your thoughts cannot be blank' : '',
-                //     style: TextStyle(
-                //       color: Colors.red,
-                //       fontSize: 12.0,
-                //       fontFamily: GoogleFonts.notoSans().fontFamily,
-                //     ),
-                //   ),
-                // ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-      )
-    ],
-  );
-}
+        const Divider(
+          thickness: 1,
+          color: Color(0xffEAEAEA),
+          height: 1,
+        ),
+        GestureDetector(
+          onTap: () {
+            // Focus on TextFormField when Container is tapped
+            FocusScope.of(context).requestFocus(answerFocusNode);
+          },
+          child: Container(
+            constraints: BoxConstraints(minHeight: 200), // Set a minimum height
+            color: Colors.white, // Background color
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+              child: Column(
+                children: [
+                  TextFormField(
+                    cursorColor: Color(0xffB54242),
+                    focusNode: answerFocusNode,
+                    validator: (value) => value!.isEmpty
+                        ? 'Share your thoughts cannot be blank'
+                        : null,
+                    controller: feedController,
+                    textInputAction: TextInputAction.done,
+                    maxLines: null,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14.0,
+                      fontFamily: GoogleFonts.notoSans().fontFamily,
+                      fontWeight: FontWeight.normal,
+                    ),
+                    decoration: const InputDecoration.collapsed(
+                        hintText: "Share your thoughts with colleagues.."),
+                  ),
+                  // Align(
+                  //   alignment: Alignment.topLeft,
+                  //   child: Text(
+                  //     feedController.text.isEmpty ? 'Share your thoughts cannot be blank' : '',
+                  //     style: TextStyle(
+                  //       color: Colors.red,
+                  //       fontSize: 12.0,
+                  //       fontFamily: GoogleFonts.notoSans().fontFamily,
+                  //     ),
+                  //   ),
+                  // ),
+                ],
+              ),
+            ),
+          ),
+        )
+      ],
+    );
+  }
 
   Widget feedsDescriptionUI_OLD() {
     return Column(
@@ -304,15 +306,13 @@ Widget feedsDescriptionUI() {
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-                child: 
-                
-                Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Expanded(
                         child: TextFormField(
                       cursorColor: Color(0xffB54242),
-                      focusNode: answerFocusNode, 
+                      focusNode: answerFocusNode,
                       validator: (value) => value!.isEmpty
                           ? 'Share your thoughts cannot be blank'
                           : null,
@@ -626,7 +626,7 @@ Widget feedsDescriptionUI() {
     setState(() {
       uploadedFilePath = null;
       feedController.clear();
-      hashTagController.clear();
+      // hashTagController.clear();
       mediaCaptionController.clear();
       _videoPlayerController!.dispose();
       // dropdownValue = 'General Feed';
@@ -663,48 +663,61 @@ Widget feedsDescriptionUI() {
 
 // POST BUTTON
   Widget btnPost(Size size) {
-    return Stack(
-      children: [
-     Container(
-      height: 48,
-      width: size.width - 30,
-      padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
-      child: OutlinedButton(
-        style: OutlinedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.0),
+    return Stack(children: [
+      Container(
+        height: 48,
+        width: size.width - 30,
+        padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
+        child: OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30.0),
+            ),
+            backgroundColor: const Color(0xffF2722B),
+            side: const BorderSide(width: 1, color: Color(0xffF2722B)),
           ),
-          backgroundColor: const Color(0xffF2722B),
-          side: const BorderSide(width: 1, color: Color(0xffF2722B)),
-        ),
-        // <-- OutlinedButton
+          // <-- OutlinedButton
 
-        onPressed: () {
-            
-          if (feedController.value.text.isEmpty) {
-            showMessage('Please share your thoughts');
-          }
-          //  else if (hashTagController == null ||
-          //     hashTagController.value.text.isEmpty) {
-          //   showMessage('Please add hashtag');
-          // }
-          else {
-               setState(() {
+          onPressed: () {
+            if (feedController.value.text.isEmpty) {
+              showMessage('Please share your thoughts');
+            }
+            //  else if (hashTagController == null ||
+            //     hashTagController.value.text.isEmpty) {
+            //   showMessage('Please add hashtag');
+            // }
+            else {
+              setState(() {
                 _isLoading = true; // Show loader
               });
-            createPost();
-          }
-        },
-        //POSt Feed
-        child: Text('Post',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16.0,
-              fontFamily: GoogleFonts.poppins().fontFamily,
-              fontWeight: FontWeight.normal,
-            )),
+              createPost();
+            }
+          },
+          //POSt Feed
+          child: Text('Post',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16.0,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                fontWeight: FontWeight.normal,
+              )),
+        ),
       ),
-    )]);
+         if (_isLoading) // Show loader if _isLoading is true
+          const Positioned.fill(
+            child: Center(
+              child: SizedBox(
+                width:
+                    50, // Set the size of the SizedBox to control the size of the CircularProgressIndicator
+                height: 50,
+                child: CircularProgressIndicator(
+                  strokeWidth:
+                      3, // Increase the strokeWidth to make the CircularProgressIndicator larger
+                ),
+              ),
+            ),
+          ),
+    ]);
   }
 
   createPost() async {

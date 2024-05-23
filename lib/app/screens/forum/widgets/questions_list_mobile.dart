@@ -24,7 +24,7 @@ class QuestionsListMobile extends ConsumerStatefulWidget {
   String? searchQuery;
   bool? isFilter;
   String? selectedCategory;
-       bool? isFromHomePage;
+  bool? isFromHomePage;
 
   QuestionsListMobile(
       {super.key,
@@ -38,6 +38,7 @@ class QuestionsListMobile extends ConsumerStatefulWidget {
   _QuestionsListMobileViewState createState() =>
       _QuestionsListMobileViewState();
 }
+
 class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
   @override
   Widget build(BuildContext context) {
@@ -65,21 +66,39 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
         //   filteredItems = List.from(items);
         // }
 
-
-       List<Question> filteredItems = [];
-if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
-  filteredItems = items.where((item) {
-    return (item.author?.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true) ||
-           (item.name.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true) ||
-           (item.authorTitle?.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true) ||
-           (item.content?.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true) ||
-           (item.status.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true) || 
-            (item.category?.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true);
-  }).toList();
-} else if (widget.selectedCategory == "All" || widget.searchQuery == "All") {
-  // If selectedCategory is "All", consider all items
-  filteredItems = List.from(items);
-}
+        List<Question> filteredItems = [];
+        if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
+          filteredItems = items.where((item) {
+            return (item.author
+                        ?.toLowerCase()
+                        .contains(widget.searchQuery?.toLowerCase() ?? '') ==
+                    true) ||
+                (item.name
+                        .toLowerCase()
+                        .contains(widget.searchQuery?.toLowerCase() ?? '') ==
+                    true) ||
+                (item.authorTitle
+                        ?.toLowerCase()
+                        .contains(widget.searchQuery?.toLowerCase() ?? '') ==
+                    true) ||
+                (item.content
+                        ?.toLowerCase()
+                        .contains(widget.searchQuery?.toLowerCase() ?? '') ==
+                    true) ||
+                (item.status
+                        .toLowerCase()
+                        .contains(widget.searchQuery?.toLowerCase() ?? '') ==
+                    true) ||
+                (item.category
+                        ?.toLowerCase()
+                        .contains(widget.searchQuery?.toLowerCase() ?? '') ==
+                    true);
+          }).toList();
+        } else if (widget.selectedCategory == "All" ||
+            widget.searchQuery == "All") {
+          // If selectedCategory is "All", consider all items
+          filteredItems = List.from(items);
+        }
 
         if (filteredItems.isEmpty) {
           return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
@@ -106,24 +125,31 @@ if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
                             onTap: () {
                               if (widget.isFromHomePage == false) {
                                 context.goNamed(
-                                AppRoute.answersforum.name,
-                                extra: item,
-                              );
+                                  AppRoute.answersforum.name,
+                                  extra: item,
+                                );
                               }
-                               if (widget.isFromHomePage == true){
-                                 Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          AnswersScreen(question: item)));
-                               }
-                               
+                              if (widget.isFromHomePage == true) {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            AnswersScreen(question: item)));
+                              }
                             },
                             child: Card(
                               // margin: const EdgeInsets.all(0),
                               // clipBehavior: Clip.antiAlias,
                               //  shape: RoundedRectangleBorder(
                               //          borderRadius: BorderRadius.circular(0)),
+
+                              //  margin: const EdgeInsets.all(),
+                              clipBehavior: Clip.antiAlias,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              elevation: 2, // the size of the shadow
+                              shadowColor: Colors.black,
+
                               child: Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 16.0, vertical: 8.0),
@@ -155,7 +181,7 @@ if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
                   // const SizedBox(
                   //   height: 100,
                   // )
-                   if (Platform.isAndroid)
+                  if (Platform.isAndroid)
                     const SizedBox(
                       height: 60,
                     ),
@@ -463,17 +489,17 @@ if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
     }
   }
 
-Widget _profilePicWidget(Question item, WidgetRef ref) {
-  // final String? authorName = item.author;
+  Widget _profilePicWidget(Question item, WidgetRef ref) {
+    // final String? authorName = item.author;
 
-  final String? authorName = item.author;
-  if (authorName == null || authorName.isEmpty) {
-    return CircleAvatar(radius: 20.0, child: Text('NO'));
-  }
-  if (authorName == null || authorName.isEmpty) {
-    return CircleAvatar(radius: 20.0, child: Text('NO'));
-  }
-  final avatarText = getAvatarText(authorName);
+    final String? authorName = item.author;
+    if (authorName == null || authorName.isEmpty) {
+      return CircleAvatar(radius: 20.0, child: Text('NO'));
+    }
+    if (authorName == null || authorName.isEmpty) {
+      return CircleAvatar(radius: 20.0, child: Text('NO'));
+    }
+    final avatarText = getAvatarText(authorName);
     // final avatarText = getAvatarText(item.author!);
 
     if (item.authorThumbnail == null || item.authorThumbnail == "") {
@@ -481,41 +507,57 @@ Widget _profilePicWidget(Question item, WidgetRef ref) {
     } else {
       final profilePicAsyncValue =
           ref.watch(authorThumbnailProvider(item.authorThumbnail!));
-      return profilePicAsyncValue.when(
-        data: (imageUrl) {
-          if (imageUrl != null && imageUrl.isNotEmpty) {
-          if (_isProperImageUrl(imageUrl)) {
-            return CircleAvatar(
-              backgroundImage: NetworkImage(imageUrl),
-              radius: 12.0,
-            );
-          } else {
-            // Render text as a fallback when imageUrl is not proper
-            return CircleAvatar(
-              radius: 12.0,
-              child: Text(
-                avatarText,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+
+      return Container(
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: new DecorationImage(
+                image: new AssetImage("assets/images/user_pic_s3_new.png"),
+                fit: BoxFit.fill,
+              )),
+          child: profilePicAsyncValue.when(
+            data: (imageUrl) {
+              if (imageUrl != null && imageUrl.isNotEmpty) {
+                if (_isProperImageUrl(imageUrl)) {
+                  return CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    backgroundImage: NetworkImage(imageUrl),
+                    radius: 12.0,
+                  );
+                } else {
+                  // Render text as a fallback when imageUrl is not proper
+                  return CircleAvatar(
+                  radius: 12,
+                  child: Text(
+                    avatarText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+                  ),
+                );
+                }
+              } else {
+                // Render a placeholder or an error image
+                return CircleAvatar(
+                  radius: 12,
+                  child: Text(
+                    avatarText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                  ),
+                );
+              }
+            },
+            loading: () => const Center(
+              child: SizedBox(
+                height: 20.0,
+                width: 20.0,
+                child: CircularProgressIndicator(),
               ),
-            );
-          }
-        } else {
-            // Render a placeholder or an error image
-            return CircleAvatar(radius: 20.0, child: Text(avatarText));
-          }
-        },
-        loading: () => const Center(
-          child: SizedBox(
-            height: 20.0,
-            width: 20.0,
-            child: CircularProgressIndicator(),
-          ),
-        ),
-        error: (error, stackTrace) => CircleAvatar(
-            radius: 20.0,
-            child: Text(avatarText)), // Handle error state appropriately
-      );
+            ),
+            error: (error, stackTrace) => CircleAvatar(
+                radius: 20.0,
+                child: Text(avatarText)), // Handle error state appropriately
+          ));
     }
   }
 
@@ -528,14 +570,13 @@ Widget _profilePicWidget(Question item, WidgetRef ref) {
     }
     return '';
   }
-  
-    bool _isProperImageUrl(String imageUrl) {
-    if ( imageUrl.contains('%20')) {
+
+  bool _isProperImageUrl(String imageUrl) {
+    if (imageUrl.contains('%20')) {
       return false;
     }
     return true;
   }
-
 
   Future<void> _onRefresh() async {
     ref.read(refresUserProvider(""));

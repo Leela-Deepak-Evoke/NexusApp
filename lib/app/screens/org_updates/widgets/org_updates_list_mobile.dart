@@ -28,7 +28,10 @@ class OrgUpdateListMobile extends ConsumerStatefulWidget {
   bool? isFilter;
   String? selectedCategory;
 
-   OrgUpdateListMobile({super.key, required this.user, this.searchQuery,
+  OrgUpdateListMobile(
+      {super.key,
+      required this.user,
+      this.searchQuery,
       this.isFilter,
       this.selectedCategory});
 
@@ -62,167 +65,185 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
         //   filteredItems = List.from(items);
         // }
 
+        List<OrgUpdate> filteredItems = [];
+        if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
+          filteredItems = items.where((item) {
+            return (item.author
+                        ?.toLowerCase()
+                        .contains(widget.searchQuery?.toLowerCase() ?? '') ==
+                    true) ||
+                (item.name
+                        .toLowerCase()
+                        .contains(widget.searchQuery?.toLowerCase() ?? '') ==
+                    true) ||
+                (item.authorTitle
+                        ?.toLowerCase()
+                        .contains(widget.searchQuery?.toLowerCase() ?? '') ==
+                    true) ||
+                (item.content
+                        ?.toLowerCase()
+                        .contains(widget.searchQuery?.toLowerCase() ?? '') ==
+                    true) ||
+                (item.status
+                        .toLowerCase()
+                        .contains(widget.searchQuery?.toLowerCase() ?? '') ==
+                    true);
+          }).toList();
+        } else if (widget.selectedCategory == "All" ||
+            widget.searchQuery == "All") {
+          // If selectedCategory is "All", consider all items
+          filteredItems = List.from(items);
+        }
 
+        if (filteredItems.isEmpty) {
+          return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
+        } else {
+          return Container(
+              alignment: AlignmentDirectional.topStart,
+              padding:
+                  const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
+              child: RefreshIndicator(
+                onRefresh: _onRefresh,
+                child: Column(children: [
+                  Expanded(
+                      child: ListView.builder(
+                    padding: const EdgeInsets.only(
+                        left: 0, right: 0, top: 0, bottom: 0),
+                    shrinkWrap: true,
+                    itemCount: filteredItems.length,
+                    itemBuilder: (context, index) {
+                      final item = filteredItems[index];
+                      final author = item.author;
 
-       List<OrgUpdate> filteredItems = [];
-if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
-  filteredItems = items.where((item) {
-    return (item.author?.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true) ||
-           (item.name.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true) ||
-           (item.authorTitle?.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true) ||
-           (item.content?.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true) ||
-           (item.status.toLowerCase().contains(widget.searchQuery?.toLowerCase() ?? '') == true);
-  }).toList();
-} else if (widget.selectedCategory == "All" || widget.searchQuery == "All") {
-  // If selectedCategory is "All", consider all items
-  filteredItems = List.from(items);
-}
+                      final formattedDate = DateFormat('MMM d HH:mm').format(
+                          DateTime.parse(item.postedAt.toString()).toLocal());
+                      bool isCurrentUser = item.authorId == widget.user.userId;
 
-
-if (filteredItems.isEmpty) {
-        return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
-      } else { 
-
-        return Container(
-            alignment: AlignmentDirectional.topStart,
-            padding:
-                const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
-            child: RefreshIndicator(
-              onRefresh: _onRefresh,
-              child: Column(children: [
-                Expanded(
-                    child: ListView.separated(
-                  padding: const EdgeInsets.only(
-                      left: 0, right: 0, top: 0, bottom: 0),
-                  shrinkWrap: true,
-                  itemCount: filteredItems.length,
-                  itemBuilder: (context, index) {
-                    final item = filteredItems[index];
-                    final author = item.author;
-
-                    final formattedDate = DateFormat('MMM d HH:mm').format(
-                        DateTime.parse(item.postedAt.toString()).toLocal());
-                    bool isCurrentUser = item.authorId == widget.user.userId;
-
-                    return Card(
-                      margin: const EdgeInsets.all(5),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0)),
-                      clipBehavior: Clip.antiAlias,
-                      child: Padding(
+                      return Card(
+                        margin: const EdgeInsets.all(5),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        clipBehavior: Clip.antiAlias,
+                        elevation: 2,
+                        shadowColor: Colors.black,
+                        child: Padding(
                           padding: const EdgeInsets.all(0),
-                        child: Column(
-                          children: [
-                            ListTile(
-                              leading: _profilePicWidget(item, ref),
+                          child: Column(
+                            children: [
+                              ListTile(
+                                leading: _profilePicWidget(item, ref),
                                 minLeadingWidth: 0,
                                 minVerticalPadding: 15,
-                              title: Text(author!,
-                                  style: const TextStyle(fontSize: 16)),
-                              subtitle: Text(
-                                "${item.authorTitle!} | ${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString()))}",
-                                style: TextStyle(
-                                  color: const Color(0xff676A79),
-                                  fontSize: 12.0,
-                                  fontFamily: GoogleFonts.notoSans().fontFamily,
-                                  fontWeight: FontWeight.normal,
+                                title: Text(author!,
+                                    style: const TextStyle(fontSize: 16)),
+                                subtitle: Text(
+                                  "${item.authorTitle!} | ${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString()))}",
+                                  style: TextStyle(
+                                    color: const Color(0xff676A79),
+                                    fontSize: 12.0,
+                                    fontFamily:
+                                        GoogleFonts.notoSans().fontFamily,
+                                    fontWeight: FontWeight.normal,
+                                  ),
                                 ),
-                              ),
-                               trailing: isCurrentUser && (widget.user.role != 'Group' || widget.user.role != 'Leader')
-                                  ? SizedBox(
-                                      width: 30, // Adjust the width as needed
-                                      child: PopupMenuButton<String>(
-                                        //  padding: const EdgeInsets.only(left: 50, right: 0),
+                                trailing: isCurrentUser &&
+                                        (widget.user.role != 'Group' ||
+                                            widget.user.role != 'Leader')
+                                    ? SizedBox(
+                                        width: 30, // Adjust the width as needed
+                                        child: PopupMenuButton<String>(
+                                          //  padding: const EdgeInsets.only(left: 50, right: 0),
 
-                                        icon: const Icon(
-                                          Icons.more_vert,
+                                          icon: const Icon(
+                                            Icons.more_vert,
+                                          ),
+                                          onSelected: (String choice) {
+                                            // Handle button selection here
+                                            if (choice == 'Edit') {
+                                              _editItem(
+                                                  item); // Call the edit function
+                                            } else if (choice == 'Delete') {
+                                              _deleteItem(
+                                                  item); // Call the delete function
+                                            }
+                                          },
+                                          itemBuilder: (BuildContext context) {
+                                            return <PopupMenuEntry<String>>[
+                                              PopupMenuItem<String>(
+                                                // padding: const EdgeInsets.only(left: 50, right: 0),
+
+                                                value: 'Edit',
+                                                child: EditButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                    _editItem(
+                                                        item); // Call the edit function
+                                                  },
+                                                ),
+                                              ),
+                                              PopupMenuItem<String>(
+                                                // padding: const EdgeInsets.only(left: 50, right: 0),
+                                                value: 'Delete',
+                                                child: DeleteButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                    _deleteItem(
+                                                        item); // Call the delete function
+                                                  },
+                                                ),
+                                              ),
+                                            ];
+                                          },
                                         ),
-                                        onSelected: (String choice) {
-                                          // Handle button selection here
-                                          if (choice == 'Edit') {
-                                            _editItem(
-                                                item); // Call the edit function
-                                          } else if (choice == 'Delete') {
-                                            _deleteItem(
-                                                item); // Call the delete function
-                                          }
-                                        },
-                                        itemBuilder: (BuildContext context) {
-                                          return <PopupMenuEntry<String>>[
-                                            PopupMenuItem<String>(
-                                              // padding: const EdgeInsets.only(left: 50, right: 0),
-
-                                              value: 'Edit',
-                                              child: EditButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                  _editItem(
-                                                      item); // Call the edit function
-                                                },
-                                              ),
-                                            ),
-                                            PopupMenuItem<String>(
-                                              // padding: const EdgeInsets.only(left: 50, right: 0),
-                                              value: 'Delete',
-                                              child: DeleteButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                  _deleteItem(
-                                                      item); // Call the delete function
-                                                },
-                                              ),
-                                            ),
-                                          ];
-                                        },
-                                      ),
-                                    )
-                                  : null,
-                             
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(height: 4.0),
-                                Padding(
-                                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-                                    child: contentViewWidget(item)),
-                                // Padding(
-                                //     padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                                //     child: hasTagViewWidget(item)),
-
-                                const SizedBox(height: 10.0),
-                                item.media
-                                    ? AspectRatio(
-                                        aspectRatio: 16 / 9,
-                                        child: OrgUpdateMediaView(item: item),
                                       )
-                                    : const SizedBox(height: 2.0),
-                                const SizedBox(height: 4.0),
-                                // const Divider(
-                                //   thickness: 1.0,
-                                //   height: 1.0,
-                                // ),
+                                    : null,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 4.0),
+                                  Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          20, 10, 20, 0),
+                                      child: contentViewWidget(item)),
+                                  // Padding(
+                                  //     padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                  //     child: hasTagViewWidget(item)),
 
-                                //LikesWidget comment
-                                getInfoOFViewsComments(
-                                    context, ref, index, item),
-                                const Divider(
-                                  thickness: 1.0,
-                                  height: 1.0,
-                                ),
-                                btnSharingInfoLayout(context, index, item, ref)
-                              ],
-                            ),
-                          ],
+                                  const SizedBox(height: 10.0),
+                                  item.media
+                                      ? AspectRatio(
+                                          aspectRatio: 16 / 9,
+                                          child: OrgUpdateMediaView(item: item),
+                                        )
+                                      : const SizedBox(height: 2.0),
+                                  const SizedBox(height: 4.0),
+                                  // const Divider(
+                                  //   thickness: 1.0,
+                                  //   height: 1.0,
+                                  // ),
+
+                                  //LikesWidget comment
+                                  getInfoOFViewsComments(
+                                      context, ref, index, item),
+                                  const Divider(
+                                    thickness: 1.0,
+                                    height: 1.0,
+                                  ),
+                                  btnSharingInfoLayout(
+                                      context, index, item, ref)
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return const Divider();
-                  },
-                )),
-                   if (Platform.isAndroid)
+                      );
+                    },
+                    // separatorBuilder: (BuildContext context, int index) {
+                    //   return const Divider();
+                    // },
+                  )),
+                  if (Platform.isAndroid)
                     const SizedBox(
                       height: 60,
                     ),
@@ -230,9 +251,9 @@ if (filteredItems.isEmpty) {
                     const SizedBox(
                       height: 100,
                     ),
-              ]),
-            ));
-      }
+                ]),
+              ));
+        }
       }
     }
     if (orgUpdatesAsyncValue is AsyncLoading) {
@@ -290,12 +311,12 @@ if (filteredItems.isEmpty) {
   Widget _profilePicWidget(OrgUpdate item, WidgetRef ref) {
     // final avatarText = getAvatarText(item.author!);
 
-         final String? authorName = item.author;
-  if (authorName == null || authorName.isEmpty) {
-    return CircleAvatar(radius: 20.0, child: Text('NO'));
-  }
+    final String? authorName = item.author;
+    if (authorName == null || authorName.isEmpty) {
+      return CircleAvatar(radius: 20.0, child: Text('NO'));
+    }
     // final avatarText = getAvatarText(item.author!);
-  final avatarText = getAvatarText(authorName);
+    final avatarText = getAvatarText(authorName);
 
     if (item.authorThumbnail == null || item.authorThumbnail == "") {
       return CircleAvatar(radius: 20.0, child: Text(avatarText));
@@ -303,48 +324,61 @@ if (filteredItems.isEmpty) {
       // Note: We're using `watch` directly on the provider.
       final profilePicAsyncValue =
           ref.watch(authorThumbnailProvider(item.authorThumbnail!));
-      //print(profilePicAsyncValue);
-      return profilePicAsyncValue.when(
-        data: (imageUrl) {
-          if (imageUrl != null && imageUrl.isNotEmpty){
-          if (_isProperImageUrl(imageUrl)) {
-            return CircleAvatar(
-              backgroundImage: NetworkImage(imageUrl),
-              radius: 20.0,
-            );
-          } else {
-            // Render text as a fallback when imageUrl is not proper
-            return CircleAvatar(
-              radius: 20.0,
-              child: Text(
-                avatarText,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+      return Container(
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: new DecorationImage(
+                image: new AssetImage("assets/images/user_pic_s3_new.png"),
+                fit: BoxFit.fill,
+              )),
+          child: profilePicAsyncValue.when(
+            data: (imageUrl) {
+              if (imageUrl != null && imageUrl.isNotEmpty) {
+                if (_isProperImageUrl(imageUrl)) {
+                  return CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    backgroundImage: NetworkImage(imageUrl),
+                    radius: 20.0,
+                  );
+                } else {
+                  // Render text as a fallback when imageUrl is not proper
+                  return CircleAvatar(
+                  radius: 20,
+                  child: Text(
+                    avatarText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                  ),
+                );
+                }
+              } else {
+                return CircleAvatar(
+                  radius: 20,
+                  child: Text(
+                    avatarText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                  ),
+                );
+              }
+            },
+            loading: () => const Center(
+              child: SizedBox(
+                height: 20.0,
+                width: 20.0,
+                child: CircularProgressIndicator(),
               ),
-            );
-          }
-        } else {
-            // Render a placeholder or an error image
-            return CircleAvatar(radius: 20.0, child: Text(avatarText));
-          }
-        },
-        loading: () => const Center(
-          child: SizedBox(
-            height: 20.0,
-            width: 20.0,
-            child: CircularProgressIndicator(),
-          ),
-        ),
-        error: (error, stackTrace) => CircleAvatar(
-            radius: 20.0,
-            child: Text(avatarText)), // Handle error state appropriately
-      );
+            ),
+            error: (error, stackTrace) => CircleAvatar(
+                radius: 20.0,
+                child: Text(avatarText)), // Handle error state appropriately
+          ));
     }
   }
 
   bool _isProperImageUrl(String imageUrl) {
     // Check if the image URL contains spaces in the filename
-    if ( imageUrl.contains('%20')) {
+    if (imageUrl.contains('%20')) {
       return false;
     }
     return true;
@@ -429,7 +463,7 @@ if (filteredItems.isEmpty) {
           TextButton.icon(
             // <-- TextButton
             onPressed: () {
-                showDialog(
+              showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   var params = GetCommentsParams(
@@ -491,7 +525,7 @@ if (filteredItems.isEmpty) {
   }
 
   Future<void> _onRefresh() async {
-     ref.read(refresUserProvider(""));
+    ref.read(refresUserProvider(""));
     ref.watch(refresOrgUpdatesProvider(""));
   }
 
@@ -506,7 +540,8 @@ if (filteredItems.isEmpty) {
         context,
         MaterialPageRoute(
             fullscreenDialog: true,
-            builder: (context) => CreatePostOrgUpdatesScreen(orgUpdateItem: item, isEditOrgUpdate: true)),
+            builder: (context) => CreatePostOrgUpdatesScreen(
+                orgUpdateItem: item, isEditOrgUpdate: true)),
       );
     });
   }

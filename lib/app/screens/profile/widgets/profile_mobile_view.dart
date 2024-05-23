@@ -6,6 +6,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/models/user_like.dart';
 import 'package:evoke_nexus_app/app/provider/profile_service_provider.dart';
+import 'package:evoke_nexus_app/app/widgets/common/profile_pic.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -35,42 +36,16 @@ class ProfileMobileView extends ConsumerStatefulWidget {
 
 class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
   File? _image;
-  // PackageInfo _packageInfo = PackageInfo(
-  //   appName: '',
-  //   packageName: '',
-  //   version: '',
-  //   buildNumber: '',
-  //   buildSignature: '',
-  //   installerStore: '',
-  // );
 
   // @override
   // void initState() {
   //   super.initState();
-  //   _initPackageInfo();
   // }
 
-  // Future<void> _initPackageInfo() async {
-  //   final info = await PackageInfo.fromPlatform();
-  //   setState(() {
-  //     _packageInfo = info;
-  //   });
-  // }
 
   @override
   void initState() {
     super.initState();
-    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
-      String appName = packageInfo.appName;
-      String packageName = packageInfo.packageName;
-      String version = packageInfo.version;
-      String buildNumber = packageInfo.buildNumber;
-    });
-
-//    PackageInfo.fromPlatform().then((value) {
-//      print(value);
-// // // Value will be our all details we get from package info package
-//    });
   }
 
   Widget _infoTile(String title, String subtitle) {
@@ -90,8 +65,6 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Container(
                   // height: MediaQuery.of(context).size.height,
-                  // alignment: AlignmentDirectional.center,
-                  // padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
                   alignment: AlignmentDirectional.center,
                   padding: const EdgeInsets.only(left: 0, right: 0, top: 0),
                   child: Column(
@@ -99,9 +72,17 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
                     children: [
                       Column(
                         children: [
-                          const SizedBox(
-                              height: 40), // Adjust the height as needed
-                          _profilePicWidget(widget.user, ref),
+                          const SizedBox(height: 40),
+                          // _profilePicWidget(widget.user, ref),
+                          ProfilePic(
+                            user: widget.user,
+                            size: "LARGE",
+                            isFromOtherUser: widget.isFromOtherUser,
+                            otherUser: widget.isFromOtherUser
+                                ? widget.otherUser
+                                : null,
+                          ),
+
                           TextButton(
                             onPressed: () {
                               ref.read(uploadProfileImageProvider(
@@ -134,7 +115,6 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
                                       )
                                     : Container(),
                           ),
-
                           const SizedBox(height: 10),
                           Text(
                             widget.isFromOtherUser == false
@@ -190,6 +170,7 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
   }
 
   Widget _buildViewProfile() {
+    safePrint("----------- OTHER USER !!!!! ______________-");
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -269,42 +250,7 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
     );
   }
 
-  Widget _buildViewProfile_OLD() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (widget.user.about != null ||
-            (widget.user.about != null && widget.user.about != " " ||
-                widget.user.about != ",," ||
-                widget.user.about != '"'))
-          Text(
-            'About Me: ${widget.user.about}',
-            style: TextStyle(
-              color: const Color(0xff676A79),
-              fontSize: 16.0,
-              fontFamily: GoogleFonts.notoSans().fontFamily,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        const SizedBox(height: 10),
-        if (widget.user.socialLinks != null && widget.user.socialLinks != ",,")
-          Text(
-            'Social Link: ${widget.user.socialLinks}',
-            style: TextStyle(
-              color: const Color(0xff676A79),
-              fontSize: 16.0,
-              fontFamily: GoogleFonts.notoSans().fontFamily,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        // const SizedBox(height: 20),
-        // _logout(),
-        const SizedBox(height: 20),
-      ],
-    );
-  }
-
-  Widget _profilePicWidget(User user, WidgetRef ref) {
+  Widget _profilePicWidget_WORKING(User user, WidgetRef ref) {
     final avatarText = getAvatarText(user.name);
 
     final profileThumbnailAsyncValue = ref.watch(profileThumbnailProvider(
@@ -337,6 +283,80 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
         return CircleAvatar(radius: 80.0, child: Text(avatarText));
       },
     );
+  }
+
+  Widget _profilePicWidget(User user, WidgetRef ref) {
+    final String? authorName = user.name;
+    if (authorName == null || authorName.isEmpty) {
+      return CircleAvatar(
+          backgroundColor: Colors.transparent, radius: 80.0, child: Text('NO'));
+    }
+    // final avatarText = getAvatarText(item.author!);
+    final avatarText = getAvatarText(authorName);
+
+    if (user.profilePicture == null || user.profilePicture == "") {
+      return CircleAvatar(
+          backgroundColor: Colors.transparent,
+          radius: 80.0,
+          child: Text(avatarText));
+    } else {
+      final profilePicAsyncValue = ref.watch(profileThumbnailProvider(
+          widget.isFromOtherUser == false
+              ? user.profilePicture ?? ""
+              : widget.otherUser!.profilePicture ?? ""));
+
+      return profilePicAsyncValue.when(
+        data: (imageUrl) {
+          if (imageUrl != null && imageUrl.isNotEmpty) {
+            if (_isProperImageUrl(imageUrl)) {
+              return Center(
+                  child: CircleAvatar(
+                backgroundColor: Colors.transparent,
+                backgroundImage: NetworkImage(imageUrl),
+                radius: 80.0,
+              ));
+            } else {
+              return CircleAvatar(
+                radius: 80.0,
+                child: Text(
+                  avatarText,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      fontSize: 40, fontWeight: FontWeight.w600),
+                ),
+              );
+            }
+          } else {
+            return CircleAvatar(
+                backgroundColor: Colors.transparent,
+                radius: 80.0,
+                child: Text(avatarText));
+          }
+        },
+        loading: () => const Center(
+          child: SizedBox(
+            height: 80.0,
+            width: 80.0,
+            child: CircularProgressIndicator(
+              
+              semanticsLabel: 'Circular progress indicator',
+            ),
+          ),
+        ),
+        error: (error, stackTrace) => CircleAvatar(
+            backgroundColor: Colors.transparent,
+            radius: 80.0,
+            child: Text(avatarText)),
+      );
+    }
+  }
+
+  bool _isProperImageUrl(String imageUrl) {
+    // Check if the image URL contains spaces in the filename
+    if (imageUrl.contains('%20')) {
+      return false;
+    }
+    return true;
   }
 
   String getAvatarText(String name) {

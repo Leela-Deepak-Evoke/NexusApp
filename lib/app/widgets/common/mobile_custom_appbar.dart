@@ -93,8 +93,8 @@ class MobileCustomAppbarState extends ConsumerState<MobileCustomAppbar> {
                     );
                   },
                   child: Container(
-                    width: 28,
-                    height: 28,
+                    width: 35,
+                    height: 35,
                     padding: const EdgeInsets.all(2),
                     decoration: const BoxDecoration(
                         color: Colors.white, shape: BoxShape.circle),

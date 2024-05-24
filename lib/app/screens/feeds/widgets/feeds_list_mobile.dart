@@ -13,10 +13,12 @@ import 'package:evoke_nexus_app/app/screens/comments/comments_screen.dart';
 import 'package:evoke_nexus_app/app/screens/create_post_feed/create_post_feed_screen.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_header_card_view.dart';
 import 'package:evoke_nexus_app/app/screens/feeds/widgets/feed_media_view.dart';
+import 'package:evoke_nexus_app/app/screens/profile/widgets/profile_mobile_view.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/edit_delete_button.dart';
 import 'package:evoke_nexus_app/app/widgets/common/error_screen.dart';
 import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
+import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -173,9 +175,9 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
                         clipBehavior: Clip.antiAlias,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12)),
-            elevation: 2, // the size of the shadow
-            shadowColor: Colors.black,
-  
+                        elevation: 2, // the size of the shadow
+                        shadowColor: Colors.black,
+
                         child: Padding(
                           padding: const EdgeInsets.all(0),
                           child: Column(
@@ -186,6 +188,32 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
                                 minVerticalPadding: 15,
                                 title: Text(author!,
                                     style: const TextStyle(fontSize: 16)),
+                                       onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MobileLayout(
+                                              title: 'User Profile',
+                                              user: widget.user,
+                                              hasBackAction: true,
+                                              hasRightAction: item.authorId ==
+                                                      widget.user.userId
+                                                  ? true
+                                                  : false,
+                                              topBarButtonAction: () {},
+                                              backButtonAction: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: ProfileMobileView(
+                                                user: widget.user,
+                                                context: context,
+                                                otherUser: item,
+                                                isFromOtherUser: true,
+                                                onPostClicked: () {},
+                                              ),
+                                            )),
+                                  );
+                                },
                                 subtitle: Text(
                                   "${item.authorTitle!} | ${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString()))}",
                                   style: TextStyle(
@@ -354,58 +382,59 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
     } else {
       final profilePicAsyncValue =
           ref.watch(authorThumbnailProvider(item.authorThumbnail!));
-      
+
       return Container(
-              decoration:BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: new DecorationImage(
-                    image: new AssetImage("assets/images/user_pic_s3_new.png"),
-                    fit: BoxFit.fill,
-                  )
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: new DecorationImage(
+                image: new AssetImage("assets/images/user_pic_s3_new.png"),
+                fit: BoxFit.fill,
+              )),
+          child: profilePicAsyncValue.when(
+            data: (imageUrl) {
+              if (imageUrl != null && imageUrl.isNotEmpty) {
+                if (_isProperImageUrl(imageUrl)) {
+                  return CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    backgroundImage: NetworkImage(imageUrl),
+                    radius: 20.0,
+                  );
+                } else {
+                  // Render text as a fallback when imageUrl is not proper
+                  return CircleAvatar(
+                    radius: 20,
+                    child: Text(
+                      avatarText,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.w600),
+                    ),
+                  );
+                }
+              } else {
+                // Render a placeholder or an error image
+                return CircleAvatar(
+                  radius: 20,
+                  child: Text(
+                    avatarText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w600),
                   ),
-              child: profilePicAsyncValue.when(
-        data: (imageUrl) {
-          if (imageUrl != null && imageUrl.isNotEmpty) {
-            if (_isProperImageUrl(imageUrl)) {
-              return CircleAvatar(
-                                    backgroundColor: Colors.transparent,
-                backgroundImage: NetworkImage(imageUrl),
+                );
+              }
+            },
+            loading: () => const Center(
+              child: SizedBox(
+                height: 20.0,
+                width: 20.0,
+                child: CircularProgressIndicator(),
+              ),
+            ),
+            error: (error, stackTrace) => CircleAvatar(
                 radius: 20.0,
-              );
-            } else {
-              // Render text as a fallback when imageUrl is not proper
-              return CircleAvatar(
-                  radius: 20,
-                  child: Text(
-                    avatarText,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                  ),
-                );
-            }
-          } else {
-            // Render a placeholder or an error image
-            return CircleAvatar(
-                  radius: 20,
-                  child: Text(
-                    avatarText,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                  ),
-                );
-          }
-        },
-        loading: () => const Center(
-          child: SizedBox(
-            height: 20.0,
-            width: 20.0,
-            child: CircularProgressIndicator(),
-          ),
-        ),
-        error: (error, stackTrace) => CircleAvatar(
-            radius: 20.0,
-            child: Text(avatarText)), // Handle error state appropriately
-      ));
+                child: Text(avatarText)), // Handle error state appropriately
+          ));
     }
   }
 

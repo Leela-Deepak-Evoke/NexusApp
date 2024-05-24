@@ -18,6 +18,7 @@ class Feed {
   final int likes;
   final int comments;
   late final bool currentUserLiked;
+  String? identityId;
 
   Feed(
       {required this.feedId,
@@ -38,7 +39,8 @@ class Feed {
       required this.authorThumbnail,
       required this.likes,
       required this.comments,
-      required this.currentUserLiked});
+      required this.currentUserLiked,
+       this.identityId});
 
   Map<String, dynamic> toJson() => {
         'feedId': feedId,
@@ -59,7 +61,8 @@ class Feed {
         'authorThumbnail': authorThumbnail,
         'likes': likes,
         'comments': comments,
-        'currentUserLiked': currentUserLiked
+        'currentUserLiked': currentUserLiked,
+         'identityId': identityId
       };
 
   factory Feed.fromJson(Map<String, dynamic> json, String currentUserId) {
@@ -97,6 +100,8 @@ class Feed {
       likes: json['likes'] ?? 0,
       comments: json['comments'] ?? 0,
       currentUserLiked: json['currentUserLiked'] ?? false,
+            identityId: json['user']['identityId'],
+
     );
   }
 }

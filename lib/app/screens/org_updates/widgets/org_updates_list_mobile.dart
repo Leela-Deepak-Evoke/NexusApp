@@ -13,10 +13,12 @@ import 'package:evoke_nexus_app/app/screens/comments/comments_screen.dart';
 import 'package:evoke_nexus_app/app/screens/create_post_orgupdates/create_post_orgupdates_screen.dart';
 import 'package:evoke_nexus_app/app/screens/org_updates/widgets/org_updates_header_card_view.dart';
 import 'package:evoke_nexus_app/app/screens/org_updates/widgets/org_updates_media_view.dart';
+import 'package:evoke_nexus_app/app/screens/profile/widgets/profile_mobile_view.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/edit_delete_button.dart';
 import 'package:evoke_nexus_app/app/widgets/common/error_screen.dart';
 import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
+import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -136,6 +138,32 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
                                 minVerticalPadding: 15,
                                 title: Text(author!,
                                     style: const TextStyle(fontSize: 16)),
+                                        onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MobileLayout(
+                                              title: 'User Profile',
+                                              user: widget.user,
+                                              hasBackAction: true,
+                                              hasRightAction: item.authorId ==
+                                                      widget.user.userId
+                                                  ? true
+                                                  : false,
+                                              topBarButtonAction: () {},
+                                              backButtonAction: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: ProfileMobileView(
+                                                user: widget.user,
+                                                context: context,
+                                                otherUser: item,
+                                                isFromOtherUser: true,
+                                                onPostClicked: () {},
+                                              ),
+                                            )),
+                                  );
+                                },
                                 subtitle: Text(
                                   "${item.authorTitle!} | ${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString()))}",
                                   style: TextStyle(

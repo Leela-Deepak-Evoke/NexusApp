@@ -13,6 +13,7 @@ class Question {
   final String? category;
   final String? subCategory;
   final int answers;
+  String? identityId;
 
   Question(
       {required this.questionId,
@@ -28,7 +29,8 @@ class Question {
       required this.authorThumbnail,
       required this.category,
       required this.subCategory,
-      required this.answers});
+      required this.answers,
+       this.identityId});
 
   Map<String, dynamic> toJson() => {
         'questionId': questionId,
@@ -74,6 +76,7 @@ class Question {
         authorThumbnail: authorThumbnail,
         category: json['question']['category'],
         subCategory: json['question']['subCategory'],
-        answers: json['answers'] ?? 0);
+        answers: json['answers'] ?? 0,
+           identityId: json['user']['identityId'],);
   }
 }

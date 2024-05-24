@@ -118,17 +118,20 @@ class LatestQuestion {
   late UserList user;
   late QuestionHome question;
   late int answers;
+  String? identityId;
 
   LatestQuestion({
     required this.user,
     required this.question,
     required this.answers,
+    this.identityId
   });
 
   LatestQuestion.fromJson(Map<String, dynamic> json) {
     user = UserList.fromJson(json['user']);
     question = QuestionHome.fromJson(json['question']);
     answers = json['answers'];
+    identityId = json['identityId'];
   }
 }
 
@@ -181,6 +184,7 @@ class LatestUpdate {
   late int likes;
   late int comments;
   late bool currentUserLiked;
+  String? identityId;
 
   LatestUpdate({
     required this.user,
@@ -188,6 +192,7 @@ class LatestUpdate {
     required this.likes,
     required this.comments,
     required this.currentUserLiked,
+    this.identityId
   });
 
   LatestUpdate.fromJson(Map<String, dynamic> json) {
@@ -198,6 +203,7 @@ class LatestUpdate {
     likes = json['likes'];
     comments = json['comments'];
     currentUserLiked = json['currentUserLiked'];
+        identityId = json['identityId'];
   }
 }
 

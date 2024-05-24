@@ -7,9 +7,12 @@ import 'package:evoke_nexus_app/app/provider/org_update_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/user_home_provider.dart';
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/home/home_latestupdate_mediaview.dart';
+import 'package:evoke_nexus_app/app/screens/profile/profile_screen.dart';
+import 'package:evoke_nexus_app/app/screens/profile/widgets/profile_mobile_view.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/edit_delete_button.dart';
 import 'package:evoke_nexus_app/app/widgets/common/error_screen.dart';
+import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -123,7 +126,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
       if (isIPhoneSE) {
         spaceTopHeader = screenWidth * 0.2; // For iPhone SE
       } else {
-        spaceTopHeader = screenWidth * 0.3; // For other resolutions -- need to change for 8 plus
+        spaceTopHeader = screenWidth *
+            0.3; // For other resolutions -- need to change for 8 plus
       }
     }
 
@@ -236,18 +240,24 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  lblChannelsJoin(),
-                                  cardForGridViewChannels(
-                                      context,
-                                      size,
-                                      userHomeAsyncValue
-                                          as AsyncValue<UserHome>),
+                                  // lblChannelsJoin(),
+                                  // cardForGridViewChannels(
+                                  // context,
+                                  // size,
+                                  // userHomeAsyncValue
+                                  //     as AsyncValue<UserHome>),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
                                   lblLatestUpdates(),
                                   _latestUpdatesListView(
-                                      context, userHomeAsyncValue, size),
+                                      context,
+                                      userHomeAsyncValue
+                                          as AsyncValue<UserHome>,
+                                      size),
                                   const SizedBox(
-                    height: 20,
-                  ),
+                                    height: 20,
+                                  ),
                                   lblLatestQuestions(),
                                   _latestQuestionsListView(
                                       context, userHomeAsyncValue, size),
@@ -426,7 +436,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
           } else {
             return Container(
               alignment: AlignmentDirectional.topStart,
-              padding: const EdgeInsets.only(left: 8, right: 8, top: 0, bottom: 0),
+              padding:
+                  const EdgeInsets.only(left: 8, right: 8, top: 0, bottom: 0),
               child: RefreshIndicator(
                 onRefresh: _onRefresh,
                 child: ListView.builder(
@@ -459,7 +470,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         clipBehavior: Clip.antiAlias,
-                         elevation: 2,
+                        elevation: 2,
                         shadowColor: Colors.black,
                         child: Padding(
                           padding: const EdgeInsets.all(0),
@@ -474,7 +485,34 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                   author,
                                   style: const TextStyle(fontSize: 16),
                                 ),
-                                subtitle: Text( 
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MobileLayout(
+                                              title: 'User Profile',
+                                              user: user!,
+                                              hasBackAction: true,
+                                              hasRightAction:
+                                                  item.user.userId ==
+                                                          user!.userId
+                                                      ? true
+                                                      : false,
+                                              topBarButtonAction: () {},
+                                              backButtonAction: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: ProfileMobileView(
+                                                user: user!,
+                                                context: context,
+                                                otherUser: item,
+                                                isFromOtherUser: true,
+                                                onPostClicked: () {},
+                                              ),
+                                            )),
+                                  );
+                                },
+                                subtitle: Text(
                                   "${item.user.title} | $formattedDate",
                                   style: TextStyle(
                                     color: const Color(0xff676A79),
@@ -550,8 +588,9 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                         )
                                       : const SizedBox(height: 2.0),
                                   // const SizedBox(height: 30.0),
-                                  
-                                  getInfoOFViewsComments(context, ref, index, item),
+
+                                  getInfoOFViewsComments(
+                                      context, ref, index, item),
                                   // const Divider(
                                   //   thickness: 1.0,
                                   //   height: 1.0,
@@ -1483,7 +1522,6 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
 //   }
 // }
 
-
 //EDIT AND DELETE OF Updates
   void _editItem(LatestUpdate item) async {}
 
@@ -1604,63 +1642,128 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
     } else {
       final profilePicAsyncValue = ref.watch(authorThumbnailProvider(
           userHomeAsyncValue?.value?.userDetails.profilePicture ?? ""));
-      return Container(
-          decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: new DecorationImage(
-                image: new AssetImage("assets/images/user_pic_s3_new.png"),
-                fit: BoxFit.fill,
-              )),
-          child: profilePicAsyncValue.when(
-            data: (imageUrl) {
-              if (imageUrl != null && imageUrl.isNotEmpty) {
-                if (_isProperImageUrl(imageUrl)) {
-                  return CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    backgroundImage: NetworkImage(imageUrl),
-                    radius: 20,
-                  );
-                } else {
-                  // Render text as a fallback when imageUrl is not proper
-                  return CircleAvatar(
-                    radius: 20,
-                    child: Text(
-                      avatarText,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.w600),
+      return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ProfileScreen()),
+            );
+          },
+          child: Container(
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: new DecorationImage(
+                    image: new AssetImage("assets/images/user_pic_s3_new.png"),
+                    fit: BoxFit.fill,
+                  )),
+              child: profilePicAsyncValue.when(
+                data: (imageUrl) {
+                  if (imageUrl != null && imageUrl.isNotEmpty) {
+                    if (_isProperImageUrl(imageUrl)) {
+                      return CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        backgroundImage: NetworkImage(imageUrl),
+                        radius: 20,
+                      );
+                    } else {
+                      // Render text as a fallback when imageUrl is not proper
+                      return CircleAvatar(
+                        radius: 20,
+                        child: Text(
+                          avatarText,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.w600),
+                        ),
+                      );
+                    }
+                  } else {
+                    // Render a placeholder or an error image
+                    return CircleAvatar(
+                      radius: 20,
+                      child: Text(
+                        avatarText,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.w600),
+                      ),
+                    );
+                  }
+                },
+                loading: () => const Center(
+                    // child: SizedBox(
+                    //   height: 20.0,
+                    //   width: 20.0,
+                    //   child: CircularProgressIndicator(),
+                    // ),
                     ),
-                  );
-                }
-              } else {
-                // Render a placeholder or an error image
-                return CircleAvatar(
-                  radius: 20,
-                  child: Text(
-                    avatarText,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w600),
-                  ),
-                );
-              }
-            },
-            loading: () => const Center(
-                // child: SizedBox(
-                //   height: 20.0,
-                //   width: 20.0,
-                //   child: CircularProgressIndicator(),
-                // ),
-                ),
-            error: (error, stackTrace) => CircleAvatar(
-                radius: 20.0,
-                child: Text(avatarText)), // Handle error state appropriately
-          ));
+                error: (error, stackTrace) => CircleAvatar(
+                    radius: 20.0,
+                    child:
+                        Text(avatarText)), // Handle error state appropriately
+              )));
     }
   }
 
 //HEADER AND FOOTER OF LATEST QUESTIONS
   Wrap askedbyViewHeader(LatestQuestion item, WidgetRef ref) {
+    bool isCurrentUser = item.user.userId == user!.userId;
+
+    return Wrap(
+      direction: Axis.horizontal,
+      spacing: 2,
+      children: [
+        _profilePicWidget(item.user, true, ref),
+        const SizedBox(
+          width: 5,
+        ),
+        Text("Asked by",
+            style: TextStyle(
+              color: const Color(0xff676A79),
+              fontSize: 12.0,
+              fontFamily: GoogleFonts.notoSans().fontFamily,
+              fontWeight: FontWeight.normal,
+            )),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MobileLayout(
+                        title: 'User Profile',
+                        user: user!,
+                        hasBackAction: true,
+                        hasRightAction:
+                            item.user.userId == user!.userId ? true : false,
+                        topBarButtonAction: () {},
+                        backButtonAction: () {
+                          Navigator.pop(context);
+                        },
+                        child: ProfileMobileView(
+                          user: user!,
+                          context: context,
+                          otherUser: item,
+                          isFromOtherUser: true,
+                          onPostClicked: () {},
+                        ),
+                      )),
+            );
+          },
+          child: Text(
+            isCurrentUser ? "me" : item.user.name ?? "",
+            style: TextStyle(
+              color: const Color(0xff676A79),
+              fontSize: 12.0,
+              fontFamily: GoogleFonts.notoSans().fontFamily,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Wrap askedbyViewHeader_OLD(LatestQuestion item, WidgetRef ref) {
     bool isCurrentUser = item.user.userId == user!.userId;
 
     return Wrap(

@@ -3,8 +3,12 @@
 import 'dart:io';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:evoke_nexus_app/app/models/feed.dart';
+import 'package:evoke_nexus_app/app/models/org_updates.dart';
+import 'package:evoke_nexus_app/app/models/question.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/models/user_like.dart';
+import 'package:evoke_nexus_app/app/models/userhome.dart';
 import 'package:evoke_nexus_app/app/provider/profile_service_provider.dart';
 import 'package:evoke_nexus_app/app/widgets/common/profile_pic.dart';
 import 'package:flutter/material.dart';
@@ -14,11 +18,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-class ProfileMobileView extends ConsumerStatefulWidget {
+class ProfileMobileView<T> extends ConsumerStatefulWidget {
   final User user;
   final BuildContext context;
   final bool isFromOtherUser;
-  UserLike? otherUser;
+  // UserLike? otherUser;
+  T? otherUser;
   Function() onPostClicked;
 
   ProfileMobileView({
@@ -41,7 +46,6 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
   // void initState() {
   //   super.initState();
   // }
-
 
   @override
   void initState() {
@@ -119,7 +123,31 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
                           Text(
                             widget.isFromOtherUser == false
                                 ? widget.user.name
-                                : widget.otherUser!.userName,
+                                : (widget.otherUser is UserLike
+                                    ? widget.otherUser!.userName
+                                    : (widget.otherUser is Feed
+                                        ? (widget.otherUser as Feed).author
+                                        : (widget.otherUser is OrgUpdate
+                                            ? (widget.otherUser as OrgUpdate)
+                                                .author
+                                            : (widget.otherUser is Question
+                                                ? (widget.otherUser as Question)
+                                                    .author
+                                                : (widget.otherUser
+                                                        is LatestUpdate
+                                                    ? (widget.otherUser
+                                                            as LatestUpdate)
+                                                        .user
+                                                        .name
+                                                    : (widget.otherUser
+                                                            is LatestQuestion
+                                                        ? (widget.otherUser
+                                                                as LatestQuestion)
+                                                            .user
+                                                            .name
+                                                        : (widget.otherUser
+                                                                as UserList)
+                                                            .name)))))),
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 16.0,
@@ -127,11 +155,36 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          const SizedBox(height: 8),
+
                           Text(
                             widget.isFromOtherUser == false
                                 ? widget.user.role
-                                : widget.otherUser!.title,
+                                : (widget.otherUser is UserLike
+                                    ? widget.otherUser!.title
+                                    : (widget.otherUser is Feed
+                                        ? (widget.otherUser as Feed).authorTitle
+                                        : (widget.otherUser is OrgUpdate
+                                            ? (widget.otherUser as OrgUpdate)
+                                                .authorTitle
+                                            : (widget.otherUser is Question
+                                                ? (widget.otherUser as Question)
+                                                    .authorTitle
+                                                : (widget.otherUser
+                                                        is LatestUpdate
+                                                    ? (widget.otherUser
+                                                            as LatestUpdate)
+                                                        .user
+                                                        .title
+                                                    : (widget
+                                                                .otherUser
+                                                            is LatestQuestion
+                                                        ? (widget.otherUser
+                                                                as LatestQuestion)
+                                                            .user
+                                                            .title
+                                                        : (widget.otherUser
+                                                                as UserList)
+                                                            .title)))))),
                             style: TextStyle(
                               color: const Color(0xff676A79),
                               fontSize: 14.0,
@@ -142,6 +195,42 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
                           const SizedBox(height: 10),
                         ],
                       ),
+
+                      // widget.isFromOtherUser == false
+                      //     ? Padding(
+                      //         padding: const EdgeInsets.all(16.0),
+                      //         child: _buildViewProfile(),
+                      //       )
+                      //     : widget.user.identityId ==
+                      //             widget.otherUser!.identityId
+                      //         ? Padding(
+                      //             padding: const EdgeInsets.all(16.0),
+                      //             child: _buildViewProfile(),
+                      //           )
+                      //         : Container(),
+
+                      // widget.isFromOtherUser == false
+                      //     ? Padding(
+                      //         padding: const EdgeInsets.all(16.0),
+                      //         child: _buildViewProfile(),
+                      //       )
+                      //     : widget.user.identityId ==
+                      //             widget.otherUser!.identityId
+                      //         ? Padding(
+                      //             padding: const EdgeInsets.all(16.0),
+                      //             child: _buildViewProfile(),
+                      //           )
+                      //         : widget.user.identityId ==
+                      //                 (widget.otherUser is LatestUpdate
+                      //                     ? (widget.otherUser as LatestUpdate)
+                      //                         .user
+                      //                         .identityId
+                      //                     : null)
+                      //             ? Padding(
+                      //                 padding: const EdgeInsets.all(16.0),
+                      //                 child: _buildViewProfile(),
+                      //               )
+                      //             : Container(),
 
                       widget.isFromOtherUser == false
                           ? Padding(
@@ -154,7 +243,22 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
                                   padding: const EdgeInsets.all(16.0),
                                   child: _buildViewProfile(),
                                 )
-                              : Container(),
+                              : widget.user.identityId ==
+                                      (widget.otherUser is LatestUpdate
+                                          ? (widget.otherUser as LatestUpdate)
+                                              .user
+                                              .identityId
+                                          : (widget.otherUser is LatestQuestion
+                                              ? (widget.otherUser
+                                                      as LatestQuestion)
+                                                  .user
+                                                  .identityId
+                                              : null))
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: _buildViewProfile(),
+                                    )
+                                  : Container(),
 
                       // Align(
                       //   alignment: Alignment.centerLeft,
@@ -234,7 +338,7 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
             ),
           ),
           Text(
-            '24.0.0(1)',
+            '1.0(1)',
             style: TextStyle(
               color: const Color(0xff676A79),
               fontSize: 16.0,
@@ -243,6 +347,28 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
             ),
           )
         ]),
+        //  const SizedBox(height: 10),
+
+//  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+//           Text(
+//             'Build Number: ',
+//             style: TextStyle(
+//               color: const Color(0xff676A79),
+//               fontSize: 14.0,
+//               fontFamily: GoogleFonts.notoSans().fontFamily,
+//               fontWeight: FontWeight.w600,
+//             ),
+//           ),
+//           Text(
+//             '1.0',
+//             style: TextStyle(
+//               color: const Color(0xff676A79),
+//               fontSize: 16.0,
+//               fontFamily: GoogleFonts.notoSans().fontFamily,
+//               fontWeight: FontWeight.w500,
+//             ),
+//           )
+//         ]),
 
         // _logout(),
         const SizedBox(height: 90),
@@ -338,7 +464,6 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
             height: 80.0,
             width: 80.0,
             child: CircularProgressIndicator(
-              
               semanticsLabel: 'Circular progress indicator',
             ),
           ),

@@ -3,6 +3,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:evoke_nexus_app/app/models/org_updates.dart';
 import 'package:evoke_nexus_app/app/models/post_org_update_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -113,6 +114,8 @@ class OrgUpdateService {
         options: options,
         onProgress: (progress) {
           safePrint('Fraction completed: ${progress.fractionCompleted}');
+                    CircularProgressIndicator(strokeWidth: 3);
+
         },
       ).result;
       safePrint('Successfully uploaded file: ${result.uploadedItem.key}');

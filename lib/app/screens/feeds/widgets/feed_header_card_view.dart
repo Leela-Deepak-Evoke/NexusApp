@@ -52,11 +52,15 @@ class _FeedHeaderCardViewState extends State<FeedHeaderCardView> {
                     child: hasTagViewWidget(widget.item)),
 
                 //const SizedBox(height: 4.0),
-                widget.item.media
-                    ? AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: FeedMediaView(item: widget.item),
-                      )
+                // widget.item.media
+                //     ? AspectRatio(
+                //         aspectRatio: 16 / 9,
+                //         child: FeedMediaView(item: widget.item),
+                //       )
+                  widget.item.media
+                    ? 
+                        FeedMediaView(item: widget.item)
+                      
                     : const SizedBox(height: 2.0),
                 const SizedBox(height: 4.0),
                 // const Divider(

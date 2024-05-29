@@ -81,7 +81,22 @@ class _FeedMediaViewState extends ConsumerState<FeedMediaView> {
 
     if(mediaURL == null)
     {
-        return Image.asset('assets/images/placeholder.png',);
+        // return Image.asset('assets/images/placeholder.png',);
+        return Container(
+        height: 210,
+        width: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.all(15.0),
+        color: Color(0xffBCADE9),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Image.asset(
+              'assets/images/icons8-gallery-64.png',
+            ),
+          ],
+        ),
+      );
+
     }
 
     final mediaURLAsyncValue = ref.watch(mediaUrlProvider(mediaURL!));

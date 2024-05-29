@@ -104,15 +104,15 @@ final mobileappRouter = GoRouter(
       GoRoute(
         name: AppRoute.login.name,
         path: '/${AppRoute.login.name}',
-        // redirect: (context, state) async {
-        //   final prefs = await SharedPreferences.getInstance();
-        //   final authToken = prefs.getString('authToken');
-        //   if (authToken == null) {
-        //     return null;
-        //   } else {
-        //     return '/${AppRoute.rootNavigation.name}';
-        //   }
-        // },
+        redirect: (context, state) async {
+          final prefs = await SharedPreferences.getInstance();
+          final authToken = prefs.getString('authToken');
+          if (authToken == null) {
+            return null;
+          } else {
+            return '/${AppRoute.rootNavigation.name}';
+          }
+        },
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: const LoginScreen(),

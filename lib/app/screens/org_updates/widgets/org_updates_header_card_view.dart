@@ -56,10 +56,8 @@ class _OrgUpdateHeaderCardViewState
 
                 //const SizedBox(height: 4.0),
                 widget.item.media
-                    ? AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: OrgUpdateMediaView(item: widget.item),
-                      )
+                    ?  OrgUpdateMediaView(item: widget.item)
+                      
                     : const SizedBox(height: 2.0),
                 const SizedBox(height: 4.0),
                 // const Divider(

@@ -12,9 +12,10 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import 'package:video_player/video_player.dart';
+import 'package:evoke_nexus_app/app/widgets/common/image_picker.dart';
+import 'package:image_picker/image_picker.dart';
 
 enum ContentType {
   image,
@@ -64,6 +65,10 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   bool isVisible = true; // Set this boolean based on your condition
   final FocusNode feedFocusNode = FocusNode();
   bool _isLoading = false;
+  File? _imageFile;
+  bool isLoadingImage = false;
+  bool isEditngImage = false;
+  bool isImageChange = false;
 
   void _selectDocuments() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -98,10 +103,16 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
       feedController.text = widget.feedItem?.content ?? feedController.text;
       isMediaSelect = widget.feedItem?.hasImage ?? false;
       isImageSelect = widget.feedItem?.hasImage ?? false;
+
+      if (widget.isEditFeed == true &&
+          !replaceImageTriggered &&
+          widget.feedItem?.hasImage == true) {
+        fileList.add(widget.feedItem!.imagePath.toString());
+      }
     }
   }
 
-  _selectFile(ContentType type) {
+  _selectFile_WORKING(ContentType type) {
     // if (fileList.length == 3 && type.name == ContentType.image.name) {
     //   Fluttertoast.showToast(msg: 'Maximum of 3 files can be uploaded');
     //   return;
@@ -120,7 +131,27 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     switch (type) {
       case ContentType.image:
         replaceImageTriggered = true;
-        imageAttachment();
+        imageAttachment(context);
+        break;
+      case ContentType.video:
+        replaceImageTriggered = true;
+        videoAttachment();
+        break;
+      case ContentType.document:
+      // _selectDocuments();
+    }
+  }
+
+  _selectFile(ContentType type) {
+    isEditngImage = false;
+    setState(() {
+      contentTypeSelected = type.name;
+    });
+    switch (type) {
+      case ContentType.image:
+        isLoadingImage = true; // Set isLoadingImage to true when initiating image selection
+        replaceImageTriggered = true;
+        imageAttachment(context);
         break;
       case ContentType.video:
         replaceImageTriggered = true;
@@ -177,9 +208,14 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                           height: 5,
                         ),
                         categoryHearViewWidget(),
-                        feedsDescriptionUI(context),
+                        // feedsDescriptionUI(context),
                         videoPickerContent(size),
                         if (isVisible) imagePickerContent(size),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        feedsDescriptionUI(context),
+
                         // const SizedBox(
                         //   height: 20,
                         // ),
@@ -216,6 +252,8 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
       child: Container(
         constraints: BoxConstraints(minHeight: 200), // Set a minimum height
         color: Colors.white, // Background color
+        // color: Colors.yellow, // Background color
+
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
           child: Column(
@@ -357,6 +395,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                       }
 
                       _selectFile(ContentType.image);
+
                       isVisible = true;
                     },
                     icon: Image.asset(
@@ -472,109 +511,122 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   }
 
   // IMAGE Content
+
   Widget imagePickerContent(Size size) {
-    final feedId = widget.isEditFeed == true
-        ? widget.feedItem?.feedId ?? const Uuid().v4()
-        : const Uuid().v4();
-
-    if (widget.isEditFeed == true &&
-        !replaceImageTriggered &&
-        widget.feedItem?.imagePath != null) {
-      fileList.add(widget.feedItem!.imagePath.toString());
-    }
-
-    if (widget.isEditFeed == true && !replaceImageTriggered) {
-      if (widget.feedItem?.hasImage == true) {
-        return Container(
-          padding: const EdgeInsets.all(15.0),
-          child: Stack(
-            children: [
-              FeedMediaView(item: widget.feedItem!),
-              Positioned(
-                top: -10,
-                right: 1,
-                child: IconButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          content:
-                              const Text('Would you like to delete the image?'),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-
-                                  // fileList.remove(data);
-                              },
-                              child: const Text('OK --(In Progress)'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Cancel'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  icon: const Icon(
-                    Icons.cancel,
-                    color: AppColors.blueTextColour,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      }
-      return Container();
+    if (isLoadingImage && isEditngImage) {
+      return Container(
+        height: 210,
+        width: size.width,
+        padding: const EdgeInsets.all(15.0),
+        color: Color(0xffBCADE9),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Image.asset(
+              'assets/images/icons8-gallery-64.png',
+            ),
+            CircularProgressIndicator()
+          ],
+        ),
+      );
     } else {
-      return fileList.isNotEmpty
-          ? SizedBox(
-              height: size.height - 600,
-              // height: 90,
-              child: Padding(
-                  padding: const EdgeInsets.all(0),
-                  child:
+      final feedId = widget.isEditFeed == true
+          ? widget.feedItem?.feedId ?? const Uuid().v4()
+          : const Uuid().v4();
 
-                      // GridView.builder(
-                      //   itemCount: fileList.length,
-                      //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      //     crossAxisCount: 1,
-                      //   ),
-                      //   itemBuilder: (BuildContext context, int index) {
-                      //     return
-                      Container(
-                    color: Colors.white,
-                    padding: const EdgeInsets.all(8.0),
-                    child: Stack(
-                      children: [
-                        returnFileContainer(0),
-                        Positioned(
-                          top: -10,
-                          right: 1,
-                          child: IconButton(
-                            onPressed: () {
-                              dltImages(fileList[0]);
-                            },
-                            icon: const Icon(
-                              Icons.cancel,
-                              color: AppColors.blueTextColour,
-                            ),
-                          ),
-                        )
-                      ],
+      if (widget.isEditFeed == true && !replaceImageTriggered) {
+        return fileList.isNotEmpty
+            ? Container(
+                padding: const EdgeInsets.all(15.0),
+                child: Stack(
+                  children: [
+                    FeedMediaView(item: widget.feedItem!),
+                    Positioned(
+                      top: -10,
+                      right: 1,
+                      child: IconButton(
+                        onPressed: () {
+                          dltImages(fileList[0]);
+                          isMediaSelect = false;
+                          isImageSelect = false;
+                        },
+                        icon: const Icon(
+                          Icons.cancel,
+                          color: AppColors.blueTextColour,
+                        ),
+                      ),
                     ),
-                  )
-                  // },
-                  // ),
-                  ),
-            )
-          : Container(); // Return an empty container if fileList is empty
+                  ],
+                ),
+              )
+            : Container(
+                height: 210,
+                width: size.width,
+                padding: const EdgeInsets.all(15.0),
+                color: Color(0xffBCADE9),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/icons8-gallery-64.png',
+                      // width: 150,
+                      // height: 150,
+                    ),
+                  ],
+                ),
+              );
+        // }
+        // return Container();
+      } else {
+        return fileList.isNotEmpty
+            ? SizedBox(
+                // height: size.height - 600,
+                child: Padding(
+                    padding: const EdgeInsets.all(0),
+                    child: Container(
+                      color: Colors.white,
+                      padding: const EdgeInsets.all(8.0),
+                      child: Stack(
+                        children: [
+                          returnFileContainer(0),
+                          Positioned(
+                            top: -10,
+                            right: 1,
+                            child: IconButton(
+                              onPressed: () {
+                                dltImages(fileList[0]);
+                              },
+                              icon: const Icon(
+                                Icons.cancel,
+                                color: AppColors.blueTextColour,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                    // },
+                    // ),
+                    ),
+              )
+            : Container(
+                height: 210,
+                width: size.width,
+                padding: const EdgeInsets.all(15.0),
+                color: Color(0xffBCADE9),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/icons8-gallery-64.png',
+                      // width: 150,
+                      // height: 150,
+                    ),
+                  ],
+                ),
+              );
+        // Return an empty container if fileList is empty
+      }
     }
   }
 
@@ -791,7 +843,102 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
 // }
 
 //IMAGE ATTACHMENT
-  imageAttachment() async {
+
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      setState(() {
+        isLoadingImage = true;
+        isImageChange = true;
+           CircularProgressIndicator(strokeWidth:3);
+      });
+      final feedId = const Uuid().v4();
+      Map<String, dynamic>? resultFileName =
+          await feedService.uploadImageImagePicker(feedId, 'Image', source);
+      if (resultFileName != null) {
+        setState(() {
+          replaceImageTriggered = true;
+          isMediaSelect = true;
+          isImageSelect = true;
+          isVideoSelect = false;
+          uploadedFilePath = resultFileName["platformFilePath"];
+          uploadedFileName = resultFileName["mediaPath"];
+        });
+        fileList.add(uploadedFilePath.toString());
+      }
+    } catch (e) {
+      print("Error while picking the image: $e");
+    } finally {
+      setState(() {
+        isLoadingImage = false; 
+        isImageChange = false;// Set isLoadingImage to false when picking ends (whether success or failure)
+      });
+    }
+  }
+
+  void imageAttachment(BuildContext context) {
+    isEditngImage = true;
+    // isLoadingImage = true;
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 20.0), // Adjusted SizedBox position
+                    const Center(
+                      child: Text(
+                        'Image Picker',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16.0),
+                    ListTile(
+                      leading: const Icon(Icons.camera),
+                      title: const Text('Take Photo'),
+                      onTap: () {
+                        Navigator.pop(context);
+                        _pickImage(ImageSource.camera);
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.photo_library),
+                      title: const Text('Choose from Gallery'),
+                      onTap: () {
+                        Navigator.pop(context);
+                        _pickImage(ImageSource.gallery);
+                      },
+                    ),
+                    const SizedBox(height: 150.0), // Adjusted SizedBox position
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    ).then((value) {
+      // Handle the scenario when the bottom sheet is closed without any action
+      isEditngImage = false;
+      isLoadingImage = false;
+      replaceImageTriggered = false;
+      setState(() {});
+    });
+  }
+
+  imageAttachment_working(BuildContext context) async {
     final feedId = const Uuid().v4();
 
     Map<String, dynamic>? resultFileName =
@@ -888,10 +1035,36 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
 //   }
 
   Widget returnFileContainer(int index) {
-    if (!fileList[index].contains('mp4')) {
-      return Padding(
-          padding: const EdgeInsets.only(top: 10, right: 10),
-          child: Image.file(File(uploadedFilePath ?? ""), fit: BoxFit.cover));
+    if (isImageChange) {
+      return  Center(
+        child: Container(
+        height: 210,
+        width: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.all(15.0),
+        color: Color(0xffBCADE9),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Image.asset(
+              'assets/images/icons8-gallery-64.png',
+            ),
+            CircularProgressIndicator(strokeWidth:3),
+          ],
+        ),
+      ),
+      );
+    } else if (!fileList[index].contains('mp4')) {
+      // return Padding(
+      //     padding: const EdgeInsets.only(top: 10, right: 10),
+      //     child: Image.file(File(uploadedFilePath ?? ""), fit: BoxFit.cover));
+
+      return FittedBox(
+          fit: BoxFit.contain,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 0, right: 0),
+            child:
+                Image.file(File(uploadedFilePath ?? ""), fit: BoxFit.contain),
+          ));
     } else {
       return FittedBox(
           fit: BoxFit.cover,
@@ -903,6 +1076,24 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
           ));
     }
   }
+// Widget returnFileContainer(int index) {
+//   if (isLoadingImage) {
+//     return Center(
+//       child: CircularProgressIndicator(),
+//     ); // Display CircularProgressIndicator while loading
+//   } else {
+//     return FittedBox(
+//       fit: BoxFit.contain,
+//       child: Padding(
+//         padding: const EdgeInsets.only(top: 0, right: 0),
+//         child: Image.file(
+//           File(uploadedFilePath ?? ""),
+//           fit: BoxFit.contain,
+//         ),
+//       ),
+//     );
+//   }
+// }
 
   void _removeVideo() {
     _resetValues();
@@ -986,7 +1177,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  _resetValues();
+                  // _resetValues();
                   if (text == 'Feed posted successfully.') {
                     Navigator.pop(context);
                   }
@@ -1189,16 +1380,8 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
                   // _resetImageDeleteValues(data);
                   setState(() {
                     fileList.remove(data);
-                    //     if (data is String) {
-                    //   // If data is a file path (from fileList)
-                    //   fileList.remove(data);
-                    // } else if (data is Feed) {
-                    //   // If data is a Feed object (from widget.feedItem)
-                    //   // Assuming you have a way to uniquely identify feed items
-                    //   // and you want to delete the item matching the feedId
                     //   // widget.feedItem?.removeWhere((item) => item.feedId == data.feedId);
                     //   fileList.remove(data);
-                    // }
                   });
                 },
                 child: const Text('OK'),

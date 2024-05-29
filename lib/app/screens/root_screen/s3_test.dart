@@ -50,6 +50,7 @@ class _S3TestState extends State<S3Test> {
         //options: options,
         onProgress: (progress) {
           safePrint('Fraction completed: ${progress.fractionCompleted}');
+          CircularProgressIndicator(strokeWidth: 3);
         },
       ).result;
       safePrint('Successfully uploaded file: ${result.uploadedItem.key}');

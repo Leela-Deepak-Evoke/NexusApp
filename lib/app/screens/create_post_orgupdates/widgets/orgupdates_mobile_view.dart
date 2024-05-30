@@ -16,6 +16,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import 'package:video_player/video_player.dart';
+import 'package:evoke_nexus_app/app/widgets/common/image_picker.dart';
+import 'package:image_picker/image_picker.dart';
 
 enum ContentType {
   image,
@@ -67,6 +69,11 @@ class OrgUpdatesMobileViewMobileViewState
   final FocusNode orgUpdateFocusNode = FocusNode();
   bool updateEditCategories = false;
   bool _isLoading = false;
+  File? _imageFile;
+  bool isLoadingImage = false;
+  bool isEditngImage = false;
+  bool isImageChange = false;
+
   void _selectDocuments() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -96,26 +103,22 @@ class OrgUpdatesMobileViewMobileViewState
   @override
   void initState() {
     super.initState();
-    // if (widget.isEditOrgUpdate == true) {
-    //   feedController.text = widget.orgUpdateItem?.content ?? feedController.text;
-    // }
-
     if (widget.isEditOrgUpdate == true) {
-      feedController.text = widget.orgUpdateItem?.content ?? feedController.text;
+      feedController.text =
+          widget.orgUpdateItem?.content ?? feedController.text;
       isMediaSelect = widget.orgUpdateItem?.hasImage ?? false;
       isImageSelect = widget.orgUpdateItem?.hasImage ?? false;
 
-
-    if (widget.isEditOrgUpdate == true &&
-        !replaceImageTriggered &&
-        widget.orgUpdateItem?.hasImage == true) {
-      fileList.add(widget.orgUpdateItem!.imagePath.toString());
-    }
+      if (widget.isEditOrgUpdate == true &&
+          !replaceImageTriggered &&
+          widget.orgUpdateItem?.hasImage == true) {
+        fileList.add(widget.orgUpdateItem!.imagePath.toString());
+      }
     }
   }
 
-  _selectFile_WORKING(ContentType type) {
-    // if (fileList.length == 3 && type.name == ContentType.image.name) {
+  _selectFile(ContentType type) {
+      // if (fileList.length == 3 && type.name == ContentType.image.name) {
     //   Fluttertoast.showToast(msg: 'Maximum of 3 files can be uploaded');
     //   return;
     // } else if (fileList.length == 1 && type.name == ContentType.video.name) {
@@ -127,25 +130,7 @@ class OrgUpdatesMobileViewMobileViewState
     });
     switch (type) {
       case ContentType.image:
-        replaceImageTriggered = true;
-        // imageAttachment();
-        break;
-      case ContentType.video:
-        replaceImageTriggered = true;
-        videoAttachment();
-        break;
-      case ContentType.document:
-      // _selectDocuments();
-    }
-  }
-
-  _selectFile(ContentType type) {
-    setState(() {
-      contentTypeSelected = type.name;
-    });
-    switch (type) {
-      case ContentType.image:
-        replaceImageTriggered = true;
+        // replaceImageTriggered = true;
         imageAttachment(context);
         break;
       case ContentType.video:
@@ -157,26 +142,55 @@ class OrgUpdatesMobileViewMobileViewState
     }
   }
 
-
   Future<void> _pickImage(ImageSource source) async {
     try {
-      final feedId = const Uuid().v4();
-      Map<String, dynamic>? resultFileName =
-          await feedService.uploadImageImagePicker(feedId, 'Image', source);
-      if (resultFileName != null) {
+      final pickedFile = await ImagePicker().pickImage(source: source);
+      if (pickedFile != null) {
         setState(() {
-        isMediaSelect = true;
-        isImageSelect = true;
-        isVideoSelect = false;
-          uploadedFilePath = resultFileName["platformFilePath"];
-          uploadedFileName = resultFileName["mediaPath"];
+          isLoadingImage = true;
+          isImageChange = true;
         });
-        fileList.add(uploadedFilePath.toString());
+
+        _imageFile = File(pickedFile.path);
+        if (widget.isEditOrgUpdate == true &&
+            !replaceImageTriggered &&
+            widget.orgUpdateItem?.imagePath != null) {
+          fileList.remove(widget.orgUpdateItem!.imagePath.toString());
+        }
+        if (fileList.isNotEmpty) {
+          fileList.remove(fileList[0]);
+        }
+        if (_imageFile != null) {
+          fileList.add(_imageFile!.path);
+        }
+
+        final feedId = const Uuid().v4();
+        Map<String, dynamic>? resultFileName = await feedService
+            .uploadImageImagePickerNew(feedId, 'Image', source, _imageFile!);
+
+        if (resultFileName != null) {
+          setState(() {
+                    replaceImageTriggered = true;
+            isMediaSelect = true;
+            isImageSelect = true;
+            isVideoSelect = false;
+            uploadedFilePath = resultFileName["platformFilePath"];
+            uploadedFileName = resultFileName["mediaPath"];
+          });
+        }
+      } else {
+        print('No image selected.');
       }
     } catch (e) {
       print("Error while picking the image: $e");
+    } finally {
+      setState(() {
+        isLoadingImage = false;
+        isImageChange = false;
+      });
     }
   }
+
   @override
   void dispose() {
     // Ensure disposing of the VideoPlayerController to free up resources.
@@ -306,75 +320,6 @@ class OrgUpdatesMobileViewMobileViewState
     );
   }
 
-  Widget feedsDescriptionUI_OLD() {
-    return Column(
-      children: [
-        Padding(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0), //16
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                  child: TextFormField(
-                cursorColor: Color(0xffB54242),
-                focusNode: orgUpdateFocusNode, // Assign the FocusNode
-
-                validator: (value) => value!.isEmpty
-                    ? 'Share your thoughts cannot be blank'
-                    : null,
-                controller: feedController,
-                textInputAction: TextInputAction.done,
-                maxLines: null,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 15.0,
-                  fontFamily: GoogleFonts.notoSans().fontFamily,
-                  fontWeight: FontWeight.normal,
-                ),
-                decoration: const InputDecoration.collapsed(
-                    hintText: "Share your thoughts with colleagues.."),
-//                               InputDecoration.collapsed(
-//   hintText: ref.read(selectedItemProvider)?.content ?? 'Share your thoughts with colleagues..',
-// ),
-              )),
-            ],
-          ),
-        ),
-//         const Divider(
-//           thickness: 1,
-//           color: Color(0xffEAEAEA),
-//           height: 1,
-//         ),
-//         Padding(
-//           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-//           child: Row(
-//             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//             children: [
-//               Expanded(
-//                   child: TextFormField(
-//                 validator: (value) => value!.isEmpty ? 'HashTag #' : null,
-//                 controller: hashTagController,
-//                 textInputAction: TextInputAction.done,
-//                 maxLines: null,
-//                 style: TextStyle(
-//                   color: Colors.black,
-//                   fontSize: 14.0,
-//                   fontFamily: GoogleFonts.notoSans().fontFamily,
-//                   fontWeight: FontWeight.normal,
-//                 ),
-//                 decoration:
-//                     const InputDecoration.collapsed(hintText: "HashTag1 #"),
-// //                     InputDecoration.collapsed(
-// //   hintText: ref.read(selectedItemProvider)?.hashTag ?? 'HashTag #',
-// // )
-//               )),
-//             ],
-//           ),
-//         ),
-      ],
-    );
-  }
 
   //SELECT PHOTOS/VIDEOS/
   Widget attchmentFileButtons(BuildContext context, WidgetRef ref) {
@@ -496,62 +441,10 @@ class OrgUpdatesMobileViewMobileViewState
   }
 
   // IMAGE Content
-  Widget imagePickerContent_OLD(Size size) {
-    if (widget.isEditOrgUpdate == true && !replaceImageTriggered && widget.orgUpdateItem!.hasImage == true) {
-      return AspectRatio(
-        aspectRatio: 16 / 9,
-        child: OrgUpdateMediaView(item: widget.orgUpdateItem!),
-      );
-    } else {
-      return SizedBox(
-          height: size.height - 600,
-          child:
-              //  Expanded(
-              //     child:
-              Padding(
-                  padding: const EdgeInsets.all(0),
-                  child: GridView.builder(
-                      itemCount: fileList.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 1),
-                      itemBuilder: (BuildContext context, int index) {
-                        return Container(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Stack(
-                            //alignment: Alignment.topRight,
-                            children: [
-                              // SizedBox(
-                              //   height: 100,
-                              //   width: 100,
-                              //   child: Image.file(File(imageFileList![index].path), fit: BoxFit.cover),
-                              // ),
-
-                              returnFileContainer(index),
-                              Positioned(
-                                  top: -10,
-                                  right: 1,
-                                  child: IconButton(
-                                    onPressed: () {
-                                      dltImages(fileList[index]);
-                                    },
-                                    icon: const Icon(
-                                      Icons.cancel,
-                                      color: AppColors.blueTextColour,
-                                    ),
-                                  ))
-                            ],
-                          ),
-                        );
-                      }))
-          // ),
-          );
-    }
-  }
-
-
-Widget imagePickerContent(Size size) {
-    final orgUpdateID = widget.isEditOrgUpdate == true ? widget.orgUpdateItem?.orgUpdateId ?? const Uuid().v4() : const Uuid().v4();
+  Widget imagePickerContent(Size size) {
+    final orgUpdateID = widget.isEditOrgUpdate == true
+        ? widget.orgUpdateItem?.orgUpdateId ?? const Uuid().v4()
+        : const Uuid().v4();
 
     // if (widget.isEditOrgUpdate == true && !replaceImageTriggered && widget.orgUpdateItem?.imagePath != null) {
     //   fileList.add(widget.orgUpdateItem!.imagePath.toString());
@@ -559,46 +452,50 @@ Widget imagePickerContent(Size size) {
 
     if (widget.isEditOrgUpdate == true && !replaceImageTriggered) {
       // if (widget.orgUpdateItem?.hasImage == true) {
-                return fileList.isNotEmpty ?
-
-         Container(
-          padding: const EdgeInsets.all(15.0),
-          child: Stack(
-            children: [
-              OrgUpdateMediaView(item: widget.orgUpdateItem!),
-              Positioned(
-                top: -10,
-                right: 1,
-                child: IconButton(
-                  onPressed: () {
-                     dltImages(fileList[0]);
-                      isMediaSelect = false;
-          isImageSelect = false;
-                  },
-                  icon: const Icon(
-                    Icons.cancel,
-                    color: AppColors.blueTextColour,
+      return fileList.isNotEmpty
+          ? Container(
+              padding: const EdgeInsets.all(15.0),
+              child: Stack(
+                children: [
+                  OrgUpdateMediaView(item: widget.orgUpdateItem!),
+                  Positioned(
+                    top: -10,
+                    right: 1,
+                    child: IconButton(
+                      onPressed: () {
+                        dltImages(fileList[0]);
+                        isMediaSelect = false;
+                        isImageSelect = false;
+                      },
+                      icon: const Icon(
+                        Icons.cancel,
+                        color: AppColors.blueTextColour,
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
-          ) : Container(
-  height: 210,
-  width: size.width,
-  padding: const EdgeInsets.all(15.0),
-  color: Color(0xffBCADE9),
-  child: Stack(
-    alignment: Alignment.center,
-    children: [
-      Image.asset(
-        'assets/images/icons8-gallery-64.png', 
-        // width: 150, 
-        // height: 150, 
-      ),
-    ],
-  ),
-);
+            )
+          : GestureDetector(
+              onTap: () {
+                _selectFile(ContentType.image);
+              },
+              child:Container(
+              height: 210,
+              width: size.width,
+              padding: const EdgeInsets.all(15.0),
+              color: Color(0xffBCADE9),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/icons8-add-image-64.png',
+                    // width: 150,
+                    // height: 150,
+                  ),
+                ],
+              ),
+            ));
       // }
       // return Container();
     } else {
@@ -610,13 +507,6 @@ Widget imagePickerContent(Size size) {
                   padding: const EdgeInsets.all(0),
                   child:
 
-                      // GridView.builder(
-                      //   itemCount: fileList.length,
-                      //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      //     crossAxisCount: 1,
-                      //   ),
-                      //   itemBuilder: (BuildContext context, int index) {
-                      //     return
                       Container(
                     color: Colors.white,
                     padding: const EdgeInsets.all(8.0),
@@ -629,6 +519,8 @@ Widget imagePickerContent(Size size) {
                           child: IconButton(
                             onPressed: () {
                               dltImages(fileList[0]);
+                                isMediaSelect = false;
+                        isImageSelect = false;
                             },
                             icon: const Icon(
                               Icons.cancel,
@@ -643,26 +535,28 @@ Widget imagePickerContent(Size size) {
                   // ),
                   ),
             )
-          : Container(
-  height: 210,
-  width: size.width,
-  padding: const EdgeInsets.all(15.0),
-  color: Color(0xffBCADE9),
-  child: Stack(
-    alignment: Alignment.center,
-    children: [
-      Image.asset(
-        'assets/images/icons8-gallery-64.png', 
-        // width: 150, 
-        // height: 150, 
-      ),
-    ],
-  ),
-);// Return an empty container if fileList is empty
+          : GestureDetector(
+              onTap: () {
+                _selectFile(ContentType.image);
+              },
+              child:Container(
+              height: 210,
+              width: size.width,
+              padding: const EdgeInsets.all(15.0),
+              color: Color(0xffBCADE9),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/icons8-add-image-64.png',
+                    // width: 150,
+                    // height: 150,
+                  ),
+                ],
+              ),
+            )); // Return an empty container if fileList is empty
     }
   }
-
-
 
   // VIDEO Content
   Widget videoPickerContent(Size size) {
@@ -719,76 +613,65 @@ Widget imagePickerContent(Size size) {
   }
 
 //IMAGE ATTACHMENT
-void imageAttachment(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(20),
+  void imageAttachment(BuildContext context) {
+    isEditngImage = true;
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
       ),
-    ),
-    builder: (BuildContext context) {
-      return StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
-          return SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 20.0), // Adjusted SizedBox position
-                  const Center(
-                    child: Text(
-                      'Image Picker',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 20.0), // Adjusted SizedBox position
+                    const Center(
+                      child: Text(
+                        'Image Picker',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  ListTile(
-                    leading: const Icon(Icons.camera),
-                    title: const Text('Take Photo'),
-                    onTap: () {
-                      Navigator.pop(context);
-                      _pickImage(ImageSource.camera);
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.photo_library),
-                    title: const Text('Choose from Gallery'),
-                    onTap: () {
-                      Navigator.pop(context);
-                      _pickImage(ImageSource.gallery);
-                    },
-                  ),
-                  const SizedBox(height: 150.0), // Adjusted SizedBox position
-                ],
+                    const SizedBox(height: 16.0),
+                    ListTile(
+                      leading: const Icon(Icons.camera),
+                      title: const Text('Take Photo'),
+                      onTap: () {
+                        Navigator.pop(context);
+                        _pickImage(ImageSource.camera);
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.photo_library),
+                      title: const Text('Choose from Gallery'),
+                      onTap: () {
+                        Navigator.pop(context);
+                        _pickImage(ImageSource.gallery);
+                      },
+                    ),
+                    const SizedBox(height: 150.0), // Adjusted SizedBox position
+                  ],
+                ),
               ),
-            ),
-          );
-        },
-      );
-    },
-  );
-}
-
-  imageAttachmen_OLDt() async {
-    final feedId = const Uuid().v4();
-
-    Map<String, dynamic>? resultFileName =
-        await feedService.uploadMedia(feedId, 'Image');
-    if (resultFileName != null) {
-      setState(() {
-        isMediaSelect = true;
-        isImageSelect = true;
-        isVideoSelect = false;
-        uploadedFilePath = resultFileName["platformFilePath"];
-        uploadedFileName = resultFileName["mediaPath"];
-      });
-      fileList.add(uploadedFilePath.toString());
-    }
+            );
+          },
+        );
+      },
+    ).then((value) {
+      isEditngImage = false;
+      isLoadingImage = false;
+      setState(() {});
+    });
   }
 
   videoAttachment() async {
@@ -818,17 +701,34 @@ void imageAttachment(BuildContext context) {
 
   Widget returnFileContainer(int index) {
     if (!fileList[index].contains('mp4')) {
-      // return Padding(
-      //     padding: const EdgeInsets.only(top: 10, right: 10),
-      //     child: Image.file(File(uploadedFilePath ?? ""), fit: BoxFit.cover));
-      return  FittedBox(
+      return FittedBox(
           fit: BoxFit.contain,
           child: Padding(
             padding: const EdgeInsets.only(top: 0, right: 0),
+            child: _imageFile == null
+                ? GestureDetector(
+              onTap: () {
+                _selectFile(ContentType.image);
+              },
+              child:Container(
+                    height: 210,
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.all(15.0),
+                    color: Color(0xffBCADE9),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/images/icons8-add-image-64.png',
+                          // width: 150,
+                          // height: 150,
+                        ),
+                      ],
+                    ),
+                ))
+                : Image.file(_imageFile!),
            
-            child: Image.file(File(uploadedFilePath ?? ""), fit: BoxFit.contain),
-          )
-          );
+          ));
     } else {
       return FittedBox(
           fit: BoxFit.cover,
@@ -877,17 +777,6 @@ void imageAttachment(BuildContext context) {
       _videoPlayerController!.dispose();
     });
   }
-
-  void _handleSubmit_old(PostOrgUpdateParams params, WidgetRef ref) async {
-    if (widget.isEditOrgUpdate == true) {
-      await ref.read(editOrgUpdateProvider(params).future);
-    } else {
-      await ref.read(postOrgUpdateProvider(params).future);
-    }
-    Navigator.pop(context);
-    _resetValues();
-  }
-
   void _handleSubmit(PostOrgUpdateParams params, WidgetRef ref) async {
     try {
       if (widget.isEditOrgUpdate == true) {
@@ -906,64 +795,62 @@ void imageAttachment(BuildContext context) {
     }
   }
 
-
 // POST BUTTON
   Widget btnPost(Size size) {
-    return Stack(
-      children: [
-    Container(
-      height: 48,
-      width: size.width - 30,
-      padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
-      child: OutlinedButton(
-        style: OutlinedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.0),
+    return Stack(children: [
+      Container(
+        height: 48,
+        width: size.width - 30,
+        padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
+        child: OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30.0),
+            ),
+            backgroundColor: const Color(0xffF2722B),
+            side: const BorderSide(width: 1, color: Color(0xffF2722B)),
           ),
-          backgroundColor: const Color(0xffF2722B),
-          side: const BorderSide(width: 1, color: Color(0xffF2722B)),
-        ),
-        // <-- OutlinedButton
+          // <-- OutlinedButton
 
-        onPressed: () {
-          
-          //   FocusScopeNode currentFocus = FocusScope.of(context);
-          // if (!currentFocus.hasPrimaryFocus &&
-          //     currentFocus.focusedChild != null) {
-          //   FocusManager.instance.primaryFocus!.unfocus();
-          // }
+          onPressed: () {
+            //   FocusScopeNode currentFocus = FocusScope.of(context);
+            // if (!currentFocus.hasPrimaryFocus &&
+            //     currentFocus.focusedChild != null) {
+            //   FocusManager.instance.primaryFocus!.unfocus();
+            // }
 
-          if (feedController.value.text.isEmpty) {
-            showMessage('Please share your thoughts');
-          }
-          // else if (hashTagController == null ||
-          //     hashTagController.value.text.isEmpty) {
-          //   showMessage('Please add hashtag');
-          // }
-          else {
-            if (isMediaSelect == false) {
-                 setState(() {
-                _isLoading = true; // Show loader
-              });
-              createPostWithoutAttachment();
-            } else {
-                 setState(() {
-                _isLoading = true; // Show loader
-              });
-              createPostAttachments();
+            if (feedController.value.text.isEmpty) {
+              showMessage('Please share your thoughts');
             }
-          }
-        },
-        //POSt Feed
-        child: Text('Post',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16.0,
-              fontFamily: GoogleFonts.poppins().fontFamily,
-              fontWeight: FontWeight.normal,
-            )),
-      ),
-    ) ]);
+            // else if (hashTagController == null ||
+            //     hashTagController.value.text.isEmpty) {
+            //   showMessage('Please add hashtag');
+            // }
+            else {
+              if (isMediaSelect == false) {
+                setState(() {
+                  _isLoading = true; // Show loader
+                });
+                createPostWithoutAttachment();
+              } else {
+                setState(() {
+                  _isLoading = true; // Show loader
+                });
+                createPostAttachments();
+              }
+            }
+          },
+          //POSt Feed
+          child: Text('Post',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16.0,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                fontWeight: FontWeight.normal,
+              )),
+        ),
+      )
+    ]);
   }
 
   createPostWithoutAttachment() async {
@@ -976,7 +863,8 @@ void imageAttachment(BuildContext context) {
             : orgId,
         content: feedController.text,
         // category: "All Evoke",
-                category: (widget.isEditOrgUpdate == true && updateEditCategories == true)
+        category: (widget.isEditOrgUpdate == true &&
+                updateEditCategories == true)
             ? (selectedIndex != null)
                 ? checkListItems[selectedIndex ?? 0]
                 : widget.orgUpdateItem?.name ?? "All Evoke"
@@ -985,7 +873,6 @@ void imageAttachment(BuildContext context) {
                 : (selectedIndex != null)
                     ? checkListItems[selectedIndex ?? 0]
                     : "All Evoke",
-
 
         // category: (selectedIndex != null)
         //     ? checkListItems[selectedIndex ?? 0]
@@ -1011,7 +898,7 @@ void imageAttachment(BuildContext context) {
       hashTag: hashTagController.text,
       hasVideo: isVideoSelect,
       // category: "All Evoke",
-            category: (widget.isEditOrgUpdate == true && updateEditCategories == true)
+      category: (widget.isEditOrgUpdate == true && updateEditCategories == true)
           ? (selectedIndex != null)
               ? checkListItems[selectedIndex ?? 0]
               : widget.orgUpdateItem?.name ?? "All Evoke"
@@ -1070,7 +957,7 @@ void imageAttachment(BuildContext context) {
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  _resetValues();
+                  // _resetValues();
                   if (text == 'OrgUpdate posted successfully') {
                     Navigator.pop(context);
                   }
@@ -1185,8 +1072,9 @@ void imageAttachment(BuildContext context) {
                 //     fontWeight: FontWeight.w500,
                 //   ),
                 // ),
-                 Text(
-                  (widget.isEditOrgUpdate == true && updateEditCategories == true)
+                Text(
+                  (widget.isEditOrgUpdate == true &&
+                          updateEditCategories == true)
                       ? (selectedIndex != null)
                           ? checkListItems[selectedIndex ?? 0]
                           : widget.orgUpdateItem?.name ?? "All Evoke"

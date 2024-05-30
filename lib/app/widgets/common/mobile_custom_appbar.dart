@@ -247,7 +247,8 @@ class CustomAppbar extends StatelessWidget {
 
                               IconButton(
                                 icon: Image.asset(
-                                  title == 'Profile'
+                                  // title == 'Profile' 
+                                  (title == 'Profile' || title == 'User Profile') 
                                       ? 'assets/images/create-post.png'
                                       : 'assets/images/white_add-48.png',
                                   width: 24,

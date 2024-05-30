@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/models/post_feed_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
@@ -143,14 +144,15 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   }
 
   _selectFile(ContentType type) {
-    isEditngImage = false;
+    // isEditngImage = false;
     setState(() {
       contentTypeSelected = type.name;
     });
     switch (type) {
       case ContentType.image:
-        isLoadingImage = true; // Set isLoadingImage to true when initiating image selection
-        replaceImageTriggered = true;
+        // isLoadingImage =
+        //     true; // Set isLoadingImage to true when initiating image selection
+        // replaceImageTriggered = true;
         imageAttachment(context);
         break;
       case ContentType.video:
@@ -513,121 +515,129 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   // IMAGE Content
 
   Widget imagePickerContent(Size size) {
-    if (isLoadingImage && isEditngImage) {
-      return Container(
-        height: 210,
-        width: size.width,
-        padding: const EdgeInsets.all(15.0),
-        color: Color(0xffBCADE9),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Image.asset(
-              'assets/images/icons8-gallery-64.png',
-            ),
-            CircularProgressIndicator()
-          ],
-        ),
-      );
+    // if (isLoadingImage && isEditngImage) {
+    //   return Container(
+    //     height: 210,
+    //     width: size.width,
+    //     padding: const EdgeInsets.all(15.0),
+    //     color: Color(0xffBCADE9),
+    //     child: Stack(
+    //       alignment: Alignment.center,
+    //       children: [
+    //         Image.asset(
+    //           'assets/images/icons8-gallery-64.png',
+    //         ),
+    //         CircularProgressIndicator()
+    //       ],
+    //     ),
+    //   );
+    // } else {
+    final feedId = widget.isEditFeed == true
+        ? widget.feedItem?.feedId ?? const Uuid().v4()
+        : const Uuid().v4();
+safePrint("-------- fileList ----- $fileList");
+    if (widget.isEditFeed == true && !replaceImageTriggered) {
+      return fileList.isNotEmpty
+          ? Container(
+              padding: const EdgeInsets.all(15.0),
+              child: Stack(
+                children: [
+                  FeedMediaView(item: widget.feedItem!),
+                  Positioned(
+                    top: -10,
+                    right: 1,
+                    child: IconButton(
+                      onPressed: () {
+                        dltImages(fileList[0]);
+                        isMediaSelect = false;
+                        isImageSelect = false;
+                      },
+                      icon: const Icon(
+                        Icons.cancel,
+                        color: AppColors.blueTextColour,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : GestureDetector(
+              onTap: () {
+                _selectFile(ContentType.image);
+              },
+              child: Container(
+                height: 210,
+                width: size.width,
+                padding: const EdgeInsets.all(15.0),
+                color: Color(0xffBCADE9),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/icons8-add-image-64.png',
+                      // width: 150,
+                      // height: 150,
+                    ),
+                  ],
+                ),
+              ));
+      // }
+      // return Container();
     } else {
-      final feedId = widget.isEditFeed == true
-          ? widget.feedItem?.feedId ?? const Uuid().v4()
-          : const Uuid().v4();
-
-      if (widget.isEditFeed == true && !replaceImageTriggered) {
-        return fileList.isNotEmpty
-            ? Container(
-                padding: const EdgeInsets.all(15.0),
-                child: Stack(
-                  children: [
-                    FeedMediaView(item: widget.feedItem!),
-                    Positioned(
-                      top: -10,
-                      right: 1,
-                      child: IconButton(
-                        onPressed: () {
-                          dltImages(fileList[0]);
-                          isMediaSelect = false;
-                          isImageSelect = false;
-                        },
-                        icon: const Icon(
-                          Icons.cancel,
-                          color: AppColors.blueTextColour,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            : Container(
-                height: 210,
-                width: size.width,
-                padding: const EdgeInsets.all(15.0),
-                color: Color(0xffBCADE9),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/images/icons8-gallery-64.png',
-                      // width: 150,
-                      // height: 150,
-                    ),
-                  ],
-                ),
-              );
-        // }
-        // return Container();
-      } else {
-        return fileList.isNotEmpty
-            ? SizedBox(
-                // height: size.height - 600,
-                child: Padding(
-                    padding: const EdgeInsets.all(0),
-                    child: Container(
-                      color: Colors.white,
-                      padding: const EdgeInsets.all(8.0),
-                      child: Stack(
-                        children: [
-                          returnFileContainer(0),
-                          Positioned(
-                            top: -10,
-                            right: 1,
-                            child: IconButton(
-                              onPressed: () {
-                                dltImages(fileList[0]);
-                              },
-                              icon: const Icon(
-                                Icons.cancel,
-                                color: AppColors.blueTextColour,
-                              ),
+      return fileList.isNotEmpty
+          ? SizedBox(
+              // height: size.height - 600,
+              child: Padding(
+                  padding: const EdgeInsets.all(0),
+                  child: Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.all(8.0),
+                    child: Stack(
+                      children: [
+                        returnFileContainer(0),
+                        Positioned(
+                          top: -10,
+                          right: 1,
+                          child: IconButton(
+                            onPressed: () {
+                              dltImages(fileList[0]);
+                              isMediaSelect = false;
+                              isImageSelect = false;
+                            },
+                            icon: const Icon(
+                              Icons.cancel,
+                              color: AppColors.blueTextColour,
                             ),
-                          )
-                        ],
-                      ),
-                    )
-                    // },
-                    // ),
+                          ),
+                        )
+                      ],
                     ),
-              )
-            : Container(
-                height: 210,
-                width: size.width,
-                padding: const EdgeInsets.all(15.0),
-                color: Color(0xffBCADE9),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/images/icons8-gallery-64.png',
-                      // width: 150,
-                      // height: 150,
-                    ),
-                  ],
-                ),
-              );
-        // Return an empty container if fileList is empty
-      }
+                  )
+                  // },
+                  // ),
+                  ),
+            )
+          :  GestureDetector(
+              onTap: () {
+                _selectFile(ContentType.image);
+              },
+              child: Container(
+              height: 210,
+              width: size.width,
+              padding: const EdgeInsets.all(15.0),
+              color: Color(0xffBCADE9),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/icons8-add-image-64.png',
+                  ),
+                ],
+              ),
+           ) );
+      // Return an empty container if fileList is empty
     }
+    // }
   }
 
   Widget imagePickerContent_old(Size size) {
@@ -843,14 +853,66 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
 // }
 
 //IMAGE ATTACHMENT
+  Future<void> _pickImage2(ImageSource source) async {
+    try {
+      final pickedFile = await ImagePicker().pickImage(source: source);
+      if (pickedFile != null) {
+        setState(() async {
+          _imageFile = File(pickedFile.path);
+          fileList.add(_imageFile!.path);
 
-  Future<void> _pickImage(ImageSource source) async {
+          // try {
+          //   setState(() {
+          isLoadingImage = true;
+          isImageChange = true;
+          CircularProgressIndicator(strokeWidth: 3);
+          // });
+
+          final feedId = const Uuid().v4();
+          Map<String, dynamic>? resultFileName =
+              await feedService.uploadImageImagePicker(feedId, 'Image', source);
+          if (resultFileName != null) {
+            // setState(() {
+            // replaceImageTriggered = true;
+            isMediaSelect = true;
+            isImageSelect = true;
+            isVideoSelect = false;
+            uploadedFilePath = resultFileName["platformFilePath"];
+            uploadedFileName = resultFileName["mediaPath"];
+            // });
+            // fileList.add(uploadedFilePath.toString());
+          }
+          // } catch (e) {
+          //   print("Error while picking the image: $e");
+          // } finally {
+          //   setState(() {
+          //     isLoadingImage = false;
+          //     isImageChange =
+          //         false;
+          //   });
+          // }
+        });
+      } else {
+        print('No image selected.');
+      }
+    } catch (e) {
+      print("Error while picking the image: $e");
+    }
+  }
+
+  Future<void> _pickImage1(ImageSource source) async {
     try {
       setState(() {
         isLoadingImage = true;
         isImageChange = true;
-           CircularProgressIndicator(strokeWidth:3);
+        CircularProgressIndicator(strokeWidth: 3);
       });
+
+      final pickedFile = await ImagePicker().pickImage(source: source);
+      if (pickedFile != null) {
+        _imageFile = File(pickedFile.path);
+      }
+
       final feedId = const Uuid().v4();
       Map<String, dynamic>? resultFileName =
           await feedService.uploadImageImagePicker(feedId, 'Image', source);
@@ -869,8 +931,63 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
       print("Error while picking the image: $e");
     } finally {
       setState(() {
-        isLoadingImage = false; 
-        isImageChange = false;// Set isLoadingImage to false when picking ends (whether success or failure)
+        isLoadingImage = false;
+        isImageChange =
+            false; // Set isLoadingImage to false when picking ends (whether success or failure)
+      });
+    }
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final pickedFile = await ImagePicker().pickImage(source: source);
+      if (pickedFile != null) {
+        setState(() {
+          isLoadingImage = true;
+          isImageChange = true;
+        });
+
+        _imageFile = File(pickedFile.path);
+
+        // Remove the old file path if it exists
+        if (widget.isEditFeed == true &&
+            !replaceImageTriggered &&
+            widget.feedItem?.imagePath != null) {
+          fileList.remove(widget.feedItem!.imagePath.toString());
+        }
+        if (fileList.isNotEmpty) {
+          fileList.remove(fileList[0]);
+          // fileList.clear();
+        }
+        if (_imageFile != null) {
+          fileList.add(_imageFile!.path);
+        }
+
+        final feedId = const Uuid().v4();
+        Map<String, dynamic>? resultFileName = await feedService
+            .uploadImageImagePickerNew(feedId, 'Image', source, _imageFile!);
+
+        if (resultFileName != null) {
+          setState(() {
+            replaceImageTriggered = true;
+            isMediaSelect = true;
+            isImageSelect = true;
+            isVideoSelect = false;
+            uploadedFilePath = resultFileName["platformFilePath"];
+            uploadedFileName = resultFileName["mediaPath"];
+          });
+        }
+      } else {
+        print('No image selected.');
+      }
+    } catch (e) {
+      print("Error while picking the image: $e");
+    } finally {
+      setState(() {
+        isLoadingImage = false;
+        isImageChange = false;
+              // replaceImageTriggered = true;
+
       });
     }
   }
@@ -933,7 +1050,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
       // Handle the scenario when the bottom sheet is closed without any action
       isEditngImage = false;
       isLoadingImage = false;
-      replaceImageTriggered = false;
+      // replaceImageTriggered = false;
       setState(() {});
     });
   }
@@ -1035,35 +1152,64 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
 //   }
 
   Widget returnFileContainer(int index) {
-    if (isImageChange) {
-      return  Center(
-        child: Container(
-        height: 210,
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.all(15.0),
-        color: Color(0xffBCADE9),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Image.asset(
-              'assets/images/icons8-gallery-64.png',
-            ),
-            CircularProgressIndicator(strokeWidth:3),
-          ],
-        ),
-      ),
-      );
-    } else if (!fileList[index].contains('mp4')) {
+    // if (isImageChange) {
+    //   return Center(
+    //     child: Container(
+    //       height: 210,
+    //       width: MediaQuery.of(context).size.width,
+    //       padding: const EdgeInsets.all(15.0),
+    //       color: Color(0xffBCADE9),
+    //       child: Stack(
+    //         alignment: Alignment.center,
+    //         children: [
+    //           Image.asset(
+    //             'assets/images/icons8-gallery-64.png',
+    //           ),
+    //           CircularProgressIndicator(strokeWidth: 3),
+    //         ],
+    //       ),
+    //     ),
+    //   );
+    // } else
+    if (!fileList[index].contains('mp4')) {
       // return Padding(
       //     padding: const EdgeInsets.only(top: 10, right: 10),
       //     child: Image.file(File(uploadedFilePath ?? ""), fit: BoxFit.cover));
+
+//  return Center(
+//         child: _imageFile == null
+//             ? Text('No image selected.')
+//             : Image.file(_imageFile!),
+//       );
 
       return FittedBox(
           fit: BoxFit.contain,
           child: Padding(
             padding: const EdgeInsets.only(top: 0, right: 0),
-            child:
-                Image.file(File(uploadedFilePath ?? ""), fit: BoxFit.contain),
+            child: _imageFile == null
+                ? GestureDetector(
+              onTap: () {
+                _selectFile(ContentType.image);
+              },
+              child:Container(
+                    height: 210,
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.all(15.0),
+                    color: Color(0xffBCADE9),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/images/icons8-add-image-64.png',
+                          // width: 150,
+                          // height: 150,
+                        ),
+                      ],
+                    ),
+                ))
+                : Image.file(_imageFile!),
+            // child:
+            //     Image.file(File(uploadedFilePath ?? ""), fit: BoxFit.cover
           ));
     } else {
       return FittedBox(

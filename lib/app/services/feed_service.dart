@@ -4,6 +4,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/models/post_feed_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:file_picker/file_picker.dart';
@@ -135,6 +136,58 @@ class FeedService {
 //   }
 // }
 
+  Future<Map<String, dynamic>?> uploadImageImagePickerNew(String rootId, String imagePath, ImageSource source, File pickedFile) async {
+  try {
+    const mediaType = 'Image';
+
+    // final pickedFile = await ImagePicker().pickImage(source: source);
+    // if (pickedFile == null) {
+    //   print('No image selected');
+    //   return null;
+    // }
+
+
+    File imageFile = pickedFile;
+    int fileSize = await imageFile.length();
+    if (fileSize > 5 * 1024 * 1024) {
+      print('File size exceeds the limit (5MB)');
+      return null;
+    }
+
+    const options = StorageUploadFileOptions(
+      accessLevel: StorageAccessLevel.guest,
+    );
+
+    final String mediaPath = 'feed/$rootId/${imageFile.path.split('/').last}';
+
+    final result = await Amplify.Storage.uploadFile(
+      localFile: AWSFile.fromStream(
+        imageFile.openRead(),
+        size: fileSize,
+      ),
+      key: mediaPath,
+      options: options,
+      onProgress: (progress) {
+        print('Fraction completed: ${progress.fractionCompleted}');
+                  CircularProgressIndicator(strokeWidth: 3);
+
+      },
+    ).result;
+
+    print('Successfully uploaded file: ${result.uploadedItem.key}');
+
+    return {
+      'platformFilePath': imageFile.path,
+      'mediaPath': mediaPath,
+    };
+  } catch (e) {
+    print('UploadFile Err: $e');
+    return null;
+  }
+}
+
+
+
   Future<Map<String, dynamic>?> uploadImageImagePicker(String rootId, String imagePath, ImageSource source) async {
   try {
     const mediaType = 'Image';
@@ -144,7 +197,7 @@ class FeedService {
       print('No image selected');
       return null;
     }
-
+    
     File imageFile = File(pickedFile.path);
     int fileSize = await imageFile.length();
     if (fileSize > 5 * 1024 * 1024) {
@@ -167,6 +220,8 @@ class FeedService {
       options: options,
       onProgress: (progress) {
         print('Fraction completed: ${progress.fractionCompleted}');
+                  CircularProgressIndicator(strokeWidth: 3);
+
       },
     ).result;
 

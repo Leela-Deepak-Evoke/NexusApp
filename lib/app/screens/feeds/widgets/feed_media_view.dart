@@ -91,7 +91,7 @@ class _FeedMediaViewState extends ConsumerState<FeedMediaView> {
           alignment: Alignment.center,
           children: [
             Image.asset(
-              'assets/images/icons8-gallery-64.png',
+              'assets/images/icons8-add-image-64.png',
             ),
           ],
         ),

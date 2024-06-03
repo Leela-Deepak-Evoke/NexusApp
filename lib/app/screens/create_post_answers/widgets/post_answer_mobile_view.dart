@@ -677,22 +677,22 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
             side: const BorderSide(width: 1, color: Color(0xffF2722B)),
           ),
           // <-- OutlinedButton
-
-          onPressed: () {
-            if (feedController.value.text.isEmpty) {
-              showMessage('Please share your thoughts');
-            }
-            //  else if (hashTagController == null ||
-            //     hashTagController.value.text.isEmpty) {
-            //   showMessage('Please add hashtag');
-            // }
-            else {
-              setState(() {
-                _isLoading = true; // Show loader
-              });
-              createPost();
-            }
-          },
+onPressed: _isLoading ? null : _handlePostButtonPress,
+          // onPressed: () {
+          //   if (feedController.value.text.isEmpty) {
+          //     showMessage('Please share your thoughts');
+          //   }
+          //   //  else if (hashTagController == null ||
+          //   //     hashTagController.value.text.isEmpty) {
+          //   //   showMessage('Please add hashtag');
+          //   // }
+          //   else {
+          //     setState(() {
+          //       _isLoading = true; // Show loader
+          //     });
+          //     createPost();
+          //   }
+          // },
           //POSt Feed
           child: Text('Post',
               style: TextStyle(
@@ -719,7 +719,16 @@ class _PostAnswerMobileViewState extends ConsumerState<PostAnswerMobileView> {
           ),
     ]);
   }
-
+ void _handlePostButtonPress() {
+    if (feedController.value.text.isEmpty) {
+       showMessage('Please share your thoughts');
+    } else {
+      setState(() {
+        _isLoading = true;
+      });
+      createPost();
+    }
+  }
   createPost() async {
     final answerId = const Uuid().v4();
     final params = PostAnswerParams(

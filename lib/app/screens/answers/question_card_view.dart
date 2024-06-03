@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../provider/comment_service_provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class QuestionCardView extends ConsumerWidget {
   final User user;
@@ -220,7 +221,8 @@ class QuestionCardView extends ConsumerWidget {
                 if (_isProperImageUrl(imageUrl)) {
                   return CircleAvatar(
                     backgroundColor: Colors.transparent,
-                    backgroundImage: NetworkImage(imageUrl),
+                    // backgroundImage: NetworkImage(imageUrl),
+                    backgroundImage: CachedNetworkImageProvider(imageUrl),
                     radius: 12.0,
                   );
                 } else {

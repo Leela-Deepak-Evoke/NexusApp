@@ -587,47 +587,59 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
               side: const BorderSide(width: 1, color: Color(0xffF2722B)),
             ),
             // <-- OutlinedButton
-
-            onPressed: () {
-              if (feedController.value.text.isEmpty) {
-                showMessage('Question field should not be empty.');
-              }
-              // else if (hashTagController == null ||
-              //     hashTagController.value.text.isEmpty) {
-              //   showMessage('Please add hashtag');
-              // }
-              else {
-                   setState(() {
-                _isLoading = true; // Show loader
-              });
-                createPost();
-              }
-            },
+            onPressed: _isLoading ? null : _handlePostButtonPress,
+            // onPressed: () {
+            //   if (feedController.value.text.isEmpty) {
+            //     showMessage('Question field should not be empty.');
+            //   }
+            //   // else if (hashTagController == null ||
+            //   //     hashTagController.value.text.isEmpty) {
+            //   //   showMessage('Please add hashtag');
+            //   // }
+            //   else {
+            //        setState(() {
+            //     _isLoading = true; // Show loader
+            //   });
+            //     createPost();
+            //   }
+            // },
             //POSt Feed
-            child: Text('Post',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.0,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-              fontWeight: FontWeight.normal,
+            child: Text(
+              'Post',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16.0,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                fontWeight: FontWeight.normal,
+              ),
             ),
           ),
         ),
-      ),
         if (_isLoading)
-         const Positioned.fill(
-    child: Center(
-      child: SizedBox(
-        width: 50, 
-        height: 50,
-        child: CircularProgressIndicator(
-          strokeWidth: 3, 
-        ),
-      ),
-    ),
-  ),
+          const Positioned.fill(
+            child: Center(
+              child: SizedBox(
+                width: 50,
+                height: 50,
+                child: CircularProgressIndicator(
+                  strokeWidth: 3,
+                ),
+              ),
+            ),
+          ),
       ],
     );
+  }
+
+  void _handlePostButtonPress() {
+    if (feedController.value.text.isEmpty) {
+      showMessage('Question field should not be empty.');
+    } else {
+      setState(() {
+        _isLoading = true;
+      });
+      createPost();
+    }
   }
 
   createPost() async {

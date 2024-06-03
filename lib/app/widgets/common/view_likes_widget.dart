@@ -2,12 +2,14 @@ import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/models/user_like.dart';
 import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
+import 'package:evoke_nexus_app/app/screens/profile/widgets/edit_profile.dart';
 import 'package:evoke_nexus_app/app/screens/profile/widgets/profile_mobile_view.dart';
 import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class LikesWidget extends ConsumerStatefulWidget {
   final User user;
@@ -148,7 +150,12 @@ class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
                                                       widget.user.userId
                                                   ? true
                                                   : false,
-                                              topBarButtonAction: () {},
+                                              topBarButtonAction: () { Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          UserForm(user: widget.user, isFromWelcomeScreen: false)));
+},
                                               backButtonAction: () {
                                                 Navigator.pop(context);
                                               },
@@ -217,7 +224,8 @@ class _LikesWidgetViewState extends ConsumerState<LikesWidget> {
                 if (_isProperImageUrl(imageUrl)) {
                   return CircleAvatar(
                     backgroundColor: Colors.transparent,
-                    backgroundImage: NetworkImage(imageUrl),
+                    //backgroundImage: NetworkImage(imageUrl),
+                    backgroundImage: CachedNetworkImageProvider(imageUrl),
                     radius: 15.0,
                   );
                 } else {

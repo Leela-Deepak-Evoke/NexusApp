@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:video_player/video_player.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class OrgUpdateMediaView extends ConsumerStatefulWidget {
   final OrgUpdate item;
@@ -128,10 +129,19 @@ class _OrgUpdateMediaViewState extends ConsumerState<OrgUpdateMediaView> {
       data: (mediaPath) {
         if (mediaPath != null && mediaPath.isNotEmpty) {
           if (widget.item.hasImage) {
-            return Image.network(
-              mediaPath,
-              fit: BoxFit.contain,
-            );
+              return CachedNetworkImage(
+            imageUrl: mediaPath,
+            fit: BoxFit.contain,
+            placeholder: (context, url) => Center(
+              child: CircularProgressIndicator(),
+            ),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+          );
+
+            // return Image.network(
+            //   mediaPath,
+            //   fit: BoxFit.contain,
+            // );
           } else if (widget.item.hasVideo) {
             if (_controller!.value.isInitialized) {
               return Stack(

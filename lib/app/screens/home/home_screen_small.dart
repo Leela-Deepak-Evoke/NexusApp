@@ -8,6 +8,7 @@ import 'package:evoke_nexus_app/app/provider/user_home_provider.dart';
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/home/home_latestupdate_mediaview.dart';
 import 'package:evoke_nexus_app/app/screens/profile/profile_screen.dart';
+import 'package:evoke_nexus_app/app/screens/profile/widgets/edit_profile.dart';
 import 'package:evoke_nexus_app/app/screens/profile/widgets/profile_mobile_view.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/edit_delete_button.dart';
@@ -20,6 +21,7 @@ import 'package:evoke_nexus_app/app/widgets/common/mobile_custom_appbar.dart';
 import 'package:evoke_nexus_app/app/screens/forum/forum_screen.dart';
 import 'package:evoke_nexus_app/app/screens/org_updates/org_updates_screen.dart';
 import 'package:intl/intl.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class HomeScreenSmall extends ConsumerStatefulWidget {
   const HomeScreenSmall({Key? key}) : super(key: key);
@@ -411,7 +413,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
           ),
         ),
         error: (_, __) =>
-            ErrorScreen(showErrorMessage: true, onRetryPressed: retry),
+            ErrorScreen(showErrorMessage: false, onRetryPressed: retry),
+            
       ),
     );
   }
@@ -427,6 +430,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
         data: (userHome) {
           final latestUpdates = userHome.latestUpdates;
           if (latestUpdates.isEmpty) {
+            
             return const Center(
               child: Text(
                 'No data available',
@@ -486,7 +490,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                   style: const TextStyle(fontSize: 16),
                                 ),
                                 onTap: () {
-                                  Navigator.push(
+                                   
+                                                                     Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => MobileLayout(
@@ -498,7 +503,12 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                                           user!.userId
                                                       ? true
                                                       : false,
-                                              topBarButtonAction: () {},
+                                              topBarButtonAction: () { Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          UserForm(user: user!, isFromWelcomeScreen: false)));
+},
                                               backButtonAction: () {
                                                 Navigator.pop(context);
                                               },
@@ -621,7 +631,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
             // ),
             ),
         error: (_, __) =>
-            ErrorScreen(showErrorMessage: true, onRetryPressed: retry),
+            ErrorScreen(showErrorMessage: false, onRetryPressed: retry),
       ),
     );
   }
@@ -1556,7 +1566,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
               if (_isProperImageUrl(imageUrl)) {
                 return CircleAvatar(
                   backgroundColor: Colors.transparent,
-                  backgroundImage: NetworkImage(imageUrl),
+                  //backgroundImage: NetworkImage(imageUrl),
+                  backgroundImage: CachedNetworkImageProvider(imageUrl),
                   radius: radius,
                 );
               } else {
@@ -1648,6 +1659,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
               context,
               MaterialPageRoute(builder: (context) => const ProfileScreen()),
             );
+            
           },
           child: Container(
               decoration: BoxDecoration(
@@ -1662,7 +1674,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                     if (_isProperImageUrl(imageUrl)) {
                       return CircleAvatar(
                         backgroundColor: Colors.transparent,
-                        backgroundImage: NetworkImage(imageUrl),
+                       // backgroundImage: NetworkImage(imageUrl),
+                       backgroundImage: CachedNetworkImageProvider(imageUrl),
                         radius: 20,
                       );
                     } else {
@@ -1735,7 +1748,14 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                         hasBackAction: true,
                         hasRightAction:
                             item.user.userId == user!.userId ? true : false,
-                        topBarButtonAction: () {},
+                        topBarButtonAction: () {
+ Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          UserForm(user: user!, isFromWelcomeScreen: false)));
+
+                        },
                         backButtonAction: () {
                           Navigator.pop(context);
                         },

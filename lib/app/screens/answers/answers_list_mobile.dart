@@ -22,6 +22,7 @@ import 'package:intl/intl.dart';
 import 'package:evoke_nexus_app/app/models/answer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class AnswerListMobile extends ConsumerStatefulWidget {
   final User user;
@@ -360,7 +361,8 @@ class _AnswerListMobileViewState extends ConsumerState<AnswerListMobile> {
                 if (_isProperImageUrl(imageUrl)) {
                   return CircleAvatar(
                     backgroundColor: Colors.transparent,
-                    backgroundImage: NetworkImage(imageUrl),
+                    // backgroundImage: NetworkImage(imageUrl),
+                     backgroundImage: CachedNetworkImageProvider(imageUrl),
                     radius: 12.0,
                   );
                 } else {

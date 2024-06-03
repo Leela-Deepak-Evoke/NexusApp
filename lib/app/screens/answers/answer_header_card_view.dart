@@ -5,6 +5,7 @@ import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class AnswerHeaderCardView extends StatefulWidget {
   const AnswerHeaderCardView(
@@ -98,7 +99,7 @@ class _AnswerHeaderCardViewState extends State<AnswerHeaderCardView> {
                 if (_isProperImageUrl(imageUrl)) {
                   return CircleAvatar(
                     backgroundColor: Colors.transparent,
-                    backgroundImage: NetworkImage(imageUrl),
+                    backgroundImage: CachedNetworkImageProvider(imageUrl), //NetworkImage(imageUrl),
                     radius: 20.0,
                   );
                 } else {

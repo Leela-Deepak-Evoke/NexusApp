@@ -17,6 +17,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ProfileMobileView<T> extends ConsumerStatefulWidget {
   final User user;
@@ -438,7 +439,8 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
               return Center(
                   child: CircleAvatar(
                 backgroundColor: Colors.transparent,
-                backgroundImage: NetworkImage(imageUrl),
+                //backgroundImage: NetworkImage(imageUrl),
+                backgroundImage: CachedNetworkImageProvider(imageUrl),
                 radius: 80.0,
               ));
             } else {

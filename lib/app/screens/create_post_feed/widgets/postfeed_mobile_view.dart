@@ -70,6 +70,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   bool isLoadingImage = false;
   bool isEditngImage = false;
   bool isImageChange = false;
+  bool _isPosting = false;
 
   void _selectDocuments() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -535,7 +536,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     final feedId = widget.isEditFeed == true
         ? widget.feedItem?.feedId ?? const Uuid().v4()
         : const Uuid().v4();
-safePrint("-------- fileList ----- $fileList");
+    safePrint("-------- fileList ----- $fileList");
     if (widget.isEditFeed == true && !replaceImageTriggered) {
       return fileList.isNotEmpty
           ? Container(
@@ -617,24 +618,24 @@ safePrint("-------- fileList ----- $fileList");
                   // ),
                   ),
             )
-          :  GestureDetector(
+          : GestureDetector(
               onTap: () {
                 _selectFile(ContentType.image);
               },
               child: Container(
-              height: 210,
-              width: size.width,
-              padding: const EdgeInsets.all(15.0),
-              color: Color(0xffBCADE9),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Image.asset(
-                    'assets/images/icons8-add-image-64.png',
-                  ),
-                ],
-              ),
-           ) );
+                height: 210,
+                width: size.width,
+                padding: const EdgeInsets.all(15.0),
+                color: Color(0xffBCADE9),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/icons8-add-image-64.png',
+                    ),
+                  ],
+                ),
+              ));
       // Return an empty container if fileList is empty
     }
     // }
@@ -957,7 +958,6 @@ safePrint("-------- fileList ----- $fileList");
         }
         if (fileList.isNotEmpty) {
           fileList.remove(fileList[0]);
-          // fileList.clear();
         }
         if (_imageFile != null) {
           fileList.add(_imageFile!.path);
@@ -986,8 +986,6 @@ safePrint("-------- fileList ----- $fileList");
       setState(() {
         isLoadingImage = false;
         isImageChange = false;
-              // replaceImageTriggered = true;
-
       });
     }
   }
@@ -1188,25 +1186,25 @@ safePrint("-------- fileList ----- $fileList");
             padding: const EdgeInsets.only(top: 0, right: 0),
             child: _imageFile == null
                 ? GestureDetector(
-              onTap: () {
-                _selectFile(ContentType.image);
-              },
-              child:Container(
-                    height: 210,
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.all(15.0),
-                    color: Color(0xffBCADE9),
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/images/icons8-add-image-64.png',
-                          // width: 150,
-                          // height: 150,
-                        ),
-                      ],
-                    ),
-                ))
+                    onTap: () {
+                      _selectFile(ContentType.image);
+                    },
+                    child: Container(
+                      height: 210,
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.all(15.0),
+                      color: Color(0xffBCADE9),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/icons8-add-image-64.png',
+                            // width: 150,
+                            // height: 150,
+                          ),
+                        ],
+                      ),
+                    ))
                 : Image.file(_imageFile!),
             // child:
             //     Image.file(File(uploadedFilePath ?? ""), fit: BoxFit.cover
@@ -1336,6 +1334,89 @@ safePrint("-------- fileList ----- $fileList");
   }
 
 // POST BUTTON
+// Widget btnPost(Size size) {
+//   return Stack(
+//     children: [
+//       Container(
+//         height: 48,
+//         width: size.width - 30,
+//         padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
+//         child: OutlinedButton(
+//           style: OutlinedButton.styleFrom(
+//             shape: RoundedRectangleBorder(
+//               borderRadius: BorderRadius.circular(30.0),
+//             ),
+//             backgroundColor: const Color(0xffF2722B),
+//             side: const BorderSide(width: 1, color: Color(0xffF2722B)),
+//           ),
+//           onPressed: () {
+//             if (_isPosting) return; // Prevent multiple submissions
+//             FocusScopeNode currentFocus = FocusScope.of(context);
+//             if (!currentFocus.hasPrimaryFocus &&
+//                 currentFocus.focusedChild != null) {
+//               FocusManager.instance.primaryFocus!.unfocus();
+//             }
+
+//             if (feedController.value.text.isEmpty) {
+//               showMessage('Please share your thoughts');
+//             } else {
+//               setState(() {
+//                 _isPosting = true; // Start post submission
+//                 _isLoading = true; // Show loader
+//               });
+//               if (isMediaSelect == false) {
+//                 createPostWithoutAttachment().then((_) {
+//                   setState(() {
+//                     _isLoading = false; // Hide loader
+//                     _isPosting = false; // Reset posting state
+//                   });
+//                   _enableButtonAfterDelay(); // Re-enable button after delay
+//                 });
+//               } else {
+//                 createPostAttachments().then((_) {
+//                   setState(() {
+//                     _isLoading = false; // Hide loader
+//                     _isPosting = false; // Reset posting state
+//                   });
+//                   _enableButtonAfterDelay(); // Re-enable button after delay
+//                 });
+//               }
+//             }
+//           },
+//           child: Text(
+//             'Post',
+//             style: TextStyle(
+//               color: Colors.white,
+//               fontSize: 16.0,
+//               fontFamily: GoogleFonts.poppins().fontFamily,
+//               fontWeight: FontWeight.normal,
+//             ),
+//           ),
+//         ),
+//       ),
+//       if (_isLoading) // Show loader if _isLoading is true
+//         const Positioned.fill(
+//           child: Center(
+//             child: SizedBox(
+//               width: 50,
+//               height: 50,
+//               child: CircularProgressIndicator(
+//                 strokeWidth: 3,
+//               ),
+//             ),
+//           ),
+//         ),
+//     ],
+//   );
+// }
+
+  void _enableButtonAfterDelay() {
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        _isPosting = false; // Re-enable button
+      });
+    });
+  }
 
   Widget btnPost(Size size) {
     return Stack(
@@ -1352,34 +1433,39 @@ safePrint("-------- fileList ----- $fileList");
               backgroundColor: const Color(0xffF2722B),
               side: const BorderSide(width: 1, color: Color(0xffF2722B)),
             ),
-            onPressed: () {
-              FocusScopeNode currentFocus = FocusScope.of(context);
-              if (!currentFocus.hasPrimaryFocus &&
-                  currentFocus.focusedChild != null) {
-                FocusManager.instance.primaryFocus!.unfocus();
-              }
+                    onPressed: _isLoading ? null : _handlePostButtonPress,
 
-              if (feedController.value.text.isEmpty) {
-                showMessage('Please share your thoughts');
-              }
-              // else if (hashTagController == null ||
-              //     hashTagController.value.text.isEmpty) {
-              //   showMessage('Please add hashtag');
-              // }
-              else {
-                if (isMediaSelect == false) {
-                  setState(() {
-                    _isLoading = true; // Show loader
-                  });
-                  createPostWithoutAttachment();
-                } else {
-                  setState(() {
-                    _isLoading = true; // Show loader
-                  });
-                  createPostAttachments();
-                }
-              }
-            },
+            // onPressed: () {
+            //   FocusScopeNode currentFocus = FocusScope.of(context);
+            //   if (!currentFocus.hasPrimaryFocus &&
+            //       currentFocus.focusedChild != null) {
+            //     FocusManager.instance.primaryFocus!.unfocus();
+            //   }
+
+            //   if (feedController.value.text.isEmpty) {
+            //     showMessage('Please share your thoughts');
+            //   }
+            //   // else if (hashTagController == null ||
+            //   //     hashTagController.value.text.isEmpty) {
+            //   //   showMessage('Please add hashtag');
+            //   // }
+            //   else {
+            //     if (isMediaSelect == false) {
+            //       setState(() {
+            //         _isPosting = false;
+            //         _isLoading = true;
+            //       });
+            //       createPostWithoutAttachment();
+
+            //     } else {
+            //       setState(() {
+            //         _isPosting = false;
+            //         _isLoading = true; // Show loader
+            //       });
+            //       createPostAttachments();
+            //     }
+            //   }
+            // },
             child: Text(
               'Post',
               style: TextStyle(
@@ -1409,54 +1495,24 @@ safePrint("-------- fileList ----- $fileList");
     );
   }
 
-  Widget btnPost_OLD(Size size) {
-    return Container(
-      height: 48,
-      width: size.width - 30,
-      padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
-      child: OutlinedButton(
-        style: OutlinedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.0),
-          ),
-          backgroundColor: const Color(0xffF2722B),
-          side: const BorderSide(width: 1, color: Color(0xffF2722B)),
-        ),
-        // <-- OutlinedButton
+  void _handlePostButtonPress() {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+      FocusManager.instance.primaryFocus!.unfocus();
+    }
 
-        onPressed: () {
-          // Unfocus keyboard when tapping outside of TextFormField
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          if (!currentFocus.hasPrimaryFocus &&
-              currentFocus.focusedChild != null) {
-            FocusManager.instance.primaryFocus!.unfocus();
+    if (feedController.value.text.isEmpty) {
+      showMessage('Please share your thoughts');
+    } else {
+      setState(() {
+        _isLoading = true;
+      });
+          if (isMediaSelect == false) {
+      createPostWithoutAttachment();
+          }else {
+            createPostAttachments();
           }
-
-          if (feedController.value.text.isEmpty) {
-            showMessage('Please share your thoughts');
-          }
-          // else if (hashTagController == null ||
-          //     hashTagController.value.text.isEmpty) {
-          //   showMessage('Please add hashtag');
-          // }
-          else {
-            if (isMediaSelect == false) {
-              createPostWithoutAttachment();
-            } else {
-              createPostAttachments();
-            }
-          }
-        },
-        //POSt Feed
-        child: Text('Post',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16.0,
-              fontFamily: GoogleFonts.poppins().fontFamily,
-              fontWeight: FontWeight.normal,
-            )),
-      ),
-    );
+    }
   }
 
   createPostWithoutAttachment() async {

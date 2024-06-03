@@ -5,6 +5,7 @@ import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class OrgUpdateHeaderCardView extends ConsumerStatefulWidget {
   final OrgUpdate item;
@@ -112,7 +113,8 @@ class _OrgUpdateHeaderCardViewState
                 if (_isProperImageUrl(imageUrl)) {
                   return CircleAvatar(
                     backgroundColor: Colors.transparent,
-                    backgroundImage: NetworkImage(imageUrl),
+                   // backgroundImage: NetworkImage(imageUrl),
+                   backgroundImage: CachedNetworkImageProvider(imageUrl),
                     radius: 20.0,
                   );
                 } else {

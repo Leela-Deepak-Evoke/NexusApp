@@ -811,35 +811,35 @@ class OrgUpdatesMobileViewMobileViewState
             side: const BorderSide(width: 1, color: Color(0xffF2722B)),
           ),
           // <-- OutlinedButton
+ onPressed: _isLoading ? null : _handlePostButtonPress,
+          // onPressed: () {
+          //   //   FocusScopeNode currentFocus = FocusScope.of(context);
+          //   // if (!currentFocus.hasPrimaryFocus &&
+          //   //     currentFocus.focusedChild != null) {
+          //   //   FocusManager.instance.primaryFocus!.unfocus();
+          //   // }
 
-          onPressed: () {
-            //   FocusScopeNode currentFocus = FocusScope.of(context);
-            // if (!currentFocus.hasPrimaryFocus &&
-            //     currentFocus.focusedChild != null) {
-            //   FocusManager.instance.primaryFocus!.unfocus();
-            // }
-
-            if (feedController.value.text.isEmpty) {
-              showMessage('Please share your thoughts');
-            }
-            // else if (hashTagController == null ||
-            //     hashTagController.value.text.isEmpty) {
-            //   showMessage('Please add hashtag');
-            // }
-            else {
-              if (isMediaSelect == false) {
-                setState(() {
-                  _isLoading = true; // Show loader
-                });
-                createPostWithoutAttachment();
-              } else {
-                setState(() {
-                  _isLoading = true; // Show loader
-                });
-                createPostAttachments();
-              }
-            }
-          },
+          //   if (feedController.value.text.isEmpty) {
+          //     showMessage('Please share your thoughts');
+          //   }
+          //   // else if (hashTagController == null ||
+          //   //     hashTagController.value.text.isEmpty) {
+          //   //   showMessage('Please add hashtag');
+          //   // }
+          //   else {
+          //     if (isMediaSelect == false) {
+          //       setState(() {
+          //         _isLoading = true; // Show loader
+          //       });
+          //       createPostWithoutAttachment();
+          //     } else {
+          //       setState(() {
+          //         _isLoading = true; // Show loader
+          //       });
+          //       createPostAttachments();
+          //     }
+          //   }
+          // },
           //POSt Feed
           child: Text('Post',
               style: TextStyle(
@@ -853,6 +853,25 @@ class OrgUpdatesMobileViewMobileViewState
     ]);
   }
 
+  void _handlePostButtonPress() {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+      FocusManager.instance.primaryFocus!.unfocus();
+    }
+
+    if (feedController.value.text.isEmpty) {
+      showMessage('Please share your thoughts');
+    } else {
+      setState(() {
+        _isLoading = true;
+      });
+          if (isMediaSelect == false) {
+      createPostWithoutAttachment();
+          }else {
+            createPostAttachments();
+          }
+    }
+  }
   createPostWithoutAttachment() async {
     final orgId = const Uuid().v4();
 

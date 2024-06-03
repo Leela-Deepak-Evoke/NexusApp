@@ -13,6 +13,7 @@ import 'package:evoke_nexus_app/app/screens/comments/comments_screen.dart';
 import 'package:evoke_nexus_app/app/screens/create_post_orgupdates/create_post_orgupdates_screen.dart';
 import 'package:evoke_nexus_app/app/screens/org_updates/widgets/org_updates_header_card_view.dart';
 import 'package:evoke_nexus_app/app/screens/org_updates/widgets/org_updates_media_view.dart';
+import 'package:evoke_nexus_app/app/screens/profile/widgets/edit_profile.dart';
 import 'package:evoke_nexus_app/app/screens/profile/widgets/profile_mobile_view.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/edit_delete_button.dart';
@@ -23,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class OrgUpdateListMobile extends ConsumerStatefulWidget {
   final User user;
@@ -150,7 +152,12 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
                                                       widget.user.userId
                                                   ? true
                                                   : false,
-                                              topBarButtonAction: () {},
+                                              topBarButtonAction: () { Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          UserForm(user: widget.user, isFromWelcomeScreen: false)));
+},
                                               backButtonAction: () {
                                                 Navigator.pop(context);
                                               },
@@ -362,7 +369,8 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
                 if (_isProperImageUrl(imageUrl)) {
                   return CircleAvatar(
                     backgroundColor: Colors.transparent,
-                    backgroundImage: NetworkImage(imageUrl),
+                   // backgroundImage: NetworkImage(imageUrl),
+                                       backgroundImage: CachedNetworkImageProvider(imageUrl),
                     radius: 20.0,
                   );
                 } else {

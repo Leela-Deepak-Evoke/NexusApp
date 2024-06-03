@@ -11,6 +11,7 @@ import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:evoke_nexus_app/app/widgets/common/edit_delete_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class CommentsListMobileView extends ConsumerStatefulWidget {
   final User user;
@@ -104,8 +105,9 @@ final List<Color> cardColors = [
           if (imageUrl != null && imageUrl.isNotEmpty) {
           if (_isProperImageUrl(imageUrl)) {
             return CircleAvatar(
-                                                  backgroundColor: Colors.transparent,
-              backgroundImage: NetworkImage(imageUrl),
+             backgroundColor: Colors.transparent,
+              //backgroundImage: NetworkImage(imageUrl),
+              backgroundImage: CachedNetworkImageProvider(imageUrl),
               radius: 12.0,
             );
           } else {

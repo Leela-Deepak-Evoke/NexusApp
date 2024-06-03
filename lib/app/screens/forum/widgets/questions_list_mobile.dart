@@ -9,6 +9,7 @@ import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/answers/answers_screen.dart';
 import 'package:evoke_nexus_app/app/screens/create_post_forum/create_post_forum_screen.dart';
 import 'package:evoke_nexus_app/app/screens/forum/widgets/answers_list.dart';
+import 'package:evoke_nexus_app/app/screens/profile/widgets/edit_profile.dart';
 import 'package:evoke_nexus_app/app/screens/profile/widgets/profile_mobile_view.dart';
 import 'package:evoke_nexus_app/app/utils/app_routes.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
@@ -20,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class QuestionsListMobile extends ConsumerStatefulWidget {
   final User user;
@@ -516,7 +518,14 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
                       hasBackAction: true,
                       hasRightAction:
                           item.authorId == widget.user.userId ? true : false,
-                      topBarButtonAction: () {},
+                      topBarButtonAction: () {
+                         Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          UserForm(user: widget.user, isFromWelcomeScreen: false)));
+
+                      },
                       backButtonAction: () {
                         Navigator.pop(context);
                       },
@@ -544,7 +553,9 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
                 if (_isProperImageUrl(imageUrl)) {
                   return CircleAvatar(
                     backgroundColor: Colors.transparent,
-                    backgroundImage: NetworkImage(imageUrl),
+                    // backgroundImage: NetworkImage(imageUrl),
+                      backgroundImage: CachedNetworkImageProvider(imageUrl),
+
                     radius: 12.0,
                   );
                 } else {
@@ -621,7 +632,8 @@ class _QuestionsListMobileViewState extends ConsumerState<QuestionsListMobile> {
                 if (_isProperImageUrl(imageUrl)) {
                   return CircleAvatar(
                     backgroundColor: Colors.transparent,
-                    backgroundImage: NetworkImage(imageUrl),
+                    //backgroundImage: NetworkImage(imageUrl),
+                    backgroundImage: CachedNetworkImageProvider(imageUrl),
                     radius: 12.0,
                   );
                 } else {

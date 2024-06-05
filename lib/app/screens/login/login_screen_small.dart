@@ -154,24 +154,28 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
  try {
     await authService.login((isSuccess) async {
       if (isSuccess) {
-        // Call the second API
-        final user = await userService.checkUser();
-
-        // Update currentUserProvider with the result
-        ref.read(currentUserProvider.notifier).state = user;
-
-        if (user != null) {
-          if (user.status == "NEW") {
-            Navigator.push(
+         Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => TermsConditionScreen()),
             );
-          } else {
-            GoRouter.of(context).goNamed(AppRoute.rootNavigation.name);
-          }
-        } else {
-           GoRouter.of(context).goNamed(AppRoute.rootNavigation.name);
-        }
+        // Call the second API
+        // final user = await userService.checkUser();
+
+        // // Update currentUserProvider with the result
+        // ref.read(currentUserProvider.notifier).state = user;
+
+        // if (user != null) {
+        //   if (user.status == "NEW") {
+        //     Navigator.push(
+        //       context,
+        //       MaterialPageRoute(builder: (context) => TermsConditionScreen()),
+        //     );
+        //   } else {
+        //     GoRouter.of(context).goNamed(AppRoute.rootNavigation.name);
+        //   }
+        // } else {
+        //    GoRouter.of(context).goNamed(AppRoute.rootNavigation.name);
+        // }
       }
       setState(() {
         _loading = false; // Set loading to false when login completes

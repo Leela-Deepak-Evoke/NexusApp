@@ -88,7 +88,7 @@ class UserDetails {
   late String userId;
   late String name;
   String? profilePicture; // Make it nullable
-  late String lastLoginAt;
+   String? lastLoginAt;
   late String createdAt;
   late String status;
 
@@ -96,7 +96,7 @@ class UserDetails {
     required this.userId,
     required this.name,
     this.profilePicture, // Update here
-    required this.lastLoginAt,
+     this.lastLoginAt,
     required this.createdAt,
     required this.status,
   });
@@ -108,7 +108,7 @@ class UserDetails {
         // profilePicture = json['profilePicture']; // Update here
             profilePicture = json['profilePicture'] ?? null; // Update here
 
-    lastLoginAt = json['lastLoginAt'];
+    lastLoginAt = json['lastLoginAt']  ?? DateTime.now().toString();
     createdAt = json['createdAt'];
     status = json['status'];
   }

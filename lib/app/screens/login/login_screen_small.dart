@@ -1,9 +1,17 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/welcome/welcome_screen.dart';
+import 'package:evoke_nexus_app/app/utils/app_routes.dart';
+import 'package:evoke_nexus_app/app/widgets/common/error_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:evoke_nexus_app/app/provider/authentication_provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:evoke_nexus_app/app/screens/terms_condition/terms_condition_screen.dart';
 
 class LoginScreenSmall extends ConsumerStatefulWidget {
   const LoginScreenSmall({super.key});
@@ -22,6 +30,7 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
   final int _index = 0;
   final PageController _pageController = PageController(viewportFraction: 1);
   final int _activePage = 0;
+  // late User user;
 
   @override
   void initState() {
@@ -59,8 +68,8 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
         Container(
           // height: 200,
           // width: double.infinity,
-  //          width: size.width,
-  // height: size.height,
+          //          width: size.width,
+          // height: size.height,
           decoration: const BoxDecoration(
             image: DecorationImage(
                 image: AssetImage("assets/images/Onboarding.png"),
@@ -136,32 +145,99 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
   }
 
   Future<void> _performLogin(BuildContext context) async {
-  setState(() {
-    _loading = true; // Set loading to true when login starts
-  });
+    setState(() {
+      _loading = true; // Set loading to true when login starts
+    });
 
-  final authService = ref.read(authenticationServiceProvider);
-  
-  try {
-    await authService.login((isSuccess) {
+    final authService = ref.read(authenticationServiceProvider);
+    final userService = ref.read(userServiceProvider);
+ try {
+    await authService.login((isSuccess) async {
       if (isSuccess) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-        );
+        // Call the second API
+        final user = await userService.checkUser();
+
+        // Update currentUserProvider with the result
+        ref.read(currentUserProvider.notifier).state = user;
+
+        if (user != null) {
+          if (user.status == "NEW") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => TermsConditionScreen()),
+            );
+          } else {
+            GoRouter.of(context).goNamed(AppRoute.rootNavigation.name);
+          }
+        } else {
+           GoRouter.of(context).goNamed(AppRoute.rootNavigation.name);
+        }
       }
       setState(() {
         _loading = false; // Set loading to false when login completes
       });
     }, context);
-  } catch (e) {
-    print("Authentication canceled or failed: $e");
-    setState(() {
-      _loading = false; // Set loading to false if authentication is canceled or fails
-    });
+     } catch (e) {
+      print("Authentication canceled or failed: $e");
+      setState(() {
+        _loading =
+            false; // Set loading to false if authentication is canceled or fails
+      });
+    }
   }
-}
 
+  Future<void> _performLogin_WORKING(BuildContext context) async {
+    setState(() {
+      _loading = true; // Set loading to true when login starts
+    });
+
+    final authService = ref.read(authenticationServiceProvider);
+
+    try {
+      await authService.login((isSuccess) async {
+        if (isSuccess) {
+          final userAsyncValue = ref.watch(checkUserProvider);
+          final user = await userAsyncValue; // Await for user data
+          safePrint("---------- USER DATA ----------- $user");
+
+          userAsyncValue.when(
+            data: (data) {
+              safePrint(
+                  "---------- USER DTATA 123456y ----------- $userAsyncValue");
+              if (data.status == "NEW") {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const TermsConditionScreen()),
+                );
+              } else {
+                GoRouter.of(context).goNamed(AppRoute.rootNavigation.name);
+              }
+            },
+            loading: () => const Center(
+              child: SizedBox(
+                height: 50.0,
+                width: 50.0,
+                child: CircularProgressIndicator(),
+              ),
+            ),
+            error: (error, stack) {
+              // return Text('An error occurred: $error');
+            },
+          );
+        }
+        setState(() {
+          _loading = false; // Set loading to false when login completes
+        });
+      }, context);
+    } catch (e) {
+      print("Authentication canceled or failed: $e");
+      setState(() {
+        _loading =
+            false; // Set loading to false if authentication is canceled or fails
+      });
+    }
+  }
 
   Future<void> _performLogin_OLD(BuildContext context) async {
     setState(() {
@@ -261,31 +337,31 @@ class _MyPageViewState extends State<MyPageView> {
       );
     }
   }
-Widget buildPageContent(String text, String imageAsset) {
-  return Column(
-    children: <Widget>[
-      Padding(
-        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1),
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 26.0,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w600,
+
+  Widget buildPageContent(String text, String imageAsset) {
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.1),
+          child: Text(
+            text,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 26.0,
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
-      ),
-      const SizedBox(
-        height: 50,
-      ),
-      Expanded(
-        child: Image.asset(imageAsset),
-      ),
-    ],
-  );
-}
-
-
+        const SizedBox(
+          height: 50,
+        ),
+        Expanded(
+          child: Image.asset(imageAsset),
+        ),
+      ],
+    );
+  }
 }

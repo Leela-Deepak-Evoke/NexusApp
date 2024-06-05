@@ -63,9 +63,8 @@ class UserService {
       );
       final response = await restOperation.response;
       if (response.statusCode == 200) {
-              safePrint('---- checkUser response: ----- $response');
-
         final jsonResponse = json.decode(response.decodeBody());
+        safePrint('---- checkUser response: ----- $jsonResponse');
         return User.fromJson(jsonResponse);
       } else {
         throw Exception('Failed to load data');

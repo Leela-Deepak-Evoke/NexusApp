@@ -1433,7 +1433,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
               backgroundColor: const Color(0xffF2722B),
               side: const BorderSide(width: 1, color: Color(0xffF2722B)),
             ),
-                    onPressed: _isLoading ? null : _handlePostButtonPress,
+            onPressed: _isLoading ? null : _handlePostButtonPress,
 
             // onPressed: () {
             //   FocusScopeNode currentFocus = FocusScope.of(context);
@@ -1507,11 +1507,11 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
       setState(() {
         _isLoading = true;
       });
-          if (isMediaSelect == false) {
-      createPostWithoutAttachment();
-          }else {
-            createPostAttachments();
-          }
+      if (isMediaSelect == false) {
+        createPostWithoutAttachment();
+      } else {
+        createPostAttachments();
+      }
     }
   }
 

@@ -1,4 +1,4 @@
-package com.example.evoke_nexus_app
+package com.evoke.socialnetwork
 
 import io.flutter.embedding.android.FlutterActivity
 

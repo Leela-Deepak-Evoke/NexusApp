@@ -57,16 +57,15 @@ class _TermsConditionScreenSmallState
                             Colors.white, // Change checkbox color to white
                       ),
                       child: Transform.scale(
-                  scale: 1.3,
-                  child:
-                      Checkbox(
-                        value: _isChecked,
-                        onChanged: (value) {
-                          setState(() {
-                            _isChecked = value!;
-                          });
-                        },
-                     ) ),
+                          scale: 1.3,
+                          child: Checkbox(
+                            value: _isChecked,
+                            onChanged: (value) {
+                              setState(() {
+                                _isChecked = value!;
+                              });
+                            },
+                          )),
                     ),
                     Text('I accept the Terms and Conditions',
                         style: TextStyle(
@@ -96,34 +95,37 @@ class _TermsConditionScreenSmallState
                     //   Navigator.pop(context, false); // Cancel button pressed
                     // },
                     onPressed: () {
-              // Show dialog when button is pressed
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text("Nexus APP"),
-                    content: Text("Do you want to navigate back?"),
-                    actions: [
-                      // "Cancel" button
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(false); // Dismiss dialog
+                      // Show dialog when button is pressed
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Nexus APP"),
+                            content: Text("Do you want to navigate back?"),
+                            actions: [
+                              // "Cancel" button
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pop(false); // Dismiss dialog
+                                },
+                                child: Text("Cancel"),
+                              ),
+                              // "Ok" button
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pop(true); // Dismiss dialog
+                                  Navigator.of(context)
+                                      .pop(true); // Navigate back
+                                },
+                                child: Text("Ok"),
+                              ),
+                            ],
+                          );
                         },
-                        child: Text("Cancel"),
-                      ),
-                      // "Ok" button
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(true); // Dismiss dialog
-                          Navigator.of(context).pop(true); // Navigate back
-                        },
-                        child: Text("Ok"),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
+                      );
+                    },
                     child: Text(
                       'Decline',
                       style: TextStyle(
@@ -183,10 +185,9 @@ class _TermsConditionScreenSmallState
                 ),
               ],
             ),
- const SizedBox(
+            const SizedBox(
               height: 50,
             ),
-
           ],
         ),
       ),

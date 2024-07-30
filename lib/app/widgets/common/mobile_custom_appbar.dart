@@ -1,6 +1,7 @@
 import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/profile/profile_screen.dart';
+import 'package:evoke_nexus_app/app/screens/review/review_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -73,17 +74,23 @@ class MobileCustomAppbarState extends ConsumerState<MobileCustomAppbar> {
                 textAlign: TextAlign.left,
               ),
               actions: [
-                // IconButton(
-                //   icon: Image.asset(
-                //     'assets/images/icons8-notification-50.png',
-                //     width: 28,
-                //     height: 28,
-                //   ),
-                //   onPressed: () {
-                //     _showToast(context);
-                //   },
-                // ),
-                // SizedBox(width: 10),
+              if (user != null && (user!.role != "Group" || user!.role != "Leader"))
+                IconButton(
+                  icon: Image.asset(
+                    'assets/images/icons8-notification-50.png',
+                    width: 28,
+                    height: 28,
+                  ),
+                  onPressed: () {
+                    //  _showToast(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>  ReviewScreen()),
+                    );
+                  },
+                ),
+                SizedBox(width: 10),
                 InkWell(
                   onTap: () {
                     Navigator.push(
@@ -247,8 +254,9 @@ class CustomAppbar extends StatelessWidget {
 
                               IconButton(
                                 icon: Image.asset(
-                                  // title == 'Profile' 
-                                  (title == 'Profile' || title == 'User Profile') 
+                                  // title == 'Profile'
+                                  (title == 'Profile' ||
+                                          title == 'User Profile')
                                       ? 'assets/images/create-post.png'
                                       : 'assets/images/white_add-48.png',
                                   width: 24,

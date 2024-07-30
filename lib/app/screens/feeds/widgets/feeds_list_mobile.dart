@@ -398,6 +398,8 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
           ref.watch(authorThumbnailProvider(item.authorThumbnail!));
 
       return Container(
+        height: 40,
+        width: 40,
           decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: new DecorationImage(

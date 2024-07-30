@@ -1,4 +1,7 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/utils/app_routes.dart';
+import 'package:evoke_nexus_app/app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -13,6 +16,8 @@ class WelcomeScreenSmall extends ConsumerStatefulWidget {
 class _WelcomeScreenSmallState extends ConsumerState<WelcomeScreenSmall> {
   @override
   Widget build(BuildContext context) {
+//updateIsChecked(true); // Call this where appropriate in your widget
+
     return Scaffold(
       body: Container(
           decoration: const BoxDecoration(
@@ -21,13 +26,14 @@ class _WelcomeScreenSmallState extends ConsumerState<WelcomeScreenSmall> {
                 fit: BoxFit.cover),
           ),
           child: Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(
-                    "assets/images/your_gif_image.gif"), // Replace 'your_gif_image.gif' with the actual path to your .gif image
-                fit: BoxFit.cover,
-              ),
-            ),
+            // decoration: const BoxDecoration(
+            //   image: DecorationImage(
+            //     image: AssetImage(
+            //         "assets/images/your_gif_image.gif"), // Replace 'your_gif_image.gif' with the actual path to your .gif image
+            //     fit: BoxFit.cover,
+            //   ),
+            // ),
+            
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Center(
@@ -112,7 +118,22 @@ class _WelcomeScreenSmallState extends ConsumerState<WelcomeScreenSmall> {
                 ),
               ),
             ),
-          )),
+            
+          ),
+ 
+
+          ),
     );
   }
+
+Future<void> updateIsChecked(bool value) async {
+  await Future.delayed(Duration.zero); // Delay the update until after the build phase
+  // isCheckedProvider.notifier = value;
+
+                ref.read(isCheckedProvider.notifier).state = true;
+                  final checkUserAsyncValue = ref.watch(checkUserProvider);
+print(checkUserAsyncValue);
+
+}
+  
 }

@@ -141,7 +141,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
       if (userHome != null) {
         userDetails = userHome.userDetails;
       } else {
-        safePrint('userDetails -- : $userDetails');
+        safePrint('userDetails -- : $userDetails'); //userDetails -- : null
       }
     } else {
       safePrint('UserHomeAsyncValue is not of type AsyncValue<UserHome>');
@@ -414,7 +414,6 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
         ),
         error: (_, __) =>
             ErrorScreen(showErrorMessage: false, onRetryPressed: retry),
-            
       ),
     );
   }
@@ -430,7 +429,6 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
         data: (userHome) {
           final latestUpdates = userHome.latestUpdates;
           if (latestUpdates.isEmpty) {
-            
             return const Center(
               child: Text(
                 'No data available',
@@ -490,8 +488,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                   style: const TextStyle(fontSize: 16),
                                 ),
                                 onTap: () {
-                                   
-                                                                     Navigator.push(
+                                  Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => MobileLayout(
@@ -503,12 +500,16 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                                                           user!.userId
                                                       ? true
                                                       : false,
-                                              topBarButtonAction: () { Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          UserForm(user: user!, isFromWelcomeScreen: false)));
-},
+                                              topBarButtonAction: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            UserForm(
+                                                                user: user!,
+                                                                isFromWelcomeScreen:
+                                                                    false)));
+                                              },
                                               backButtonAction: () {
                                                 Navigator.pop(context);
                                               },
@@ -720,7 +721,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                           ),
                         ),
                         Text(
-                          'Usage Duration',
+                          'Usage',
                           style: TextStyle(
                             color: const Color(0xff292929),
                             fontSize: fontSize,
@@ -1659,7 +1660,6 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
               context,
               MaterialPageRoute(builder: (context) => const ProfileScreen()),
             );
-            
           },
           child: Container(
               decoration: BoxDecoration(
@@ -1674,8 +1674,8 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                     if (_isProperImageUrl(imageUrl)) {
                       return CircleAvatar(
                         backgroundColor: Colors.transparent,
-                       // backgroundImage: NetworkImage(imageUrl),
-                       backgroundImage: CachedNetworkImageProvider(imageUrl),
+                        // backgroundImage: NetworkImage(imageUrl),
+                        backgroundImage: CachedNetworkImageProvider(imageUrl),
                         radius: 20,
                       );
                     } else {
@@ -1749,12 +1749,12 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                         hasRightAction:
                             item.user.userId == user!.userId ? true : false,
                         topBarButtonAction: () {
- Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          UserForm(user: user!, isFromWelcomeScreen: false)));
-
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => UserForm(
+                                      user: user!,
+                                      isFromWelcomeScreen: false)));
                         },
                         backButtonAction: () {
                           Navigator.pop(context);

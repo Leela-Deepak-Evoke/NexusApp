@@ -13,6 +13,8 @@ class User {
 
   final DateTime? currentLoginAt;
   final DateTime? lastLoginAt;
+   bool? termsAccepted;
+
 
   User({
     required this.userId,
@@ -28,6 +30,7 @@ class User {
     this.socialLinks,
     this.currentLoginAt,
     this.lastLoginAt,
+     this.termsAccepted,
   });
 
   Map<String, dynamic> toJson() => {
@@ -43,7 +46,8 @@ class User {
         'profilePicture': profilePicture,
         'socialLinks': socialLinks,
         'currentLoginAt': currentLoginAt,
-        'lastLoginAt': lastLoginAt
+        'lastLoginAt': lastLoginAt,
+         'terms_accepted': termsAccepted
       };
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -72,6 +76,8 @@ class User {
         profilePicture: authorThumbnail, //json['profilePicture'],
         socialLinks: json['socialLinks'],
         currentLoginAt: DateTime.parse(json['currentLoginAt']),
-        lastLoginAt: lastLogin);
+        lastLoginAt: lastLogin,
+         termsAccepted: json['terms_accepted'] 
+         );
   }
 }

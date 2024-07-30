@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:video_player/video_player.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_image_viewer/easy_image_viewer.dart';
 
 class FeedMediaView extends ConsumerStatefulWidget {
   final Feed item;
@@ -17,7 +18,7 @@ class _FeedMediaViewState extends ConsumerState<FeedMediaView> {
   VideoPlayerController? _controller;
   late String? mediaURL;
 
-@override
+  @override
   void initState() {
     super.initState();
     updateMedia();
@@ -76,14 +77,12 @@ class _FeedMediaViewState extends ConsumerState<FeedMediaView> {
     _controller?.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
-
-    if(mediaURL == null)
-    {
-        // return Image.asset('assets/images/placeholder.png',);
-        return Container(
+    if (mediaURL == null) {
+      // return Image.asset('assets/images/placeholder.png',);
+      return Container(
         height: 210,
         width: MediaQuery.of(context).size.width,
         padding: const EdgeInsets.all(15.0),
@@ -97,7 +96,6 @@ class _FeedMediaViewState extends ConsumerState<FeedMediaView> {
           ],
         ),
       );
-
     }
 
     final mediaURLAsyncValue = ref.watch(mediaUrlProvider(mediaURL!));
@@ -106,15 +104,29 @@ class _FeedMediaViewState extends ConsumerState<FeedMediaView> {
       data: (mediaPath) {
         if (mediaPath != null && mediaPath.isNotEmpty) {
           if (widget.item.hasImage) {
-            return CachedNetworkImage(
-            imageUrl: mediaPath,
-            fit: BoxFit.contain,
-            placeholder: (context, url) => Center(
-              child: CircularProgressIndicator(),
-            ),
-            errorWidget: (context, url, error) => Icon(Icons.error),
-          );
+            return GestureDetector(
+              onTap: () {
+                print('Image tapped!');
+                showImageViewer(context, CachedNetworkImageProvider(mediaPath),
+                    doubleTapZoomable: true);
+              },
+              child: CachedNetworkImage(
+                imageUrl: mediaPath,
+                placeholder: (context, url) => Center(
+                  child: CircularProgressIndicator(),
+                ),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
+            );
 
+            // return CachedNetworkImage(
+            //   imageUrl: mediaPath,
+            //   fit: BoxFit.contain,
+            //   placeholder: (context, url) => const Center(
+            //     child: CircularProgressIndicator(),
+            //   ),
+            //   errorWidget: (context, url, error) => Icon(Icons.error),
+            // );
 
             // return Image.network(
             //   mediaPath,

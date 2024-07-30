@@ -1,24 +1,25 @@
+import 'package:evoke_nexus_app/app/screens/feeds/widgets/feeds_web_view.dart';
 import 'package:evoke_nexus_app/app/widgets/layout/web_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 
-class TimelineScreenLarge extends ConsumerStatefulWidget {
-  const TimelineScreenLarge({super.key});
+class ReviewScreenLarge extends ConsumerStatefulWidget {
+  const ReviewScreenLarge({super.key});
   @override
-  ConsumerState<TimelineScreenLarge> createState() => _TimelineScreenLargeState();
+  ConsumerState<ReviewScreenLarge> createState() => _ReviewScreenLargeState();
 }
 
-class _TimelineScreenLargeState extends ConsumerState<TimelineScreenLarge> {
+class _ReviewScreenLargeState extends ConsumerState<ReviewScreenLarge> {
   @override
   Widget build(BuildContext context) {
     final userAsyncValue = ref.watch(fetchUserProvider);
     return userAsyncValue.when(
       data: (data) {
         return WebLayout(
-          title: 'Timeline',
+          title: 'Review',
           user: data,
-          child: Container(),
+          child:Container(),
         );
       },
       loading: () => const Center(

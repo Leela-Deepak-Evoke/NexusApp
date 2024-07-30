@@ -10,6 +10,7 @@ import 'package:evoke_nexus_app/app/models/user.dart';
 import 'package:evoke_nexus_app/app/models/user_like.dart';
 import 'package:evoke_nexus_app/app/models/userhome.dart';
 import 'package:evoke_nexus_app/app/provider/profile_service_provider.dart';
+import 'package:evoke_nexus_app/app/screens/timeline/timeline_screen.dart';
 import 'package:evoke_nexus_app/app/widgets/common/profile_pic.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -261,10 +262,10 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
                                     )
                                   : Container(),
 
-                      // Align(
-                      //   alignment: Alignment.centerLeft,
-                      //   child: VerticalCardList(),
-                      // ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: VerticalCardList(),
+                      ),
                       // const SizedBox(height: 20),
                       // LogoutButton(),
                       // _logout(),
@@ -650,8 +651,8 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
 class VerticalCardList extends StatelessWidget {
   final List<String> cardTitles = [
     'TimeLine',
-    'Notifications',
-    'Settings',
+    // 'Notifications',
+    // 'Settings',
     // Add more card titles as needed
   ];
 
@@ -695,16 +696,14 @@ class VerticalCard extends StatelessWidget {
           children: [
             GestureDetector(
                 onTap: () {
-                  if (title == "TimeLine" ||
-                      title == "Notifications" ||
-                      title == "Settings") {
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         fullscreenDialog: false,
-                    //         builder: (context) => const TimelineScreen()));
+                  if (title == "TimeLine") {   
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            fullscreenDialog: false,
+                            builder: (context) => const TimelineScreen()));
 
-                    _showToast(context);
+                    // _showToast(context);
                   }
                 },
                 child: ListTile(

@@ -151,21 +151,25 @@ class _LoginScreenSmallState extends ConsumerState<LoginScreenSmall>
 
     final authService = ref.read(authenticationServiceProvider);
     final userService = ref.read(userServiceProvider);
+          // final fetcUserService =  ref.watch(fetchUserProvider); //calling FETCH USER
+
  try {
     await authService.login((isSuccess) async {
       if (isSuccess) {
-         Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => TermsConditionScreen()),
-            );
-        // Call the second API
-        // final user = await userService.checkUser();
+        Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const TermsConditionScreen()),
+                );
+//        Call the second API
+        // final user1 = await userService.checkUser();
+        //   final user = await userService.fetchUser(); //calling FETCH USER instead of CheckUser
 
         // // Update currentUserProvider with the result
         // ref.read(currentUserProvider.notifier).state = user;
 
         // if (user != null) {
-        //   if (user.status == "NEW") {
+        //   if (user.status == "NEW" || user.termsAccepted == false || user.termsAccepted == null) {
         //     Navigator.push(
         //       context,
         //       MaterialPageRoute(builder: (context) => TermsConditionScreen()),
@@ -369,3 +373,7 @@ class _MyPageViewState extends State<MyPageView> {
     );
   }
 }
+
+
+
+

@@ -1,46 +1,22 @@
 import 'package:easy_image_viewer/easy_image_viewer.dart';
-import 'package:evoke_nexus_app/app/models/org_updates.dart';
+import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:video_player/video_player.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class OrgUpdateMediaView extends ConsumerStatefulWidget {
-  final OrgUpdate item;
+class ReviewMediaView extends ConsumerStatefulWidget {
+  final Feed item;
 
-  const OrgUpdateMediaView({super.key, required this.item});
+  const ReviewMediaView({super.key, required this.item});
   @override
-  ConsumerState<OrgUpdateMediaView> createState() => _OrgUpdateMediaViewState();
+  ConsumerState<ReviewMediaView> createState() => _FeedMediaViewState();
 }
 
-class _OrgUpdateMediaViewState extends ConsumerState<OrgUpdateMediaView> {
+class _FeedMediaViewState extends ConsumerState<ReviewMediaView> {
   VideoPlayerController? _controller;
   late String? mediaURL;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   if (widget.item.hasImage) {
-  //     mediaURL = widget.item.imagePath;
-  //   } else if (widget.item.hasVideo) {
-  //     mediaURL = widget.item.videoPath;
-  //     _controller = VideoPlayerController.network(mediaURL!)
-  //       ..initialize().then((_) {
-  //         setState(() {});
-  //       }).catchError((error) {
-  //         print("video error");
-  //         print(error);
-  //       });
-  //   }
-  //  else
-  //   {
-  //     mediaURL = null;
-  //   }
-   
-  // }
-
-  
 
 @override
   void initState() {
@@ -49,7 +25,7 @@ class _OrgUpdateMediaViewState extends ConsumerState<OrgUpdateMediaView> {
   }
 
   @override
-  void didUpdateWidget(OrgUpdateMediaView oldWidget) {
+  void didUpdateWidget(ReviewMediaView oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.item != oldWidget.item) {
       updateMedia();
@@ -57,23 +33,7 @@ class _OrgUpdateMediaViewState extends ConsumerState<OrgUpdateMediaView> {
   }
 
   void updateMedia() {
-    //   if (widget.item.hasImage && widget.item.imagePath != null ) {
-    //   mediaURL = widget.item.imagePath;
-    // } else if (widget.item.hasVideo && widget.item.videoPath != null) {
-    //   mediaURL = widget.item.videoPath;
-    //   _controller = VideoPlayerController.networkUrl(Uri.parse(mediaURL!))
-    //     ..initialize().then((_) {
-    //       setState(() {});
-    //     }).catchError((error) {
-    //       print("video error");
-    //       print(error);
-    //     });
-    // }
-    // else
-    // {
-    //   mediaURL = null;
-    // }
-
+   
     if (widget.item.hasImage && widget.item.imagePath != null) {
       mediaURL = widget.item.imagePath;
       _controller?.dispose();
@@ -101,14 +61,14 @@ class _OrgUpdateMediaViewState extends ConsumerState<OrgUpdateMediaView> {
     _controller?.dispose();
     super.dispose();
   }
-
+  
   @override
   Widget build(BuildContext context) {
 
     if(mediaURL == null)
     {
         // return Image.asset('assets/images/placeholder.png',);
-         return Container(
+        return Container(
         height: 210,
         width: MediaQuery.of(context).size.width,
         padding: const EdgeInsets.all(15.0),
@@ -122,6 +82,7 @@ class _OrgUpdateMediaViewState extends ConsumerState<OrgUpdateMediaView> {
           ],
         ),
       );
+
     }
 
     final mediaURLAsyncValue = ref.watch(mediaUrlProvider(mediaURL!));
@@ -130,7 +91,7 @@ class _OrgUpdateMediaViewState extends ConsumerState<OrgUpdateMediaView> {
       data: (mediaPath) {
         if (mediaPath != null && mediaPath.isNotEmpty) {
           if (widget.item.hasImage) {
-                return GestureDetector(
+              return GestureDetector(
               onTap: () {
                 print('Image tapped!');
                 showImageViewer(context, CachedNetworkImageProvider(mediaPath),
@@ -144,19 +105,6 @@ class _OrgUpdateMediaViewState extends ConsumerState<OrgUpdateMediaView> {
                 errorWidget: (context, url, error) => Icon(Icons.error),
               ),
             );
-          //     return CachedNetworkImage(
-          //   imageUrl: mediaPath,
-          //   fit: BoxFit.contain,
-          //   placeholder: (context, url) => Center(
-          //     child: CircularProgressIndicator(),
-          //   ),
-          //   errorWidget: (context, url, error) => Icon(Icons.error),
-          // );
-
-            // return Image.network(
-            //   mediaPath,
-            //   fit: BoxFit.contain,
-            // );
           } else if (widget.item.hasVideo) {
             if (_controller!.value.isInitialized) {
               return Stack(

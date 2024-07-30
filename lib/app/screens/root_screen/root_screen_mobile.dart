@@ -14,7 +14,8 @@ class RootScreenMobile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final checkUserAsyncValue = ref.watch(checkUserProvider);
+
+  final checkUserAsyncValue = ref.watch(checkUserProvider);
     void onRetryPressed() {
       ref.read(refresUserProvider(""));
     }

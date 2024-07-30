@@ -1,22 +1,14 @@
 import 'dart:io';
 
-import 'package:evoke_nexus_app/app/models/delete.dart';
+import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
-import 'package:evoke_nexus_app/app/models/org_updates.dart';
-import 'package:evoke_nexus_app/app/models/post_likedislike_params.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
-import 'package:evoke_nexus_app/app/provider/delete_service_provider.dart';
-import 'package:evoke_nexus_app/app/provider/like_service_provider.dart';
-import 'package:evoke_nexus_app/app/provider/org_update_service_provider.dart';
+import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
-import 'package:evoke_nexus_app/app/screens/comments/comments_screen.dart';
-import 'package:evoke_nexus_app/app/screens/create_post_orgupdates/create_post_orgupdates_screen.dart';
-import 'package:evoke_nexus_app/app/screens/org_updates/widgets/org_updates_header_card_view.dart';
-import 'package:evoke_nexus_app/app/screens/org_updates/widgets/org_updates_media_view.dart';
 import 'package:evoke_nexus_app/app/screens/profile/widgets/edit_profile.dart';
 import 'package:evoke_nexus_app/app/screens/profile/widgets/profile_mobile_view.dart';
+import 'package:evoke_nexus_app/app/screens/review/widgets/review_media_view.dart';
 import 'package:evoke_nexus_app/app/utils/constants.dart';
-import 'package:evoke_nexus_app/app/widgets/common/edit_delete_button.dart';
 import 'package:evoke_nexus_app/app/widgets/common/error_screen.dart';
 import 'package:evoke_nexus_app/app/widgets/common/view_likes_widget.dart';
 import 'package:evoke_nexus_app/app/widgets/layout/mobile_layout.dart';
@@ -26,50 +18,46 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class OrgUpdateListMobile extends ConsumerStatefulWidget {
+class ReviewListMobile extends ConsumerStatefulWidget {
   final User user;
   String? searchQuery;
   bool? isFilter;
   String? selectedCategory;
 
-  OrgUpdateListMobile(
-      {super.key,
-      required this.user,
-      this.searchQuery,
-      this.isFilter,
-      this.selectedCategory});
+  ReviewListMobile({
+    super.key,
+    required this.user,
+    this.searchQuery,
+    this.isFilter,
+    this.selectedCategory,
+  });
 
   @override
-  _OrgUpdateListMobileViewState createState() =>
-      _OrgUpdateListMobileViewState();
+  _FeedListMobileViewState createState() => _FeedListMobileViewState();
 }
 
-class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
+class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
+  late Future<AsyncValue<List<Feed>>> filterFeedsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final orgUpdatesAsyncValue = ref.watch(orgUpdatesProvider(widget.user));
+    final feedsAsyncValue = ref.watch(feedsProvider(widget.user));
 
-    if (orgUpdatesAsyncValue is AsyncData) {
-      final items = orgUpdatesAsyncValue.value!;
+    if (feedsAsyncValue is AsyncData) {
+      final items = feedsAsyncValue.value!;
       if (items.isEmpty) {
         // Handle the case where there is no data found
         return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
       } else {
-        //  List<OrgUpdate> filteredItems = [];
-        // if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
-        //   filteredItems = items.where((item) {
-        //     return item.author?.contains(widget.searchQuery ?? '') == true ||
-        //         item.name.contains(widget.searchQuery ?? '') == true ||
-        //         item.authorTitle?.contains(widget.searchQuery ?? '') == true ||
-        //         item.content?.contains(widget.searchQuery ?? '') == true ||
-        //         item.status.contains(widget.searchQuery ?? '') == true;
-        //   }).toList();
-        // } else if (widget.selectedCategory == "All" || widget.searchQuery == "All") {
-        //   // If selectedCategory is "All", consider all items
-        //   filteredItems = List.from(items);
-        // }
+        // Filter the items based on the search query
 
-        List<OrgUpdate> filteredItems = [];
+//Case-sensitive
+        List<Feed> filteredItems = [];
         if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
           filteredItems = items.where((item) {
             return (item.author
@@ -95,7 +83,6 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
           }).toList();
         } else if (widget.selectedCategory == "All" ||
             widget.searchQuery == "All") {
-          // If selectedCategory is "All", consider all items
           filteredItems = List.from(items);
         }
 
@@ -103,7 +90,7 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
           return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
         } else {
           return Container(
-              alignment: AlignmentDirectional.topStart,
+              // alignment: AlignmentDirectional.topStart,
               padding:
                   const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 0),
               child: RefreshIndicator(
@@ -111,6 +98,7 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
                 child: Column(children: [
                   Expanded(
                       child: ListView.builder(
+                    // controller: _refreshController.scrollController,
                     padding: const EdgeInsets.only(
                         left: 0, right: 0, top: 0, bottom: 0),
                     shrinkWrap: true,
@@ -125,11 +113,12 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
 
                       return Card(
                         margin: const EdgeInsets.all(5),
+                        clipBehavior: Clip.antiAlias,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12)),
-                        clipBehavior: Clip.antiAlias,
-                        elevation: 2,
+                        elevation: 2, // the size of the shadow
                         shadowColor: Colors.black,
+
                         child: Padding(
                           padding: const EdgeInsets.all(0),
                           child: Column(
@@ -140,7 +129,7 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
                                 minVerticalPadding: 15,
                                 title: Text(author!,
                                     style: const TextStyle(fontSize: 16)),
-                                        onTap: () {
+                                onTap: () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -152,12 +141,17 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
                                                       widget.user.userId
                                                   ? true
                                                   : false,
-                                              topBarButtonAction: () { Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          UserForm(user: widget.user, isFromWelcomeScreen: false)));
-},
+                                              topBarButtonAction: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            UserForm(
+                                                                user:
+                                                                    widget.user,
+                                                                isFromWelcomeScreen:
+                                                                    false)));
+                                              },
                                               backButtonAction: () {
                                                 Navigator.pop(context);
                                               },
@@ -181,57 +175,6 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
                                     fontWeight: FontWeight.normal,
                                   ),
                                 ),
-                                trailing: isCurrentUser &&
-                                        (widget.user.role != 'Group' ||
-                                            widget.user.role != 'Leader')
-                                    ? SizedBox(
-                                        width: 30, // Adjust the width as needed
-                                        child: PopupMenuButton<String>(
-                                          //  padding: const EdgeInsets.only(left: 50, right: 0),
-
-                                          icon: const Icon(
-                                            Icons.more_vert,
-                                          ),
-                                          onSelected: (String choice) {
-                                            // Handle button selection here
-                                            if (choice == 'Edit') {
-                                              _editItem(
-                                                  item); // Call the edit function
-                                            } else if (choice == 'Delete') {
-                                              _deleteItem(
-                                                  item); // Call the delete function
-                                            }
-                                          },
-                                          itemBuilder: (BuildContext context) {
-                                            return <PopupMenuEntry<String>>[
-                                              PopupMenuItem<String>(
-                                                // padding: const EdgeInsets.only(left: 50, right: 0),
-
-                                                value: 'Edit',
-                                                child: EditButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                    _editItem(
-                                                        item); // Call the edit function
-                                                  },
-                                                ),
-                                              ),
-                                              PopupMenuItem<String>(
-                                                // padding: const EdgeInsets.only(left: 50, right: 0),
-                                                value: 'Delete',
-                                                child: DeleteButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                    _deleteItem(
-                                                        item); // Call the delete function
-                                                  },
-                                                ),
-                                              ),
-                                            ];
-                                          },
-                                        ),
-                                      )
-                                    : null,
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,13 +184,10 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
                                       padding: const EdgeInsets.fromLTRB(
                                           20, 10, 20, 0),
                                       child: contentViewWidget(item)),
-                                  // Padding(
-                                  //     padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                                  //     child: hasTagViewWidget(item)),
 
                                   const SizedBox(height: 10.0),
                                   item.media
-                                      ? OrgUpdateMediaView(item: item)
+                                      ? ReviewMediaView(item: item)
                                       : const SizedBox(height: 2.0),
                                   const SizedBox(height: 4.0),
                                   // const Divider(
@@ -256,14 +196,16 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
                                   // ),
 
                                   //LikesWidget comment
-                                  getInfoOFViewsComments(
-                                      context, ref, index, item),
-                                  const Divider(
-                                    thickness: 1.0,
-                                    height: 1.0,
-                                  ),
+                                  // getInfoOFViewsComments(index, item, context),
+                                  // const Divider(
+                                  //   thickness: 1.0,
+                                  //   height: 1.0,
+                                  // ),
+                                  const SizedBox(height: 10.0),
                                   btnSharingInfoLayout(
-                                      context, index, item, ref)
+                                      context, index, item, ref),
+
+                                  const SizedBox(height: 10.0),
                                 ],
                               ),
                             ],
@@ -271,9 +213,6 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
                         ),
                       );
                     },
-                    // separatorBuilder: (BuildContext context, int index) {
-                    //   return const Divider();
-                    // },
                   )),
                   if (Platform.isAndroid)
                     const SizedBox(
@@ -288,7 +227,7 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
         }
       }
     }
-    if (orgUpdatesAsyncValue is AsyncLoading) {
+    if (feedsAsyncValue is AsyncLoading) {
       return const Center(
         child: SizedBox(
           height: 50.0,
@@ -298,31 +237,15 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
       );
     }
 
-    // if (orgUpdatesAsyncValue is AsyncError) {
-    //   return Text('An error occurred: ${orgUpdatesAsyncValue.error}');
-    // }
-
-    if (orgUpdatesAsyncValue is AsyncError) {
+    if (feedsAsyncValue is AsyncError) {
       return ErrorScreen(showErrorMessage: true, onRetryPressed: retry);
     }
-
+    // }
     // This should ideally never be reached, but it's here as a fallback.
     return const SizedBox.shrink();
   }
 
-  void _onCommentsPressed(BuildContext context, OrgUpdate item, WidgetRef ref) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            fullscreenDialog: true,
-            builder: (context) => CommentScreen(
-                  headerCard: OrgUpdateHeaderCardView(item: item),
-                  postId: item.orgUpdateId,
-                  posttype: "OrgUpdate",
-                )));
-  }
-
-  Widget hasTagViewWidget(OrgUpdate item) {
+  Widget hasTagViewWidget(Feed item) {
     if (item.hashTag != null) {
       return Text(item.hashTag!, style: const TextStyle(fontSize: 14));
     } else {
@@ -330,7 +253,7 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
     }
   }
 
-  Widget contentViewWidget(OrgUpdate item) {
+  Widget contentViewWidget(Feed item) {
     if (item.content != null) {
       return Text(item.content!, style: const TextStyle(fontSize: 14));
     } else if (item.mediaCaption != null) {
@@ -340,9 +263,7 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
     }
   }
 
-  Widget _profilePicWidget(OrgUpdate item, WidgetRef ref) {
-    // final avatarText = getAvatarText(item.author!);
-
+  Widget _profilePicWidget(Feed item, WidgetRef ref) {
     final String? authorName = item.author;
     if (authorName == null || authorName.isEmpty) {
       return CircleAvatar(radius: 20.0, child: Text('NO'));
@@ -353,12 +274,10 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
     if (item.authorThumbnail == null || item.authorThumbnail == "") {
       return CircleAvatar(radius: 20.0, child: Text(avatarText));
     } else {
-      // Note: We're using `watch` directly on the provider.
       final profilePicAsyncValue =
           ref.watch(authorThumbnailProvider(item.authorThumbnail!));
+
       return Container(
-        height: 40,
-        width: 40,
           decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: new DecorationImage(
@@ -371,28 +290,30 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
                 if (_isProperImageUrl(imageUrl)) {
                   return CircleAvatar(
                     backgroundColor: Colors.transparent,
-                   // backgroundImage: NetworkImage(imageUrl),
-                                       backgroundImage: CachedNetworkImageProvider(imageUrl),
+                    backgroundImage: CachedNetworkImageProvider(imageUrl),
                     radius: 20.0,
                   );
                 } else {
                   // Render text as a fallback when imageUrl is not proper
                   return CircleAvatar(
-                  radius: 20,
-                  child: Text(
-                    avatarText,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                  ),
-                );
+                    radius: 20,
+                    child: Text(
+                      avatarText,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.w600),
+                    ),
+                  );
                 }
               } else {
+                // Render a placeholder or an error image
                 return CircleAvatar(
                   radius: 20,
                   child: Text(
                     avatarText,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w600),
                   ),
                 );
               }
@@ -412,7 +333,6 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
   }
 
   bool _isProperImageUrl(String imageUrl) {
-    // Check if the image URL contains spaces in the filename
     if (imageUrl.contains('%20')) {
       return false;
     }
@@ -431,65 +351,88 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
 
 // BUTTONS: REACT, COMMENT, SHARE
   Widget btnSharingInfoLayout(
-      BuildContext context, int index, OrgUpdate item, WidgetRef ref) {
+      BuildContext context, int index, Feed item, WidgetRef ref) {
     return Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          TextButton.icon(
-            onPressed: () async {
-              print("Click on Like");
-              // Perform the like/dislike action
-              final likeDislikeResult =
-                  ref.read(genricPostlikeDislikeProvider(PostLikeDislikeParams(
-                userId: widget.user.userId,
-                action: item.currentUserLiked ? "DISLIKE" : "LIKE",
-                postlabel: "OrgUpdate",
-                postIdPropValue: item.orgUpdateId,
-              )));
-            },
-            icon: (item.currentUserLiked
-                ? const Icon(Icons.thumb_up)
-                : Image.asset(
-                    'assets/images/thumb_up.png',
-                    width: 20,
-                    height: 20,
-                  )),
-            label: Text(
-              'Like',
-              style: TextStyle(
-                color: const Color(0xff393E41),
-                fontFamily: GoogleFonts.inter().fontFamily,
-                fontWeight: FontWeight.normal,
-                fontSize: 14,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            print('Accepted item $index');
+          },
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
             ),
           ),
-          TextButton.icon(
-            onPressed: () {
-              _onCommentsPressed(context, item, ref);
-            },
-            icon: Image.asset(
-              'assets/images/chat_bubble_outline.png',
-              width: 20,
-              height: 20,
-            ),
-            label: Text(
-              'Comment',
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Text(
+              'Accept',
               style: TextStyle(
-                color: const Color(0xff393E41),
-                fontFamily: GoogleFonts.inter().fontFamily,
-                fontWeight: FontWeight.normal,
-                fontSize: 14,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white),
+            ),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            print('Rejected item $index');
+
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text("Reject"),
+                  content:
+                      const Text("Are you sure you want to reject this item?"),
+                  actions: [
+                    TextButton(
+                      child: const Text("Cancel"),
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Close the dialog
+                      },
+                    ),
+                    TextButton(
+                      child: const Text("OK"),
+                      onPressed: () async {
+                        Navigator.of(context).pop(); // Close the dialog
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
             ),
           ),
-        ]);
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Text(
+              'Reject',
+              style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
 // NUMBER OF VIEWS AND COMMENTS
-  Widget getInfoOFViewsComments(
-      BuildContext context, WidgetRef ref, int index, OrgUpdate item) {
+  Widget getInfoOFViewsComments(int index, Feed item, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
       child: Row(
@@ -498,21 +441,21 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
           TextButton.icon(
             // <-- TextButton
             onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  var params = GetCommentsParams(
-                      userId: widget.user.userId,
-                      postId: item.orgUpdateId,
-                      postType: "OrgUpdate");
-
-                  return LikesWidget(
-                      user: widget.user,
-                      spaceName: "OrgUpdate",
-                      spaceId: item.orgUpdateId,
-                      params: params);
-                },
-              );
+              if (item.likes != 0)
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    var params = GetCommentsParams(
+                        userId: widget.user.userId,
+                        postId: item.feedId,
+                        postType: "Feed");
+                    return LikesWidget(
+                        user: widget.user,
+                        spaceName: "Feed",
+                        spaceId: item.feedId,
+                        params: params);
+                  },
+                );
             },
             icon: Image.asset(
               'assets/images/reactions.png',
@@ -531,8 +474,6 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               TextButton.icon(
-                // <-- TextButton
-                onPressed: () {},
                 icon: SizedBox(
                   height: 15,
                   width: 15,
@@ -542,15 +483,16 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
                     ),
                   ),
                 ),
-                label: Text(
-                  '${item.comments} comments',
-                  style: TextStyle(
-                    color: const Color(0xff676A79),
-                    fontSize: 12.0,
-                    fontFamily: GoogleFonts.notoSans().fontFamily,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
+                onPressed: () {
+                  // _onCommentsPressed(item);
+                },
+                label: Text('${item.comments} comments',
+                    style: TextStyle(
+                      color: const Color(0xff676A79),
+                      fontSize: 12.0,
+                      fontFamily: GoogleFonts.notoSans().fontFamily,
+                      fontWeight: FontWeight.normal,
+                    )),
               ),
             ],
           ),
@@ -561,61 +503,26 @@ class _OrgUpdateListMobileViewState extends ConsumerState<OrgUpdateListMobile> {
 
   Future<void> _onRefresh() async {
     ref.read(refresUserProvider(""));
-    ref.watch(refresOrgUpdatesProvider(""));
+    ref.watch(refresFeedsProvider(""));
   }
 
   void retry() {
     _onRefresh();
   }
 
-  // Edit an item
-  void _editItem(OrgUpdate item) {
-    setState(() {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            fullscreenDialog: true,
-            builder: (context) => CreatePostOrgUpdatesScreen(
-                orgUpdateItem: item, isEditOrgUpdate: true)),
-      );
-    });
-  }
+  void _showToast(BuildContext context) {
+    final scaffold = ScaffoldMessenger.of(context);
 
-// Delete an item
-  void _deleteItem(OrgUpdate item) async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Confirm Delete"),
-          content: const Text("Are you sure you want to delete this item?"),
-          actions: [
-            TextButton(
-              child: const Text("Cancel"),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-            ),
-            TextButton(
-              child: const Text("Delete"),
-              onPressed: () async {
-                try {
-                  final deleteParams = Delete(
-                    label: 'OrgUpdate',
-                    idPropValue: item.orgUpdateId,
-                    userId: widget.user.userId,
-                  );
-                  await ref.read(deleteProvider(deleteParams).future);
-                  await _onRefresh();
-                } catch (error) {
-                  print("Error deleting item: $error");
-                }
-                Navigator.of(context).pop(); // Close the dialog
-              },
-            ),
-          ],
-        );
-      },
+    scaffold.showSnackBar(
+      SnackBar(
+        // content: const Text('Added to favorite'),
+        content: const SizedBox(
+          height: 70,
+          child: Text('In Progress'),
+        ),
+        action: SnackBarAction(
+            label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+      ),
     );
   }
 }

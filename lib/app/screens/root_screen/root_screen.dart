@@ -8,6 +8,7 @@ class RootScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
     final checkUserAsyncValue = ref.watch(checkUserProvider);
 
     if (checkUserAsyncValue is AsyncData) {

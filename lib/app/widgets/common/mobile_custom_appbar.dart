@@ -77,7 +77,7 @@ class MobileCustomAppbarState extends ConsumerState<MobileCustomAppbar> {
               if (user != null && (user!.role != "Group" || user!.role != "Leader"))
                 IconButton(
                   icon: Image.asset(
-                    'assets/images/icons8-notification-50.png',
+                    'assets/images/viewIcon.png',
                     width: 28,
                     height: 28,
                   ),
@@ -90,7 +90,7 @@ class MobileCustomAppbarState extends ConsumerState<MobileCustomAppbar> {
                     );
                   },
                 ),
-                SizedBox(width: 10),
+                SizedBox(width: 24),
                 InkWell(
                   onTap: () {
                     Navigator.push(
@@ -257,7 +257,7 @@ class CustomAppbar extends StatelessWidget {
                                   // title == 'Profile'
                                   (title == 'Profile' ||
                                           title == 'User Profile')
-                                      ? 'assets/images/create-post.png'
+                                      ? 'assets/images/viewIcon.png'
                                       : 'assets/images/white_add-48.png',
                                   width: 24,
                                   height: 24,

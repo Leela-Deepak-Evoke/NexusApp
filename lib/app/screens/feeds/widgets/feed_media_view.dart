@@ -1,10 +1,10 @@
+import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:video_player/video_player.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_image_viewer/easy_image_viewer.dart';
 
 class FeedMediaView extends ConsumerStatefulWidget {
   final Feed item;
@@ -17,12 +17,15 @@ class FeedMediaView extends ConsumerStatefulWidget {
 class _FeedMediaViewState extends ConsumerState<FeedMediaView> {
   VideoPlayerController? _controller;
   late String? mediaURL;
+ 
 
   @override
   void initState() {
     super.initState();
     updateMedia();
   }
+
+  
 
   @override
   void didUpdateWidget(FeedMediaView oldWidget) {
@@ -49,7 +52,6 @@ class _FeedMediaViewState extends ConsumerState<FeedMediaView> {
     // {
     //   mediaURL = null;
     // }
-
     if (widget.item.hasImage && widget.item.imagePath != null) {
       mediaURL = widget.item.imagePath;
       _controller?.dispose();

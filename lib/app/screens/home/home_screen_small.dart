@@ -1093,7 +1093,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: size.width / 25, vertical: 0),
+                          horizontal: size.width / 30, vertical: 0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1225,6 +1225,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                     const SizedBox(
                       height: 50,
                     ),
+                    
                     Flexible(
                       child: Padding(
                         padding: EdgeInsets.symmetric(

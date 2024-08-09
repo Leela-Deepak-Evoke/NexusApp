@@ -2,3 +2,6 @@
 2. Gave specific height and width to the containers in the (org_updates) widgets->org_updates_list_mobile.dart -> _ProfilePicWidget->height:40 and width:40 due to unbounded height and width error
 3. Changed the text from "Usage Duration" to "Duration" due to Row length expanding
 4. Commented the code of container with AssetImage as "assets/images/your_gif_image.gif" as the file is not loading in the mobile screens
+5. Home small screen = Changed the padding from line No 1095 from padding: EdgeInsets.symmetric(
+                          horizontal: size.width / 25, vertical: 0) to padding: EdgeInsets.symmetric(
+                          horizontal: size.width / 30, vertical: 0)

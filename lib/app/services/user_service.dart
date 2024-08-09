@@ -67,7 +67,7 @@ class UserService {
 
       final authToken = tokens.idToken.raw;
       safePrint('---- TOKEN: ----- $result');
-
+      // safePrint("Session Token :${result.credentialsResult.value.sessionToken}");
       // final testString = result.userPoolTokensResult.value;
 
       // final text = testString.username; //authToken;

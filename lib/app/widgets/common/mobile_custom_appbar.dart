@@ -76,20 +76,22 @@ class MobileCustomAppbarState extends ConsumerState<MobileCustomAppbar> {
               actions: [
               if (user != null && (user!.role != "Group" || user!.role != "Leader"))
                 IconButton(
-                  icon: Image.asset(
-                    'assets/images/viewIcon.png',
-                    width: 28,
-                    height: 28,
+                    icon: Image.asset(
+                      'assets/images/viewIcon.png',
+                      width: 28,
+                      height: 28,
+                    ),
+                    onPressed: () {
+                      // print("Hello");
+                      //  _showToast(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>  ReviewScreen()),
+                      );
+                    },
                   ),
-                  onPressed: () {
-                    //  _showToast(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>  ReviewScreen()),
-                    );
-                  },
-                ),
+                
                 SizedBox(width: 24),
                 InkWell(
                   onTap: () {

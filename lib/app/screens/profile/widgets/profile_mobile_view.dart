@@ -20,6 +20,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+late bool otherUser;
+
 class ProfileMobileView<T> extends ConsumerStatefulWidget {
   final User user;
   final BuildContext context;
@@ -52,6 +54,7 @@ class _ProfileMobileViewState extends ConsumerState<ProfileMobileView> {
   @override
   void initState() {
     super.initState();
+    otherUser = widget.isFromOtherUser;
   }
 
   Widget _infoTile(String title, String subtitle) {
@@ -666,7 +669,8 @@ class VerticalCardList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    print("OtherUser:${!otherUser}");
+    return (!otherUser)?Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: List.generate(cardTitles.length, (index) {
         return VerticalCard(
@@ -674,7 +678,7 @@ class VerticalCardList extends StatelessWidget {
           icon: icons[index],
         );
       }),
-    );
+    ):Container();
   }
 }
 

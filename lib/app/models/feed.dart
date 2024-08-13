@@ -42,6 +42,11 @@ class Feed {
       required this.currentUserLiked,
        this.identityId});
 
+  @override
+  String toString() {
+    return 'Feed(author: $author, name: $name, authorTitle: $authorTitle, content: $content, status: $status, postedAt: $postedAt, authorId: $authorId, media: $media)';
+  }
+
   Map<String, dynamic> toJson() => {
         'feedId': feedId,
         'name': name,
@@ -79,6 +84,8 @@ class Feed {
                  authorThumbnail = '';
 
     }
+
+    
 
     return Feed(
       feedId: json['feed']['feedId'],

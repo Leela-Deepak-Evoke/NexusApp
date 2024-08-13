@@ -20,3 +20,5 @@ after -> Each Text Widget is as it is inside the Column Widget
 12. commented the code in postfeed_mobile_view.dart (Line No-168 to 173)
 13. commented the code in post_forum_mobile_view.dart (Line No-128 to 133)
 14. commented the code in post_answer_mobile_view.dart (Line No-118 to 123)
+15. Added line no 45 to 48 in feed.dart to print the Feeds.
+16. Added the SizedBox to view the image with height: 200,width: 200, for the FittedBox in line No 1185 of postfeed_mobile_view.dart

@@ -991,6 +991,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
   }
 
   void imageAttachment(BuildContext context) {
+    print("Image Attached");
     isEditngImage = true;
     // isLoadingImage = true;
     showModalBottomSheet(
@@ -1005,6 +1006,7 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
           builder: (BuildContext context, StateSetter setState) {
             return SingleChildScrollView(
               child: Container(
+                
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1180,35 +1182,39 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
 //             : Image.file(_imageFile!),
 //       );
 
-      return FittedBox(
-          fit: BoxFit.contain,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 0, right: 0),
-            child: _imageFile == null
-                ? GestureDetector(
-                    onTap: () {
-                      _selectFile(ContentType.image);
-                    },
-                    child: Container(
-                      height: 210,
-                      width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.all(15.0),
-                      color: Color(0xffBCADE9),
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/images/icons8-add-image-64.png',
-                            // width: 150,
-                            // height: 150,
-                          ),
-                        ],
-                      ),
-                    ))
-                : Image.file(_imageFile!),
-            // child:
-            //     Image.file(File(uploadedFilePath ?? ""), fit: BoxFit.cover
-          ));
+      return SizedBox(
+        height: 200,
+        width: 200,
+        child: FittedBox(
+            fit: BoxFit.contain,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 0, right: 0),
+              child: _imageFile == null
+                  ? GestureDetector(
+                      onTap: () {
+                        _selectFile(ContentType.image);
+                      },
+                      child: Container(
+                        height: 210,
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.all(15.0),
+                        color: Color(0xffBCADE9),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/images/icons8-add-image-64.png',
+                              // width: 150,
+                              // height: 150,
+                            ),
+                          ],
+                        ),
+                      ))
+                  : Image.file(_imageFile!),
+              // child:
+              //     Image.file(File(uploadedFilePath ?? ""), fit: BoxFit.cover
+            )),
+      );
     } else {
       return FittedBox(
           fit: BoxFit.cover,

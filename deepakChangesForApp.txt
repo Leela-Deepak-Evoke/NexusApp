@@ -1,8 +1,19 @@
-1. Gave specific height and width to the containers in the (feeds) widgets->feeds_list_mobile.dart -> _ProfilePicWidget->height:40 and width:40 due to unbounded height and width error
-2. Gave specific height and width to the containers in the (org_updates) widgets->org_updates_list_mobile.dart -> _ProfilePicWidget->height:40 and width:40 due to unbounded height and width error
-3. Changed the text from "Usage Duration" to "Duration" due to Row length expanding
-4. Commented the code of container with AssetImage as "assets/images/your_gif_image.gif" as the file is not loading in the mobile screens
+1. Gave specific height and width to the containers in the (feeds) widgets->feeds_list_mobile.dart -> _ProfilePicWidget->height:40 and width:40 due to unbounded height and width error (Line 398 and 399)
+2. Gave specific height and width to the containers in the (org_updates) widgets->org_updates_list_mobile.dart -> _ProfilePicWidget->height:40 and width:40 due to unbounded height and width error (Line 360 and 361)
+3. Changed the text from "Usage Duration" to "Active Time" due to Row length expanding
+4. Commented the code of container with AssetImage as "assets/images/your_gif_image.gif" as the file is not loading in the welcome_screen_small.dart (Line No:28)
 5. Home small screen = Changed the padding from line No 1095 from padding: EdgeInsets.symmetric(
                           horizontal: size.width / 25, vertical: 0) to padding: EdgeInsets.symmetric(
-                          horizontal: size.width / 30, vertical: 0)
-6. Gave specific height and width to the containers in the (review) widgets->review_list_mobile.dart -> _ProfilePicWidget->height:40 and width:40 due to unbounded height and width error
+                          horizontal: size.width / 95, vertical: 0)
+6. Gave specific height and width to the containers in the (review) widgets->review_list_mobile.dart -> _ProfilePicWidget->height:40 and width:40 due to unbounded height and width error (Line No 281 and 282)
+7. The Rows are removed and kept as normal Text Widgets inside the Posts Column (home_screen_small.dart)
+before -> Each Text Widget was under a Row Widget (Line No: 1101)
+after -> Each Text Widget is as it is inside the Column Widget
+8. Home small screen = Changed the padding from line No 1145 from padding: EdgeInsets.symmetric(
+                          horizontal: size.width / 25, vertical: 0) to padding: EdgeInsets.symmetric(
+                          horizontal: size.width / 55, vertical: 0)
+9. Home small screen = Changed the padding from line No 1213 from padding: EdgeInsets.symmetric(
+                          horizontal: size.width / 25, vertical: 0) to padding: EdgeInsets.symmetric(
+                          horizontal: size.width / 45, vertical: 0)
+10. In the Review Module replaced the published button when the admin clicks on the accept button. 
+11. Changed the Icon for profile_mobile_view.dart at Line No 660 from Icons.timeline to Icons.timelapse

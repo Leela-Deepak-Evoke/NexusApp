@@ -402,7 +402,8 @@ class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
               image: new DecorationImage(
                 image: new AssetImage("assets/images/user_pic_s3_new.png"),
                 fit: BoxFit.fill,
-              )),
+              )
+              ),
           child: profilePicAsyncValue.when(
             data: (imageUrl) {
               if (imageUrl != null && imageUrl.isNotEmpty) {

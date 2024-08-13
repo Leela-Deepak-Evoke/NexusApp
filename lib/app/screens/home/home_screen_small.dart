@@ -680,7 +680,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
           DateTime.parse(userHome.userDetails.lastLoginAt.toString()).toLocal(),
         );
         final horizontalPadding =
-            size.width * 0.01; // Adjust the percentage as needed
+            size.width*0.01; // Adjust the percentage as needed
         return Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: horizontalPadding, vertical: 0),
@@ -721,7 +721,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                           ),
                         ),
                         Text(
-                          'Usage',
+                          'Active Time',
                           style: TextStyle(
                             color: const Color(0xff292929),
                             fontSize: fontSize,
@@ -1093,61 +1093,45 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: size.width / 30, vertical: 0),
+                          horizontal: size.width / 95, vertical: 0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              Text(
-                                '${userHome.postsCount.feeds} ${userHome.postsCount.feeds == 1 ? 'Post' : 'Posts'}',
-                                style: TextStyle(
-                                  color: const Color(0xff292929),
-                                  fontSize: fontSize,
-                                  fontFamily: GoogleFonts.poppins().fontFamily,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
+                          Text(
+                            '${userHome.postsCount.feeds} ${userHome.postsCount.feeds == 1 ? 'Post' : 'Posts'}',
+                            style: TextStyle(
+                              color: const Color(0xff292929),
+                              fontSize: fontSize,
+                              fontFamily: GoogleFonts.poppins().fontFamily,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                           const SizedBox(
                             height: 10,
                           ),
                           // Forum Count
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment
-                                .start, // Set mainAxisAlignment to start
-                            children: [
-                              Text(
-                                '${userHome.postsCount.questions} ${userHome.postsCount.questions == 1 ? 'Post' : 'Posts'}', // Conditional expression to display 'Post' or 'Posts'
-                                style: TextStyle(
-                                  color: const Color(0xff292929),
-                                  fontSize: fontSize,
-                                  fontFamily: GoogleFonts.poppins().fontFamily,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
+                          Text(
+                            '${userHome.postsCount.questions} ${userHome.postsCount.questions == 1 ? 'Post' : 'Posts'}', // Conditional expression to display 'Post' or 'Posts'
+                            style: TextStyle(
+                              color: const Color(0xff292929),
+                              fontSize: fontSize,
+                              fontFamily: GoogleFonts.poppins().fontFamily,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                           const SizedBox(
                             height: 10,
                           ),
                           // Answer Count
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment
-                                .start, // Set mainAxisAlignment to start
-                            children: [
-                              Text(
-                                '${userHome.postsCount.answers} ${userHome.postsCount.answers == 1 ? 'Post' : 'Posts'}',
-                                style: TextStyle(
-                                  color: const Color(0xff292929),
-                                  fontSize: fontSize,
-                                  fontFamily: GoogleFonts.poppins().fontFamily,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
+                          Text(
+                            '${userHome.postsCount.answers} ${userHome.postsCount.answers == 1 ? 'Post' : 'Posts '}',
+                            style: TextStyle(
+                              color: const Color(0xff292929),
+                              fontSize: fontSize,
+                              fontFamily: GoogleFonts.poppins().fontFamily,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                           const SizedBox(
                             height: 10,
@@ -1160,7 +1144,7 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: size.width / 25, vertical: 0),
+                          horizontal: size.width / 55, vertical: 0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1225,11 +1209,10 @@ class HomeScreenSmallState extends ConsumerState<HomeScreenSmall> {
                     const SizedBox(
                       height: 50,
                     ),
-                    
                     Flexible(
                       child: Padding(
                         padding: EdgeInsets.symmetric(
-                            horizontal: size.width / 25, vertical: 0),
+                            horizontal: size.width / 45, vertical: 0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,

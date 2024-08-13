@@ -657,9 +657,9 @@ class VerticalCardList extends StatelessWidget {
   ];
 
   final List<IconData> icons = [
-    Icons.timeline,
-    Icons.notifications,
-    Icons.settings,
+    Icons.timelapse,
+    // Icons.notifications,
+    // Icons.settings,
   ];
 
   VerticalCardList({super.key});

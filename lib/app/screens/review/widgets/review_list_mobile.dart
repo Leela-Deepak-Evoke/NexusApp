@@ -352,6 +352,7 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
   }
 
 // BUTTONS: REACT, COMMENT, SHARE
+var isAccepted = false;
   Widget btnSharingInfoLayout(
       BuildContext context, int index, Feed item, WidgetRef ref) {
     return Row(
@@ -361,19 +362,23 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
         ElevatedButton(
           onPressed: () {
             print('Accepted item $index');
+            setState(() {
+              isAccepted = !isAccepted;
+            });
+            print("Accepted:${isAccepted}");
           },
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            backgroundColor: (!isAccepted)?WidgetStateProperty.all<Color>(Colors.green):WidgetStateProperty.all<Color>(Colors.orange),
+            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
               ),
             ),
           ),
-          child: const Padding(
+          child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Text(
-              'Accept',
+            child:Text(
+              (!isAccepted)? 'Accept':'Published',
               style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -411,8 +416,8 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
             );
           },
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            backgroundColor: WidgetStateProperty.all<Color>(Colors.red),
+            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
               ),

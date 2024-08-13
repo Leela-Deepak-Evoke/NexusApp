@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
+import 'package:evoke_nexus_app/app/provider/ReviewbuttonState_provider.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
 import 'package:evoke_nexus_app/app/screens/profile/widgets/edit_profile.dart';
@@ -352,9 +353,10 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
   }
 
 // BUTTONS: REACT, COMMENT, SHARE
-var isAccepted = false;
+
   Widget btnSharingInfoLayout(
       BuildContext context, int index, Feed item, WidgetRef ref) {
+        final buttonStates = ref.watch(buttonStateProvider);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -362,13 +364,15 @@ var isAccepted = false;
         ElevatedButton(
           onPressed: () {
             print('Accepted item $index');
-            setState(() {
-              isAccepted = !isAccepted;
-            });
-            print("Accepted:${isAccepted}");
+            ref.read(buttonStateProvider.notifier).update((state) {
+            final updatedState = Map<int, bool>.from(state);
+            updatedState[index] = true;
+            //We can keep the API call here to update it in the database
+            return updatedState;
+          });
           },
           style: ButtonStyle(
-            backgroundColor: (!isAccepted)?WidgetStateProperty.all<Color>(Colors.green):WidgetStateProperty.all<Color>(Colors.orange),
+            backgroundColor: buttonStates[index] == true ?WidgetStateProperty.all<Color>(Colors.orange):WidgetStateProperty.all<Color>(Colors.green),
             shape: WidgetStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
@@ -378,7 +382,7 @@ var isAccepted = false;
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child:Text(
-              (!isAccepted)? 'Accept':'Published',
+               buttonStates[index] == true ? 'Published' : 'Accept',
               style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,

@@ -17,3 +17,6 @@ after -> Each Text Widget is as it is inside the Column Widget
                           horizontal: size.width / 45, vertical: 0)
 10. In the Review Module replaced the published button when the admin clicks on the accept button. 
 11. Changed the Icon for profile_mobile_view.dart at Line No 660 from Icons.timeline to Icons.timelapse
+12. commented the code in postfeed_mobile_view.dart (Line No-168 to 173)
+13. commented the code in post_forum_mobile_view.dart (Line No-128 to 133)
+14. commented the code in post_answer_mobile_view.dart (Line No-118 to 123)

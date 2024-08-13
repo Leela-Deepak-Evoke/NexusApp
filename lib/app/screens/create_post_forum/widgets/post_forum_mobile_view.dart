@@ -125,12 +125,12 @@ class PostForumMobileViewState extends ConsumerState<PostForumMobileView> {
     }
   }
 
-  @override
-  void dispose() {
-    // Ensure disposing of the VideoPlayerController to free up resources.
-    super.dispose();
-    _videoPlayerController!.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   // Ensure disposing of the VideoPlayerController to free up resources.
+  //   super.dispose();
+  //   _videoPlayerController!.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {

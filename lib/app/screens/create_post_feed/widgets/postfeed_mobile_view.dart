@@ -165,12 +165,12 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
     }
   }
 
-  @override
-  void dispose() {
-    // Ensure disposing of the VideoPlayerController to free up resources.
-    super.dispose();
-    _videoPlayerController!.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   // Ensure disposing of the VideoPlayerController to free up resources.
+  //   super.dispose();
+  //   _videoPlayerController!.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {

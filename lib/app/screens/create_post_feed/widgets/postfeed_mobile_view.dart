@@ -1216,14 +1216,18 @@ class PostFeedsMobileViewState extends ConsumerState<PostFeedsMobileView> {
             )),
       );
     } else {
-      return FittedBox(
-          fit: BoxFit.cover,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 10, right: 10),
-            // width: 100,
-            // height: 100,
-            child: VideoPlayer(_videoPlayerController!),
-          ));
+      return SizedBox(
+        height: 200,
+        width: 200,
+        child: FittedBox(
+            fit: BoxFit.cover,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10, right: 10),
+              // width: 100,
+              // height: 100,
+              child: VideoPlayer(_videoPlayerController!),
+            )),
+      );
     }
   }
 // Widget returnFileContainer(int index) {

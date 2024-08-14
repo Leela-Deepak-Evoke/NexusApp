@@ -1,12 +1,10 @@
 import 'dart:io';
-
+ 
 import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
-import 'package:evoke_nexus_app/app/provider/ReviewbuttonState_provider.dart';
 import 'package:evoke_nexus_app/app/provider/feed_service_provider.dart';
 import 'package:evoke_nexus_app/app/provider/user_service_provider.dart';
-import 'package:evoke_nexus_app/app/screens/home/home_screen_small.dart';
 import 'package:evoke_nexus_app/app/screens/profile/widgets/edit_profile.dart';
 import 'package:evoke_nexus_app/app/screens/profile/widgets/profile_mobile_view.dart';
 import 'package:evoke_nexus_app/app/screens/review/widgets/review_media_view.dart';
@@ -19,13 +17,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
+ 
 class ReviewListMobile extends ConsumerStatefulWidget {
   final User user;
   String? searchQuery;
   bool? isFilter;
   String? selectedCategory;
-
+ 
   ReviewListMobile({
     super.key,
     required this.user,
@@ -33,36 +31,47 @@ class ReviewListMobile extends ConsumerStatefulWidget {
     this.isFilter,
     this.selectedCategory,
   });
-
+ 
   @override
   _FeedListMobileViewState createState() => _FeedListMobileViewState();
 }
-
+ 
 class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
   late Future<AsyncValue<List<Feed>>> filterFeedsFuture;
-  List<Feed> publishedFeed=[];
-  List<Feed> rejectedFeed=[];
-
-  String showMode='All';
-
+  List<Feed> publishedFeed = [];
+  List<Feed> rejectedFeed = [];
+  String showMode = 'All';
+ 
   @override
   void initState() {
     super.initState();
     updateShowMode('All');
   }
-
-  void updateShowMode(String mode){
+ 
+  void updateShowMode(String mode) {
     setState(() {
       showMode = mode;
     });
     print("Showing $showMode Data");
   }
-
-  
+ 
+  Color getColorForMode(String mode) {
+    switch (mode) {
+      case 'All':
+        return Colors.green;
+      case 'Published':
+        return Colors.orange;
+      case 'Rejected':
+        return Colors.red;
+      default:
+        return Colors.white;
+    }
+  }
+ 
   @override
   Widget build(BuildContext context) {
     final feedsAsyncValue = ref.watch(feedsProvider(widget.user));
-
+ 
     if (feedsAsyncValue is AsyncData) {
       final items = feedsAsyncValue.value!;
       if (items.isEmpty) {
@@ -70,9 +79,11 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
         return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
       } else {
         // Filter the items based on the search query
-
+ 
 //Case-sensitive
         List<Feed> filteredItems = [];
+       
+ 
         if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
           filteredItems = items.where((item) {
             return (item.author
@@ -100,14 +111,24 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
             widget.searchQuery == "All") {
           filteredItems = List.from(items);
         }
-        
+ 
         if (filteredItems.isEmpty) {
           return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
         } else {
+          List getCurrentFeed() {
+          switch (showMode) {
+            case 'Published':
+              return publishedFeed;
+            case 'Rejected':
+              return rejectedFeed;
+            default:
+              return filteredItems;
+          }
+        }
           for (var i = 0; i < filteredItems.length; i++) {
-            if(filteredItems[i].status=='PUBLISHED'){
+            if (filteredItems[i].status == 'PUBLISHED') {
               publishedFeed.add(filteredItems[i]);
-            }else if(filteredItems[i].status=='REJECTED'){
+            } else if (filteredItems[i].status == 'REJECTED') {
               rejectedFeed.add(filteredItems[i]);
             }
           }
@@ -118,380 +139,83 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
               child: RefreshIndicator(
                 onRefresh: _onRefresh,
                 child: Column(children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      ElevatedButton(
-                          // style: ElevatedButton.styleFrom(
-                          //   backgroundColor:(widget.selectedCategory != "All")?
-                          //       Colors.green:Colors.white, // Background color for the button
-                          // ),
-                          onPressed: () {
-                            updateShowMode('All');
-                          },
-                          child: const Text("All")),
-                      ElevatedButton(
-                          onPressed: () {
-                            updateShowMode('Published');
-                          }, child: const Text("Published")),
-                      ElevatedButton(
-                          onPressed: () {
-                            updateShowMode('Rejected');
-                          }, child: const Text("Rejected"))
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: Text(
+                      "Showing $showMode Feeds",
+                      style: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
-                  (showMode=='All')?Expanded(
-                      child: ListView.builder(
-                    // controller: _refreshController.scrollController,
-                    padding: const EdgeInsets.only(
-                        left: 0, right: 0, top: 0, bottom: 0),
-                    shrinkWrap: true,
-                    itemCount: filteredItems.length,
-                    itemBuilder: (context, index) {
-                      final item = filteredItems[index];
-                      final author = item.author;
-
-                      final formattedDate = DateFormat('MMM d HH:mm').format(
-                          DateTime.parse(item.postedAt.toString()).toLocal());
-                      bool isCurrentUser = item.authorId == widget.user.userId;
-
-                      return Card(
-                        margin: const EdgeInsets.all(5),
-                        clipBehavior: Clip.antiAlias,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        elevation: 2, // the size of the shadow
-                        shadowColor: Colors.black,
-
-                        child: Padding(
-                          padding: const EdgeInsets.all(0),
-                          child: Column(
-                            children: [
-                              ListTile(
-                                leading: _profilePicWidget(item, ref),
-                                minLeadingWidth: 0,
-                                minVerticalPadding: 15,
-                                title: Text(author!,
-                                    style: const TextStyle(fontSize: 16)),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MobileLayout(
-                                              title: 'User Profile',
-                                              user: widget.user,
-                                              hasBackAction: true,
-                                              hasRightAction: item.authorId ==
-                                                      widget.user.userId
-                                                  ? true
-                                                  : false,
-                                              topBarButtonAction: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            UserForm(
-                                                                user:
-                                                                    widget.user,
-                                                                isFromWelcomeScreen:
-                                                                    false)));
-                                              },
-                                              backButtonAction: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: ProfileMobileView(
-                                                user: widget.user,
-                                                context: context,
-                                                otherUser: item,
-                                                isFromOtherUser: true,
-                                                onPostClicked: () {},
-                                              ),
-                                            )),
-                                  );
-                                },
-                                subtitle: Text(
-                                  "${item.authorTitle!} | ${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString()))}",
-                                  style: TextStyle(
-                                    color: const Color(0xff676A79),
-                                    fontSize: 12.0,
-                                    fontFamily:
-                                        GoogleFonts.notoSans().fontFamily,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ),
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(height: 4.0),
-                                  Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          20, 10, 20, 0),
-                                      child: contentViewWidget(item)),
-
-                                  const SizedBox(height: 10.0),
-                                  item.media
-                                      ? ReviewMediaView(item: item)
-                                      : const SizedBox(height: 2.0),
-                                  const SizedBox(height: 4.0),
-                                  // const Divider(
-                                  //   thickness: 1.0,
-                                  //   height: 1.0,
-                                  // ),
-
-                                  //LikesWidget comment
-                                  // getInfoOFViewsComments(index, item, context),
-                                  // const Divider(
-                                  //   thickness: 1.0,
-                                  //   height: 1.0,
-                                  // ),
-                                  const SizedBox(height: 10.0),
-                                  btnSharingInfoLayout(
-                                      context, index, item, ref),
-
-                                  const SizedBox(height: 10.0),
-                                ],
-                              ),
-                            ],
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: ['All', 'Published', 'Rejected'].map((mode) {
+                        return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: showMode == mode
+                                ? getColorForMode(mode)
+                                : Colors.white,
                           ),
-                        ),
-                      );
-                    },
-                  )):(showMode=="Published")?Expanded(
-                      child: ListView.builder(
-                    // controller: _refreshController.scrollController,
-                    padding: const EdgeInsets.only(
-                        left: 0, right: 0, top: 0, bottom: 0),
-                    shrinkWrap: true,
-                    itemCount: publishedFeed.length,
-                    itemBuilder: (context, index) {
-                      final item = publishedFeed[index];
-                      final author = item.author;
-
-                      final formattedDate = DateFormat('MMM d HH:mm').format(
-                          DateTime.parse(item.postedAt.toString()).toLocal());
-                      bool isCurrentUser = item.authorId == widget.user.userId;
-
-                      return Card(
-                        margin: const EdgeInsets.all(5),
-                        clipBehavior: Clip.antiAlias,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        elevation: 2, // the size of the shadow
-                        shadowColor: Colors.black,
-
-                        child: Padding(
-                          padding: const EdgeInsets.all(0),
-                          child: Column(
-                            children: [
-                              ListTile(
-                                leading: _profilePicWidget(item, ref),
-                                minLeadingWidth: 0,
-                                minVerticalPadding: 15,
-                                title: Text(author!,
-                                    style: const TextStyle(fontSize: 16)),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MobileLayout(
-                                              title: 'User Profile',
-                                              user: widget.user,
-                                              hasBackAction: true,
-                                              hasRightAction: item.authorId ==
-                                                      widget.user.userId
-                                                  ? true
-                                                  : false,
-                                              topBarButtonAction: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            UserForm(
-                                                                user:
-                                                                    widget.user,
-                                                                isFromWelcomeScreen:
-                                                                    false)));
-                                              },
-                                              backButtonAction: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: ProfileMobileView(
-                                                user: widget.user,
-                                                context: context,
-                                                otherUser: item,
-                                                isFromOtherUser: true,
-                                                onPostClicked: () {},
-                                              ),
-                                            )),
-                                  );
-                                },
-                                subtitle: Text(
-                                  "${item.authorTitle!} | ${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString()))}",
-                                  style: TextStyle(
-                                    color: const Color(0xff676A79),
-                                    fontSize: 12.0,
-                                    fontFamily:
-                                        GoogleFonts.notoSans().fontFamily,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ),
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(height: 4.0),
-                                  Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          20, 10, 20, 0),
-                                      child: contentViewWidget(item)),
-
-                                  const SizedBox(height: 10.0),
-                                  item.media
-                                      ? ReviewMediaView(item: item)
-                                      : const SizedBox(height: 2.0),
-                                  const SizedBox(height: 4.0),
-                                  // const Divider(
-                                  //   thickness: 1.0,
-                                  //   height: 1.0,
-                                  // ),
-
-                                  //LikesWidget comment
-                                  // getInfoOFViewsComments(index, item, context),
-                                  // const Divider(
-                                  //   thickness: 1.0,
-                                  //   height: 1.0,
-                                  // ),
-                                  const SizedBox(height: 10.0),
-                                  btnSharingInfoLayout(
-                                      context, index, item, ref),
-
-                                  const SizedBox(height: 10.0),
-                                ],
-                              ),
-                            ],
+                          onPressed: () => updateShowMode(mode),
+                          child: Text(
+                            mode,
+                            style: TextStyle(
+                              color: showMode == mode
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
                           ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  Expanded(
+          child: ListView.builder(
+            padding: EdgeInsets.zero,
+            shrinkWrap: true,
+            itemCount: getCurrentFeed().length,
+            itemBuilder: (context, index) {
+              final item = getCurrentFeed()[index];
+              final author = item.author;
+ 
+              return Card(
+                margin: const EdgeInsets.all(5),
+                clipBehavior: Clip.antiAlias,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 2,
+                shadowColor: Colors.black,
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: _profilePicWidget(item, ref),
+                      minLeadingWidth: 0,
+                      minVerticalPadding: 15,
+                      title: Text(author ?? "", style: const TextStyle(fontSize: 16)),
+                      onTap: () => navigateToProfile(item),
+                      subtitle: Text(
+                        "${item.authorTitle ?? ""} | ${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString()))}",
+                        style: TextStyle(
+                          color: const Color(0xff676A79),
+                          fontSize: 12.0,
+                          fontFamily: GoogleFonts.notoSans().fontFamily,
+                          fontWeight: FontWeight.normal,
                         ),
-                      );
-                    },
-                  )):Expanded(
-                      child: ListView.builder(
-                    // controller: _refreshController.scrollController,
-                    padding: const EdgeInsets.only(
-                        left: 0, right: 0, top: 0, bottom: 0),
-                    shrinkWrap: true,
-                    itemCount: rejectedFeed.length,
-                    itemBuilder: (context, index) {
-                      final item = rejectedFeed[index];
-                      final author = item.author;
-
-                      final formattedDate = DateFormat('MMM d HH:mm').format(
-                          DateTime.parse(item.postedAt.toString()).toLocal());
-                      bool isCurrentUser = item.authorId == widget.user.userId;
-
-                      return Card(
-                        margin: const EdgeInsets.all(5),
-                        clipBehavior: Clip.antiAlias,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        elevation: 2, // the size of the shadow
-                        shadowColor: Colors.black,
-
-                        child: Padding(
-                          padding: const EdgeInsets.all(0),
-                          child: Column(
-                            children: [
-                              ListTile(
-                                leading: _profilePicWidget(item, ref),
-                                minLeadingWidth: 0,
-                                minVerticalPadding: 15,
-                                title: Text(author!,
-                                    style: const TextStyle(fontSize: 16)),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MobileLayout(
-                                              title: 'User Profile',
-                                              user: widget.user,
-                                              hasBackAction: true,
-                                              hasRightAction: item.authorId ==
-                                                      widget.user.userId
-                                                  ? true
-                                                  : false,
-                                              topBarButtonAction: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            UserForm(
-                                                                user:
-                                                                    widget.user,
-                                                                isFromWelcomeScreen:
-                                                                    false)));
-                                              },
-                                              backButtonAction: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: ProfileMobileView(
-                                                user: widget.user,
-                                                context: context,
-                                                otherUser: item,
-                                                isFromOtherUser: true,
-                                                onPostClicked: () {},
-                                              ),
-                                            )),
-                                  );
-                                },
-                                subtitle: Text(
-                                  "${item.authorTitle!} | ${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString()))}",
-                                  style: TextStyle(
-                                    color: const Color(0xff676A79),
-                                    fontSize: 12.0,
-                                    fontFamily:
-                                        GoogleFonts.notoSans().fontFamily,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ),
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(height: 4.0),
-                                  Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          20, 10, 20, 0),
-                                      child: contentViewWidget(item)),
-
-                                  const SizedBox(height: 10.0),
-                                  item.media
-                                      ? ReviewMediaView(item: item)
-                                      : const SizedBox(height: 2.0),
-                                  const SizedBox(height: 4.0),
-                                  // const Divider(
-                                  //   thickness: 1.0,
-                                  //   height: 1.0,
-                                  // ),
-
-                                  //LikesWidget comment
-                                  // getInfoOFViewsComments(index, item, context),
-                                  // const Divider(
-                                  //   thickness: 1.0,
-                                  //   height: 1.0,
-                                  // ),
-                                  const SizedBox(height: 10.0),
-                                  btnSharingInfoLayout(
-                                      context, index, item, ref),
-
-                                  const SizedBox(height: 10.0),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  )),
+                      ),
+                    ),
+                    buildContent(item,index),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
                   if (Platform.isAndroid)
                     const SizedBox(
                       height: 60,
@@ -514,15 +238,65 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
         ),
       );
     }
-
+ 
     if (feedsAsyncValue is AsyncError) {
       return ErrorScreen(showErrorMessage: true, onRetryPressed: retry);
     }
-    // }
-    // This should ideally never be reached, but it's here as a fallback.
+   
     return const SizedBox.shrink();
   }
-
+ 
+  Widget buildContent(item,index) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const SizedBox(height: 4.0),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+        child: contentViewWidget(item),
+      ),
+      const SizedBox(height: 10.0),
+      item.media ? ReviewMediaView(item: item) : const SizedBox(height: 2.0),
+      const SizedBox(height: 4.0),
+      btnSharingInfoLayout(context, index, item, ref),
+      const SizedBox(height: 10.0),
+    ],
+  );
+}
+ 
+void navigateToProfile(item) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => MobileLayout(
+        title: 'User Profile',
+        user: widget.user,
+        hasBackAction: true,
+        hasRightAction: item.authorId == widget.user.userId,
+        topBarButtonAction: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => UserForm(
+                user: widget.user,
+                isFromWelcomeScreen: false,
+              ),
+            ),
+          );
+        },
+        backButtonAction: () => Navigator.pop(context),
+        child: ProfileMobileView(
+          user: widget.user,
+          context: context,
+          otherUser: item,
+          isFromOtherUser: true,
+          onPostClicked: () {},
+        ),
+      ),
+    ),
+  );
+}
+ 
   Widget hasTagViewWidget(Feed item) {
     if (item.hashTag != null) {
       return Text(item.hashTag!, style: const TextStyle(fontSize: 14));
@@ -530,7 +304,7 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
       return const SizedBox(height: 5.0);
     }
   }
-
+ 
   Widget contentViewWidget(Feed item) {
     if (item.content != null) {
       return Text(item.content!, style: const TextStyle(fontSize: 14));
@@ -540,21 +314,21 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
       return const SizedBox(height: 5.0);
     }
   }
-
+ 
   Widget _profilePicWidget(Feed item, WidgetRef ref) {
     final String? authorName = item.author;
     if (authorName == null || authorName.isEmpty) {
-      return const CircleAvatar(radius: 20.0, child: Text('NO'));
+      return CircleAvatar(radius: 20.0, child: Text('NO'));
     }
     // final avatarText = getAvatarText(item.author!);
     final avatarText = getAvatarText(authorName);
-
+ 
     if (item.authorThumbnail == null || item.authorThumbnail == "") {
       return CircleAvatar(radius: 20.0, child: Text(avatarText));
     } else {
       final profilePicAsyncValue =
           ref.watch(authorThumbnailProvider(item.authorThumbnail!));
-
+ 
       return Container(
           height: 40,
           width: 40,
@@ -611,14 +385,14 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
           ));
     }
   }
-
+ 
   bool _isProperImageUrl(String imageUrl) {
     if (imageUrl.contains('%20')) {
       return false;
     }
     return true;
   }
-
+ 
   String getAvatarText(String name) {
     final nameParts = name.split(' ');
     if (nameParts.length >= 2) {
@@ -628,11 +402,10 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
     }
     return '';
   }
-
+ 
 // BUTTONS: REACT, COMMENT, SHARE
   Widget btnSharingInfoLayout(
       BuildContext context, int index, Feed item, WidgetRef ref) {
-    final buttonStates = ref.watch(buttonStateProvider);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -640,28 +413,20 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
         ElevatedButton(
           onPressed: () {
             print('Accepted item $index');
-            ref.read(buttonStateProvider.notifier).update((state) {
-              final updatedState = Map<int, bool>.from(state);
-              updatedState[index] = true;
-              //We can keep the API call here to update it in the database
-              return updatedState;
-            });
           },
           style: ButtonStyle(
-            backgroundColor: buttonStates[index] == true
-                ? WidgetStateProperty.all<Color>(Colors.orange)
-                : WidgetStateProperty.all<Color>(Colors.green),
-            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
               ),
             ),
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Text(
-              buttonStates[index] == true ? 'Published' : 'Accept',
-              style: const TextStyle(
+              'Accept',
+              style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                   color: Colors.white),
@@ -671,7 +436,7 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
         ElevatedButton(
           onPressed: () {
             print('Rejected item $index');
-
+ 
             showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -689,12 +454,6 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
                     TextButton(
                       child: const Text("OK"),
                       onPressed: () async {
-                        ref.read(buttonStateProvider.notifier).update((state) {
-                          final updatedState = Map<int, bool>.from(state);
-                          updatedState[index] = false;
-                          //We can keep the API call here to update it in the database
-                          return updatedState;
-                        });
                         Navigator.of(context).pop(); // Close the dialog
                       },
                     ),
@@ -704,8 +463,8 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
             );
           },
           style: ButtonStyle(
-            backgroundColor: WidgetStateProperty.all<Color>(Colors.red),
-            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
               ),
@@ -725,7 +484,7 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
       ],
     );
   }
-
+ 
 // NUMBER OF VIEWS AND COMMENTS
   Widget getInfoOFViewsComments(int index, Feed item, BuildContext context) {
     return Padding(
@@ -795,19 +554,19 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
       ),
     );
   }
-
+ 
   Future<void> _onRefresh() async {
     ref.read(refresUserProvider(""));
     ref.watch(refresFeedsProvider(""));
   }
-
+ 
   void retry() {
     _onRefresh();
   }
-
+ 
   void _showToast(BuildContext context) {
     final scaffold = ScaffoldMessenger.of(context);
-
+ 
     scaffold.showSnackBar(
       SnackBar(
         // content: const Text('Added to favorite'),

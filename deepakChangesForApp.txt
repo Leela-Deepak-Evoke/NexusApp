@@ -23,3 +23,5 @@ after -> Each Text Widget is as it is inside the Column Widget
 15. Added line no 45 to 48 in feed.dart to print the Feeds.
 16. Added the SizedBox to view the image with height: 200,width: 200, for the FittedBox in line No 1185 of postfeed_mobile_view.dart
 17. optimized the code in review module due to more no of lines original code in my mail
+18. Changed the review icon for the review module at mobile_custom_appbar.dart in line no : 80 and commented the code from line 96 to 123 due to repetation of the User profile Pic
+19. Replaced accept buttons to published buttons with orange color while showing published items.

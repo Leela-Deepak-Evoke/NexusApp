@@ -52,7 +52,7 @@ class FeedListMobile extends ConsumerStatefulWidget {
 }
 
 class _FeedListMobileViewState extends ConsumerState<FeedListMobile> {
-  late Future<AsyncValue<List<Feed>>> filterFeedsFuture;
+  // late Future<AsyncValue<List<Feed>>> filterFeedsFuture;
 
   
 

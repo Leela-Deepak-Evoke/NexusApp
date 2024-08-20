@@ -1,5 +1,5 @@
 import 'dart:io';
- 
+
 import 'package:evoke_nexus_app/app/models/feed.dart';
 import 'package:evoke_nexus_app/app/models/get_comments_parms.dart';
 import 'package:evoke_nexus_app/app/models/user.dart';
@@ -17,13 +17,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
- 
+
 class ReviewListMobile extends ConsumerStatefulWidget {
   final User user;
   String? searchQuery;
   bool? isFilter;
   String? selectedCategory;
- 
+
   ReviewListMobile({
     super.key,
     required this.user,
@@ -31,30 +31,30 @@ class ReviewListMobile extends ConsumerStatefulWidget {
     this.isFilter,
     this.selectedCategory,
   });
- 
+
   @override
   _FeedListMobileViewState createState() => _FeedListMobileViewState();
 }
- 
+
 class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
   late Future<AsyncValue<List<Feed>>> filterFeedsFuture;
   List<Feed> publishedFeed = [];
   List<Feed> rejectedFeed = [];
   String showMode = 'All';
- 
+
   @override
   void initState() {
     super.initState();
     updateShowMode('All');
   }
- 
+
   void updateShowMode(String mode) {
     setState(() {
       showMode = mode;
     });
     print("Showing $showMode Data");
   }
- 
+
   Color getColorForMode(String mode) {
     switch (mode) {
       case 'All':
@@ -67,11 +67,11 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
         return Colors.white;
     }
   }
- 
+
   @override
   Widget build(BuildContext context) {
     final feedsAsyncValue = ref.watch(feedsProvider(widget.user));
- 
+
     if (feedsAsyncValue is AsyncData) {
       final items = feedsAsyncValue.value!;
       if (items.isEmpty) {
@@ -79,11 +79,10 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
         return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
       } else {
         // Filter the items based on the search query
- 
+
 //Case-sensitive
         List<Feed> filteredItems = [];
-       
- 
+
         if (widget.searchQuery != "All" && widget.selectedCategory != "All") {
           filteredItems = items.where((item) {
             return (item.author
@@ -111,20 +110,21 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
             widget.searchQuery == "All") {
           filteredItems = List.from(items);
         }
- 
+
         if (filteredItems.isEmpty) {
           return ErrorScreen(showErrorMessage: false, onRetryPressed: retry);
         } else {
           List getCurrentFeed() {
-          switch (showMode) {
-            case 'Published':
-              return publishedFeed;
-            case 'Rejected':
-              return rejectedFeed;
-            default:
-              return filteredItems;
+            switch (showMode) {
+              case 'Published':
+                return publishedFeed;
+              case 'Rejected':
+                return rejectedFeed;
+              default:
+                return filteredItems;
+            }
           }
-        }
+
           for (var i = 0; i < filteredItems.length; i++) {
             if (filteredItems[i].status == 'PUBLISHED') {
               publishedFeed.add(filteredItems[i]);
@@ -174,48 +174,50 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
                     ),
                   ),
                   Expanded(
-          child: ListView.builder(
-            padding: EdgeInsets.zero,
-            shrinkWrap: true,
-            itemCount: getCurrentFeed().length,
-            itemBuilder: (context, index) {
-              final item = getCurrentFeed()[index];
-              final author = item.author;
- 
-              return Card(
-                margin: const EdgeInsets.all(5),
-                clipBehavior: Clip.antiAlias,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 2,
-                shadowColor: Colors.black,
-                child: Column(
-                  children: [
-                    ListTile(
-                      leading: _profilePicWidget(item, ref),
-                      minLeadingWidth: 0,
-                      minVerticalPadding: 15,
-                      title: Text(author ?? "", style: const TextStyle(fontSize: 16)),
-                      onTap: () => navigateToProfile(item),
-                      subtitle: Text(
-                        "${item.authorTitle ?? ""} | ${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString()))}",
-                        style: TextStyle(
-                          color: const Color(0xff676A79),
-                          fontSize: 12.0,
-                          fontFamily: GoogleFonts.notoSans().fontFamily,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
+                    child: ListView.builder(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      itemCount: getCurrentFeed().length,
+                      itemBuilder: (context, index) {
+                        final item = getCurrentFeed()[index];
+                        final author = item.author;
+
+                        return Card(
+                          margin: const EdgeInsets.all(5),
+                          clipBehavior: Clip.antiAlias,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 2,
+                          shadowColor: Colors.black,
+                          child: Column(
+                            children: [
+                              ListTile(
+                                leading: _profilePicWidget(item, ref),
+                                minLeadingWidth: 0,
+                                minVerticalPadding: 15,
+                                title: Text(author ?? "",
+                                    style: const TextStyle(fontSize: 16)),
+                                onTap: () => navigateToProfile(item),
+                                subtitle: Text(
+                                  "${item.authorTitle ?? ""} | ${Global.calculateTimeDifferenceBetween(Global.getDateTimeFromStringForPosts(item.postedAt.toString()))}",
+                                  style: TextStyle(
+                                    color: const Color(0xff676A79),
+                                    fontSize: 12.0,
+                                    fontFamily:
+                                        GoogleFonts.notoSans().fontFamily,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                ),
+                              ),
+                              buildContent(item, index),
+                              const SizedBox(height: 10),
+                            ],
+                          ),
+                        );
+                      },
                     ),
-                    buildContent(item,index),
-                    const SizedBox(height: 10),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
+                  ),
                   if (Platform.isAndroid)
                     const SizedBox(
                       height: 60,
@@ -238,65 +240,65 @@ class _FeedListMobileViewState extends ConsumerState<ReviewListMobile> {
         ),
       );
     }
- 
+
     if (feedsAsyncValue is AsyncError) {
       return ErrorScreen(showErrorMessage: true, onRetryPressed: retry);
     }
-   
+
     return const SizedBox.shrink();
   }
- 
-  Widget buildContent(item,index) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const SizedBox(height: 4.0),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-        child: contentViewWidget(item),
-      ),
-      const SizedBox(height: 10.0),
-      item.media ? ReviewMediaView(item: item) : const SizedBox(height: 2.0),
-      const SizedBox(height: 4.0),
-      btnSharingInfoLayout(context, index, item, ref),
-      const SizedBox(height: 10.0),
-    ],
-  );
-}
- 
-void navigateToProfile(item) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => MobileLayout(
-        title: 'User Profile',
-        user: widget.user,
-        hasBackAction: true,
-        hasRightAction: item.authorId == widget.user.userId,
-        topBarButtonAction: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => UserForm(
-                user: widget.user,
-                isFromWelcomeScreen: false,
-              ),
-            ),
-          );
-        },
-        backButtonAction: () => Navigator.pop(context),
-        child: ProfileMobileView(
+
+  Widget buildContent(item, index) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 4.0),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+          child: contentViewWidget(item),
+        ),
+        const SizedBox(height: 10.0),
+        item.media ? ReviewMediaView(item: item) : const SizedBox(height: 2.0),
+        const SizedBox(height: 4.0),
+        btnSharingInfoLayout(context, index, item, ref),
+        const SizedBox(height: 10.0),
+      ],
+    );
+  }
+
+  void navigateToProfile(item) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MobileLayout(
+          title: 'User Profile',
           user: widget.user,
-          context: context,
-          otherUser: item,
-          isFromOtherUser: true,
-          onPostClicked: () {},
+          hasBackAction: true,
+          hasRightAction: item.authorId == widget.user.userId,
+          topBarButtonAction: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => UserForm(
+                  user: widget.user,
+                  isFromWelcomeScreen: false,
+                ),
+              ),
+            );
+          },
+          backButtonAction: () => Navigator.pop(context),
+          child: ProfileMobileView(
+            user: widget.user,
+            context: context,
+            otherUser: item,
+            isFromOtherUser: true,
+            onPostClicked: () {},
+          ),
         ),
       ),
-    ),
-  );
-}
- 
+    );
+  }
+
   Widget hasTagViewWidget(Feed item) {
     if (item.hashTag != null) {
       return Text(item.hashTag!, style: const TextStyle(fontSize: 14));
@@ -304,7 +306,7 @@ void navigateToProfile(item) {
       return const SizedBox(height: 5.0);
     }
   }
- 
+
   Widget contentViewWidget(Feed item) {
     if (item.content != null) {
       return Text(item.content!, style: const TextStyle(fontSize: 14));
@@ -314,21 +316,21 @@ void navigateToProfile(item) {
       return const SizedBox(height: 5.0);
     }
   }
- 
+
   Widget _profilePicWidget(Feed item, WidgetRef ref) {
     final String? authorName = item.author;
     if (authorName == null || authorName.isEmpty) {
-      return CircleAvatar(radius: 20.0, child: Text('NO'));
+      return const CircleAvatar(radius: 20.0, child: Text('NO'));
     }
     // final avatarText = getAvatarText(item.author!);
     final avatarText = getAvatarText(authorName);
- 
+
     if (item.authorThumbnail == null || item.authorThumbnail == "") {
       return CircleAvatar(radius: 20.0, child: Text(avatarText));
     } else {
       final profilePicAsyncValue =
           ref.watch(authorThumbnailProvider(item.authorThumbnail!));
- 
+
       return Container(
           height: 40,
           width: 40,
@@ -385,14 +387,14 @@ void navigateToProfile(item) {
           ));
     }
   }
- 
+
   bool _isProperImageUrl(String imageUrl) {
     if (imageUrl.contains('%20')) {
       return false;
     }
     return true;
   }
- 
+
   String getAvatarText(String name) {
     final nameParts = name.split(' ');
     if (nameParts.length >= 2) {
@@ -402,7 +404,7 @@ void navigateToProfile(item) {
     }
     return '';
   }
- 
+
 // BUTTONS: REACT, COMMENT, SHARE
   Widget btnSharingInfoLayout(
       BuildContext context, int index, Feed item, WidgetRef ref) {
@@ -413,30 +415,41 @@ void navigateToProfile(item) {
         ElevatedButton(
           onPressed: () {
             print('Accepted item $index');
+            print('ShowMode:${showMode}');
           },
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            backgroundColor: (showMode == 'Published')
+                ? WidgetStateProperty.all<Color>(Colors.orange)
+                : WidgetStateProperty.all<Color>(Colors.green),
+            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
               ),
             ),
           ),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Text(
-              'Accept',
-              style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white),
-            ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: (showMode == 'Published')
+                ? const Text(
+                    'Published',
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white),
+                  )
+                : const Text(
+                    'Accept',
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white),
+                  ),
           ),
         ),
         ElevatedButton(
           onPressed: () {
             print('Rejected item $index');
- 
+
             showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -463,8 +476,8 @@ void navigateToProfile(item) {
             );
           },
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            backgroundColor: WidgetStateProperty.all<Color>(Colors.red),
+            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
               ),
@@ -484,7 +497,7 @@ void navigateToProfile(item) {
       ],
     );
   }
- 
+
 // NUMBER OF VIEWS AND COMMENTS
   Widget getInfoOFViewsComments(int index, Feed item, BuildContext context) {
     return Padding(
@@ -554,19 +567,19 @@ void navigateToProfile(item) {
       ),
     );
   }
- 
+
   Future<void> _onRefresh() async {
     ref.read(refresUserProvider(""));
     ref.watch(refresFeedsProvider(""));
   }
- 
+
   void retry() {
     _onRefresh();
   }
- 
+
   void _showToast(BuildContext context) {
     final scaffold = ScaffoldMessenger.of(context);
- 
+
     scaffold.showSnackBar(
       SnackBar(
         // content: const Text('Added to favorite'),

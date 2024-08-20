@@ -89,37 +89,38 @@ class MobileCustomAppbarState extends ConsumerState<MobileCustomAppbar> {
                         MaterialPageRoute(
                             builder: (context) =>  ReviewScreen()),
                       );
+                      
                     },
                   ),
                 
-                SizedBox(width: 24),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ProfileScreen()),
-                    );
-                  },
-                  child: Container(
-                    width: 35,
-                    height: 35,
-                    padding: const EdgeInsets.all(2),
-                    decoration: const BoxDecoration(
-                        color: Colors.white, shape: BoxShape.circle),
-                    child: CircleAvatar(
-                      radius: 30,
-                      backgroundColor: const Color(0xffF2722B),
-                      child: Text(avatarText,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12.0,
-                            fontFamily: GoogleFonts.poppins().fontFamily,
-                            fontWeight: FontWeight.w500,
-                          )),
-                    ),
-                  ),
-                )
+                // SizedBox(width: 24),
+                // InkWell(
+                //   onTap: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //           builder: (context) => const ProfileScreen()),
+                //     );
+                //   },
+                //   child: Container(
+                //     width: 35,
+                //     height: 35,
+                //     padding: const EdgeInsets.all(2),
+                //     decoration: const BoxDecoration(
+                //         color: Colors.white, shape: BoxShape.circle),
+                //     child: CircleAvatar(
+                //       radius: 30,
+                //       backgroundColor: const Color(0xffF2722B),
+                //       child: Text(avatarText,
+                //           style: TextStyle(
+                //             color: Colors.white,
+                //             fontSize: 12.0,
+                //             fontFamily: GoogleFonts.poppins().fontFamily,
+                //             fontWeight: FontWeight.w500,
+                //           )),
+                //     ),
+                //   ),
+                // )
               ],
               elevation: value ? 2.0 : 0.0,
             );
